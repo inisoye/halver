@@ -1,0 +1,11 @@
+{
+  "dotenv.enableAutocloaking": false,
+  "python.defaultInterpreterPath": "/Users/inioluwaakinyosoye/Library/Caches/pypoetry/virtualenvs/halver-api-J089k1eH-py3.11/bin/python3",
+  "python.linting.flake8Enabled": true,
+  "python.linting.enabled": true,
+  "python.linting.ignorePatterns": ["**/migrations/*"],
+  "python.analysis.ignore": ["**/migrations/*"],
+  "python.linting.mypyEnabled": true,
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.autoImportUserSymbols": true
+}

@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "halver-api"
+version = "0.1.0"
+description = ""
+authors = ["Inioluwa Akinyosoye <inisoye@gmail.com>"]
+readme = "README.md"
+packages = [{include = "halver_api"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^4.1.4"
+environs = {extras = ["django"], version = "^9.5.0"}
+psycopg2-binary = "^2.9.5"
+django-phonenumber-field = {extras = ["phonenumberslite"], version = "^7.0.1"}
+pillow = "^9.3.0"
+djangorestframework = "^3.14.0"
+
+
+[tool.poetry.group.dev.dependencies]
+django-stubs = {extras = ["compatible-mypy"], version = "^1.13.1"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
