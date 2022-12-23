@@ -42,6 +42,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
+    # 3rd party
+    "rest_framework",
+    "corsheaders",
+    "rest_framework.authtoken",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
     # Local
     "accounts.apps.AccountsConfig",
 ]
@@ -49,6 +59,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -69,6 +80,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.request",
             ],
         },
     },
@@ -141,6 +153,17 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.CustomUser"
 
 
+# Specify Allauth in list of auth backends
+# https://docs.djangoproject.com/en/4.1/topics/auth/customizing/#specifying-authentication-backends
+
+AUTHENTICATION_BACKENDS = [
+    # allauth specific authentication methods, such as login by e-mail
+    "allauth.account.auth_backends.AuthenticationBackend",
+    # Needed to login by username in Django admin, regardless of allauth
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+
 # Default region for phone numbers set to Nigeria
 # https://django-phonenumber-field.readthedocs.io/en/latest/reference.html#model-field
 
@@ -153,4 +176,56 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+}
+
+
+# Allowed CORS origins
+
+CORS_ORIGIN_WHITELIST = (
+    "http://localhost:3000",
+    "http://localhost:8000",
+)
+
+
+# Allowed CSRF origins
+
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
+
+
+# Use console as email backend in dev mode
+# https://docs.djangoproject.com/en/4.1/topics/email/#console-backend
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+
+# Set site id as required by django_allauth
+
+SITE_ID = 1
+
+
+# Allauth configurations
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+# Great guide:
+# https://www.rootstrap.com/blog/registration-and-authentication-in-django-apps-with-dj-rest-auth/
+
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+# TODO Change later
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
+
+# Rest-auth configurations
+# https://dj-rest-auth.readthedocs.io/en/2.1.12/configuration.html
+
+REST_AUTH_SERIALIZERS = {
+    "USER_DETAILS_SERIALIZER": "accounts.serializers.CustomUserDetailsSerializer",
+}
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "accounts.serializers.CustomRegisterSerializer",
 }

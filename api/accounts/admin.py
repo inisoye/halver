@@ -15,12 +15,13 @@ from .forms import UserChangeForm
 CustomUser = get_user_model()
 USERNAME_FIELD = CustomUser.USERNAME_FIELD
 
-REQUIRED_FIELDS = (USERNAME_FIELD,) + tuple(get_user_model().REQUIRED_FIELDS)
+REQUIRED_FIELDS = (USERNAME_FIELD,) + tuple(CustomUser.REQUIRED_FIELDS)
 
 BASE_FIELDS = (
     None,
     {
-        "fields": REQUIRED_FIELDS + ("password", "profile_image"),
+        "fields": REQUIRED_FIELDS
+        + ("password", "profile_image", "phone", "first_name", "last_name"),
     },
 )
 

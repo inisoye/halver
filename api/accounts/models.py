@@ -18,8 +18,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, phone, email, username, password=None, **extra_fields):
-        if not phone:
-            raise ValueError("The Phone field must be set")
         if not email:
             raise ValueError("The Email field must be set")
         if not username:
@@ -72,8 +70,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         },
     )
     phone = PhoneNumberField(
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
         unique=True,
         error_messages={
             "unique": _("A user with that phone number already exists."),
@@ -105,7 +103,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["phone", "username", "first_name", "last_name"]
+    REQUIRED_FIELDS = ["username"]
 
     class Meta:
         ordering = ["first_name", "last_name", "email"]
