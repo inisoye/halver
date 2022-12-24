@@ -49,9 +49,10 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "allauth",
     "allauth.account",
-    "allauth.socialaccount",
     "dj_rest_auth",
     "dj_rest_auth.registration",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
     # Local
     "accounts.apps.AccountsConfig",
 ]
@@ -157,10 +158,10 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 # https://docs.djangoproject.com/en/4.1/topics/auth/customizing/#specifying-authentication-backends
 
 AUTHENTICATION_BACKENDS = [
-    # allauth specific authentication methods, such as login by e-mail
-    "allauth.account.auth_backends.AuthenticationBackend",
-    # Needed to login by username in Django admin, regardless of allauth
+    # Needed to login by username in Django admin, regardless of `allauth`
     "django.contrib.auth.backends.ModelBackend",
+    # `allauth` specific authentication methods, such as login by e-mail
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 
@@ -198,19 +199,17 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
 
 # Use console as email backend in dev mode
 # https://docs.djangoproject.com/en/4.1/topics/email/#console-backend
+# TODO Change to actual email provider
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
-# Set site id as required by django_allauth
-
-SITE_ID = 1
-
-
 # Allauth configurations
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-# Great guide:
-# https://www.rootstrap.com/blog/registration-and-authentication-in-django-apps-with-dj-rest-auth/
+
+# Set site id as (only because) required by django_allauth
+
+SITE_ID = 1
 
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_REQUIRED = True
@@ -218,9 +217,24 @@ ACCOUNT_UNIQUE_EMAIL = True
 # TODO Change later
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+        "OAUTH_PKCE_ENABLED": True,
+    }
+}
+
 
 # Rest-auth configurations
 # https://dj-rest-auth.readthedocs.io/en/2.1.12/configuration.html
+# Great guide:
+# https://www.rootstrap.com/blog/registration-and-authentication-in-django-apps-with-dj-rest-auth/
 
 REST_AUTH_SERIALIZERS = {
     "USER_DETAILS_SERIALIZER": "accounts.serializers.CustomUserDetailsSerializer",
