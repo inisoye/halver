@@ -1,3 +1,6 @@
+# type: ignore
+# Checks are disabled because Pylance does not properly type get_user_model()
+
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
 from django.test import TestCase
@@ -6,7 +9,7 @@ User = get_user_model()
 
 
 class CustomUserTests(TestCase):
-    def test_create_user(self):
+    def test_create_user(self) -> None:
 
         user = User.objects.create_user(
             phone="08010191010",
@@ -39,7 +42,7 @@ class CustomUserTests(TestCase):
                 password="testpass123",
             )
 
-    def test_create_superuser(self):
+    def test_create_superuser(self) -> None:
 
         admin_user = User.objects.create_superuser(
             phone="08010191010",

@@ -1,3 +1,5 @@
+# type: ignore
+
 # Auth forms customizations obtained from django-authtools
 # https://github.com/fusionbox/django-authtools/blob/master/authtools/forms.py
 # Pylance checks are disabled as code is not custom.

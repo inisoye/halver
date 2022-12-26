@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 
 from environs import Env
+from paystackapi.paystack import Paystack
 
 env = Env()
 env.read_env()
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     # Local
     "accounts.apps.AccountsConfig",
+    "financials.apps.FinancialsConfig",
 ]
 
 MIDDLEWARE = [
@@ -201,10 +203,11 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
 # https://docs.djangoproject.com/en/4.1/topics/email/#console-backend
 # TODO Change to actual email provider
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
-# Allauth configurations
+# Allauth configuration
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 
 # Set site id as (only because) required by django_allauth
@@ -231,7 +234,7 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-# Rest-auth configurations
+# Rest-auth configuration
 # https://dj-rest-auth.readthedocs.io/en/2.1.12/configuration.html
 # Great guide:
 # https://www.rootstrap.com/blog/registration-and-authentication-in-django-apps-with-dj-rest-auth/
@@ -243,3 +246,10 @@ REST_AUTH_SERIALIZERS = {
 REST_AUTH_REGISTER_SERIALIZERS = {
     "REGISTER_SERIALIZER": "accounts.serializers.CustomRegisterSerializer",
 }
+
+
+# Paystack configuration
+# https://github.com/andela-sjames/paystack-python#instantiate-paystack
+
+PAYSTACK_SECRET_KEY = env.str("PAYSTACK_SECRET_KEY")
+paystack = Paystack(secret_key=PAYSTACK_SECRET_KEY)

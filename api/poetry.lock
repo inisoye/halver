@@ -511,6 +511,23 @@ files = [
 ]
 
 [[package]]
+name = "paystackapi"
+version = "2.1.0"
+description = "A python library to consume Paystack API"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "paystackapi-2.1.0.tar.gz", hash = "sha256:ab5fba2f7d8f5124ee9e9d1dc3dd9e05e87de52fb6c8df35acbc48f04ed42b7f"},
+]
+
+[package.dependencies]
+requests = "*"
+
+[package.extras]
+test = ["coverage"]
+
+[[package]]
 name = "phonenumberslite"
 version = "8.13.3"
 description = "Python version of Google's common library for parsing, formatting, storing and validating international phone numbers."
@@ -890,4 +907,4 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "565388cb4fb7442b7325391417bb1bd33ea1a0bd2d00a458d0db0520b9eba595"
+content-hash = "9324ebd91a115b55a976b2f99f5e981a30bb908a3659e251d5b497d4eb1e0637"
