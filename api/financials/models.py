@@ -1,46 +1,92 @@
 from django.conf import settings
 from django.db import models
 
-from core.utils import get_user
+from core.utils import TimeStampedModelWithUID, get_user_by_id
 
 User = settings.AUTH_USER_MODEL
 
 
-class UserCard(models.Model):
+class UserCard(TimeStampedModelWithUID):
+    """
+    Stores fields returned by Paystack to represent a card.
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cards")
+    channel('card'), reusable(true) and country_code('NG') have not been added
+    as they are fixed in this case.
+    """
 
-    # Fields obtained from Paystack's authorization response
-    # channel('card'), reusable(true) and country_code('NG') have not been added to model
-    account_name = models.CharField(blank=True, max_length=100)
-    authorization_code = models.CharField(blank=True, max_length=100)
-    bank = models.CharField(blank=True, max_length=100)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="cards",
+    )
+    account_name = models.CharField(
+        blank=True,
+        max_length=100,
+    )
+    authorization_code = models.CharField(
+        blank=True,
+        max_length=100,
+    )
+    bank = models.CharField(
+        blank=True,
+        max_length=100,
+    )
     first6 = models.CharField(
         blank=True,
         max_length=10,
         verbose_name="Card's first 6 digits (bin)",
     )
-    card_type = models.CharField(blank=True, max_length=10)
-    email = models.CharField(blank=True, max_length=100)
-    exp_month = models.CharField(blank=True, max_length=10)
-    exp_year = models.CharField(blank=True, max_length=10)
+    card_type = models.CharField(
+        blank=True,
+        max_length=10,
+    )
+    email = models.CharField(
+        blank=True,
+        max_length=100,
+    )
+    exp_month = models.CharField(
+        blank=True,
+        max_length=10,
+    )
+    exp_year = models.CharField(
+        blank=True,
+        max_length=10,
+    )
+    is_default = models.BooleanField(
+        default=False,
+    )
     last4 = models.CharField(
         blank=True,
         max_length=4,
         verbose_name="Card's last 4 digits",
     )
-    signature = models.CharField(blank=True, max_length=100)
+    signature = models.CharField(
+        blank=True,
+        max_length=100,
+    )
+
+    def __str__(self) -> str:
+        return f"{self.user.last_name} {self.last4} ({self.card_type})"
+
+    def set_as_default_card(self) -> None:
+        self.user.cards.update(is_default=False)
+        self.is_default = True
+        self.save(update_fields=["is_default"])
 
     @classmethod
-    def create(cls, user, customer_data, authorization_data) -> None:
-        """Create new card
+    def create_card_from_webhook(cls, webhook_data) -> None:
+        """Create card with obtained webhook data.
 
         Args:
-            user (CustomUser): The user for whom the card is created
-            customer_data : Customer data returned from Paystack through webhook or API
-            authorization_data : Authorization data returned from Paystack through
-            webhook or API
+            webhook_data: Data returned through webhook by Paystack
         """
+
+        # The user id added in the metadata of the initialized card transaction
+        user_id = webhook_data["metadata"]["user_id"]
+        # The user for whom the card is created
+        user = get_user_by_id(user_id)
+        customer_data = webhook_data["customer"]
+        authorization_data = webhook_data["authorization"]
 
         defaults = {
             "account_name": authorization_data["account_name"],
@@ -56,20 +102,35 @@ class UserCard(models.Model):
             "signature": authorization_data["signature"],
         }
 
+        # TODO Add logic here that automatically calls the set_default_card method to
+        # make every new card the default
+
         cls.objects.update_or_create(**defaults, defaults=defaults)
 
-    @classmethod
-    def create_card_from_webhook(cls, webhook_data) -> None:
-        """Create card with obtained webhook data
 
-        Args:
-            webhook_data: Data returned through webhook by Paystack
-        """
+class TranferRecipient(TimeStampedModelWithUID):
+    """
+    Stores fields returned by Paystack to represent an account (nuban)
+    or card(authorization) transfer recipient.
+    """
 
-        user_id = webhook_data["metadata"]["user_id"]
-        user = get_user(user_id)
+    class RecipientChoices(models.TextChoices):
+        CARD = "card", "Card"
+        ACCOUNT = "account", "Account"
 
-        customer_data = webhook_data["customer"]
-        authorization_data = webhook_data["authorization"]
-
-        cls.create(user, customer_data, authorization_data)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="accounts",
+    )
+    is_default = models.BooleanField(
+        default=False,
+    )
+    recipient_code = models.CharField(
+        blank=True,
+        max_length=100,
+    )
+    transaction_type = models.CharField(
+        max_length=50,
+        choices=RecipientChoices.choices,
+    )

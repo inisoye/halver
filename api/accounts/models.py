@@ -110,8 +110,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name = _("user")
         verbose_name_plural = _("users")
 
+    def __str__(self) -> str:
+        return f"{self.first_name} {self.last_name} ({self.email})"
+
     def clean(self) -> None:
         super().clean()
+
         # Phone numbers are (already) normalized with the phonenumber_field package
         self.email = self.__class__.objects.normalize_email(self.email)
         self.username = self.username.lower()

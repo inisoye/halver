@@ -1,11 +1,16 @@
-from django.urls import include, path
-from rest_framework import routers
+from django.urls import path
 
-from .api.viewsets import UserCardViewSet
-
-router = routers.DefaultRouter()
-router.register("user-card", UserCardViewSet, basename="card")
+from .api.views import DefaultCardView, UserCardRetrieveDestroyView
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path(
+        "default-cards/",
+        DefaultCardView.as_view(),
+        name="financials_rest_api",
+    ),
+    path(
+        "user-cards/",
+        UserCardRetrieveDestroyView.as_view(),
+        name="financials_rest_api",
+    ),
 ]
