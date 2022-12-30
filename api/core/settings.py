@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from typing import List
 
 from environs import Env
-from paystackapi.paystack import Paystack
 
 env = Env()
 env.read_env()
@@ -31,7 +31,7 @@ SECRET_KEY = env.str("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS: List[str] = []
 
 
 # Application definition
@@ -174,6 +174,8 @@ PHONENUMBER_DEFAULT_REGION = "NG"
 
 
 # Rest framework settings
+# Camel case renderers and parsers have been added:
+# https://github.com/vbabiy/djangorestframework-camel-case#installation
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
@@ -183,6 +185,15 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ],
+    "DEFAULT_RENDERER_CLASSES": (
+        "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
+        "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer",
+    ),
+    "DEFAULT_PARSER_CLASSES": (
+        "djangorestframework_camel_case.parser.CamelCaseFormParser",
+        "djangorestframework_camel_case.parser.CamelCaseMultiPartParser",
+        "djangorestframework_camel_case.parser.CamelCaseJSONParser",
+    ),
 }
 
 
@@ -246,10 +257,3 @@ REST_AUTH_SERIALIZERS = {
 REST_AUTH_REGISTER_SERIALIZERS = {
     "REGISTER_SERIALIZER": "accounts.serializers.CustomRegisterSerializer",
 }
-
-
-# Paystack configuration
-# https://github.com/andela-sjames/paystack-python#instantiate-paystack
-
-PAYSTACK_SECRET_KEY = env.str("PAYSTACK_SECRET_KEY")
-paystack = Paystack(secret_key=PAYSTACK_SECRET_KEY)
