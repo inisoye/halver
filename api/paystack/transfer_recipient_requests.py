@@ -2,10 +2,12 @@
 Methods for the Paystack Transfer Recipient feature.
 """
 
+import asyncio
+
 from .base import PaystackBase
 
 
-class TransferRecipient(PaystackBase):
+class TransferRecipientRequests(PaystackBase):
     @classmethod
     def create(cls, **kwargs):
         """
@@ -67,3 +69,52 @@ class TransferRecipient(PaystackBase):
         return cls().requests.get(
             f"transferrecipient/{id_or_code}",
         )
+
+    @classmethod
+    async def fetch_async(cls, id_or_code):
+        """
+        Asynchronously get a single transfer recipient.
+        The request is sent asynchronously to facilitate the fetch multiple method.
+
+
+        Args:
+            id_or_code: An ID or code for the recipient
+            whose details you want to obtain.
+
+        Returns:
+            A single transfer recipient.
+        """
+
+        # Send the request asynchronously
+        response = await cls().requests.get_async(
+            f"transferrecipient/{id_or_code}",
+        )
+
+        # Return the response
+        return response
+
+    @classmethod
+    async def fetch_multiple(cls, recipient_codes):
+        """
+        Get multiple, specified transfer recipients by running
+        the fetch method multiple times concurrently.
+
+        Args:
+            recipient_codes: A list of the codes for transfer recipients
+            to be obtained.
+
+        Returns:
+            A list of transfer recipients.
+        """
+
+        # Create a list of tasks that will be run concurrently
+        tasks = [
+            asyncio.ensure_future(cls().fetch_async(recipient_code))
+            for recipient_code in recipient_codes
+        ]
+
+        # Wait for all tasks to complete
+        recipients = await asyncio.gather(*tasks)
+
+        # Return the list of recipients
+        return recipients

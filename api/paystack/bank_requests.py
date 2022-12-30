@@ -5,7 +5,7 @@ Methods for handling and obtaining banks supported by Paystack.
 from .base import PaystackBase
 
 
-class Bank(PaystackBase):
+class BankRequests(PaystackBase):
     @classmethod
     def list(cls, **kwargs):
         """
@@ -30,3 +30,4 @@ class Bank(PaystackBase):
             "bank",
             qs=kwargs,
         )
+

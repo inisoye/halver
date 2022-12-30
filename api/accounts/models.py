@@ -148,7 +148,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
-    def get_recipient_codes(self):
+    def get_recipient_codes(self) -> list:
         recipient_codes = self.transfer_recipients.values_list(
             "recipient_code",
             flat=True,

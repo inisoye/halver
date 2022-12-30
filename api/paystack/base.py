@@ -1,11 +1,13 @@
 """
 Base scripts for Paystack API features.
-Primarily based on patterns used by the paystackapi package.
+Initially based on patterns used by the paystackapi package.
+Modified to allow for asynchronous requests.
 https://github.com/andela-sjames/paystack-python
 """
 
 from typing import Any, Dict
 
+import aiohttp
 import requests
 from environs import Env
 
@@ -107,6 +109,37 @@ class PaystackRequest(object):
         else:
             raise requests.HTTPError(response.status_code)
 
+    async def _request_async(self, _session, method, endpoint, **kwargs):
+        """
+        Perform an HTTP method on a resource asynchronously.
+
+        Args:
+            session: aiohttp.ClientSession object
+            method: aiohttp.ClientSession method (e.g. session.get, session.post,
+            or session.put)
+            endpoint: resource endpoint
+
+        Raises:
+            aiohttp.ClientError
+
+        Returns:
+            JSON response
+        """
+
+        qs = kwargs.get("qs")
+        data = kwargs.get("data")
+
+        async with method(
+            self.API_BASE_URL + endpoint,
+            params=qs,
+            json=data,
+            headers=self.headers,
+        ) as response:
+            if response.status // 100 == 2:
+                return await response.json()
+            else:
+                raise aiohttp.ClientError(response.status)
+
     def get(self, endpoint, **kwargs):
         """
         Get a resource.
@@ -120,6 +153,25 @@ class PaystackRequest(object):
             endpoint,
             **kwargs,
         )
+
+    async def get_async(self, endpoint, **kwargs):
+        """
+        Get a resource asynchronously.
+
+        Args:
+            endpoint: resource endpoint.
+
+        Returns:
+            JSON response
+        """
+
+        async with aiohttp.ClientSession() as session:
+            return await self._request_async(
+                session,
+                session.get,
+                endpoint,
+                **kwargs,
+            )
 
     def post(self, endpoint, **kwargs):
         """
@@ -135,6 +187,25 @@ class PaystackRequest(object):
             **kwargs,
         )
 
+    async def post_async(self, endpoint, **kwargs):
+        """
+        Post a resource asynchronously.
+
+        Args:
+            endpoint: resource endpoint.
+
+        Returns:
+            JSON response
+        """
+
+        async with aiohttp.ClientSession() as session:
+            return await self._request_async(
+                session,
+                session.post,
+                endpoint,
+                **kwargs,
+            )
+
     def put(self, endpoint, **kwargs):
         """
         Update a resource.
@@ -148,3 +219,22 @@ class PaystackRequest(object):
             endpoint,
             **kwargs,
         )
+
+    async def put_async(self, endpoint, **kwargs):
+        """
+        Update a resource asynchronously.
+
+        Args:
+            endpoint: resource endpoint.
+
+        Returns:
+            JSON response
+        """
+
+        async with aiohttp.ClientSession() as session:
+            return await self._request_async(
+                session,
+                session.put,
+                endpoint,
+                **kwargs,
+            )

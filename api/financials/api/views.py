@@ -41,6 +41,7 @@ class UserCardRetrieveDestroyView(RetrieveDestroyAPIView):
 
 class TransferRecipientAPIView(APIView):
     def get(self, request):
+        recipient_codes = request.user.get_recipient_codes()
         recipients = TransferRecipient.objects.all()
         serializer = TransferRecipientSerializer(recipients, many=True)
         return Response(serializer.data)
