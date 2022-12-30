@@ -1,16 +1,27 @@
 from django.urls import path
 
-from .api.views import DefaultCardView, UserCardRetrieveDestroyView
+from .api.views import (
+    DefaultCardRetrieveUpdateView,
+    UserCardListView,
+    UserCardRetrieveDestroyView,
+)
+
+app_name = "financials"
 
 urlpatterns = [
     path(
-        "default-cards/",
-        DefaultCardView.as_view(),
-        name="financials_rest_api",
+        route="default-card/",
+        view=DefaultCardRetrieveUpdateView.as_view(),
+        name="default-card",
     ),
     path(
-        "user-cards/",
-        UserCardRetrieveDestroyView.as_view(),
-        name="financials_rest_api",
+        route="user-cards/",
+        view=UserCardListView.as_view(),
+        name="user-cards",
+    ),
+    path(
+        route="user-cards/<uuid:uuid>/",
+        view=UserCardRetrieveDestroyView.as_view(),
+        name="user-card-detail",
     ),
 ]

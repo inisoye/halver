@@ -1,7 +1,6 @@
 # Configuration inspired by this guide:
 # https://www.rootstrap.com/blog/registration-and-authentication-in-django-apps-with-dj-rest-auth/
 
-
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _

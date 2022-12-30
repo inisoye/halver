@@ -2,7 +2,6 @@
 # https://simpleisbetterthancomplex.com/article/2021/07/08/what-you-should-know-about-the-django-user-model.html
 # https://github.com/fusionbox/django-authtools/blob/master/authtools/models.py
 
-
 import uuid
 
 from django.contrib.auth.base_user import AbstractBaseUser
@@ -60,8 +59,16 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             "unique": _("A user with that username already exists."),
         },
     )
-    first_name = models.CharField(_("first name"), max_length=150, blank=True)
-    last_name = models.CharField(_("last name"), max_length=150, blank=True)
+    first_name = models.CharField(
+        _("first name"),
+        max_length=150,
+        blank=True,
+    )
+    last_name = models.CharField(
+        _("last name"),
+        max_length=150,
+        blank=True,
+    )
     email = CIEmailField(
         _("email address"),
         unique=True,
@@ -90,8 +97,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             " Unselect this instead of deleting accounts."
         ),
     )
-    date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
-    profile_image = models.ImageField(upload_to="profile_images/", blank=True)
+    date_joined = models.DateTimeField(
+        _("date joined"),
+        default=timezone.now,
+    )
+    profile_image = models.ImageField(
+        upload_to="profile_images/",
+        blank=True,
+    )
     uid = models.UUIDField(
         unique=True,
         editable=False,
@@ -134,3 +147,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, from_email=None, **kwargs) -> None:
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def get_recipient_codes(self):
+        recipient_codes = self.transfer_recipients.values_list(
+            "recipient_code",
+            flat=True,
+        )
+        return list(recipient_codes)

@@ -6,7 +6,7 @@ from django.db import models
 from rest_framework import status
 from rest_framework.response import Response
 
-from accounts.admin import CustomUser
+from accounts.models import CustomUser
 
 
 # --------------------------------------------------------------------------------------
@@ -24,6 +24,7 @@ def return_bad_request_exception(data, status=status.HTTP_400_BAD_REQUEST) -> Re
 
 def get_user_by_id(user_id) -> CustomUser:
     User = get_user_model()
+
     try:
         return User.objects.get(uid=user_id)
     except User.DoesNotExist:
@@ -33,7 +34,7 @@ def get_user_by_id(user_id) -> CustomUser:
 # --------------------------------------------------------------------------------------
 # Classes
 # --------------------------------------------------------------------------------------
-class TimeStampedModelWithUID(models.Model):
+class TimeStampedUUIDModel(models.Model):
     """
     An abstract base class model that provides
     self-updating "created" and "modified" fields.
@@ -41,7 +42,7 @@ class TimeStampedModelWithUID(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    uid = models.UUIDField(
+    uuid = models.UUIDField(
         unique=True,
         editable=False,
         default=uuid.uuid4,

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import UserCard
+from ..models import TransferRecipient, UserCard
 
 
 class UserCardSerializer(serializers.ModelSerializer):
@@ -11,12 +11,28 @@ class UserCardSerializer(serializers.ModelSerializer):
             "authorization_code",
             "bank",
             "card_type",
+            "created",
             "email",
             "exp_month",
             "exp_year",
+            "is_default",
             "last4",
             "signature",
-            "uid",
+            "user",
+            "uuid",
+        )
+        exclude = ("id",)
+
+
+class TransferRecipientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransferRecipient
+        fields = (
             "created",
+            "is_default",
+            "recipient_code",
+            "recipient_type",
+            "user",
+            "uuid",
         )
         exclude = ("id",)

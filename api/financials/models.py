@@ -1,12 +1,12 @@
 from django.conf import settings
 from django.db import models
 
-from core.utils import TimeStampedModelWithUID, get_user_by_id
+from core.utils import TimeStampedUUIDModel, get_user_by_id
 
 User = settings.AUTH_USER_MODEL
 
 
-class UserCard(TimeStampedModelWithUID):
+class UserCard(TimeStampedUUIDModel):
     """
     Stores fields returned by Paystack to represent a card.
 
@@ -14,11 +14,6 @@ class UserCard(TimeStampedModelWithUID):
     as they are fixed in this case.
     """
 
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="cards",
-    )
     account_name = models.CharField(
         blank=True,
         max_length=100,
@@ -52,9 +47,7 @@ class UserCard(TimeStampedModelWithUID):
         blank=True,
         max_length=10,
     )
-    is_default = models.BooleanField(
-        default=False,
-    )
+    is_default = models.BooleanField(default=False)
     last4 = models.CharField(
         blank=True,
         max_length=4,
@@ -63,6 +56,11 @@ class UserCard(TimeStampedModelWithUID):
     signature = models.CharField(
         blank=True,
         max_length=100,
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="cards",
     )
 
     def __str__(self) -> str:
@@ -108,21 +106,16 @@ class UserCard(TimeStampedModelWithUID):
         cls.objects.update_or_create(**defaults, defaults=defaults)
 
 
-class TranferRecipient(TimeStampedModelWithUID):
+class TransferRecipient(TimeStampedUUIDModel):
     """
     Stores fields returned by Paystack to represent an account (nuban)
     or card(authorization) transfer recipient.
     """
 
     class RecipientChoices(models.TextChoices):
-        CARD = "card", "Card"
-        ACCOUNT = "account", "Account"
+        CARD = "authorization", "Card"
+        ACCOUNT = "nuban", "Account"
 
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="accounts",
-    )
     is_default = models.BooleanField(
         default=False,
     )
@@ -130,7 +123,15 @@ class TranferRecipient(TimeStampedModelWithUID):
         blank=True,
         max_length=100,
     )
-    transaction_type = models.CharField(
+    recipient_type = models.CharField(
         max_length=50,
         choices=RecipientChoices.choices,
     )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="transfer_recipients",
+    )
+
+    def __str__(self) -> str:
+        return f"{self.user.last_name} {self.recipient_type} ({self.recipient_code})"

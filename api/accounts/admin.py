@@ -1,8 +1,8 @@
-# type: ignore
-
 # Admin customizations obtained from django-authtools
 # https://github.com/fusionbox/django-authtools/blob/master/authtools/admin.py
-# Pylance checks are disabled as code is mostly not custom.
+
+# Type checks are disabled as code is mostly not custom.
+# type: ignore
 
 import copy
 
