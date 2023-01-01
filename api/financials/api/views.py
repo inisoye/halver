@@ -111,7 +111,7 @@ class TransferRecipientListCreateAPIView(APIView):
     Accepts GET and POST requests.
     """
 
-    def get(self, request) -> Response:
+    def get(self) -> Response:
         """
         Handles GET requests to retrieve a list of transfer recipients.
 
@@ -119,13 +119,13 @@ class TransferRecipientListCreateAPIView(APIView):
             A list of transfer recipient objects.
         """
 
-        recipient_codes = request.user.get_recipient_codes()
+        recipient_codes = self.request.user.get_recipient_codes()
         recipients = asyncio.run(
             TransferRecipientRequests.fetch_multiple(recipient_codes)
         )
         return Response(recipients, status=status.HTTP_200_OK)
 
-    def post(self, request) -> Response:
+    def post(self) -> Response:
         """
         Creates a new transfer recipient.
 
@@ -136,7 +136,7 @@ class TransferRecipientListCreateAPIView(APIView):
             A dictionary containing the details of the new transfer recipient.
         """
 
-        serializer = TransferRecipientSerializer(data=request.data)
+        serializer = TransferRecipientSerializer(data=self.request.data)
 
         try:
             serializer.is_valid(raise_exception=True)
@@ -147,7 +147,7 @@ class TransferRecipientListCreateAPIView(APIView):
                 recipient = TransferRecipient.objects.create(
                     recipient_code=response["data"]["recipient_code"],
                     recipient_type=response["data"]["type"],
-                    user=request.user,
+                    user=self.request.user,
                 )
 
                 return Response(
