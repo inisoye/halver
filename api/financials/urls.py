@@ -1,9 +1,10 @@
 from django.urls import path
 
 from .api.views import (
-    DefaultCardRetrieveUpdateView,
+    DefaultCardRetrieveView,
+    DefaultCardUpdateView,
     TransferRecipientListCreateAPIView,
-    TransferRecipientsDestroyAPIView,
+    TransferRecipientsDestroyView,
     UserCardListView,
     UserCardRetrieveDestroyView,
 )
@@ -12,8 +13,13 @@ app_name = "financials"
 
 urlpatterns = [
     path(
+        route="default-card/",
+        view=DefaultCardRetrieveView.as_view(),
+        name="default-card",
+    ),
+    path(
         route="default-card/<uuid:uuid>/",
-        view=DefaultCardRetrieveUpdateView.as_view(),
+        view=DefaultCardUpdateView.as_view(),
         name="default-card",
     ),
     path(
@@ -32,8 +38,8 @@ urlpatterns = [
         name="transfer-recipients",
     ),
     path(
-        route="transfer-recipients/<recipient_code:recipient_code>",
-        view=TransferRecipientsDestroyAPIView.as_view(),
+        route="transfer-recipients/<str:recipient_code>",
+        view=TransferRecipientsDestroyView.as_view(),
         name="transfer-recipients-delete",
     ),
 ]

@@ -3,9 +3,11 @@ import asyncio
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import (
+    DestroyAPIView,
     ListAPIView,
+    RetrieveAPIView,
     RetrieveDestroyAPIView,
-    RetrieveUpdateAPIView,
+    UpdateAPIView,
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -17,18 +19,16 @@ from .permissions import IsOwner
 from .serializers import TransferRecipientSerializer, UserCardSerializer
 
 
-class DefaultCardRetrieveUpdateView(RetrieveUpdateAPIView):
+class DefaultCardRetrieveView(RetrieveAPIView):
     """
-    View for retrieving and updating the default card for a user.
+    View for retrieving the default card for a user.
 
-    Accepts GET and PUT requests.
+    Accepts GET requests.
     """
 
     permission_classes = (IsOwner,)
     queryset = UserCard.objects.all()
     serializer_class = UserCardSerializer
-
-    # TODO Determine if this view needs the uuid in its url for both methods
 
     def get_object(self):
         """
@@ -41,7 +41,20 @@ class DefaultCardRetrieveUpdateView(RetrieveUpdateAPIView):
         user = self.request.user.cards
         return user.cards.get(is_default=True, default=None)
 
-    def update(self, request, uuid) -> Response:
+
+class DefaultCardUpdateView(UpdateAPIView):
+    """
+    View for updating the default card for a user.
+
+    Accepts PUT requests.
+    """
+
+    permission_classes = (IsOwner,)
+    queryset = UserCard.objects.all()
+    serializer_class = UserCardSerializer
+    lookup_field = "uuid"
+
+    def update(self) -> Response:
         """
         Sets the card with the given UUID as the default card for the current user.
 
@@ -52,7 +65,7 @@ class DefaultCardRetrieveUpdateView(RetrieveUpdateAPIView):
             An empty response.
         """
 
-        card = self.queryset.get(uuid=uuid)
+        card = self.get_object()
         card.set_as_default()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -98,7 +111,7 @@ class TransferRecipientListCreateAPIView(APIView):
     Accepts GET and POST requests.
     """
 
-    async def get(self, request) -> Response:
+    def get(self, request) -> Response:
         """
         Handles GET requests to retrieve a list of transfer recipients.
 
@@ -155,35 +168,30 @@ class TransferRecipientListCreateAPIView(APIView):
             )
 
 
-class TransferRecipientsDestroyAPIView(APIView):
+class TransferRecipientsDestroyView(DestroyAPIView):
     """
     View for deleting transfer recipients.
 
     Accepts DELETE requests.
     """
 
-    # TODO Refactor to a generic view.
+    queryset = TransferRecipient.objects.all()
+    lookup_field = "recipient_code"
 
-    def delete(self, request, recipient_code) -> Response:
+    def perform_destroy(self, instance):
         """
         Deletes a transfer recipient.
 
         Args:
-            request: The HTTP request.
-            recipient_code: The code of the transfer recipient to delete.
+            instance: The transfer recipient object to delete.
 
         Returns:
-            An empty response.
+            None
         """
 
-        response = TransferRecipientRequests.delete(recipient_code)
+        response = TransferRecipientRequests.delete(instance.recipient_code)
 
         if response["status"]:
-            TransferRecipient.objects.filter(recipient_code=recipient_code).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
+            instance.delete()
         else:
-            return Response(
-                response["message"],
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError(response["message"])
