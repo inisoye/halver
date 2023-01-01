@@ -50,7 +50,7 @@ class TransferRecipientRequests(PaystackBase):
 
         return cls().requests.get(
             "transferrecipient",
-            qs=kwargs,
+            query_params=kwargs,
         )
 
     @classmethod
@@ -67,6 +67,23 @@ class TransferRecipientRequests(PaystackBase):
         """
 
         return cls().requests.get(
+            f"transferrecipient/{id_or_code}",
+        )
+
+    @classmethod
+    def delete(cls, id_or_code):
+        """
+        Get a single transfer recipient.
+
+        Args:
+            id_or_code: An ID or code for the recipient
+            whose details you want to obtain.
+
+        Returns:
+            A JSON deletion confirmation.
+        """
+
+        return cls().requests.delete(
             f"transferrecipient/{id_or_code}",
         )
 

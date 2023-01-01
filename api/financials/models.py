@@ -66,10 +66,22 @@ class UserCard(TimeStampedUUIDModel):
     def __str__(self) -> str:
         return f"{self.user.last_name} {self.last4} ({self.card_type})"
 
-    def set_as_default_card(self) -> None:
+    def set_as_default(self) -> None:
+        """
+        Sets current card instance as the default card.
+        """
         self.user.cards.update(is_default=False)
         self.is_default = True
         self.save(update_fields=["is_default"])
+
+    def save(self, *args, **kwargs):
+        """
+        Makes every new card the default card
+        """
+        if not self.pk:
+            # The card is new
+            self.set_as_default()
+        super().save(*args, **kwargs)
 
     @classmethod
     def create_card_from_webhook(cls, webhook_data) -> None:
@@ -99,9 +111,6 @@ class UserCard(TimeStampedUUIDModel):
             "user": user,
             "signature": authorization_data["signature"],
         }
-
-        # TODO Add logic here that automatically calls the set_default_card method to
-        # make every new card the default
 
         cls.objects.update_or_create(**defaults, defaults=defaults)
 
@@ -135,3 +144,20 @@ class TransferRecipient(TimeStampedUUIDModel):
 
     def __str__(self) -> str:
         return f"{self.user.last_name} {self.recipient_type} ({self.recipient_code})"
+
+    def set_as_default(self) -> None:
+        """
+        Sets current recipient instance as the default recipient.
+        """
+        self.user.transfer_recipients.update(is_default=False)
+        self.is_default = True
+        self.save(update_fields=["is_default"])
+
+    def save(self, *args, **kwargs):
+        """
+        Makes every new recipient the default card
+        """
+        if not self.pk:
+            # The recipient is new
+            self.set_as_default()
+        super().save(*args, **kwargs)

@@ -23,11 +23,28 @@ class BankRequests(PaystackBase):
             currency (str): Any of NGN, USD, GHS or ZAR
 
         Returns:
-            JSON data from paystack API.
+            JSON data from Paystack API with a list of supported banks.
         """
 
         return cls().requests.get(
             "bank",
-            qs=kwargs,
+            query_params=kwargs,
         )
 
+    @classmethod
+    def resolve_account_number(cls, **kwargs):
+        """
+        Confirm the owner of an account with it's number.
+
+        Args:
+            account_number (str): customer's account number.
+            bank_code (str): customer's bank code.
+
+        Returns:
+            JSON data from Paystack API with the account holder's name.
+        """
+
+        return cls().requests.get(
+            "bank/resolve",
+            query_params=kwargs,
+        )

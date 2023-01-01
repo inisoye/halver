@@ -3,8 +3,6 @@ import uuid
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from rest_framework import status
-from rest_framework.response import Response
 
 from accounts.models import CustomUser
 
@@ -12,14 +10,8 @@ from accounts.models import CustomUser
 # --------------------------------------------------------------------------------------
 # Functions
 # --------------------------------------------------------------------------------------
-def return_ok_response(data=None, status=status.HTTP_200_OK) -> Response:
-    response = {"status": "ok", "result": data}
-    return Response(response, status=status)
-
-
-def return_bad_request_exception(data, status=status.HTTP_400_BAD_REQUEST) -> Response:
-    response = {"status": "bad request", "result": data}
-    return Response(response, status=status)
+def remove_underscores(error_message: str) -> str:
+    return error_message.replace("_", " ")
 
 
 def get_user_by_id(user_id) -> CustomUser:

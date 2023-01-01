@@ -228,7 +228,7 @@ SITE_ID = 1
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
-# TODO Change later
+# TODO Change later. Either use this or some OTP system for verifying emails.
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
 SOCIALACCOUNT_PROVIDERS = {

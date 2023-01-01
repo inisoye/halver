@@ -95,19 +95,16 @@ class PaystackRequest(object):
         """
 
         data = kwargs.get("data")
-        qs = kwargs.get("qs")
+        query_params = kwargs.get("query_params")
 
         response = method(
             self.API_BASE_URL + resource_uri,
             json=data,
             headers=self.headers,
-            params=qs,
+            params=query_params,
         )
 
-        if response.status_code // 100 == 2:
-            return response.json()
-        else:
-            raise requests.HTTPError(response.status_code)
+        return response.json()
 
     async def _request_async(self, _session, method, endpoint, **kwargs):
         """
@@ -126,19 +123,16 @@ class PaystackRequest(object):
             JSON response
         """
 
-        qs = kwargs.get("qs")
+        query_params = kwargs.get("query_params")
         data = kwargs.get("data")
 
         async with method(
             self.API_BASE_URL + endpoint,
-            params=qs,
+            params=query_params,
             json=data,
             headers=self.headers,
         ) as response:
-            if response.status // 100 == 2:
-                return await response.json()
-            else:
-                raise aiohttp.ClientError(response.status)
+            return await response.json()
 
     def get(self, endpoint, **kwargs):
         """
@@ -179,6 +173,9 @@ class PaystackRequest(object):
 
         Args:
             endpoint: resource endpoint.
+
+        Returns:
+            JSON response
         """
 
         return self._request(
@@ -212,6 +209,9 @@ class PaystackRequest(object):
 
         Args:
             endpoint: resource endpoint.
+
+        Returns:
+            JSON response
         """
 
         return self._request(
@@ -235,6 +235,42 @@ class PaystackRequest(object):
             return await self._request_async(
                 session,
                 session.put,
+                endpoint,
+                **kwargs,
+            )
+
+    def delete(self, endpoint, **kwargs):
+        """
+        Delete a resource.
+
+        Args:
+            endpoint: resource endpoint.
+
+        Returns:
+            JSON response
+        """
+
+        return self._request(
+            requests.delete,
+            endpoint,
+            **kwargs,
+        )
+
+    async def delete_async(self, endpoint, **kwargs):
+        """
+        Delete a resource asynchronously.
+
+        Args:
+            endpoint: resource endpoint.
+
+        Returns:
+            JSON response
+        """
+
+        async with aiohttp.ClientSession() as session:
+            return await self._request_async(
+                session,
+                session.delete,
                 endpoint,
                 **kwargs,
             )
