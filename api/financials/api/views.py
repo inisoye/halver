@@ -28,6 +28,8 @@ class DefaultCardRetrieveUpdateView(RetrieveUpdateAPIView):
     queryset = UserCard.objects.all()
     serializer_class = UserCardSerializer
 
+    # TODO Determine if this view needs the uuid in its url for both methods
+
     def get_object(self):
         """
         Returns the default card for the current user.
@@ -89,11 +91,11 @@ class UserCardRetrieveDestroyView(RetrieveDestroyAPIView):
     serializer_class = UserCardSerializer
 
 
-class TransferRecipientAPIView(APIView):
+class TransferRecipientListCreateAPIView(APIView):
     """
     View for managing transfer recipients.
 
-    Accepts GET, POST, and DELETE requests.
+    Accepts GET and POST requests.
     """
 
     async def get(self, request) -> Response:
@@ -151,6 +153,16 @@ class TransferRecipientAPIView(APIView):
                 e.detail,
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class TransferRecipientsDestroyAPIView(APIView):
+    """
+    View for deleting transfer recipients.
+
+    Accepts DELETE requests.
+    """
+
+    # TODO Refactor to a generic view.
 
     def delete(self, request, recipient_code) -> Response:
         """
