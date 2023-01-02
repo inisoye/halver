@@ -14,7 +14,7 @@ urlpatterns = [
         include("accounts.urls", namespace="accounts"),
     ),
     path(
-        "api/v1/financials",
+        "api/v1/financials/",
         include("financials.urls", namespace="financials"),
     ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
