@@ -8,9 +8,9 @@ User = settings.AUTH_USER_MODEL
 
 class UserCard(TimeStampedUUIDModel):
     """
-    Stores fields returned by Paystack to represent a card.
+    Stores data returned by Paystack to represent a card.
 
-    channel('card'), reusable(true) and country_code('NG') have not been added
+    channel('card'), reusable(True) and country_code('NG') have not been added
     as they are fixed in this case.
     """
 
@@ -70,6 +70,7 @@ class UserCard(TimeStampedUUIDModel):
         """
         Sets current card instance as the default card.
         """
+
         self.user.cards.update(is_default=False)
         self.is_default = True
         self.save(update_fields=["is_default"])
@@ -78,8 +79,8 @@ class UserCard(TimeStampedUUIDModel):
         """
         Makes every new card the default card
         """
+
         if not self.pk:
-            # The card is new
             self.set_as_default()
         super().save(*args, **kwargs)
 
@@ -90,6 +91,10 @@ class UserCard(TimeStampedUUIDModel):
         Args:
             webhook_data: Data returned through webhook by Paystack
         """
+
+        # TODO Add a method for adding new cards on paystack.
+        # This should initialize transactions, should be refundable and should be
+        # the only non-recurring paystack transaction for every user.
 
         # The user id added in the metadata of the initialized card transaction
         user_id = webhook_data["metadata"]["user_id"]
@@ -149,15 +154,16 @@ class TransferRecipient(TimeStampedUUIDModel):
         """
         Sets current recipient instance as the default recipient.
         """
+
         self.user.transfer_recipients.update(is_default=False)
         self.is_default = True
         self.save(update_fields=["is_default"])
 
     def save(self, *args, **kwargs):
         """
-        Makes every new recipient the default card
+        Makes every new recipient the default recipient
         """
+
         if not self.pk:
-            # The recipient is new
             self.set_as_default()
         super().save(*args, **kwargs)
