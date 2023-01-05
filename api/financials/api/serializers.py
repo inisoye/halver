@@ -12,7 +12,6 @@ class UserCardSerializer(serializers.ModelSerializer):
             "authorization_code",
             "bank",
             "card_type",
-            "created",
             "email",
             "exp_month",
             "exp_year",
@@ -22,7 +21,6 @@ class UserCardSerializer(serializers.ModelSerializer):
             "user",
             "uuid",
         )
-        exclude = ("id",)
 
 
 class TransferRecipientSerializer(serializers.Serializer):
