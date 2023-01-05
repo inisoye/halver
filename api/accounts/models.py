@@ -105,7 +105,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         upload_to="profile_images/",
         blank=True,
     )
-    uid = models.UUIDField(
+    uuid = models.UUIDField(
         unique=True,
         editable=False,
         default=uuid.uuid4,
