@@ -18,6 +18,7 @@ def validate_new_recipient_data(data):
     Raises:
         serializers.ValidationError: A customised validation error message.
     """
+
     if data["type"] == TransferRecipient.RecipientChoices.ACCOUNT:
         required_fields = ["account_number", "bank_code"]
         readable_recipient_type = "bank account"
