@@ -2,7 +2,7 @@ import datetime
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.db import models
+from django.db import models, transaction
 
 from core.utils import TimeStampedUUIDModel
 
@@ -78,11 +78,12 @@ class Bill(TimeStampedUUIDModel):
             )
 
     def save(self, *args, **kwargs):
-        # Save the Bill instance
-        super().save(*args, **kwargs)
+        with transaction.atomic():
+            # Save the Bill instance
+            super().save(*args, **kwargs)
 
-        if self.pk is None:
-            self.create_bill_participants_and_actions_for_bill()
+            if self.pk is None:
+                self.create_bill_participants_and_actions_for_bill()
 
 
 class BillParticipant(models.Model):
