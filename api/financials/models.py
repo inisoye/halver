@@ -80,7 +80,7 @@ class UserCard(TimeStampedUUIDModel):
         Makes every new card the default card
         """
 
-        if not self.pk:
+        if self.pk is None:
             self.set_as_default()
         super().save(*args, **kwargs)
 
@@ -164,6 +164,6 @@ class TransferRecipient(TimeStampedUUIDModel):
         Makes every new recipient the default recipient
         """
 
-        if not self.pk:
+        if self.pk is None:
             self.set_as_default()
         super().save(*args, **kwargs)
