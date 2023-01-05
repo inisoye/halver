@@ -1,5 +1,6 @@
 import asyncio
 
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import (
@@ -38,8 +39,9 @@ class DefaultCardRetrieveView(RetrieveAPIView):
             The default card object.
         """
 
-        user = self.request.user.cards
-        return user.cards.get(is_default=True, default=None)
+        user = self.request.user
+        queryset = user.cards.filter(is_default=True)
+        get_object_or_404(queryset)
 
 
 class DefaultCardUpdateView(UpdateAPIView):
@@ -128,9 +130,6 @@ class TransferRecipientListCreateAPIView(APIView):
     def post(self) -> Response:
         """
         Creates a new transfer recipient.
-
-        Args:
-            request: The HTTP request.
 
         Returns:
             A dictionary containing the details of the new transfer recipient.
