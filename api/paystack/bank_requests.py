@@ -1,5 +1,5 @@
 """
-Methods for handling and obtaining banks supported by Paystack.
+Methods for handling and obtaining Paystack bank data.
 """
 
 from .base import PaystackBase
