@@ -87,6 +87,12 @@ class Bill(TimeStampedUUIDModel):
 
 
 class BillParticipant(models.Model):
+    class StatusChoices(models.TextChoices):
+        PENDING = "pending", "Pending"
+        OVERDUE = "overdue", "Overdue"
+        SETTLED = "settled", "Settled"
+        DECLINED = "declined", "Declined"
+
     bill = models.ForeignKey(
         Bill,
         on_delete=models.CASCADE,
@@ -101,7 +107,11 @@ class BillParticipant(models.Model):
         max_digits=7,
         decimal_places=2,
     )
-    status = models.CharField(max_length=100)
+    status = models.CharField(
+        max_length=10,
+        choices=StatusChoices.choices,
+        default="pending",
+    )
 
 
 class Transaction(TimeStampedUUIDModel):
