@@ -73,11 +73,11 @@ class TransferRecipientRequests(PaystackBase):
     @classmethod
     def delete(cls, id_or_code):
         """
-        Get a single transfer recipient.
+        Delete a single transfer recipient.
 
         Args:
             id_or_code: An ID or code for the recipient
-            whose details you want to obtain.
+            whose details you want to delete.
 
         Returns:
             A JSON deletion confirmation.
