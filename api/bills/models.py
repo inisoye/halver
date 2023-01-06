@@ -150,6 +150,7 @@ class Transaction(TimeStampedUUIDModel):
         choices=StatusChoices.choices,
     )
     # TODO These Paystack details should probably be inlcuded as joins.
+    # Also consider adding the card used for the transaction, as well as the recipeint.
     paystack_transaction_reference = models.CharField(
         max_length=100,
         blank=True,
