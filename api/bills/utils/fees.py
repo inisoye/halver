@@ -1,9 +1,9 @@
 from decimal import Decimal
-from typing import NamedTuple
+from typing import TypedDict, Union
 
 
 def calculate_paystack_transaction_fee(
-    price: Decimal, decimal_fee=0.015, flat_fee=100, fee_cap=2000
+    price: Union[int, Decimal], decimal_fee=Decimal(0.015), flat_fee=100, fee_cap=2000
 ) -> Decimal:
     """
     Calculate the final amount for Paystack's transaction fee
@@ -32,7 +32,7 @@ def calculate_paystack_transaction_fee(
         if applicable_fees > fee_cap:
             final_amount = price + fee_cap
         else:
-            final_amount = ((price + flat_fee) / (1 - decimal_fee)) + 0.01
+            final_amount = ((price + flat_fee) / (1 - decimal_fee)) + Decimal(0.01)
 
     else:
         applicable_fees = decimal_fee * price
@@ -40,12 +40,12 @@ def calculate_paystack_transaction_fee(
         if applicable_fees > fee_cap:
             final_amount = price + fee_cap
         else:
-            final_amount = (price / (1 - decimal_fee)) + 0.01
+            final_amount = (price / (1 - decimal_fee)) + Decimal(0.01)
 
     return final_amount - price
 
 
-def calculate_paystack_transfer_fee(transfer_amount: Decimal) -> Decimal:
+def calculate_paystack_transfer_fee(transfer_amount: Union[int, Decimal]) -> Decimal:
     """
     Calculate the transfer fee based on the given transfer amount.
 
@@ -66,17 +66,17 @@ def calculate_paystack_transfer_fee(transfer_amount: Decimal) -> Decimal:
     else:
         transfer_fee = 50
 
-    return transfer_fee
+    return Decimal(transfer_fee)
 
 
-class AllTransactionFees(NamedTuple):
+class AllTransactionFees(TypedDict):
     paystack_transaction_fee: Decimal
     paystack_transfer_fee: Decimal
     halver_fee: Decimal
     total_fee: Decimal
 
 
-def calculate_all_transaction_fees(amount: Decimal) -> AllTransactionFees:
+def calculate_all_transaction_fees(amount: Union[int, Decimal]):
     """
     Calculate the Halver transaction fee in addition to the Paystack fees.
 
