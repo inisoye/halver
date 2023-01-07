@@ -1,6 +1,3 @@
-# --------------------------------------------------------------------------------------
-# Functions
-# --------------------------------------------------------------------------------------
 def calculate_paystack_transaction_fee(
     price: float, decimal_fee=0.015, flat_fee=100, fee_cap=2000
 ) -> float:
@@ -25,7 +22,7 @@ def calculate_paystack_transaction_fee(
 
     FLAT_FEE_WAIVER_BARRIER = 2500
 
-    if price > FLAT_FEE_WAIVER_BARRIER:
+    if price >= FLAT_FEE_WAIVER_BARRIER:
         applicable_fees = (decimal_fee * price) + flat_fee
 
         if applicable_fees > fee_cap:
@@ -68,21 +65,34 @@ def calculate_paystack_transfer_fee(transfer_amount: float) -> float:
     return transfer_fee
 
 
-def calculate_halver_transaction_fee(amount: float) -> float:
+def calculate_all_transaction_fees(amount: float) -> dict[str, float]:
     """
-    Calculate the transaction fee for Halver.
+    Calculate the Halver transaction fee in addition to the Paystack fees.
 
-    The fee is obtained by multiplying the result of the
-    `calculate_paystack_transaction_fee` and `calculate_paystack_transfer_fee`
-    functions by 2, and then rounding the result to 2 decimal places.
+    The Halver fee is equivalent to the total amount sent to Paystack.
+    As a result, the total fee is double whatever is remitted to Paystack.
 
     Parameters:
-        amount (float): The transaction amount.
+        amount (float): The original transaction amount.
 
     Returns:
-        float: The Halver transaction fee rounded to two decimal places.
+        dict[str, float]: Paystack and Halver fees in a dictionary.
     """
+
     paystack_transaction_fee = calculate_paystack_transaction_fee(amount)
     paystack_transfer_fee = calculate_paystack_transfer_fee(amount)
 
-    return round((2 * paystack_transaction_fee) + (2 * paystack_transfer_fee), 2)
+    halver_transaction_fee = paystack_transaction_fee + paystack_transfer_fee
+
+    total_fee = (
+        paystack_transaction_fee + paystack_transfer_fee + halver_transaction_fee
+    )
+
+    all_transaction_fees = {
+        "paystack_transaction_fee": paystack_transaction_fee,
+        "paystack_transfer_fee": paystack_transfer_fee,
+        "halver_transaction_fee": halver_transaction_fee,
+        "total_fee": total_fee,
+    }
+
+    return all_transaction_fees
