@@ -1,8 +1,8 @@
 from decimal import Decimal
 from uuid import UUID
 
-from ..models import Action, BillParticipant
-from .fees import calculate_all_transaction_fees
+# TODO the methods in this model should use django transactions
+# as they update multiple models
 
 
 def create_participants_and_actions_for_bill(bill) -> None:
@@ -10,6 +10,9 @@ def create_participants_and_actions_for_bill(bill) -> None:
     Automatically creates bill participant and action objects each time a new bill.
     Used in the bill model's save method.
     """
+
+    from bills.models import Action, BillParticipant
+
     for participant in bill.participants.all():
         bill_participant, created = BillParticipant.objects.get_or_create(
             bill=bill, user=participant
@@ -19,7 +22,6 @@ def create_participants_and_actions_for_bill(bill) -> None:
             bill=bill,
             user=participant,
             bill_participant=bill_participant,
-            contribution=bill_participant.contribution,
         )
 
 
@@ -60,6 +62,9 @@ def add_contributions_and_fees_to_actions(bill, participant_contribution_index) 
             A dictionary mapping bill participant UUIDs (as string values) to their
             contributions (string, integer, or float values sent by the client).
     """
+
+    from bills.models import Action
+    from bills.utils.fees import calculate_all_transaction_fees
 
     formatted_participant_contribution_index: dict[
         UUID, Decimal
