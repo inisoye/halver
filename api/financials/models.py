@@ -1,17 +1,20 @@
 from django.conf import settings
 from django.db import models
 
-from core.utils import TimeStampedUUIDModel, get_user_by_id
+from core.models import AbstractTimeStampedUUIDModel
+from core.utils import get_user_by_id
 
 User = settings.AUTH_USER_MODEL
 
 
-class UserCard(TimeStampedUUIDModel):
+class UserCard(AbstractTimeStampedUUIDModel, models.Model):
     """
     Stores data returned by Paystack to represent a card.
 
-    channel('card'), reusable(True) and country_code('NG') have not been added
-    as they are fixed in this case.
+    channel('card') and reusable(True) have not been added
+    as they would normally be fixed in this case.
+    They should be manually added when transactions are
+    intialized with a card (or Paystack authorization).
     """
 
     account_name = models.CharField(
@@ -26,10 +29,10 @@ class UserCard(TimeStampedUUIDModel):
         blank=True,
         max_length=100,
     )
-    first6 = models.CharField(
+    country_code = models.CharField(
         blank=True,
-        max_length=10,
-        verbose_name="Card's first 6 digits (bin)",
+        max_length=2,
+        verbose_name="Country where card was issued",
     )
     card_type = models.CharField(
         blank=True,
@@ -46,6 +49,11 @@ class UserCard(TimeStampedUUIDModel):
     exp_year = models.CharField(
         blank=True,
         max_length=10,
+    )
+    first6 = models.CharField(
+        blank=True,
+        max_length=10,
+        verbose_name="Card's first 6 digits (bin)",
     )
     is_default = models.BooleanField(default=False)
     last4 = models.CharField(
@@ -114,6 +122,7 @@ class UserCard(TimeStampedUUIDModel):
             "bank": authorization_data["bank"],
             "first6": authorization_data["bin"],
             "card_type": authorization_data["card_type"],
+            "country_code": authorization_data["country_code"],
             "email": customer_data["email"],
             "exp_month": authorization_data["exp_month"],
             "exp_year": authorization_data["exp_year"],
@@ -125,7 +134,7 @@ class UserCard(TimeStampedUUIDModel):
         cls.objects.update_or_create(**defaults, defaults=defaults)
 
 
-class TransferRecipient(TimeStampedUUIDModel):
+class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
     """
     Stores fields returned by Paystack to represent an account (nuban)
     or card(authorization) transfer recipient.
