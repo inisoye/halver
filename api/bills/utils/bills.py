@@ -1,10 +1,10 @@
 from decimal import Decimal
 from uuid import UUID
 
-# TODO the methods in this model should use django transactions
-# as they update multiple models
+from django.db import transaction
 
 
+@transaction.atomic
 def create_participants_and_actions_for_bill(bill) -> None:
     """
     Automatically creates bill participant and action objects each time a new bill.
@@ -52,6 +52,7 @@ def clean_participant_contribution_index(
     return formatted_participant_contribution_index
 
 
+@transaction.atomic
 def add_contributions_and_fees_to_actions(bill, participant_contribution_index) -> None:
     """
     Update the contributions of the participants and their
