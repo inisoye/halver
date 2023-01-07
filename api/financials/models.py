@@ -63,9 +63,6 @@ class UserCard(TimeStampedUUIDModel):
         related_name="cards",
     )
 
-    def __str__(self) -> str:
-        return f"{self.user.last_name} {self.last4} ({self.card_type})"
-
     def set_as_default(self) -> None:
         """
         Sets current card instance as the default card.
@@ -83,6 +80,14 @@ class UserCard(TimeStampedUUIDModel):
         if self.pk is None:
             self.set_as_default()
         super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ["-created", "user"]
+        verbose_name = "User's Card"
+        verbose_name_plural = "User's Cards"
+
+    def __str__(self) -> str:
+        return f"{self.user.last_name} {self.last4} ({self.card_type})"
 
     @classmethod
     def create_card_from_webhook(cls, webhook_data) -> None:
@@ -147,9 +152,6 @@ class TransferRecipient(TimeStampedUUIDModel):
         related_name="transfer_recipients",
     )
 
-    def __str__(self) -> str:
-        return f"{self.user.last_name} {self.recipient_type} ({self.recipient_code})"
-
     def set_as_default(self) -> None:
         """
         Sets current recipient instance as the default recipient.
@@ -167,3 +169,11 @@ class TransferRecipient(TimeStampedUUIDModel):
         if self.pk is None:
             self.set_as_default()
         super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ["-created", "user"]
+        verbose_name = "User's Transfer Recipient"
+        verbose_name_plural = "User's Transfer Recipients"
+
+    def __str__(self) -> str:
+        return f"{self.user.last_name} {self.recipient_type} ({self.recipient_code})"
