@@ -1,11 +1,11 @@
 """
 Base scripts for Paystack API features.
 Initially based on patterns used by the paystackapi package.
-Modified to allow for asynchronous requests.
+Modified to improve readability allow for asynchronous requests.
 https://github.com/andela-sjames/paystack-python
 """
 
-from typing import Any, Dict
+from typing import Any
 
 import aiohttp
 import requests
@@ -26,7 +26,7 @@ class Borg:
     would share.
     """
 
-    _shared_state: Dict[str, Any] = {}
+    _shared_state: dict[str, Any] = {}
 
     def __init__(self):
         self.__dict__ = self._shared_state
