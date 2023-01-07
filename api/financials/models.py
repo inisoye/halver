@@ -4,6 +4,8 @@ from django.db import models
 from core.models import AbstractTimeStampedUUIDModel
 from core.utils import get_user_by_id
 
+from .utils import set_as_default
+
 User = settings.AUTH_USER_MODEL
 
 
@@ -71,22 +73,11 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
         related_name="cards",
     )
 
-    def set_as_default(self) -> None:
-        """
-        Sets current card instance as the default card.
-        """
-
-        self.user.cards.update(is_default=False)
-        self.is_default = True
-        self.save(update_fields=["is_default"])
-
-    def save(self, *args, **kwargs):
-        """
-        Makes every new card the default card
-        """
-
+    def save(self, *args, **kwargs) -> None:
         if self.pk is None:
-            self.set_as_default()
+            # Make every new card the default card
+            set_as_default(self, "user_card")
+
         super().save(*args, **kwargs)
 
     class Meta:
@@ -161,22 +152,11 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         related_name="transfer_recipients",
     )
 
-    def set_as_default(self) -> None:
-        """
-        Sets current recipient instance as the default recipient.
-        """
-
-        self.user.transfer_recipients.update(is_default=False)
-        self.is_default = True
-        self.save(update_fields=["is_default"])
-
-    def save(self, *args, **kwargs):
-        """
-        Makes every new recipient the default recipient
-        """
-
+    def save(self, *args, **kwargs) -> None:
         if self.pk is None:
-            self.set_as_default()
+            # Make every new recipient the default recipient
+            set_as_default(self, "transfer_recipient")
+
         super().save(*args, **kwargs)
 
     class Meta:

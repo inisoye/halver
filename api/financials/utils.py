@@ -34,3 +34,20 @@ def validate_new_recipient_data(data):
                 f"to add a new {readable_recipient_type} recipient."
             )
             raise serializers.ValidationError(error_message)
+
+
+def set_as_default(self, model_name: str) -> None:
+    """
+    Sets current (card or transfer recipient) instance as the default model instance.
+    """
+
+    if model_name == "transfer_recipient":
+        model_manager = self.user.transfer_recipients
+    elif model_name == "user_card":
+        model_manager = self.user.cards
+    else:
+        raise ValueError("Invalid model name")
+
+    model_manager.update(is_default=False)
+    self.is_default = True
+    self.save(update_fields=["is_default"])
