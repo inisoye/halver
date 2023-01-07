@@ -222,7 +222,7 @@ if DEBUG:
 # Allauth configuration
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 
-# Set site id as (only because) required by django_allauth
+# Set site id (only because) required by django_allauth
 
 SITE_ID = 1
 
@@ -268,4 +268,11 @@ CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
-CELERY_LOADER = 'core.celery.app'
+CELERY_LOADER = "core.celery.app"
+
+
+# Default currency configuration
+
+DEFAULT_CURRENCY_NAME = "Nigerian Naira"
+DEFAULT_CURRENCY_SYMBOL = "₦"
+DEFAULT_CURRENCY_CODE = "NGN"
