@@ -13,11 +13,10 @@ from rest_framework.generics import (
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from financials.api.permissions import IsOwner
+from financials.api.serializers import TransferRecipientSerializer, UserCardSerializer
+from financials.models import TransferRecipient, UserCard
 from paystack.transfer_recipient_requests import TransferRecipientRequests
-
-from ..models import TransferRecipient, UserCard
-from .permissions import IsOwner
-from .serializers import TransferRecipientSerializer, UserCardSerializer
 
 
 class DefaultCardRetrieveView(RetrieveAPIView):
