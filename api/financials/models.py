@@ -3,8 +3,7 @@ from django.db import models
 
 from core.models import AbstractTimeStampedUUIDModel
 from core.utils import get_user_by_id
-
-from .utils import set_as_default
+from financials.utils.common import set_as_default
 
 User = settings.AUTH_USER_MODEL
 
@@ -82,8 +81,8 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
 
     class Meta:
         ordering = ["-created", "user"]
-        verbose_name = "User's Card"
-        verbose_name_plural = "User's Cards"
+        verbose_name = "User Card"
+        verbose_name_plural = "User Cards"
 
     def __str__(self) -> str:
         return f"{self.user.last_name} {self.last4} ({self.card_type})"
@@ -161,8 +160,8 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
 
     class Meta:
         ordering = ["-created", "user"]
-        verbose_name = "User's Transfer Recipient"
-        verbose_name_plural = "User's Transfer Recipients"
+        verbose_name = "User Transfer Recipient"
+        verbose_name_plural = "User Transfer Recipients"
 
     def __str__(self) -> str:
         return f"{self.user.last_name} {self.recipient_type} ({self.recipient_code})"

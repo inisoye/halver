@@ -2,7 +2,7 @@
 Methods for handling and obtaining Paystack bank data.
 """
 
-from .base import PaystackBase
+from paystack.base import PaystackBase
 
 
 class BankRequests(PaystackBase):

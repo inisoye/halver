@@ -12,7 +12,7 @@ from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext_lazy as _
 
-from .forms import UserChangeForm
+from accounts.forms import UserChangeForm
 
 CustomUser = get_user_model()
 USERNAME_FIELD = CustomUser.USERNAME_FIELD

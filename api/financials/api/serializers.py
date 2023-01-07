@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from ..models import TransferRecipient, UserCard
-from ..utils import validate_new_recipient_data
+from financials.models import TransferRecipient, UserCard
+from financials.utils.recipients import validate_new_recipient_data
 
 
 class UserCardSerializer(serializers.ModelSerializer):

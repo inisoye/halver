@@ -3,7 +3,7 @@ import datetime
 from celery import periodic_task
 from django.db import transaction
 
-from .models import Action
+from bills.models import Action
 
 
 @periodic_task(

@@ -4,7 +4,7 @@ Methods for the Paystack Transfer Recipient feature.
 
 import asyncio
 
-from .base import PaystackBase
+from paystack.base import PaystackBase
 
 
 class TransferRecipientRequests(PaystackBase):

@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from .views import GoogleLogin
+from accounts.views import GoogleLogin
 
 app_name = "accounts"
 

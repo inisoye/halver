@@ -4,12 +4,11 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
 
-from core.models import AbstractCurrencyModel, AbstractTimeStampedUUIDModel
-
-from .utils.bills import (
+from bills.utils.bills import (
     add_contributions_and_fees_to_actions,
     create_participants_and_actions_for_bill,
 )
+from core.models import AbstractCurrencyModel, AbstractTimeStampedUUIDModel
 
 User = settings.AUTH_USER_MODEL
 
@@ -253,6 +252,6 @@ class Transaction(AbstractTimeStampedUUIDModel, models.Model):
 
     def __str__(self) -> str:
         return (
-            f"{self.user.last_name} contributed {self.amount_paid} "
+            f"{self.user.last_name} contributed {self.total_payment} "
             f"for ({self.bill.name})."
         )

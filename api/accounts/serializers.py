@@ -2,13 +2,14 @@
 # https://www.rootstrap.com/blog/registration-and-authentication-in-django-apps-with-dj-rest-auth/
 
 from dj_rest_auth.registration.serializers import RegisterSerializer
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from .models import CustomUser
+CustomUser = get_user_model()
 
 
 class CustomRegisterSerializer(RegisterSerializer):
