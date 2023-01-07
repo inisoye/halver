@@ -1,6 +1,10 @@
+from decimal import Decimal
+from typing import NamedTuple
+
+
 def calculate_paystack_transaction_fee(
-    price: float, decimal_fee=0.015, flat_fee=100, fee_cap=2000
-) -> float:
+    price: Decimal, decimal_fee=0.015, flat_fee=100, fee_cap=2000
+) -> Decimal:
     """
     Calculate the final amount for Paystack's transaction fee
     based on the given price, decimal fee, flat fee, and fee cap.
@@ -10,10 +14,10 @@ def calculate_paystack_transaction_fee(
     2.https://paystack.com/pricing
 
     Parameters:
-        price (float): The price.
-        decimal_fee (float): The decimal fee.
-        flat_fee (float): The flat fee.
-        fee_cap (float): The fee cap.
+        price (Decimal): The price.
+        decimal_fee (Decimal): The decimal fee.
+        flat_fee (Decimal): The flat fee.
+        fee_cap (Decimal): The fee cap.
 
     Returns:
         final fee: The difference between the (inclusive) final amount
@@ -41,7 +45,7 @@ def calculate_paystack_transaction_fee(
     return final_amount - price
 
 
-def calculate_paystack_transfer_fee(transfer_amount: float) -> float:
+def calculate_paystack_transfer_fee(transfer_amount: Decimal) -> Decimal:
     """
     Calculate the transfer fee based on the given transfer amount.
 
@@ -50,10 +54,10 @@ def calculate_paystack_transfer_fee(transfer_amount: float) -> float:
     2.https://paystack.com/pricing
 
     Parameters:
-        transfer_amount (float): The transfer amount.
+        transfer_amount (Decimal): The transfer amount.
 
     Returns:
-        float: The transfer fee.
+        Decimal: The transfer fee.
     """
     if transfer_amount <= 5000:
         transfer_fee = 10
@@ -65,7 +69,14 @@ def calculate_paystack_transfer_fee(transfer_amount: float) -> float:
     return transfer_fee
 
 
-def calculate_all_transaction_fees(amount: float) -> dict[str, float]:
+class AllTransactionFees(NamedTuple):
+    paystack_transaction_fee: Decimal
+    paystack_transfer_fee: Decimal
+    halver_fee: Decimal
+    total_fee: Decimal
+
+
+def calculate_all_transaction_fees(amount: Decimal) -> AllTransactionFees:
     """
     Calculate the Halver transaction fee in addition to the Paystack fees.
 
@@ -73,25 +84,23 @@ def calculate_all_transaction_fees(amount: float) -> dict[str, float]:
     As a result, the total fee is double whatever is remitted to Paystack.
 
     Parameters:
-        amount (float): The original transaction amount.
+        amount (Decimal): The original transaction amount.
 
     Returns:
-        dict[str, float]: Paystack and Halver fees in a dictionary.
+        dict[str, Decimal]: Paystack and Halver fees in a dictionary.
     """
 
     paystack_transaction_fee = calculate_paystack_transaction_fee(amount)
     paystack_transfer_fee = calculate_paystack_transfer_fee(amount)
 
-    halver_transaction_fee = paystack_transaction_fee + paystack_transfer_fee
+    halver_fee = paystack_transaction_fee + paystack_transfer_fee
 
-    total_fee = (
-        paystack_transaction_fee + paystack_transfer_fee + halver_transaction_fee
-    )
+    total_fee = paystack_transaction_fee + paystack_transfer_fee + halver_fee
 
     all_transaction_fees = {
         "paystack_transaction_fee": paystack_transaction_fee,
         "paystack_transfer_fee": paystack_transfer_fee,
-        "halver_transaction_fee": halver_transaction_fee,
+        "halver_fee": halver_fee,
         "total_fee": total_fee,
     }
 
