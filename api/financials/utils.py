@@ -5,9 +5,6 @@ from core.utils import remove_underscores
 from .models import TransferRecipient
 
 
-# --------------------------------------------------------------------------------------
-# Functions
-# --------------------------------------------------------------------------------------
 def validate_new_recipient_data(data):
     """
     Ensures that every new recipient has required fields depending on its type.
