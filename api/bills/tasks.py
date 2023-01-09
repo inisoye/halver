@@ -5,6 +5,8 @@ from django.db import transaction
 
 from bills.models import Action
 
+# TODO Add flower to track all tasks across application
+
 
 @periodic_task(
     run_every=datetime.timedelta(hours=12),
