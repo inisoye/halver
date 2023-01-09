@@ -95,7 +95,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
             )
 
     def __str__(self) -> str:
-        return f"{self.name} created by {self.creator.last_name}"
+        return f"{self.name}"
 
 
 class BillParticipant(AbstractTimeStampedUUIDModel, models.Model):
@@ -174,10 +174,7 @@ class Action(AbstractTimeStampedUUIDModel, models.Model):
     )
 
     def __str__(self) -> str:
-        return (
-            f"{self.user.last_name} to contribute {self.contribution} "
-            f"for ({self.bill.name})."
-        )
+        return f"{self.user.last_name} {self.contribution} ({self.bill.name})."
 
 
 class Transaction(AbstractTimeStampedUUIDModel, models.Model):
@@ -251,7 +248,4 @@ class Transaction(AbstractTimeStampedUUIDModel, models.Model):
     refundable = models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return (
-            f"{self.user.last_name} contributed {self.total_payment} "
-            f"for ({self.bill.name})."
-        )
+        return f"{self.user.last_name} {self.total_payment} ({self.bill.name})."
