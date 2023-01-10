@@ -85,7 +85,10 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
         verbose_name_plural = "User Cards"
 
     def __str__(self) -> str:
-        return f"{self.user.last_name} {self.last4} ({self.card_type})"
+        return (
+            f"user: {self.user.last_name}, card: {self.last4}, "
+            f"card type: ({self.card_type})"
+        )
 
     @classmethod
     def create_card_from_webhook(cls, webhook_data) -> None:
@@ -138,4 +141,4 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         verbose_name_plural = "User Transfer Recipients"
 
     def __str__(self) -> str:
-        return f"{self.user.last_name} {self.recipient_type} ({self.recipient_code})"
+        return f"user: {self.user.last_name}, type: {self.recipient_type}"
