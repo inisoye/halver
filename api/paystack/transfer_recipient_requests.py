@@ -1,5 +1,5 @@
 """
-Methods for the Paystack Transfer Recipient feature.
+Methods for the Paystack transfer recipient feature.
 """
 
 import asyncio

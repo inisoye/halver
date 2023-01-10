@@ -72,6 +72,12 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
         related_name="cards",
     )
 
+    def __str__(self) -> str:
+        return (
+            f"user: {self.user.last_name}, card: {self.last4}, "
+            f"card type: ({self.card_type})"
+        )
+
     def save(self, *args, **kwargs) -> None:
         if self.pk is None:
             # Make every new card the default card
@@ -83,12 +89,6 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
         ordering = ["-created", "user"]
         verbose_name = "User Card"
         verbose_name_plural = "User Cards"
-
-    def __str__(self) -> str:
-        return (
-            f"user: {self.user.last_name}, card: {self.last4}, "
-            f"card type: ({self.card_type})"
-        )
 
     @classmethod
     def create_card_from_webhook(cls, webhook_data) -> None:
@@ -128,6 +128,9 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         related_name="transfer_recipients",
     )
 
+    def __str__(self) -> str:
+        return f"user: {self.user.last_name}, type: {self.recipient_type}"
+
     def save(self, *args, **kwargs) -> None:
         if self.pk is None:
             # Make every new recipient the default recipient
@@ -139,6 +142,3 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         ordering = ["-created", "user"]
         verbose_name = "User Transfer Recipient"
         verbose_name_plural = "User Transfer Recipients"
-
-    def __str__(self) -> str:
-        return f"user: {self.user.last_name}, type: {self.recipient_type}"
