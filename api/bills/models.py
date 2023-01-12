@@ -6,7 +6,7 @@ from django.db import models, transaction
 
 from bills.utils.bills import (
     add_contributions_and_fees_to_actions,
-    create_participants_and_actions_for_bill,
+    create_actions_for_bill,
 )
 from core.models import AbstractCurrencyModel, AbstractTimeStampedUUIDModel
 
@@ -37,7 +37,6 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     participants = models.ManyToManyField(
         User,
         related_name="bills",
-        through="BillParticipant",
     )
 
     name = models.CharField(max_length=100)
@@ -85,7 +84,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
 
             # Create actions and bill participant objects for every new bill
             if self.pk is None:
-                create_participants_and_actions_for_bill(self)
+                create_actions_for_bill(self)
 
     def clean(self) -> None:
         if self.due_date < datetime.date.today():
@@ -96,33 +95,6 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
 
     def __str__(self) -> str:
         return f"name: {self.name}"
-
-
-class BillParticipant(AbstractTimeStampedUUIDModel, models.Model):
-    class StatusChoices(models.TextChoices):
-        PENDING = "pending", "Pending"
-        OVERDUE = "overdue", "Overdue"
-        SETTLED = "settled", "Settled"
-        DECLINED = "declined", "Declined"
-
-    bill = models.ForeignKey(
-        Bill,
-        on_delete=models.CASCADE,
-        related_name="bill_participants",
-    )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="bill_participant_profiles",
-    )
-    status = models.CharField(
-        max_length=10,
-        choices=StatusChoices.choices,
-        default="pending",
-    )
-
-    def __str__(self) -> str:
-        return f"user: {self.user.last_name}, bill: ({self.bill.name})"
 
 
 class Action(AbstractTimeStampedUUIDModel, models.Model):
@@ -138,11 +110,6 @@ class Action(AbstractTimeStampedUUIDModel, models.Model):
     )
     user = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
-        related_name="actions",
-    )
-    bill_participant = models.ForeignKey(
-        BillParticipant,
         on_delete=models.CASCADE,
         related_name="actions",
     )
@@ -199,11 +166,6 @@ class Transaction(AbstractTimeStampedUUIDModel, models.Model):
     )
     user = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
-        related_name="transactions",
-    )
-    bill_participant = models.ForeignKey(
-        BillParticipant,
         on_delete=models.CASCADE,
         related_name="transactions",
     )
