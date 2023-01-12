@@ -63,11 +63,11 @@ class Subscription(PaystackBase):
     @classmethod
     def disable(cls, **kwargs):
         """
-        Disables subscription
+        Disable a subscription.
 
         Args:
-            code: Subscription code
-            token: Email token
+            code: Subscription code.
+            token: Email token.
 
         returns:
             A JSON confirmation of disable request.
@@ -81,11 +81,11 @@ class Subscription(PaystackBase):
     @classmethod
     def enable(cls, **kwargs):
         """
-        Enables subscription
+        Enable a subscription.
 
         Args:
             code: Subscription code
-            token: Email token
+            token: Email token.
 
         returns:
             A JSON confirmation of enable request.
@@ -99,10 +99,10 @@ class Subscription(PaystackBase):
     @classmethod
     def generate_update_link(cls, subscription_code):
         """
-        Fetch subscription.
+        Generate a link for users to update the card on a subscription.
 
         Args:
-            code: Subscription code
+            code: Subscription code.
 
         Returns:
             JSON data with the "update card" link.
@@ -115,10 +115,10 @@ class Subscription(PaystackBase):
     @classmethod
     def send_update_email(cls, subscription_code):
         """
-        Fetch subscription.
+        Send an email with which users can update the card on a subscription.
 
         Args:
-            code: Subscription code
+            code: Subscription code.
 
         Returns:
            A confirmation of the email despatch.
