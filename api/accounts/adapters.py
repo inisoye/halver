@@ -16,5 +16,6 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
                 "error": error.__str__(),
                 "exception": exception.__str__(),
                 "extra_context": extra_context,
+                "request": request,
             },
         )
