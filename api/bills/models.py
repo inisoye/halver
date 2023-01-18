@@ -41,7 +41,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
 
     name = models.CharField(max_length=100)
     bill_date = models.DateTimeField()
-    due_date = models.DateTimeField()
+    deadline = models.DateTimeField()
     evidence = models.FileField(blank=True)
     notes = models.TextField(blank=True)
 
@@ -87,9 +87,9 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
                 create_actions_for_bill(self)
 
     def clean(self) -> None:
-        if self.due_date < datetime.date.today():
+        if self.deadline < datetime.date.today():
             raise ValidationError(
-                "The due date of a bill cannot be in the past.",
+                "The deadline of a bill cannot be in the past.",
                 " Use the bill date field instead.",
             )
 
@@ -157,6 +157,9 @@ class Transaction(AbstractTimeStampedUUIDModel, models.Model):
 
     class StatusChoices(models.TextChoices):
         SETTLED = "settled", "Settled"
+        # TODO Consider moving declined status from here to action model instead
+        # Only successful transactions on both ends (charge and transfer) should be here.
+        # Perhaps the status field is redundant
         DECLINED = "declined", "Declined"
 
     bill = models.ForeignKey(
