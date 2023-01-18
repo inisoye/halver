@@ -42,7 +42,7 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = (
-            "uid",
+            "uuid",
             "email",
             "phone",
             "username",
@@ -52,7 +52,7 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
             "profile_image",
         )
         read_only_fields = (
-            "uid",
+            "uuid",
             "first_name",
             "last_name",
             "date_joined",
