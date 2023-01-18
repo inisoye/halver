@@ -2,8 +2,6 @@ from django.urls import include, path
 
 from accounts.views import GoogleLogin
 
-app_name = "accounts"
-
 urlpatterns = [
     path(
         "dj-rest-auth/",
