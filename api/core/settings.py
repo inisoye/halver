@@ -214,8 +214,8 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
 
 # Use console as email backend in dev mode
 # https://docs.djangoproject.com/en/4.1/topics/email/#console-backend
-# TODO Change to actual email provider
 
+# TODO Change to actual email provider
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
