@@ -14,12 +14,11 @@ from bills.models import Action
     max_retries=2,
 )
 @transaction.atomic
-def check_and_update_action_statuses():
+def update_overdue_statuses():
     try:
-        # Get all actions with a bill due date that is past today and with statuses
-        # that are not already marked as completed
+        # Get all actions with pending statuses and deadlines in the past
         overdue_and_incomplete_actions = Action.objects.filter(
-            bill__due_date__lt=datetime.date.today(), status__ne="completed"
+            bill__deadline__lt=datetime.date.today(), status="pending"
         )
 
         # Perform bulk update for all overdue actions
@@ -28,4 +27,4 @@ def check_and_update_action_statuses():
     except Exception as e:
         # Retry the task if it fails due to a network error or other
         # resource availability error
-        check_and_update_action_statuses.retry(exc=e)
+        update_overdue_statuses.retry(exc=e)
