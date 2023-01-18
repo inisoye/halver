@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "dj_rest_auth.registration",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "drf_spectacular",
     # Local
     "accounts.apps.AccountsConfig",
     "financials.apps.FinancialsConfig",
@@ -194,6 +195,7 @@ REST_FRAMEWORK = {
         "djangorestframework_camel_case.parser.CamelCaseMultiPartParser",
         "djangorestframework_camel_case.parser.CamelCaseJSONParser",
     ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 
@@ -222,17 +224,24 @@ if DEBUG:
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 
 # Set site id (only because) required by django_allauth
-
-SITE_ID = 1
+SITE_ID = 2
 
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 # TODO Change later. Either use this or some OTP system for verifying emails.
 ACCOUNT_EMAIL_VERIFICATION = "none"
+LOGIN_REDIRECT_URL = "/"
+
+SOCIALACCOUNT_ADAPTER = "accounts.adapters.SocialAccountAdapter"
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
+        "APP": {
+            "client_id": env.str("GOOGLE_OAUTH_CLIENT_ID"),
+            "secret": env.str("GOOGLE_OAUTH_CLIENT_SECRET"),
+            "key": "",
+        },
         "SCOPE": [
             "profile",
             "email",
@@ -268,6 +277,17 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_LOADER = "core.celery.app"
+
+
+# Django Spectacular configuration
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Halver",
+    "DESCRIPTION": "A bill splitting app built on Paystack APIs",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
+}
 
 
 # Default currency configuration
