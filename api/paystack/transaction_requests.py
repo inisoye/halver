@@ -5,7 +5,7 @@ Methods for querying handling Paystack transactions.
 from paystack.base import PaystackBase
 
 
-class Transaction(PaystackBase):
+class TransactionRequests(PaystackBase):
     @classmethod
     def initialize(cls, **kwargs):
         """
@@ -127,7 +127,6 @@ class Transaction(PaystackBase):
 
         Returns:
             JSON data showing details about a transaction's status.
-
         """
         return cls().requests.get(
             f"transaction/verify/{reference}",

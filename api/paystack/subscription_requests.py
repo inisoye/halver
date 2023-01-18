@@ -5,7 +5,7 @@ Methods for querying handling Paystack subscriptions.
 from paystack.base import PaystackBase
 
 
-class Subscription(PaystackBase):
+class SubscriptionRequests(PaystackBase):
     @classmethod
     def create(cls, **kwargs):
         """

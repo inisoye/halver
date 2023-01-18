@@ -24,8 +24,6 @@ class TransferRecipientRequests(PaystackBase):
             email: Required if type is authorization,
             authorization_code: Required if type is authorization,
 
-            **kwargs
-
         Returns:
             The created transfer recipient
         """
@@ -92,7 +90,6 @@ class TransferRecipientRequests(PaystackBase):
         """
         Asynchronously get a single transfer recipient.
         The request is sent asynchronously to facilitate the fetch multiple method.
-
 
         Args:
             id_or_code: An ID or code for the recipient
