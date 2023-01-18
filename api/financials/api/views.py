@@ -14,7 +14,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from financials.api.permissions import IsOwner
-from financials.api.serializers import TransferRecipientSerializer, UserCardSerializer
+from financials.api.serializers import (
+    TransferRecipientDeleteSerializer,
+    TransferRecipientListCreateSerializer,
+    UserCardSerializer,
+)
 from financials.models import TransferRecipient, UserCard
 from paystack.transfer_recipient_requests import TransferRecipientRequests
 
@@ -50,10 +54,10 @@ class DefaultCardUpdateView(UpdateAPIView):
     Accepts PUT requests.
     """
 
+    lookup_field = "uuid"
     permission_classes = (IsOwner,)
     queryset = UserCard.objects.all()
     serializer_class = UserCardSerializer
-    lookup_field = "uuid"
 
     def update(self) -> Response:
         """
@@ -112,6 +116,9 @@ class TransferRecipientListCreateAPIView(APIView):
     Accepts GET and POST requests.
     """
 
+    permission_classes = (IsOwner,)
+    serializer_class = TransferRecipientListCreateSerializer
+
     def get(self) -> Response:
         """
         Handles GET requests to retrieve a list of transfer recipients.
@@ -134,7 +141,7 @@ class TransferRecipientListCreateAPIView(APIView):
             A dictionary containing the details of the new transfer recipient.
         """
 
-        serializer = TransferRecipientSerializer(data=self.request.data)
+        serializer = TransferRecipientListCreateSerializer(data=self.request.data)
 
         try:
             serializer.is_valid(raise_exception=True)
@@ -149,7 +156,7 @@ class TransferRecipientListCreateAPIView(APIView):
                 )
 
                 return Response(
-                    TransferRecipientSerializer(recipient).data,
+                    TransferRecipientListCreateSerializer(recipient).data,
                     status=status.HTTP_201_CREATED,
                 )
 
@@ -173,8 +180,10 @@ class TransferRecipientsDestroyView(DestroyAPIView):
     Accepts DELETE requests.
     """
 
-    queryset = TransferRecipient.objects.all()
     lookup_field = "recipient_code"
+    permission_classes = (IsOwner,)
+    queryset = TransferRecipient.objects.all()
+    serializer_class = TransferRecipientDeleteSerializer
 
     def perform_destroy(self, instance):
         """

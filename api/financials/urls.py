@@ -38,7 +38,7 @@ urlpatterns = [
         name="transfer-recipients",
     ),
     path(
-        route="transfer-recipients/<str:recipient_code>",
+        route="transfer-recipients/<str:recipient_code>/",
         view=TransferRecipientsDestroyView.as_view(),
         name="transfer-recipient-delete",
     ),

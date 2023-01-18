@@ -23,7 +23,7 @@ class UserCardSerializer(serializers.ModelSerializer):
         )
 
 
-class TransferRecipientSerializer(serializers.Serializer):
+class TransferRecipientListCreateSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=100, required=True)
     type = serializers.ChoiceField(
         choices=TransferRecipient.RecipientChoices.choices,
@@ -37,3 +37,8 @@ class TransferRecipientSerializer(serializers.Serializer):
     def validate(self, data):
         validate_new_recipient_data(data)
         return data
+
+
+class TransferRecipientDeleteSerializer(serializers.Serializer):
+    model = TransferRecipient
+    fields = ("recipient_code",)
