@@ -30,7 +30,7 @@ SECRET_KEY = env.str("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
 
-ALLOWED_HOSTS: list[str] = []
+ALLOWED_HOSTS: list[str] = ["127.0.0.1"]
 
 
 # Application definition
@@ -163,7 +163,7 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
     "django.contrib.auth.backends.ModelBackend",
-    # `allauth` specific authentication methods, such as login by e-mail
+    # allauth specific authentication methods, such as login by e-mail
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
@@ -172,6 +172,13 @@ AUTHENTICATION_BACKENDS = [
 # https://django-phonenumber-field.readthedocs.io/en/latest/reference.html#model-field
 
 PHONENUMBER_DEFAULT_REGION = "NG"
+
+
+# Default currency configuration
+
+DEFAULT_CURRENCY_NAME = "Nigerian Naira"
+DEFAULT_CURRENCY_SYMBOL = "₦"
+DEFAULT_CURRENCY_CODE = "NGN"
 
 
 # Rest framework settings
@@ -203,13 +210,14 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_WHITELIST = (
     "http://localhost:3000",
+    "http://localhost:5173",
     "http://localhost:8000",
 )
 
 
 # Allowed CSRF origins
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:5173"]
 
 
 # Use console as email backend in dev mode
@@ -288,10 +296,3 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
     "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
 }
-
-
-# Default currency configuration
-
-DEFAULT_CURRENCY_NAME = "Nigerian Naira"
-DEFAULT_CURRENCY_SYMBOL = "₦"
-DEFAULT_CURRENCY_CODE = "NGN"
