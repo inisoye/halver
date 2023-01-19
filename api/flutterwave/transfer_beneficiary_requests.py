@@ -1,13 +1,13 @@
-"""
-Methods for initializing a Flutterwave payment.
-"""
-
 import asyncio
 
 from flutterwave.base import FlutterwaveBase
 
 
 class TransferBeneficiariesRequests(FlutterwaveBase):
+    """
+    Methods for initializing a Flutterwave payment.
+    """
+
     @classmethod
     def create(cls, **kwargs):
         """

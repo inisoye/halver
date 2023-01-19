@@ -1,11 +1,12 @@
-"""
-Methods for handling and obtaining Flutterwave bank data.
-"""
-
 from flutterwave.base import FlutterwaveBase
 
 
 class BankRequests(FlutterwaveBase):
+
+    """
+    Methods for handling and obtaining Flutterwave bank data.
+    """
+
     @classmethod
     def list(cls, country):
         """

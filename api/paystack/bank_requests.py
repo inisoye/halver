@@ -1,11 +1,11 @@
-"""
-Methods for handling and obtaining Paystack bank data.
-"""
-
 from paystack.base import PaystackBase
 
 
 class BankRequests(PaystackBase):
+    """
+    Methods for handling and obtaining Paystack bank data.
+    """
+
     @classmethod
     def list(cls, **kwargs):
         """

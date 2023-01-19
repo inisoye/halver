@@ -1,11 +1,11 @@
-"""
-Methods for querying handling Paystack transactions.
-"""
-
 from paystack.base import PaystackBase
 
 
 class TransactionRequests(PaystackBase):
+    """
+    Methods for querying handling Paystack transactions.
+    """
+
     @classmethod
     def initialize(cls, **kwargs):
         """

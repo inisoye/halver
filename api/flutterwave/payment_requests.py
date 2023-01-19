@@ -1,11 +1,11 @@
-"""
-Methods for initializing a Flutterwave payment.
-"""
-
 from flutterwave.base import FlutterwaveBase
 
 
 class Payments(FlutterwaveBase):
+    """
+    Methods for initializing a Flutterwave payment.
+    """
+
     @classmethod
     def initialize(cls, **kwargs):
         """

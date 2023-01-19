@@ -1,13 +1,13 @@
-"""
-Methods for the Paystack transfer recipient feature.
-"""
-
 import asyncio
 
 from paystack.base import PaystackBase
 
 
 class TransferRecipientRequests(PaystackBase):
+    """
+    Methods for the Paystack transfer recipient feature.
+    """
+
     @classmethod
     def create(cls, **kwargs):
         """

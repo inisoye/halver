@@ -1,11 +1,11 @@
-"""
-Methods for initializing a Flutterwave payment.
-"""
-
 from flutterwave.base import FlutterwaveBase
 
 
 class TokenizedCharges(FlutterwaveBase):
+    """
+    Methods for initializing a Flutterwave payment.
+    """
+
     @classmethod
     def charge(cls, **kwargs):
         """
