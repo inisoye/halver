@@ -18,10 +18,12 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     Stores a particular user's bill.
     """
 
-    class RepeatChoices(models.TextChoices):
+    class IntervalChoices(models.TextChoices):
         DAILY = "daily", "Daily"
+        WEEKLY = "weekly", "Weekly"
         MONTHLY = "monthly", "Monthly"
-        YEARLY = "yearly", "Yearly"
+        BIANNUALLY = "biannually", "Biannually"
+        ANNUALLY = "annually", "Annually"
         NONE = "none", "None"
 
     creator = models.ForeignKey(
@@ -29,7 +31,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         on_delete=models.PROTECT,
         related_name="bills_created",
     )
-    collector = models.ForeignKey(
+    creditor = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
         related_name="bills_collected",
@@ -38,13 +40,22 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         User,
         related_name="bills",
     )
-
-    name = models.CharField(max_length=100)
+    name = models.CharField(
+        max_length=100,
+    )
     bill_date = models.DateTimeField()
     deadline = models.DateTimeField()
-    evidence = models.FileField(blank=True)
-    notes = models.TextField(blank=True)
-
+    evidence = models.FileField(
+        blank=True,
+    )
+    interval = models.CharField(
+        max_length=50,
+        choices=IntervalChoices.choices,
+        default="none",
+    )
+    notes = models.TextField(
+        blank=True,
+    )
     total_amount_due = models.DecimalField(
         verbose_name="Total amount to be paid",
         max_digits=19,
@@ -99,16 +110,23 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
 
 class Action(AbstractTimeStampedUUIDModel, models.Model):
     class StatusChoices(models.TextChoices):
+        # For all bill types.
         PENDING = "pending", "Pending"
         OVERDUE = "overdue", "Overdue"
+        DECLINED = "declined", "Declined"
+        PENDING_TRANSFER = "pending_transfer", "Pending Transfer"
+        # For one-time bills.
         COMPLETED = "completed", "Completed"
+        # For recurring bills.
+        ONGOING = "ongoing", "Ongoing"
+        CANCELLED = "cancelled", "Cancelled"
 
     bill = models.ForeignKey(
         Bill,
         on_delete=models.CASCADE,
         related_name="actions",
     )
-    user = models.ForeignKey(
+    participant = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="actions",
@@ -119,7 +137,7 @@ class Action(AbstractTimeStampedUUIDModel, models.Model):
         decimal_places=4,
     )
     status = models.CharField(
-        max_length=10,
+        max_length=50,
         choices=StatusChoices.choices,
         default="pending",
     )
@@ -142,8 +160,8 @@ class Action(AbstractTimeStampedUUIDModel, models.Model):
 
     def __str__(self) -> str:
         return (
-            f"user: {self.user.last_name}, contribution: {self.contribution}, "
-            f"bill: ({self.bill.name})"
+            f"participant: {self.participant.last_name}, "
+            f"contribution: {self.contribution}, bill: ({self.bill.name})"
         )
 
 
@@ -155,19 +173,12 @@ class Transaction(AbstractTimeStampedUUIDModel, models.Model):
     creditor, must have been successful for a transaction to be recorded here
     """
 
-    class StatusChoices(models.TextChoices):
-        SETTLED = "settled", "Settled"
-        # TODO Consider moving declined status from here to action model instead
-        # Only successful transactions on both ends (charge and transfer) should be here.
-        # Perhaps the status field is redundant
-        DECLINED = "declined", "Declined"
-
     bill = models.ForeignKey(
         Bill,
         on_delete=models.CASCADE,
         related_name="transactions",
     )
-    user = models.ForeignKey(
+    participant = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="transactions",
@@ -198,10 +209,6 @@ class Transaction(AbstractTimeStampedUUIDModel, models.Model):
         max_digits=19,
         decimal_places=4,
     )
-    status = models.CharField(
-        max_length=10,
-        choices=StatusChoices.choices,
-    )
     # TODO These Paystack details should probably be inlcuded as joins.
     # Also consider adding the card used for the transaction, as well as the recipeint.
     paystack_transaction_reference = models.CharField(
@@ -217,6 +224,6 @@ class Transaction(AbstractTimeStampedUUIDModel, models.Model):
 
     def __str__(self) -> str:
         return (
-            f"user: {self.user.last_name}, payment: {self.total_payment}, "
+            f"participant: {self.participant.last_name}, payment: {self.total_payment}, "
             f"bill: ({self.bill.name})"
         )

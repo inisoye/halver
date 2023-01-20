@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 
+from bills.models import Action
 from core.models import AbstractTimeStampedUUIDModel
 from financials.utils.cards import create_card
 from financials.utils.common import set_as_default
@@ -19,51 +20,42 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
     """
 
     account_name = models.CharField(
-        blank=True,
         max_length=100,
     )
     authorization_code = models.CharField(
-        blank=True,
         max_length=100,
     )
     bank = models.CharField(
-        blank=True,
         max_length=100,
     )
     country_code = models.CharField(
-        blank=True,
         max_length=2,
         verbose_name="Country where card was issued",
     )
     card_type = models.CharField(
-        blank=True,
         max_length=10,
     )
     email = models.CharField(
-        blank=True,
         max_length=100,
     )
     exp_month = models.CharField(
-        blank=True,
         max_length=10,
     )
     exp_year = models.CharField(
-        blank=True,
         max_length=10,
     )
     first6 = models.CharField(
-        blank=True,
         max_length=10,
         verbose_name="Card's first 6 digits (bin)",
     )
-    is_default = models.BooleanField(default=False)
+    is_default = models.BooleanField(
+        default=False,
+    )
     last4 = models.CharField(
-        blank=True,
         max_length=4,
         verbose_name="Card's last 4 digits",
     )
     signature = models.CharField(
-        blank=True,
         max_length=100,
     )
     user = models.ForeignKey(
@@ -115,7 +107,6 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         default=False,
     )
     recipient_code = models.CharField(
-        blank=True,
         max_length=100,
     )
     recipient_type = models.CharField(
@@ -142,3 +133,46 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         ordering = ["-created", "user"]
         verbose_name = "User Transfer Recipient"
         verbose_name_plural = "User Transfer Recipients"
+
+
+class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
+    """
+    Stores key fields returned by Paystack to represent a plan.
+    """
+
+    class IntervalChoices(models.TextChoices):
+        DAILY = "daily", "Daily"
+        WEEKLY = "weekly", "Weekly"
+        MONTHLY = "monthly", "Monthly"
+        BIANNUALLY = "biannually", "Biannually"
+        ANNUALLY = "annually", "Annually"
+
+    name = models.CharField(
+        max_length=100,
+    )
+    interval = models.CharField(
+        max_length=50,
+        choices=IntervalChoices.choices,
+    )
+    plan_code = models.CharField(
+        max_length=100,
+    )
+    amount = models.DecimalField(
+        verbose_name="Amount to be paid within each interval",
+        max_digits=19,
+        decimal_places=4,
+    )
+    action = models.OneToOneField(
+        Action,
+        on_delete=models.CASCADE,
+        related_name="paystack_plan",
+    )
+    complete_paystack_data = models.JSONField()
+
+    def __str__(self) -> str:
+        return f"name: {self.name}, type: {self.interval}"
+
+    class Meta:
+        ordering = ["-created"]
+        verbose_name = "Paystack Plan"
+        verbose_name_plural = "Paystack Plans"

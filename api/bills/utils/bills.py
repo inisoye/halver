@@ -13,10 +13,18 @@ def create_actions_for_bill(bill) -> None:
 
     from bills.models import Action
 
-    actions = []
-    for participant in bill.participants.all():
-        actions.append(Action(bill=bill, user=participant))
+    # TODO
+    # This function should create paystack plans for each participant if the following
+    # condition passes: if bill.interval != Bill.IntervalChoices.NONE:
+    # The plans should be created by sending API calls to paystack in a background job
+    # After the each remote creation in a celery bg task is complete, the plans should
+    # also be created locally with 'PaystackPlan.objects.create'. Ensure to avoid n+1.
+    # Actions should be created for participants as usual before the plans are created.
 
+    actions = [
+        Action(bill=bill, participant=participant)
+        for participant in bill.participants.all()
+    ]
     Action.objects.bulk_create(actions)
 
 
@@ -35,6 +43,7 @@ def format_participant_contribution_index(
     Returns:
         The contribution index with UUID keys and Decimal values.
     """
+
     formatted_participant_contribution_index = {}
 
     # Iterate over the original index dictionary to fix types
@@ -68,14 +77,14 @@ def add_contributions_and_fees_to_actions(bill, participant_contribution_index):
     ] = format_participant_contribution_index(participant_contribution_index)
 
     # Filter out actions of the bill's participants
-    actions = Action.objects.filter(user__in=bill.participants.all())
+    actions = Action.objects.filter(participant__in=bill.participants.all())
 
     # Load the user object of the actions to prevent multiple (N+1) queries in loop below
-    actions = actions.select_related("user")
+    actions = actions.select_related("participant")
 
     actions_to_update = []
     for action in actions:
-        contribution = formatted_participant_contribution_index[action.user.uuid]
+        contribution = formatted_participant_contribution_index[action.participant.uuid]
         all_transaction_fees = calculate_all_transaction_fees(contribution)
 
         actions_to_update.append(
