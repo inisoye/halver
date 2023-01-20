@@ -10,7 +10,7 @@ class Payments(FlutterwaveBase):
     def initialize(cls, **kwargs):
         """
         Initialize a payment to get a payment link as a response.
-        Primarily intended to be used to add cards on Halver as endpoint not in
+        Primarily intended to be used to add cards as this endpoint is not in
         rave-python package.
         Akin to Paystack initialize transaction method.
 

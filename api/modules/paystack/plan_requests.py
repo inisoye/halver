@@ -1,4 +1,4 @@
-from paystack.base import PaystackBase
+from modules.paystack.base import PaystackBase
 
 
 class PlanRequests(PaystackBase):

@@ -20,7 +20,7 @@ from financials.api.serializers import (
     UserCardSerializer,
 )
 from financials.models import TransferRecipient, UserCard
-from paystack.transfer_recipient_requests import TransferRecipientRequests
+from modules.paystack.transfer_recipient_requests import TransferRecipientRequests
 
 
 class DefaultCardRetrieveView(RetrieveAPIView):

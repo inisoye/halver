@@ -20,7 +20,7 @@ def create_actions_for_bill(bill) -> None:
     Action.objects.bulk_create(actions)
 
 
-def clean_participant_contribution_index(
+def format_participant_contribution_index(
     participant_contribution_index,
 ) -> dict[UUID, Decimal]:
     """
@@ -65,7 +65,7 @@ def add_contributions_and_fees_to_actions(bill, participant_contribution_index):
 
     formatted_participant_contribution_index: dict[
         UUID, Decimal
-    ] = clean_participant_contribution_index(participant_contribution_index)
+    ] = format_participant_contribution_index(participant_contribution_index)
 
     # Filter out actions of the bill's participants
     actions = Action.objects.filter(user__in=bill.participants.all())
