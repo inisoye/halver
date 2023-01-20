@@ -1,6 +1,6 @@
 import asyncio
 
-from modules.paystack.base import PaystackBase
+from libraries.paystack.base import PaystackBase
 
 
 class TransferRecipientRequests(PaystackBase):
