@@ -1,4 +1,4 @@
-from flutterwave.base import FlutterwaveBase
+from libraries.flutterwave.base import FlutterwaveBase
 
 
 class TokenizedCharges(FlutterwaveBase):

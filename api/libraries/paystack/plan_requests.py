@@ -71,14 +71,14 @@ class PlanRequests(PaystackBase):
         )
 
     @classmethod
-    def update(cls, plan_id_or_code, **kwargs):
+    def update(cls, id_or_code, **kwargs):
         """
         Update Plan.
 
         Note: Some params have been left out. Check https://paystack.com/docs/api/#plan.
 
         Args:
-            plan_id_or_code: Paystack plan ID or code.
+            id_or_code: Paystack plan ID or code.
 
             name: Plan's name.
             amount: Amount for the plan in kobo. Kobo if currency is NGN.
@@ -93,6 +93,6 @@ class PlanRequests(PaystackBase):
         """
 
         return cls().requests.put(
-            f"plan/{plan_id_or_code}",
+            f"plan/{id_or_code}",
             data=kwargs,
         )

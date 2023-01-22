@@ -32,6 +32,35 @@ class BankRequests(PaystackBase):
         )
 
     @classmethod
+    async def list_async(cls, **kwargs):
+        """
+        List banks supported by Paystack.
+
+        Args:
+            No argument is required.
+
+            country (str): The country to obtain the list of supported banks from.
+            e.g country=ghana or country=nigeria
+
+            gateway (str): The gateway type of the bank.
+            It can be one of these: [emandate, digitalbankmandate]
+
+            currency (str): Any of NGN, USD, GHS or ZAR
+
+        Returns:
+            JSON data from Paystack API with a list of supported banks.
+        """
+
+        # Send the request asynchronously
+        response = await cls().requests.get_async(
+            "bank",
+            query_params=kwargs,
+        )
+
+        # Return the response
+        return response
+
+    @classmethod
     def resolve_account_number(cls, **kwargs):
         """
         Confirm the owner of an account with it's number.

@@ -57,8 +57,7 @@ class TransferRecipientRequests(PaystackBase):
         Get a single transfer recipient.
 
         Args:
-            id_or_code: An ID or code for the recipient
-            whose details you want to obtain.
+            id_or_code: Recipient id or code.
 
         Returns:
             A single transfer recipient.

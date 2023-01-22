@@ -15,8 +15,10 @@ class TransactionRequests(PaystackBase):
             reference: Unique transaction reference
             amount: Transaction amount (in Kobo for Naira payments)
             email: Email address of customer
+            reference: uuidv4 identifier for transaction
             plan: Specified plan for subscriptions (optional)
             channels: Paystack channels to be exposed
+            metadata: Stringified JSON object of custom data.
 
         Returns:
             JSON response with confirmation.
@@ -73,7 +75,7 @@ class TransactionRequests(PaystackBase):
         Get a single transaction.
 
         Args:
-            transaction_id: Transaction id(integer).
+            transaction_id: Transaction id (integer).
 
         Returns:
             A single transaction.
@@ -89,7 +91,13 @@ class TransactionRequests(PaystackBase):
         List transactions.
 
         Args:
-            No argument required.
+            perPage: Records you want to retrieve per page (Integer).
+            page: The page you want to retrieve (Integer).
+            customer: The ID of the customer whose transactions should be retrieved.
+            status: Filter transactions by status.
+            amount: Filter transactions by amount.
+            from: Filter transactions by start date.
+            to: Filter transactions by end date.
 
         Returns:
             A list of transactions.

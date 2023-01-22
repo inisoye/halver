@@ -34,6 +34,8 @@ class SubscriptionRequests(PaystackBase):
         Args:
             perPage: Records you want to retrieve per page (Integer)
             page: The page you want to retrieve (Integer)
+            customer: Filter by customer ID.
+            plan: Filter by plan ID.
 
         Returns:
             A list of subscriptions.
@@ -45,19 +47,19 @@ class SubscriptionRequests(PaystackBase):
         )
 
     @classmethod
-    def fetch(cls, subscription_id_or_code):
+    def fetch(cls, id_or_code):
         """
         Fetch subscription.
 
         Args:
-            subscription_id_or_code: Subscription ID or code.
+            id_or_code: Subscription ID or code.
 
         Returns:
             JSON data for a single subscription.
         """
 
         return cls().requests.get(
-            f"subscription/{subscription_id_or_code}",
+            f"subscription/{id_or_code}",
         )
 
     @classmethod
