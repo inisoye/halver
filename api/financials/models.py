@@ -95,7 +95,7 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
 
 class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
     """
-    Stores fields returned by Paystack to represent an account (nuban)
+    Stores data returned by Paystack to represent an account (nuban)
     or card(authorization) transfer recipient.
     """
 
@@ -137,7 +137,7 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
 
 class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
     """
-    Stores key fields returned by Paystack to represent a plan.
+    Stores data returned by Paystack to represent a plan.
     """
 
     class IntervalChoices(models.TextChoices):
@@ -167,12 +167,201 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
         on_delete=models.CASCADE,
         related_name="paystack_plan",
     )
-    complete_paystack_data = models.JSONField()
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="paystack_plans",
+    )
+    complete_paystack_response = models.JSONField()
 
     def __str__(self) -> str:
-        return f"name: {self.name}, type: {self.interval}"
+        return f"name: {self.name}, interval: {self.interval}, amount: {self.amount}"
+
+    class Meta:
+        ordering = ["-created", "user"]
+        verbose_name = "Paystack Plan"
+        verbose_name_plural = "Paystack Plans"
+
+
+class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
+    """
+    Stores data returned by Paystack to represent a plan.
+    """
+
+    class SubscriptionChoices(models.TextChoices):
+        ACTIVE = "active", "Active"
+        NON_RENEWING = "non-renewing", "Non-renewing"
+        ATTENTION = "attention", "Attention"
+        COMPLETED = "completed", "Completed"
+        CANCELLED = "cancelled", "Cancelled"
+
+    plan = models.ForeignKey(
+        PaystackPlan,
+        on_delete=models.CASCADE,
+        related_name="paystack_subscriptions",
+    )
+    action = models.OneToOneField(
+        Action,
+        on_delete=models.CASCADE,
+        related_name="paystack_subscription",
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="paystack_subscriptions",
+    )
+    status = models.CharField(
+        max_length=50,
+        choices=SubscriptionChoices.choices,
+    )
+    card = models.ForeignKey(
+        UserCard,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="paystack_subscriptions",
+        help_text=(
+            "NULL means the card used for this transaction has been deleted"
+            " on Halver. Check full paystack data for card details."
+        ),
+    )
+    start_date = models.DateTimeField()
+    next_payment_date = models.DateTimeField()
+    complete_paystack_response = models.JSONField()
+
+    def __str__(self) -> str:
+        return (
+            f"user: {self.user.full_name}, plan interval: {self.plan.interval},"
+            f" plan amount: {self.plan.amount}"
+        )
+
+    class Meta:
+        ordering = ["-created", "user"]
+        verbose_name = "Paystack Subscription"
+        verbose_name_plural = "Paystack Subscriptions"
+
+
+class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
+    """
+    Stores data returned by Paystack after a verified card transaction.
+    """
+
+    class TransactionChoices(models.TextChoices):
+        PARTICIPANT_PAYMENT = "participant_payment", "Participant_payment"
+        CARD_ADDITION = "card-addition", "Card-addition"
+
+    class TransactionOutcomeChoices(models.TextChoices):
+        SUCCESSFUL = "successful", "Successful"
+        FAILED = "failed", "Failed"
+
+    amount = models.DecimalField(
+        max_digits=19,
+        decimal_places=4,
+    )
+    card = models.ForeignKey(
+        UserCard,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="paystack_transactions",
+        help_text=(
+            "NULL means the card used for this transaction has been deleted"
+            " on Halver. Check full paystack data for card details."
+        ),
+    )
+    action = models.ForeignKey(
+        Action,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="paystack_transactions",
+    )
+    paying_user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="paystack_transactions",
+    )
+    # TODO Detect failure from both status==False and also data.status!="success"
+    transaction_outcome = models.CharField(
+        max_length=50,
+        choices=TransactionOutcomeChoices.choices,
+    )
+    transaction_type = models.CharField(
+        max_length=50,
+        choices=TransactionChoices.choices,
+    )
+    paystack_transaction_id = models.BigIntegerField()
+    complete_paystack_response = models.JSONField()
+
+    def __str__(self) -> str:
+        return f"amount: {self.amount}, type: {self.transaction_outcome}"
 
     class Meta:
         ordering = ["-created"]
-        verbose_name = "Paystack Plan"
-        verbose_name_plural = "Paystack Plans"
+        verbose_name = "Paystack Transaction"
+        verbose_name_plural = "Paystack Transactions"
+
+
+class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
+    """
+    Stores data returned by Paystack after a verified transfer.
+    """
+
+    class TransferChoices(models.TextChoices):
+        CREDITOR_SETTLEMENT = "creditor-settlement", "Creditor-settlement"
+        CARD_ADDITION_REFUND = "card-addition-refund", "Card-addition-refund"
+
+    class TransferOutcomeChoices(models.TextChoices):
+        SUCCESSFUL = "successful", "Successful"
+        FAILED = "failed", "Failed"
+        REVERSED = "reversed", "Reversed"
+
+    amount = models.DecimalField(
+        max_digits=19,
+        decimal_places=4,
+    )
+    # TODO Create a new uuidv4 for this field. The field should be created at point
+    # the transfer is initiated. Can be made to match the object's uuid field value.
+    paystack_transfer_reference = models.UUIDField(
+        unique=True,
+        editable=False,
+        verbose_name="Public identifier",
+    )
+    recipient = models.ForeignKey(
+        TransferRecipient,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="paystack_transfers_received",
+        help_text=(
+            "NULL means the recipient who received this transfer has been deleted"
+            " on Halver. Check full paystack data for recipient details."
+        ),
+    )
+    action = models.ForeignKey(
+        Action,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="paystack_transfers",
+    )
+    recieving_user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="paystack_transfers_received",
+    )
+    # TODO Success should have data.status=="success" and so on
+    transfer_outcome = models.CharField(
+        max_length=50,
+        choices=TransferOutcomeChoices.choices,
+    )
+    transfer_type = models.CharField(
+        max_length=50,
+        choices=TransferChoices.choices,
+    )
+    complete_paystack_response = models.JSONField()
+
+    def __str__(self) -> str:
+        return f"amount: {self.amount}, type: {self.transfer_outcome}"
+
+    class Meta:
+        ordering = ["-created"]
+        verbose_name = "Paystack Transfer"
+        verbose_name_plural = "Paystack Transfers"

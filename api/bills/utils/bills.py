@@ -15,7 +15,7 @@ def create_actions_for_bill(bill) -> None:
 
     # TODO
     # This function should create paystack plans for each participant if the following
-    # condition passes: if bill.interval != Bill.IntervalChoices.NONE:
+    # condition passes: if bill.is_recurring:
     # The plans should be created by sending API calls to paystack in a background job
     # After the each remote creation in a celery bg task is complete, the plans should
     # also be created locally with 'PaystackPlan.objects.create'. Ensure to avoid n+1.
@@ -67,6 +67,11 @@ def add_contributions_and_fees_to_actions(bill, participant_contribution_index):
         participant_contribution_index:
             A dictionary mapping bill participant UUIDs (as string values) to their
             contributions (string, integer, or float values sent by the client).
+            e.g participant_contribution_index = {
+                "73c9d9b7-fc01-4c01-b22c-cfa7d8f4a75a": "100.00",
+                "2d3837c1-a7e5-4fdd-b181-a4f4e7d4c9d9": 200,
+                "3c2db1bb-6e5f-4420-9c5b-79b524c9d9cd": 300.50,
+            }
     """
 
     from bills.models import Action

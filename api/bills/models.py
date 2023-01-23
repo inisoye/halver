@@ -68,6 +68,10 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         default=0,
     )
 
+    @property
+    def is_recurring(self) -> bool:
+        return self.interval != "none"
+
     def update_contributions_and_fees_for_actions(
         self, participant_contribution_index
     ) -> None:
@@ -77,20 +81,13 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
 
         Args:
             participant_contribution_index:
-            A dictionary mapping bill participant UUIDs (as string values) to their
-            contributions (string, integer, or float values sent by the client).
-            e.g participant_contribution_index = {
-                    "73c9d9b7-fc01-4c01-b22c-cfa7d8f4a75a": "100.00",
-                    "2d3837c1-a7e5-4fdd-b181-a4f4e7d4c9d9": 200,
-                    "3c2db1bb-6e5f-4420-9c5b-79b524c9d9cd": 300.50,
-                }
+            A dictionary mapping bill participant UUIDs to their contributions.
         """
 
         add_contributions_and_fees_to_actions(self, participant_contribution_index)
 
     def save(self, *args, **kwargs) -> None:
         with transaction.atomic():
-            # Save the Bill instance
             super().save(*args, **kwargs)
 
             # Create actions and bill participant objects for every new bill
@@ -105,21 +102,27 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
             )
 
     def __str__(self) -> str:
-        return f"name: {self.name}"
+        return f"name: {self.name}, creator: {self.creator.full_name}"
 
 
 class Action(AbstractTimeStampedUUIDModel, models.Model):
+    """
+    Actions broadly represent a snapshot of a user's standing in a bill.
+    They represent pending actions for users that have not agreed to join a bill.
+    The model is also joined with the Plan and Subscription for recurring bills.
+    """
+
     class StatusChoices(models.TextChoices):
         # For all bill types.
         PENDING = "pending", "Pending"
         OVERDUE = "overdue", "Overdue"
         DECLINED = "declined", "Declined"
         PENDING_TRANSFER = "pending_transfer", "Pending Transfer"
+        CANCELLED = "cancelled", "Cancelled"
         # For one-time bills.
         COMPLETED = "completed", "Completed"
         # For recurring bills.
         ONGOING = "ongoing", "Ongoing"
-        CANCELLED = "cancelled", "Cancelled"
 
     bill = models.ForeignKey(
         Bill,
@@ -160,7 +163,7 @@ class Action(AbstractTimeStampedUUIDModel, models.Model):
 
     def __str__(self) -> str:
         return (
-            f"participant: {self.participant.last_name}, "
+            f"participant: {self.participant.full_name}, "
             f"contribution: {self.contribution}, bill: ({self.bill.name})"
         )
 
@@ -219,11 +222,9 @@ class Transaction(AbstractTimeStampedUUIDModel, models.Model):
         max_length=100,
         blank=True,
     )
-    # Added to make card addition transactions obvious.
-    refundable = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return (
-            f"participant: {self.participant.last_name}, payment: {self.total_payment}, "
+            f"participant: {self.participant.full_name}, payment: {self.total_payment}, "
             f"bill: ({self.bill.name})"
         )

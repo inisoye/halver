@@ -133,6 +133,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         self.email = self.__class__.objects.normalize_email(self.email)
         self.username = self.username.lower()
 
+    @property
+    def full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
+
     def get_full_name(self) -> str:
         """
         Return the first_name plus the last_name, with a space in between.
@@ -156,6 +160,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def get_recipient_codes(self) -> list:
+        """
+        Obtain all the (Paystack) recipient codes for this user.
+
+        Returns:
+            list: A list of this user's recipient codes.
+        """
+
         recipient_codes = self.transfer_recipients.values_list(
             "recipient_code",
             flat=True,
