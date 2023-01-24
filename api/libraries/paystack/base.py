@@ -79,13 +79,13 @@ class PaystackRequest(object):
         self.API_BASE_URL = f"{api_base_url}"
         self.headers = headers
 
-    def _request(self, method, resource_uri, **kwargs):
+    def _request(self, method, endpoint, **kwargs):
         """
-        Perform a method on a resource.
+        Perform an HTTP method on a resource.
 
         Args:
             method: requests.`method`
-            resource_uri: resource endpoint
+            endpoint: resource endpoint
 
         Raises:
             HTTPError
@@ -98,7 +98,7 @@ class PaystackRequest(object):
         query_params = kwargs.get("query_params")
 
         response = method(
-            self.API_BASE_URL + resource_uri,
+            self.API_BASE_URL + endpoint,
             json=data,
             headers=self.headers,
             params=query_params,
