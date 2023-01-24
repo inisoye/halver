@@ -39,6 +39,6 @@ class TransferRecipientListCreateSerializer(serializers.Serializer):
         return data
 
 
-class TransferRecipientDeleteSerializer(serializers.Serializer):
+class TransferRecipientDeleteSerializer(serializers.ModelSerializer):
     model = TransferRecipient
     fields = ("recipient_code",)
