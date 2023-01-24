@@ -16,6 +16,12 @@ User = settings.AUTH_USER_MODEL
 class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     """
     Stores a particular user's bill.
+
+    Should not be deletable. All bill actions should be marked as cancelled when a
+    bill is cancelled instead. Subscriptions should also be ended.
+
+    ! All user's "bills_created", actions and paystack subscriptions should be cancelled.
+    ! when a user deletes their account.
     """
 
     class IntervalChoices(models.TextChoices):
@@ -134,9 +140,22 @@ class Action(AbstractTimeStampedUUIDModel, models.Model):
         on_delete=models.CASCADE,
         related_name="actions",
     )
+    paystack_plan = models.ForeignKey(
+        "financials.PaystackPlan",
+        on_delete=models.PROTECT,
+        null=True,
+        related_name="actions",
+    )
+    paystack_subscription = models.OneToOneField(
+        "financials.PaystackSubscription",
+        on_delete=models.PROTECT,
+        null=True,
+        related_name="paystack_subscription",
+    )
     contribution = models.DecimalField(
         verbose_name="Bill contribution of participant (excludes fees)",
         max_digits=19,
+        null=True,
         decimal_places=4,
     )
     status = models.CharField(
@@ -147,18 +166,22 @@ class Action(AbstractTimeStampedUUIDModel, models.Model):
     paystack_transaction_fee = models.DecimalField(
         max_digits=19,
         decimal_places=4,
+        null=True,
     )
     paystack_transfer_fee = models.DecimalField(
         max_digits=19,
         decimal_places=4,
+        null=True,
     )
     halver_fee = models.DecimalField(
         max_digits=19,
         decimal_places=4,
+        null=True,
     )
     total_fee = models.DecimalField(
         max_digits=19,
         decimal_places=4,
+        null=True,
     )
 
     def __str__(self) -> str:
@@ -178,11 +201,6 @@ class Transaction(AbstractTimeStampedUUIDModel, models.Model):
 
     bill = models.ForeignKey(
         Bill,
-        on_delete=models.CASCADE,
-        related_name="transactions",
-    )
-    participant = models.ForeignKey(
-        User,
         on_delete=models.CASCADE,
         related_name="transactions",
     )
@@ -212,19 +230,20 @@ class Transaction(AbstractTimeStampedUUIDModel, models.Model):
         max_digits=19,
         decimal_places=4,
     )
-    # TODO These Paystack details should probably be inlcuded as joins.
-    # Also consider adding the card used for the transaction, as well as the recipeint.
-    paystack_transaction_reference = models.CharField(
-        max_length=100,
-        blank=True,
+    paystack_transaction = models.OneToOneField(
+        "financials.PaystackTransaction",
+        on_delete=models.PROTECT,
+        related_name="halver_transaction",
     )
-    paystack_transfer_reference = models.CharField(
-        max_length=100,
-        blank=True,
+    paystack_transfer = models.OneToOneField(
+        "financials.PaystackTransfer",
+        on_delete=models.PROTECT,
+        related_name="halver_transaction",
     )
 
     def __str__(self) -> str:
         return (
-            f"participant: {self.participant.full_name}, payment: {self.total_payment}, "
-            f"bill: ({self.bill.name})"
+            f"payer: {self.paystack_transaction.paying_user}, "
+            f"receiver: {self.paystack_transfer.receiving_user}, "
+            f"payment: {self.total_payment}, bill: ({self.bill.name})"
         )
