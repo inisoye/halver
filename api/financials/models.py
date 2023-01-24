@@ -138,6 +138,8 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
 class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
     """
     Stores data returned by Paystack to represent a plan.
+
+    Should not be deletable.
     """
 
     class IntervalChoices(models.TextChoices):
@@ -162,11 +164,6 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
         max_digits=19,
         decimal_places=4,
     )
-    action = models.OneToOneField(
-        Action,
-        on_delete=models.CASCADE,
-        related_name="paystack_plan",
-    )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -185,7 +182,9 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
 
 class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
     """
-    Stores data returned by Paystack to represent a plan.
+    Stores data returned by Paystack to represent a subscription.
+
+    Should not be deletable. Subscriptions should be recorded as cancelled when they end.
     """
 
     class SubscriptionChoices(models.TextChoices):
@@ -199,11 +198,6 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
         PaystackPlan,
         on_delete=models.CASCADE,
         related_name="paystack_subscriptions",
-    )
-    action = models.OneToOneField(
-        Action,
-        on_delete=models.CASCADE,
-        related_name="paystack_subscription",
     )
     user = models.ForeignKey(
         User,
@@ -341,7 +335,7 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
         null=True,
         related_name="paystack_transfers",
     )
-    recieving_user = models.ForeignKey(
+    receiving_user = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
         null=True,
