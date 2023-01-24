@@ -118,13 +118,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
-    class Meta:
-        ordering = ["first_name", "last_name", "email"]
-        verbose_name = _("user")
-        verbose_name_plural = _("users")
-
     def __str__(self) -> str:
-        return f"name: {self.first_name}, {self.last_name} email: ({self.email})"
+        return f"name: {self.full_name}"
 
     def clean(self) -> None:
         super().clean()
@@ -172,3 +167,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             flat=True,
         )
         return list(recipient_codes)
+
+    class Meta:
+        ordering = ["first_name", "last_name", "email"]
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
