@@ -1,7 +1,6 @@
 import datetime
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.db import models, transaction
 
 from bills.utils.bills import (
@@ -9,6 +8,7 @@ from bills.utils.bills import (
     create_actions_for_bill,
 )
 from core.models import AbstractCurrencyModel, AbstractTimeStampedUUIDModel
+from core.utils import validate_date_not_in_past
 
 User = settings.AUTH_USER_MODEL
 
@@ -49,10 +49,22 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     name = models.CharField(
         max_length=100,
     )
-    bill_date = models.DateTimeField()
-    deadline = models.DateTimeField()
+    first_charge_date = models.DateTimeField(
+        blank=True,
+        null=True,
+        default=datetime.datetime.now() + datetime.timedelta(weeks=1),
+    )
+    next_charge_date = models.DateTimeField(
+        blank=True,
+        null=True,
+    )
+    deadline = models.DateTimeField(
+        blank=True,
+        null=True,
+    )
     evidence = models.FileField(
         blank=True,
+        null=True,
     )
     interval = models.CharField(
         max_length=50,
@@ -61,6 +73,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     )
     notes = models.TextField(
         blank=True,
+        null=True,
     )
     total_amount_due = models.DecimalField(
         verbose_name="Total amount to be paid",
@@ -82,12 +95,11 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         self, participant_contribution_index
     ) -> None:
         """
-        Designed to be called from a view to add contribution amounts and resulting
-        fees to actions associated with a bill.
+        Called from view. Adds contribution amounts and fees to bill actions.
 
         Args:
-            participant_contribution_index:
-            A dictionary mapping bill participant UUIDs to their contributions.
+            participant_contribution_index: Dictionary connecting participant uuids
+            with contributions.
         """
 
         add_contributions_and_fees_to_actions(self, participant_contribution_index)
@@ -96,16 +108,18 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         with transaction.atomic():
             super().save(*args, **kwargs)
 
-            # Create actions and bill participant objects for every new bill
             if self.pk is None:
                 create_actions_for_bill(self)
 
+    def _validate_dates(self) -> None:
+        if self.is_recurring:
+            validate_date_not_in_past(self.first_charge_date, "First Charge Date")
+            validate_date_not_in_past(self.next_charge_date, "Next Charge Date")
+        else:
+            validate_date_not_in_past(self.deadline, "Deadline")
+
     def clean(self) -> None:
-        if self.deadline < datetime.date.today():
-            raise ValidationError(
-                "The deadline of a bill cannot be in the past.",
-                " Use the bill date field instead.",
-            )
+        self._validate_dates()
 
     def __str__(self) -> str:
         return f"name: {self.name}, creator: {self.creator.full_name}"
@@ -114,7 +128,6 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
 class Action(AbstractTimeStampedUUIDModel, models.Model):
     """
     Actions broadly represent a snapshot of a user's standing in a bill.
-    They represent pending actions for users that have not agreed to join a bill.
     The model is also joined with the Plan and Subscription for recurring bills.
     """
 

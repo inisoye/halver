@@ -14,9 +14,9 @@ def create_actions_for_bill(bill) -> None:
     from bills.models import Action
 
     # TODO
-    # This function should create paystack plans for each participant if the following
-    # condition passes: if bill.is_recurring:
-    # The plans should be created by sending API calls to paystack in a background job
+    # This function should create paystack one paystack plan for the bill if the
+    # following condition passes: if bill.is_recurring:
+    # The plan should be created by sending an API call to paystack in a background job
     # After the each remote creation in a celery bg task is complete, the plans should
     # also be created locally with 'PaystackPlan.objects.create'. Ensure to avoid n+1.
     # Actions should be created for participants as usual before the plans are created.
