@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from financials.models import TransferRecipient, UserCard
-from financials.utils.recipients import validate_new_recipient_data
+from financials.utils.validation import validate_new_recipient_data
 
 
 class UserCardSerializer(serializers.ModelSerializer):
@@ -19,6 +19,7 @@ class UserCardSerializer(serializers.ModelSerializer):
             "last4",
             "signature",
             "user",
+            "created",
             "uuid",
         )
 
