@@ -23,11 +23,10 @@ def validate_new_recipient_data(data):
         required_fields = ["email", "authorization_code"]
         readable_recipient_type = "card"
     else:
-        required_fields = []
-        readable_recipient_type = ""
+        raise serializers.ValidationError("Unknown recipient type")
 
     for field in required_fields:
-        if not data[field]:
+        if not data.get(field):
             field_name = remove_underscores(field)
             error_message = (
                 f"Your {field_name} is required "
