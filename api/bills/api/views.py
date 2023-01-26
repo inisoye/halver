@@ -26,9 +26,9 @@ class BillCreateView(APIView):
             # Remove amount paid as it should default to zero on bill creation.
             serializer.validated_data.pop("total_amount_paid", None)
             # Pick out index for updating actions later.
-            participant_contribution_index = serializer.validated_data.pop(
-                "participant_contribution_index", None
-            )
+            # participant_contribution_index = serializer.validated_data.pop(
+            #     "participant_contribution_index", None
+            # )
 
         except ValidationError as e:
             return Response(
