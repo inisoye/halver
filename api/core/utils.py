@@ -12,7 +12,7 @@ def get_user_by_id(user_id) -> CustomUser:
     Get user by ID.
 
     Args:
-        user_id (str): The ID of the user to retrieve.
+        user_id (str): The UUID of the user to retrieve.
 
     Returns:
         CustomUser: The user with the specified ID.
