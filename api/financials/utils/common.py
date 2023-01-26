@@ -1,3 +1,6 @@
+from django.db import transaction
+
+
 def set_as_default(self, model_name: str) -> None:
     """
     Sets current (card or transfer recipient) instance as the default model instance.
@@ -15,6 +18,7 @@ def set_as_default(self, model_name: str) -> None:
         raise ValueError("Invalid model name")
 
     if not self.is_default:
-        model_manager.update(is_default=False)
-        self.is_default = True
-        self.save(update_fields=["is_default"])
+        with transaction.atomic():
+            model_manager.update(is_default=False)
+            self.is_default = True
+            self.save(update_fields=["is_default"])
