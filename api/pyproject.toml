@@ -31,6 +31,7 @@ test-m = "poetry run python manage.py makemigrations --dry-run"
 make-m = "poetry run python manage.py makemigrations"
 show-m = "poetry run python manage.py showmigrations"
 m = "poetry run python manage.py migrate"
+create-su = "poetry run python manage.py createsuperuser"
 
 [build-system]
 requires = ["poetry-core"]
