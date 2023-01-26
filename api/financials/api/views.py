@@ -1,6 +1,7 @@
 import asyncio
 
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import (
@@ -10,16 +11,25 @@ from rest_framework.generics import (
     RetrieveDestroyAPIView,
     UpdateAPIView,
 )
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.utils import get_user_by_id
 from financials.api.permissions import IsOwner
 from financials.api.serializers import (
+    PaystackTransferRecipientListSerializer,
+    TransferRecipientCreateSerializer,
     TransferRecipientDeleteSerializer,
-    TransferRecipientListCreateSerializer,
+    TransferRecipientListSerializer,
     UserCardSerializer,
 )
 from financials.models import TransferRecipient, UserCard
+from financials.utils.transfer_recipients import (
+    format_create_paystack_transfer_recipient_response,
+    generate_paystack_transfer_recipient_payload,
+    return_readable_recipient_type,
+)
 from libraries.paystack.transfer_recipient_requests import TransferRecipientRequests
 
 
@@ -71,7 +81,7 @@ class DefaultCardUpdateView(UpdateAPIView):
         """
 
         card = self.get_object()
-        card.set_as_default()
+        card.set_as_default_card()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -109,16 +119,18 @@ class UserCardRetrieveDestroyView(RetrieveDestroyAPIView):
     serializer_class = UserCardSerializer
 
 
-class TransferRecipientListCreateAPIView(APIView):
+class PaystackTransferRecipientListAPIView(APIView):
     """
-    View for managing transfer recipients.
+    View for obtaining a specified user's transfer recipients directly
+    from the Paystack API. Could be used to check any user's added data.
 
-    Accepts GET and POST requests.
+    Accepts GET requests.
     """
 
-    permission_classes = (IsOwner,)
-    serializer_class = TransferRecipientListCreateSerializer
+    permission_classes = (IsAdminUser,)
+    serializer_class = PaystackTransferRecipientListSerializer
 
+    @extend_schema(parameters=[PaystackTransferRecipientListSerializer])
     def get(self, request) -> Response:
         """
         Handles GET requests to retrieve a list of transfer recipients.
@@ -127,11 +139,44 @@ class TransferRecipientListCreateAPIView(APIView):
             A list of transfer recipient objects.
         """
 
-        recipient_codes = self.request.user.get_recipient_codes()
+        serializer = self.serializer_class(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        user_id = serializer.validated_data.get("user_id")
+
+        user = get_user_by_id(user_id)
+
+        recipient_codes = user.get_recipient_codes()
         recipients = asyncio.run(
             TransferRecipientRequests.fetch_multiple(recipient_codes)
         )
         return Response(recipients, status=status.HTTP_200_OK)
+
+
+class TransferRecipientListCreateAPIView(APIView):
+    """
+    View for managing transfer recipients.
+
+    Accepts GET and POST requests.
+    """
+
+    permission_classes = (IsOwner,)
+    list_serializer_class = TransferRecipientListSerializer
+    create_serializer_class = TransferRecipientCreateSerializer
+    queryset = TransferRecipient.objects.all()
+
+    def get(self, request) -> Response:
+        """
+        Retrieves a list of all transfer recipients for the current user.
+
+        Returns:
+            A list of transfer recipients for the current user in JSON format,
+            with a status code of 200.
+        """
+
+        queryset = self.queryset.filter(user=self.request.user)
+        serializer = self.list_serializer_class(queryset, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request) -> Response:
         """
@@ -141,20 +186,47 @@ class TransferRecipientListCreateAPIView(APIView):
             A dictionary containing the details of the new transfer recipient.
         """
 
-        serializer = TransferRecipientListCreateSerializer(data=self.request.data)
+        serializer = self.create_serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        response = TransferRecipientRequests.create(**serializer.validated_data)
+        paystack_payload = generate_paystack_transfer_recipient_payload(
+            serializer.validated_data
+        )
+
+        response = TransferRecipientRequests.create(**paystack_payload)
 
         if response["status"]:
-            TransferRecipient.objects.get_or_create(
-                recipient_code=response["data"]["recipient_code"],
-                recipient_type=response["data"]["type"],
+            recipient_type = response["data"]["type"]
+            readable_recipient_type = return_readable_recipient_type(recipient_type)
+            authorization_code = response["data"]["details"]["authorization_code"]
+
+            formatted_paystack_response = (
+                format_create_paystack_transfer_recipient_response(response)
+            )
+
+            recipient, created = TransferRecipient.objects.get_or_create(
+                **formatted_paystack_response,
                 user=self.request.user,
             )
 
+            if recipient_type == "authorization":
+                associated_card_object = get_object_or_404(
+                    UserCard, authorization_code=authorization_code
+                )
+                recipient.associated_card = associated_card_object
+
+            recipient.set_as_default_recipient()
+
+            if not created:
+                return Response(
+                    (
+                        f"This {readable_recipient_type} has been previously"
+                        f" added to your account on Halver."
+                    ),
+                    status=status.HTTP_409_CONFLICT,
+                )
+
             return Response(
-                response,
                 status=status.HTTP_201_CREATED,
             )
 

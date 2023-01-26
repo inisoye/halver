@@ -24,20 +24,59 @@ class UserCardSerializer(serializers.ModelSerializer):
         )
 
 
-class TransferRecipientListCreateSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=100, required=True)
-    type = serializers.ChoiceField(
-        choices=TransferRecipient.RecipientChoices.choices,
-        required=True,
-    )
-    account_number = serializers.CharField(
-        max_length=10, allow_blank=True, required=False
-    )
-    bank_code = serializers.CharField(max_length=5, allow_blank=True, required=False)
-    email = serializers.EmailField(allow_blank=True, required=False)
-    authorization_code = serializers.CharField(
-        max_length=100, allow_blank=True, required=False
-    )
+class PaystackTransferRecipientListSerializer(serializers.Serializer):
+    user_id = serializers.UUIDField(required=True)
+
+
+class TransferRecipientListSerializer(serializers.ModelSerializer):
+    recipient_type = serializers.SerializerMethodField()
+
+    def get_recipient_type(self, obj):
+        """
+        Returns the human-readable version of the recipient_type field.
+        https://docs.djangoproject.com/en/dev/ref/models/instances/#django.db.models.Model.get_FOO_display
+
+        Parameters:
+            obj (TransferRecipient): An instance of the TransferRecipient model.
+
+        Returns:
+            str: A human-readable string of the recipient_type field.
+        """
+
+        return obj.get_recipient_type_display()
+
+    class Meta:
+        model = TransferRecipient
+        fields = (
+            "is_default",
+            "recipient_code",
+            "recipient_type",
+            "name",
+            "account_number",
+            "bank_code",
+            "email",
+            "authorization_code",
+            "associated_card",
+            "created",
+            "modified",
+            "uuid",
+        )
+
+        read_only = "__all__"
+
+
+class TransferRecipientCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransferRecipient
+        fields = (
+            "is_default",
+            "recipient_type",
+            "name",
+            "account_number",
+            "bank_code",
+            "email",
+            "authorization_code",
+        )
 
     def validate(self, data):
         validate_new_recipient_data(data)

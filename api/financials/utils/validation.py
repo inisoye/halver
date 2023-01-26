@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from core.utils import remove_underscores
+from financials.utils.transfer_recipients import return_readable_recipient_type
 
 
 def validate_new_recipient_data(data):
@@ -16,12 +17,14 @@ def validate_new_recipient_data(data):
 
     from financials.models import TransferRecipient
 
-    if data["type"] == TransferRecipient.RecipientChoices.ACCOUNT:
+    if data["recipient_type"] == TransferRecipient.RecipientChoices.ACCOUNT:
         required_fields = ["account_number", "bank_code"]
-        readable_recipient_type = "bank account"
-    elif data["type"] == TransferRecipient.RecipientChoices.CARD:
+        readable_recipient_type = return_readable_recipient_type(data["recipient_type"])
+
+    elif data["recipient_type"] == TransferRecipient.RecipientChoices.CARD:
         required_fields = ["email", "authorization_code"]
-        readable_recipient_type = "card"
+        readable_recipient_type = return_readable_recipient_type(data["recipient_type"])
+
     else:
         raise serializers.ValidationError("Unknown recipient type")
 
