@@ -1,5 +1,3 @@
-import datetime
-
 from django.conf import settings
 from django.db import models, transaction
 
@@ -8,9 +6,7 @@ from bills.utils.bills import (
     create_actions_for_bill,
 )
 from core.models import AbstractCurrencyModel, AbstractTimeStampedUUIDModel
-from core.utils import validate_date_not_in_past
-
-User = settings.AUTH_USER_MODEL
+from core.utils import get_one_week_from_now, validate_date_not_in_past
 
 
 class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
@@ -33,26 +29,27 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         NONE = "none", "None"
 
     creator = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
         related_name="bills_created",
     )
     creditor = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
         related_name="bills_collected",
     )
     participants = models.ManyToManyField(
-        User,
+        settings.AUTH_USER_MODEL,
         related_name="bills",
     )
     name = models.CharField(
         max_length=100,
     )
+    # TODO find a way to make this field uneditable after bill creation.
     first_charge_date = models.DateTimeField(
         blank=True,
         null=True,
-        default=datetime.datetime.now() + datetime.timedelta(weeks=1),
+        default=get_one_week_from_now,
     )
     next_charge_date = models.DateTimeField(
         blank=True,
@@ -149,7 +146,7 @@ class Action(AbstractTimeStampedUUIDModel, models.Model):
         related_name="actions",
     )
     participant = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="actions",
     )
