@@ -30,10 +30,14 @@ class TransferRecipientListCreateSerializer(serializers.Serializer):
         choices=TransferRecipient.RecipientChoices.choices,
         required=True,
     )
-    account_number = serializers.CharField(max_length=10, allow_blank=True)
-    bank_code = serializers.CharField(max_length=5, allow_blank=True)
-    email = serializers.EmailField(allow_blank=True)
-    authorization_code = serializers.CharField(max_length=100, allow_blank=True)
+    account_number = serializers.CharField(
+        max_length=10, allow_blank=True, required=False
+    )
+    bank_code = serializers.CharField(max_length=5, allow_blank=True, required=False)
+    email = serializers.EmailField(allow_blank=True, required=False)
+    authorization_code = serializers.CharField(
+        max_length=100, allow_blank=True, required=False
+    )
 
     def validate(self, data):
         validate_new_recipient_data(data)
@@ -41,5 +45,6 @@ class TransferRecipientListCreateSerializer(serializers.Serializer):
 
 
 class TransferRecipientDeleteSerializer(serializers.ModelSerializer):
-    model = TransferRecipient
-    fields = ("recipient_code",)
+    class Meta:
+        model = TransferRecipient
+        fields = ("recipient_code",)

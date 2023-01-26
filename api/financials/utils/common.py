@@ -14,6 +14,7 @@ def set_as_default(self, model_name: str) -> None:
     else:
         raise ValueError("Invalid model name")
 
-    model_manager.update(is_default=False)
-    self.is_default = True
-    self.save(update_fields=["is_default"])
+    if not self.is_default:
+        model_manager.update(is_default=False)
+        self.is_default = True
+        self.save(update_fields=["is_default"])

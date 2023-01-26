@@ -119,7 +119,7 @@ class TransferRecipientListCreateAPIView(APIView):
     permission_classes = (IsOwner,)
     serializer_class = TransferRecipientListCreateSerializer
 
-    def get(self) -> Response:
+    def get(self, request) -> Response:
         """
         Handles GET requests to retrieve a list of transfer recipients.
 
@@ -133,7 +133,7 @@ class TransferRecipientListCreateAPIView(APIView):
         )
         return Response(recipients, status=status.HTTP_200_OK)
 
-    def post(self) -> Response:
+    def post(self, request) -> Response:
         """
         Creates a new transfer recipient.
 
@@ -142,33 +142,25 @@ class TransferRecipientListCreateAPIView(APIView):
         """
 
         serializer = TransferRecipientListCreateSerializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
 
-        try:
-            serializer.is_valid(raise_exception=True)
+        response = TransferRecipientRequests.create(**serializer.validated_data)
 
-            response = TransferRecipientRequests.create(**serializer.validated_data)
+        if response["status"]:
+            TransferRecipient.objects.get_or_create(
+                recipient_code=response["data"]["recipient_code"],
+                recipient_type=response["data"]["type"],
+                user=self.request.user,
+            )
 
-            if response["status"]:
-                recipient = TransferRecipient.objects.create(
-                    recipient_code=response["data"]["recipient_code"],
-                    recipient_type=response["data"]["type"],
-                    user=self.request.user,
-                )
-
-                return Response(
-                    TransferRecipientListCreateSerializer(recipient).data,
-                    status=status.HTTP_201_CREATED,
-                )
-
-            else:
-                return Response(
-                    response["message"],
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-        except ValidationError as e:
             return Response(
-                e.detail,
+                response,
+                status=status.HTTP_201_CREATED,
+            )
+
+        else:
+            return Response(
+                response["message"],
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
