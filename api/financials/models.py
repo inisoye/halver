@@ -4,9 +4,6 @@ from django.db import models
 from bills.models import Action
 from core.models import AbstractTimeStampedUUIDModel
 from financials.utils.cards import create_card
-from financials.utils.common import set_as_default
-
-User = settings.AUTH_USER_MODEL
 
 
 class UserCard(AbstractTimeStampedUUIDModel, models.Model):
@@ -59,23 +56,16 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
         max_length=100,
     )
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="cards",
     )
 
     def __str__(self) -> str:
         return (
-            f"user: {self.user.last_name}, card: {self.last4}, "
+            f"user: {self.user.full_name}, card: {self.last4}, "
             f"card type: ({self.card_type})"
         )
-
-    def save(self, *args, **kwargs) -> None:
-        if self.pk is None:
-            # Make every new card the default card
-            set_as_default(self, "user_card")
-
-        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ["-created", "user"]
@@ -114,20 +104,13 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         choices=RecipientChoices.choices,
     )
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="transfer_recipients",
     )
 
     def __str__(self) -> str:
-        return f"user: {self.user.last_name}, type: {self.recipient_type}"
-
-    def save(self, *args, **kwargs) -> None:
-        if self.pk is None:
-            # Make every new recipient the default recipient
-            set_as_default(self, "transfer_recipient")
-
-        super().save(*args, **kwargs)
+        return f"user: {self.user.full_name}, type: {self.recipient_type}"
 
     class Meta:
         ordering = ["-created", "user"]
@@ -165,7 +148,7 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
         decimal_places=4,
     )
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="paystack_plans",
     )
@@ -200,7 +183,7 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
         related_name="paystack_subscriptions",
     )
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="paystack_subscriptions",
     )
@@ -268,7 +251,7 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
         related_name="paystack_transactions",
     )
     paying_user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
         related_name="paystack_transactions",
@@ -336,7 +319,7 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
         related_name="paystack_transfers",
     )
     receiving_user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
         related_name="paystack_transfers_received",
