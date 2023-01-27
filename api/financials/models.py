@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from bills.models import Action
@@ -61,7 +62,9 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
         on_delete=models.CASCADE,
         related_name="cards",
     )
-    complete_paystack_response = models.JSONField()
+    complete_paystack_response = models.JSONField(
+        editable=False,
+    )
 
     def __str__(self) -> str:
         return (
@@ -96,7 +99,7 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
 
     class RecipientChoices(models.TextChoices):
         CARD = "authorization", "Card"
-        ACCOUNT = "nuban", "Account"
+        ACCOUNT = "nuban", "Bank account"
 
     is_default = models.BooleanField(
         default=False,
@@ -146,13 +149,26 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         null=True,
         related_name="associated_transfer_recipient",
     )
-    complete_paystack_response = models.JSONField()
+    complete_paystack_response = models.JSONField(
+        editable=False,
+    )
 
     def __str__(self) -> str:
-        return f"user: {self.user.full_name}, type: {self.recipient_type}"
+        return f"user: {self.user.full_name}, type: {self.recipient_type}, " + (
+            f"bank name: {self.bank_name}" if self.bank_name else ""
+        )
 
     def set_as_default_recipient(self) -> None:
         set_as_default(self, "transfer_recipient")
+
+    def set_associated_card(self, authorization_code):
+        try:
+            card = UserCard.objects.get(authorization_code=authorization_code)
+            self.associated_card = card
+            self.save()
+
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist("No card was found with that authorization code")
 
     class Meta:
         ordering = ["-created", "user"]
@@ -194,7 +210,9 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
         on_delete=models.CASCADE,
         related_name="paystack_plans",
     )
-    complete_paystack_response = models.JSONField()
+    complete_paystack_response = models.JSONField(
+        editable=False,
+    )
 
     def __str__(self) -> str:
         return f"name: {self.name}, interval: {self.interval}, amount: {self.amount}"
@@ -245,7 +263,9 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
     )
     start_date = models.DateTimeField()
     next_payment_date = models.DateTimeField()
-    complete_paystack_response = models.JSONField()
+    complete_paystack_response = models.JSONField(
+        editable=False,
+    )
 
     def __str__(self) -> str:
         return (
@@ -308,7 +328,9 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
         choices=TransactionChoices.choices,
     )
     paystack_transaction_id = models.BigIntegerField()
-    complete_paystack_response = models.JSONField()
+    complete_paystack_response = models.JSONField(
+        editable=False,
+    )
 
     def __str__(self) -> str:
         return f"amount: {self.amount}, type: {self.transaction_outcome}"
@@ -375,7 +397,9 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
         max_length=50,
         choices=TransferChoices.choices,
     )
-    complete_paystack_response = models.JSONField()
+    complete_paystack_response = models.JSONField(
+        editable=False,
+    )
 
     def __str__(self) -> str:
         return f"amount: {self.amount}, type: {self.transfer_outcome}"

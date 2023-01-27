@@ -197,6 +197,9 @@ class TransferRecipientListCreateAPIView(APIView):
     def post(self, request) -> Response:
         """
         Creates a new transfer recipient.
+
+        Returns:
+            An empty response.
         """
 
         serializer = self.create_serializer_class(data=request.data)
@@ -211,7 +214,6 @@ class TransferRecipientListCreateAPIView(APIView):
         if response["status"]:
             recipient_type = response["data"]["type"]
             readable_recipient_type = return_readable_recipient_type(recipient_type)
-            authorization_code = response["data"]["details"]["authorization_code"]
 
             formatted_paystack_response = (
                 format_create_paystack_transfer_recipient_response(response)
@@ -222,11 +224,10 @@ class TransferRecipientListCreateAPIView(APIView):
                 user=self.request.user,
             )
 
-            if recipient_type == "authorization":
-                associated_card_object = get_object_or_404(
-                    UserCard, authorization_code=authorization_code
+            if recipient_type == TransferRecipient.RecipientChoices.CARD:
+                recipient.set_associated_card(
+                    response["data"]["details"]["authorization_code"]
                 )
-                recipient.associated_card = associated_card_object
 
             recipient.set_as_default_recipient()
 
@@ -267,10 +268,10 @@ class TransferRecipientsDestroyView(DestroyAPIView):
         Deletes a transfer recipient.
 
         Args:
-            instance: The transfer recipient object to delete.
+            instance: The transfer recipient object to be deleted.
 
         Returns:
-            None
+            An empty response.
         """
 
         response = TransferRecipientRequests.delete(instance.recipient_code)
