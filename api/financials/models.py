@@ -126,6 +126,11 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         blank=True,
         null=True,
     )
+    bank_name = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
     email = models.EmailField(
         blank=True,
         null=True,

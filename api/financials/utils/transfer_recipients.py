@@ -49,6 +49,7 @@ def format_create_paystack_transfer_recipient_response(paystack_response):
         name=response_data_object["name"],
         account_number=response_data_details_object["account_number"],
         bank_code=response_data_details_object["bank_code"],
+        bank_name=response_data_details_object["bank_name"],
         email=response_data_object["email"],
         authorization_code=response_data_details_object["authorization_code"],
         complete_paystack_response=paystack_response,
