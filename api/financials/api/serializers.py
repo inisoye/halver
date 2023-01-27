@@ -54,11 +54,11 @@ class TransferRecipientListSerializer(serializers.ModelSerializer):
             "name",
             "account_number",
             "bank_code",
+            "bank_name",
             "email",
             "authorization_code",
             "associated_card",
             "created",
-            "modified",
             "uuid",
         )
 
@@ -83,7 +83,12 @@ class TransferRecipientCreateSerializer(serializers.ModelSerializer):
         return data
 
 
-class TransferRecipientDeleteSerializer(serializers.ModelSerializer):
+class TransferRecipientUpdateDeleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransferRecipient
-        fields = ("recipient_code",)
+        fields = (
+            "recipient_code",
+            "uuid",
+            "is_default",
+        )
+        read_only = ("recipient_code", "uuid")

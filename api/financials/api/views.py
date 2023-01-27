@@ -1,7 +1,7 @@
 import asyncio
 
 from django.shortcuts import get_object_or_404
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import (
@@ -20,8 +20,8 @@ from financials.api.permissions import IsOwner
 from financials.api.serializers import (
     PaystackTransferRecipientListSerializer,
     TransferRecipientCreateSerializer,
-    TransferRecipientDeleteSerializer,
     TransferRecipientListSerializer,
+    TransferRecipientUpdateDeleteSerializer,
     UserCardSerializer,
 )
 from financials.models import TransferRecipient, UserCard
@@ -57,6 +57,7 @@ class DefaultCardRetrieveView(RetrieveAPIView):
         get_object_or_404(queryset)
 
 
+@extend_schema(request=None, responses={204: OpenApiResponse()})
 class DefaultCardUpdateView(UpdateAPIView):
     """
     View for updating the default card for a user.
@@ -68,8 +69,9 @@ class DefaultCardUpdateView(UpdateAPIView):
     permission_classes = (IsOwner,)
     queryset = UserCard.objects.all()
     serializer_class = UserCardSerializer
+    http_method_names = ["patch"]
 
-    def update(self) -> Response:
+    def partial_update(self, request, uuid) -> Response:
         """
         Sets the card with the given UUID as the default card for the current user.
 
@@ -130,7 +132,12 @@ class PaystackTransferRecipientListAPIView(APIView):
     permission_classes = (IsAdminUser,)
     serializer_class = PaystackTransferRecipientListSerializer
 
-    @extend_schema(parameters=[PaystackTransferRecipientListSerializer])
+    @extend_schema(
+        parameters=[PaystackTransferRecipientListSerializer],
+        responses={
+            200: OpenApiResponse(description="Recipients obtained successfully."),
+        },
+    )
     def get(self, request) -> Response:
         """
         Handles GET requests to retrieve a list of transfer recipients.
@@ -160,6 +167,7 @@ class TransferRecipientListCreateAPIView(APIView):
     """
 
     permission_classes = (IsOwner,)
+    serializer_class = TransferRecipientListSerializer
     list_serializer_class = TransferRecipientListSerializer
     create_serializer_class = TransferRecipientCreateSerializer
     queryset = TransferRecipient.objects.all()
@@ -178,12 +186,17 @@ class TransferRecipientListCreateAPIView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        responses={
+            201: OpenApiResponse(),
+            400: OpenApiResponse(description="Bad request (Something invalid)"),
+            404: OpenApiResponse(description="Not found"),
+            409: OpenApiResponse(description="Recipient has been added previously"),
+        },
+    )
     def post(self, request) -> Response:
         """
         Creates a new transfer recipient.
-
-        Returns:
-            A dictionary containing the details of the new transfer recipient.
         """
 
         serializer = self.create_serializer_class(data=request.data)
@@ -247,7 +260,7 @@ class TransferRecipientsDestroyView(DestroyAPIView):
     lookup_field = "recipient_code"
     permission_classes = (IsOwner,)
     queryset = TransferRecipient.objects.all()
-    serializer_class = TransferRecipientDeleteSerializer
+    serializer_class = TransferRecipientUpdateDeleteSerializer
 
     def perform_destroy(self, instance):
         """
@@ -266,3 +279,35 @@ class TransferRecipientsDestroyView(DestroyAPIView):
             instance.delete()
         else:
             raise ValidationError(response["message"])
+
+
+@extend_schema(request=None, responses={204: OpenApiResponse()})
+class DefaultTransferRecipientUpdateView(UpdateAPIView):
+    """
+    View for updating the default transfer recipient for a user.
+
+    Accepts PUT requests.
+    """
+
+    lookup_field = "uuid"
+    permission_classes = (IsOwner,)
+    queryset = TransferRecipient.objects.all()
+    serializer_class = TransferRecipientUpdateDeleteSerializer
+    http_method_names = ["patch"]
+
+    def partial_update(self, request, uuid) -> Response:
+        """
+        Sets the recipient with the given UUID as the default recipient
+        for the current user.
+
+        Args:
+            uuid: The UUID of the recipient to be set as the default recipient.
+
+        Returns:
+            An empty response.
+        """
+
+        transfer_recipient = self.get_object()
+        transfer_recipient.set_as_default_recipient()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
