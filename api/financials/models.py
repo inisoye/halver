@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from bills.models import Action
@@ -160,15 +159,6 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
 
     def set_as_default_recipient(self) -> None:
         set_as_default(self, "transfer_recipient")
-
-    def set_associated_card(self, authorization_code):
-        try:
-            card = UserCard.objects.get(authorization_code=authorization_code)
-            self.associated_card = card
-            self.save()
-
-        except ObjectDoesNotExist:
-            raise ObjectDoesNotExist("No card was found with that authorization code")
 
     class Meta:
         ordering = ["-created", "user"]

@@ -225,9 +225,14 @@ class TransferRecipientListCreateAPIView(APIView):
             )
 
             if recipient_type == TransferRecipient.RecipientChoices.CARD:
-                recipient.set_associated_card(
-                    response["data"]["details"]["authorization_code"]
+                associated_card_object = get_object_or_404(
+                    UserCard,
+                    authorization_code=response["data"]["details"][
+                        "authorization_code"
+                    ],
                 )
+                # Join the card model to recipient. Done here for brevity.
+                recipient.associated_card = associated_card_object
 
             recipient.set_as_default_recipient()
 
