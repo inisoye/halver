@@ -25,11 +25,13 @@ from financials.api.serializers import (
     UserCardSerializer,
 )
 from financials.models import TransferRecipient, UserCard
+from financials.utils.cards import format_add_card_paystack_payload
 from financials.utils.transfer_recipients import (
     format_create_paystack_transfer_recipient_response,
     generate_paystack_transfer_recipient_payload,
     return_readable_recipient_type,
 )
+from libraries.paystack.transaction_requests import TransactionRequests
 from libraries.paystack.transfer_recipient_requests import TransferRecipientRequests
 
 
@@ -85,6 +87,39 @@ class DefaultCardUpdateView(UpdateAPIView):
         card = self.get_object()
         card.set_as_default_card()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserCardAdditionTransactionAPIView(APIView):
+    """
+    View for handling card addition Paystack transaction.
+
+    Accepts GET requests.
+    """
+
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(description="Transaction initialized successfully."),
+        },
+    )
+    def post(self, request) -> Response:
+        """
+        Initializes a Paystack transaction strictly for card addition.
+
+        Returns:
+            JSON response from Paystack.
+        """
+
+        user = self.request.user
+
+        CARD_ADDITION_CHARGE_AMOUNT = 60
+
+        paystack_payload = format_add_card_paystack_payload(
+            CARD_ADDITION_CHARGE_AMOUNT, user
+        )
+
+        response = TransactionRequests.initialize(**paystack_payload)
+
+        return Response(response, status=status.HTTP_200_OK)
 
 
 class UserCardListView(ListAPIView):
@@ -285,6 +320,30 @@ class TransferRecipientsDestroyView(DestroyAPIView):
             instance.delete()
         else:
             raise ValidationError(response["message"])
+
+
+class DefaultTransferRecipientRetrieveView(RetrieveAPIView):
+    """
+    View for retrieving the default transfer recipient for a user.
+
+    Accepts GET requests.
+    """
+
+    permission_classes = (IsOwner,)
+    queryset = TransferRecipient.objects.all()
+    serializer_class = TransferRecipientListSerializer
+
+    def get_object(self):
+        """
+        Returns the default transfer recipient for the current user.
+
+        Returns:
+            The default transfer recipient object.
+        """
+
+        user = self.request.user
+        queryset = user.transfer_recipients.filter(is_default=True)
+        return get_object_or_404(queryset)
 
 
 @extend_schema(request=None, responses={204: OpenApiResponse()})

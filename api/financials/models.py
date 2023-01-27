@@ -286,6 +286,12 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
         max_digits=19,
         decimal_places=4,
     )
+    refundable_amount = models.DecimalField(
+        max_digits=19,
+        decimal_places=4,
+        blank=True,
+        null=True,
+    )
     card = models.ForeignKey(
         UserCard,
         on_delete=models.SET_NULL,

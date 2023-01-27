@@ -3,7 +3,10 @@ from typing import TypedDict, Union
 
 
 def calculate_paystack_transaction_fee(
-    price: Union[int, Decimal], decimal_fee=Decimal(0.015), flat_fee=100, fee_cap=2000
+    price: Union[int, Decimal],
+    decimal_fee=Decimal("0.015"),
+    flat_fee=100,
+    fee_cap=2000,
 ) -> Decimal:
     """
     Calculate the final amount for Paystack's transaction fee
@@ -32,7 +35,7 @@ def calculate_paystack_transaction_fee(
         if applicable_fees > fee_cap:
             final_amount = price + fee_cap
         else:
-            final_amount = ((price + flat_fee) / (1 - decimal_fee)) + Decimal(0.01)
+            final_amount = ((price + flat_fee) / (1 - decimal_fee)) + Decimal("0.01")
 
     else:
         applicable_fees = decimal_fee * price
@@ -40,7 +43,7 @@ def calculate_paystack_transaction_fee(
         if applicable_fees > fee_cap:
             final_amount = price + fee_cap
         else:
-            final_amount = (price / (1 - decimal_fee)) + Decimal(0.01)
+            final_amount = (price / (1 - decimal_fee)) + Decimal("0.01")
 
     return final_amount - price
 
@@ -92,16 +95,20 @@ def calculate_all_transaction_fees(amount: Union[int, Decimal]):
 
     paystack_transaction_fee = calculate_paystack_transaction_fee(amount)
     paystack_transfer_fee = calculate_paystack_transfer_fee(amount)
+    total_paystack_fee = paystack_transaction_fee + paystack_transfer_fee
 
-    halver_fee = paystack_transaction_fee + paystack_transfer_fee
+    halver_fee = total_paystack_fee
 
-    total_fee = paystack_transaction_fee + paystack_transfer_fee + halver_fee
+    total_fee = total_paystack_fee + halver_fee
+
+    card_addition_refund = Decimal(amount) - total_fee
 
     all_transaction_fees = {
         "paystack_transaction_fee": paystack_transaction_fee,
         "paystack_transfer_fee": paystack_transfer_fee,
         "halver_fee": halver_fee,
         "total_fee": total_fee,
+        "card_addition_refund": card_addition_refund,
     }
 
     return all_transaction_fees

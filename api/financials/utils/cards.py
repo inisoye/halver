@@ -1,8 +1,45 @@
+from bills.utils.fees import calculate_all_transaction_fees
 from core.utils import get_user_by_id
 
 
+def format_add_card_paystack_payload(charge_amount, user):
+    """
+       Formats the payload for adding a card on Paystack through the initialize
+       transaction API endpoint.
+
+    Args:
+        charge_amount (decimal.Decimal): The amount to charge the user in the default
+            currency.
+        user (User): The user for whom the card is being added.
+
+    Returns:
+        dict: A dictionary containing the payload for adding a card on Paystack.
+    """
+
+    AMOUNT = charge_amount
+    AMOUNT_IN_KOBO = AMOUNT * 100
+
+    # Refundable amount is in default currency (Naira not Kobo, for example).
+    refundable_amount = calculate_all_transaction_fees(AMOUNT)["card_addition_refund"]
+
+    email = user.email
+    metadata = dict(
+        full_name=user.full_name,
+        user_id=user.uuid.__str__(),
+        is_refundable=True,
+        refundable_amount=str(refundable_amount),
+    )
+
+    return dict(
+        email=email,
+        amount=AMOUNT_IN_KOBO,
+        metadata=metadata,
+    )
+
+
 def create_card(UserCardModel, webhook_data) -> None:
-    """Create card with obtained webhook data.
+    """
+    Create card with obtained webhook data.
 
     Args:
         webhook_data: Data returned through webhook by Paystack

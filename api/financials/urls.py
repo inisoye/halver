@@ -3,10 +3,12 @@ from django.urls import path
 from financials.api.views import (
     DefaultCardRetrieveView,
     DefaultCardUpdateView,
+    DefaultTransferRecipientRetrieveView,
     DefaultTransferRecipientUpdateView,
     PaystackTransferRecipientListAPIView,
     TransferRecipientListCreateAPIView,
     TransferRecipientsDestroyView,
+    UserCardAdditionTransactionAPIView,
     UserCardListView,
     UserCardRetrieveDestroyView,
 )
@@ -23,6 +25,11 @@ urlpatterns = [
         route="default-card/<uuid:uuid>/",
         view=DefaultCardUpdateView.as_view(),
         name="default-card-set-as",
+    ),
+    path(
+        route="user-cards/initialize-card-addition/",
+        view=UserCardAdditionTransactionAPIView.as_view(),
+        name="initialize-card-addition-transaction",
     ),
     path(
         route="user-cards/",
@@ -48,6 +55,11 @@ urlpatterns = [
         route="transfer-recipients/<str:recipient_code>/",
         view=TransferRecipientsDestroyView.as_view(),
         name="transfer-recipient-delete",
+    ),
+    path(
+        route="default-transfer-recipient/",
+        view=DefaultTransferRecipientRetrieveView.as_view(),
+        name="default-transfer-recipient-get",
     ),
     path(
         route="default-transfer-recipient/<uuid:uuid>/",
