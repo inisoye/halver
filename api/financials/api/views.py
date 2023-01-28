@@ -35,6 +35,24 @@ from libraries.paystack.transaction_requests import TransactionRequests
 from libraries.paystack.transfer_recipient_requests import TransferRecipientRequests
 
 
+class PaystackWebhookHandlerAPIView(APIView):
+    """
+    View for handling card addition Paystack webhooks.
+
+    Accepts POST requests.
+    """
+
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(),
+        },
+    )
+    def post(self, request) -> Response:
+        """
+        Handles webhook post requests sent by Paystack.
+        """
+
+
 class DefaultCardRetrieveView(RetrieveAPIView):
     """
     View for retrieving the default card for a user.
@@ -91,9 +109,9 @@ class DefaultCardUpdateView(UpdateAPIView):
 
 class UserCardAdditionTransactionAPIView(APIView):
     """
-    View for handling card addition Paystack transaction.
+    View for handling the Paystack transaction for card addition.
 
-    Accepts GET requests.
+    Accepts POST requests.
     """
 
     @extend_schema(
@@ -332,6 +350,7 @@ class DefaultTransferRecipientRetrieveView(RetrieveAPIView):
     permission_classes = (IsOwner,)
     queryset = TransferRecipient.objects.all()
     serializer_class = TransferRecipientListSerializer
+    http_method_names = ["get"]
 
     def get_object(self):
         """
