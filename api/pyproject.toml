@@ -24,6 +24,7 @@ dj-rest-auth = { extras = ["with-social"], version = "^2.2.7" }
 [tool.poetry.group.dev.dependencies]
 django-stubs = { extras = ["compatible-mypy"], version = "^1.13.1" }
 types-requests = "^2.28.11.7"
+django-debug-toolbar = "^3.8.1"
 
 [tool.poe.tasks]
 dev = "poetry run python manage.py runserver"

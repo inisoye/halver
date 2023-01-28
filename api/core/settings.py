@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     "drf_spectacular",
+    "debug_toolbar",
     # Local
     "accounts.apps.AccountsConfig",
     "financials.apps.FinancialsConfig",
@@ -61,6 +62,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -217,7 +219,17 @@ CORS_ORIGIN_WHITELIST = (
 
 # Allowed CSRF origins
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:5173"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+]
+
+
+# Internal IPs. Orginally added for Debug Toolbar
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 
 # Use console as email backend in dev mode
