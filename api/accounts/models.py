@@ -124,21 +124,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def clean(self) -> None:
         super().clean()
 
-        # Phone numbers are (already) normalized with the phonenumber_field package
+        # Phone numbers are (already) normalized by the phonenumber_field package
         self.email = self.__class__.objects.normalize_email(self.email)
         self.username = self.username.lower()
 
     @property
     def full_name(self) -> str:
-        return f"{self.first_name} {self.last_name}"
-
-    def get_full_name(self) -> str:
         """
         Return the first_name plus the last_name, with a space in between.
         """
 
-        full_name = "%s %s" % (self.first_name, self.last_name)
-        return full_name.strip()
+        return f"{self.first_name} {self.last_name}"
 
     def get_short_name(self) -> str:
         """
