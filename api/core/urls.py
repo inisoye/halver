@@ -8,6 +8,11 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+if not settings.DEBUG:
+    handler500 = "rest_framework.exceptions.server_error"
+    handler400 = "rest_framework.exceptions.bad_request"
+    handler404 = "core.views.not_found"
+
 urlpatterns = [
     path(
         "admin/",
