@@ -25,7 +25,7 @@ from financials.api.serializers import (
     UserCardSerializer,
 )
 from financials.models import TransferRecipient, UserCard
-from financials.utils.cards import format_add_card_paystack_payload
+from financials.utils.cards import generate_add_card_paystack_payload
 from financials.utils.transfer_recipients import (
     format_create_paystack_transfer_recipient_response,
     generate_paystack_transfer_recipient_payload,
@@ -113,7 +113,7 @@ class UserCardAdditionTransactionAPIView(APIView):
 
         CARD_ADDITION_CHARGE_AMOUNT = 60
 
-        paystack_payload = format_add_card_paystack_payload(
+        paystack_payload = generate_add_card_paystack_payload(
             CARD_ADDITION_CHARGE_AMOUNT, user
         )
 

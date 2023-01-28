@@ -2,7 +2,7 @@ from bills.utils.fees import calculate_all_transaction_fees
 from core.utils import get_user_by_id
 
 
-def format_add_card_paystack_payload(charge_amount, user):
+def generate_add_card_paystack_payload(charge_amount, user):
     """
        Formats the payload for adding a card on Paystack through the initialize
        transaction API endpoint.
