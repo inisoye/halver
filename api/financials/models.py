@@ -4,7 +4,7 @@ from django.db import models
 from bills.models import Action
 from core.models import AbstractTimeStampedUUIDModel
 from financials.utils.cards import create_card
-from financials.utils.common import set_as_default
+from financials.utils.common import delete_and_set_newest_as_default, set_as_default
 
 
 class UserCard(AbstractTimeStampedUUIDModel, models.Model):
@@ -72,7 +72,19 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
         )
 
     def set_as_default_card(self) -> None:
+        """
+        Sets current card instance as the default.
+        """
+
         set_as_default(self, "user_card")
+
+    def delete_and_set_newest_as_default(self) -> None:
+        """
+        Deletes the current card instance. If the deleted instance was the default card,
+        the newest of the remaining instances will be set as the new default.
+        """
+
+        delete_and_set_newest_as_default(self, "user_card")
 
     @classmethod
     def create_card_from_webhook(cls, webhook_data) -> None:
@@ -158,7 +170,20 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         )
 
     def set_as_default_recipient(self) -> None:
+        """
+        Sets current transfer recipient instance as the default.
+        """
+
         set_as_default(self, "transfer_recipient")
+
+    def delete_and_set_newest_as_default(self) -> None:
+        """
+        Deletes the current transfer recipient instance. If the deleted instance was
+        the default recipient, the newest of the remaining instances will be set as the
+        new default.
+        """
+
+        delete_and_set_newest_as_default(self, "transfer_recipient")
 
     class Meta:
         ordering = ["-created", "user"]

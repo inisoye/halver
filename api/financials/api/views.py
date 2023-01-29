@@ -3,7 +3,6 @@ import asyncio
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
-from rest_framework.exceptions import ValidationError
 from rest_framework.generics import (
     DestroyAPIView,
     ListAPIView,
@@ -337,9 +336,12 @@ class TransferRecipientsDestroyView(DestroyAPIView):
         response = TransferRecipientRequests.delete(instance.recipient_code)
 
         if response["status"]:
-            instance.delete()
+            instance.delete_and_set_newest_as_default()
         else:
-            raise ValidationError(response["message"])
+            return format_exception(
+                message=response["message"],
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class DefaultTransferRecipientRetrieveView(RetrieveAPIView):
