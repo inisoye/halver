@@ -26,7 +26,7 @@ def generate_add_card_paystack_payload(charge_amount, user):
     metadata = dict(
         full_name=user.full_name,
         user_id=user.uuid.__str__(),
-        is_refundable=True,
+        is_card_addition=True,
         refundable_amount=str(refundable_amount),
     )
 

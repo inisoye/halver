@@ -1,8 +1,9 @@
 from typing import Literal
 
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from financials.models import TransferRecipient
+from financials.models import TransferRecipient, UserCard
 
 
 def generate_paystack_transfer_recipient_payload(validated_data):
@@ -54,3 +55,48 @@ def format_create_paystack_transfer_recipient_response(paystack_response):
         authorization_code=response_data_details_object["authorization_code"],
         complete_paystack_response=paystack_response,
     )
+
+
+def handle_transfer_recipient_object_creation(paystack_response, user):
+    """
+    Create or retrieve transfer recipient object based on the response from
+    the Paystack API.
+
+    Args:
+        paystack_response (dict): The response from the Paystack API after
+            creating a transfer recipient.
+        user (User): The user object to associate the transfer recipient with.
+
+    Returns:
+        tuple:
+            bool: Indicates whether the transfer recipient is new or has been retrieved.
+            str: The human-readable type of the transfer recipient.
+    """
+
+    recipient_type = paystack_response["data"]["type"]
+    readable_recipient_type = return_readable_recipient_type(recipient_type)
+
+    formatted_paystack_response = format_create_paystack_transfer_recipient_response(
+        paystack_response,
+    )
+
+    recipient, created = TransferRecipient.objects.get_or_create(
+        **formatted_paystack_response,
+        user=user,
+    )
+
+    if recipient_type == TransferRecipient.RecipientChoices.CARD:
+        # Join the card model to recipient.
+        # Done here instead of model for brevity of get_object_or_404.
+        associated_card_object = get_object_or_404(
+            UserCard,
+            authorization_code=paystack_response["data"]["details"][
+                "authorization_code"
+            ],
+        )
+        recipient.associated_card = associated_card_object
+
+    # New recipients should be made default.
+    recipient.set_as_default_recipient()
+
+    return (created, readable_recipient_type)

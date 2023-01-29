@@ -27,9 +27,8 @@ from financials.api.serializers import (
 from financials.models import TransferRecipient, UserCard
 from financials.utils.cards import generate_add_card_paystack_payload
 from financials.utils.transfer_recipients import (
-    format_create_paystack_transfer_recipient_response,
     generate_paystack_transfer_recipient_payload,
-    return_readable_recipient_type,
+    handle_transfer_recipient_object_creation,
 )
 from libraries.paystack.transaction_requests import TransactionRequests
 from libraries.paystack.transfer_recipient_requests import TransferRecipientRequests
@@ -266,31 +265,16 @@ class TransferRecipientListCreateAPIView(APIView):
         response = TransferRecipientRequests.create(**paystack_payload)
 
         if response["status"]:
-            recipient_type = response["data"]["type"]
-            readable_recipient_type = return_readable_recipient_type(recipient_type)
+            user = self.request.user
 
-            formatted_paystack_response = (
-                format_create_paystack_transfer_recipient_response(response)
+            (
+                is_recipient_new,
+                readable_recipient_type,
+            ) = handle_transfer_recipient_object_creation(
+                paystack_response=response, user=user
             )
 
-            recipient, created = TransferRecipient.objects.get_or_create(
-                **formatted_paystack_response,
-                user=self.request.user,
-            )
-
-            if recipient_type == TransferRecipient.RecipientChoices.CARD:
-                associated_card_object = get_object_or_404(
-                    UserCard,
-                    authorization_code=response["data"]["details"][
-                        "authorization_code"
-                    ],
-                )
-                # Join the card model to recipient. Done here for brevity.
-                recipient.associated_card = associated_card_object
-
-            recipient.set_as_default_recipient()
-
-            if not created:
+            if not is_recipient_new:
                 return format_exception(
                     message=(
                         f"This {readable_recipient_type} has been previously"
