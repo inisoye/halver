@@ -45,7 +45,7 @@ class IsPaystack(BasePermission):
         """
 
         client_ip, is_routable = get_client_ip(request)
-        if client_ip not in settings.PAYSTACK_IP_WHITELIST:
+        if (client_ip is None) or (client_ip not in settings.PAYSTACK_IP_WHITELIST):
             return False
 
         secret = settings.PAYSTACK_SECRET_KEY
