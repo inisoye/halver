@@ -6,6 +6,7 @@ from financials.api.views import (
     DefaultTransferRecipientRetrieveView,
     DefaultTransferRecipientUpdateView,
     PaystackTransferRecipientListAPIView,
+    PaystackWebhookHandlerAPIView,
     TransferRecipientListCreateAPIView,
     TransferRecipientsDestroyView,
     UserCardAdditionTransactionAPIView,
@@ -16,6 +17,11 @@ from financials.api.views import (
 app_name = "financials"
 
 urlpatterns = [
+    path(
+        route="paystack-webhook-handler/",
+        view=PaystackWebhookHandlerAPIView.as_view(),
+        name="paystack-webhook-handler",
+    ),
     path(
         route="default-card/",
         view=DefaultCardRetrieveView.as_view(),

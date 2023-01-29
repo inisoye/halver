@@ -15,8 +15,9 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.utils import get_user_by_id
-from financials.api.permissions import IsOwner
+from core.utils.responses import format_exception
+from core.utils.users import get_user_by_id
+from financials.api.permissions import IsOwner, IsPaystack
 from financials.api.serializers import (
     PaystackTransferRecipientListSerializer,
     TransferRecipientCreateSerializer,
@@ -37,20 +38,21 @@ from libraries.paystack.transfer_recipient_requests import TransferRecipientRequ
 
 class PaystackWebhookHandlerAPIView(APIView):
     """
-    View for handling card addition Paystack webhooks.
+    View for handling Paystack webhooks.
 
     Accepts POST requests.
     """
 
-    @extend_schema(
-        responses={
-            200: OpenApiResponse(),
-        },
-    )
-    def post(self, request) -> Response:
-        """
-        Handles webhook post requests sent by Paystack.
-        """
+    permission_classes = (IsPaystack,)
+
+    @extend_schema(responses={200: OpenApiResponse()})
+    def post(self, request):
+
+        data = request.data
+
+        print(data)
+
+        return Response(status=status.HTTP_200_OK)
 
 
 class DefaultCardRetrieveView(RetrieveAPIView):
@@ -290,8 +292,8 @@ class TransferRecipientListCreateAPIView(APIView):
             recipient.set_as_default_recipient()
 
             if not created:
-                return Response(
-                    (
+                return format_exception(
+                    message=(
                         f"This {readable_recipient_type} has been previously"
                         f" added to your account on Halver."
                     ),
@@ -303,8 +305,8 @@ class TransferRecipientListCreateAPIView(APIView):
             )
 
         else:
-            return Response(
-                response["message"],
+            return format_exception(
+                message=response["message"],
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

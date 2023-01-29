@@ -20,6 +20,7 @@ celery = "^5.2.7"
 redis = "^4.4.0"
 drf-spectacular = "^0.25.1"
 dj-rest-auth = { extras = ["with-social"], version = "^2.2.7" }
+django-ipware = "^4.0.2"
 
 [tool.poetry.group.dev.dependencies]
 django-stubs = { extras = ["compatible-mypy"], version = "^1.13.1" }

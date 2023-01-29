@@ -30,7 +30,10 @@ SECRET_KEY = env.str("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
 
-ALLOWED_HOSTS: list[str] = ["127.0.0.1"]
+ALLOWED_HOSTS: list[str] = [
+    "127.0.0.1",
+    "69a6-41-58-237-16.eu.ngrok.io",
+]
 
 
 # Application definition
@@ -214,6 +217,7 @@ CORS_ORIGIN_WHITELIST = (
     "http://localhost:3000",
     "http://localhost:5173",
     "http://localhost:8000",
+    "https://69a6-41-58-237-16.eu.ngrok.io",
 )
 
 
@@ -222,6 +226,7 @@ CORS_ORIGIN_WHITELIST = (
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
+    "https://69a6-41-58-237-16.eu.ngrok.io",
 ]
 
 
@@ -308,3 +313,9 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
     "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
 }
+
+
+# Paystack configuration
+
+PAYSTACK_SECRET_KEY = env.str("PAYSTACK_SECRET_KEY")
+PAYSTACK_IP_WHITELIST = ["52.31.139.75", "52.49.173.169", "52.214.14.220"]
