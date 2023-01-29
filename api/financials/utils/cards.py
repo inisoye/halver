@@ -1,5 +1,5 @@
 from bills.utils.fees import calculate_all_transaction_fees
-from core.utils import get_user_by_id
+from core.utils.users import get_user_by_id
 
 
 def generate_add_card_paystack_payload(charge_amount, user):

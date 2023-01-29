@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.utils import remove_underscores
+from core.utils.strings import remove_underscores
 from financials.utils.transfer_recipients import return_readable_recipient_type
 
 

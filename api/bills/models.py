@@ -6,7 +6,7 @@ from bills.utils.bills import (
     create_actions_for_bill,
 )
 from core.models import AbstractCurrencyModel, AbstractTimeStampedUUIDModel
-from core.utils import get_one_week_from_now, validate_date_not_in_past
+from core.utils.dates_and_time import get_one_week_from_now, validate_date_not_in_past
 
 
 class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
