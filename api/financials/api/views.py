@@ -49,6 +49,9 @@ class PaystackWebhookHandlerAPIView(APIView):
 
     @extend_schema(responses={200: OpenApiResponse()})
     def post(self, request):
+        """
+        Method to handle webhook requests made by Paystack.
+        """
 
         request_data = request.data
 

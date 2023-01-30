@@ -38,6 +38,17 @@ def generate_add_card_paystack_payload(charge_amount, user):
 
 
 def handle_card_object_creation(authorization, customer, user) -> UserCard:
+    """Create a new UserCard object.
+
+    Args:
+        authorization (dict): The authorization object returned by Paystack.
+        customer (dict): The customer object returned by Paystack.
+        user: The user object associated with the card.
+
+    Returns:
+        UserCard: The newly created UserCard object.
+    """
+
     new_card_object = dict(
         authorization_code=authorization.get("authorization_code"),
         first_6=authorization.get("bin"),
@@ -71,6 +82,20 @@ def handle_card_addition_paystack_transaction_object_creation(
     user,
     request_data,
 ) -> PaystackTransaction:
+    """
+    Create a new PaystackTransaction object for the addition of a card.
+
+    Args:
+        data (dict): The data field from the Paystack webhook request.
+        metadata (dict): The metadata field from the Paystack webhook request.
+        new_card (UserCard): The newly created UserCard object.
+        user: The user associated with the transaction.
+        request_data (dict): The complete Paystack webhook request data.
+
+    Returns:
+        PaystackTransaction: The newly created PaystackTransaction object.
+    """
+
     paystack_transaction_object = dict(
         amount=data.get("amount"),
         refundable_amount=metadata.get("refundable_amount"),
