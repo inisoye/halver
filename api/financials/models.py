@@ -19,6 +19,7 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
 
     account_name = models.CharField(
         max_length=100,
+        null=True,
     )
     authorization_code = models.CharField(
         max_length=100,

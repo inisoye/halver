@@ -58,7 +58,7 @@ class IsPaystack(BasePermission):
         )
         request_signature = request.headers.get("x-paystack-signature")
 
-        if request_signature is None or not hmac.compare_digest(
+        if (request_signature is None) or not hmac.compare_digest(
             hash.hexdigest(),
             request_signature,
         ):

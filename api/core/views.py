@@ -4,7 +4,7 @@ from rest_framework import status
 
 def not_found(request, exception, *args, **kwargs) -> JsonResponse:
     """
-    Generic 404 error handler. Imitates format used by Rest Framework.
+    Generic 404 error handler. Imitates format used by Django Rest Framework.
     """
 
     data = {"error": "Not Found (404)"}
