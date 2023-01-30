@@ -1,5 +1,5 @@
 from bills.utils.fees import calculate_all_transaction_fees
-from core.utils.users import get_user_by_id
+from financials.models import PaystackTransaction, UserCard
 
 
 def generate_add_card_paystack_payload(charge_amount, user):
@@ -37,38 +37,54 @@ def generate_add_card_paystack_payload(charge_amount, user):
     )
 
 
-def create_card(UserCardModel, webhook_data) -> None:
-    """
-    Create card with obtained webhook data.
+def handle_card_object_creation(authorization, customer, user) -> UserCard:
+    new_card_object = dict(
+        authorization_code=authorization.get("authorization_code"),
+        first_6=authorization.get("bin"),
+        last_4=authorization.get("last_4"),
+        exp_month=authorization.get("exp_month"),
+        exp_year=authorization.get("exp_year"),
+        channel=authorization.get("channel"),
+        card_type=authorization.get("card_type"),
+        bank=authorization.get("bank"),
+        country_code=authorization.get("country_code"),
+        brand=authorization.get("brand"),
+        reusable=authorization.get("reusable"),
+        signature=authorization.get("signature"),
+        account_name=authorization.get("account_name"),
+        email=customer.get("email"),
+        user=user,
+        complete_paystack_response=authorization,
+    )
 
-    Args:
-        webhook_data: Data returned through webhook by Paystack
-    """
+    new_card, created = UserCard.objects.get_or_create(
+        **new_card_object,
+    )
 
-    # TODO Add a method for adding new cards on paystack.
-    # This should initialize transactions, should be refundable and should be
-    # the only non-recurring paystack transaction for every user.
+    return new_card
 
-    # The user id added in the metadata of the initialized card transaction
-    user_id = webhook_data["metadata"]["user_id"]
-    # The user for whom the card is created
-    user = get_user_by_id(user_id)
-    customer_data = webhook_data["customer"]
-    authorization_data = webhook_data["authorization"]
 
-    defaults = {
-        "account_name": authorization_data["account_name"],
-        "authorization_code": authorization_data["authorization_code"],
-        "bank": authorization_data["bank"],
-        "first6": authorization_data["bin"],
-        "card_type": authorization_data["card_type"],
-        "country_code": authorization_data["country_code"],
-        "email": customer_data["email"],
-        "exp_month": authorization_data["exp_month"],
-        "exp_year": authorization_data["exp_year"],
-        "last4": authorization_data["last4"],
-        "user": user,
-        "signature": authorization_data["signature"],
-    }
+def handle_card_addition_paystack_transaction_object_creation(
+    data,
+    metadata,
+    new_card,
+    user,
+    request_data,
+) -> PaystackTransaction:
+    paystack_transaction_object = dict(
+        amount=data.get("amount"),
+        refundable_amount=metadata.get("refundable_amount"),
+        card=new_card,
+        paying_user=user,
+        transaction_outcome=PaystackTransaction.TransactionOutcomeChoices.SUCCESSFUL,
+        transaction_type=PaystackTransaction.TransactionChoices.CARD_ADDITION,
+        paystack_transaction_id=data.get("id"),
+        paystack_transaction_reference=data.get("reference"),
+        complete_paystack_response=request_data,
+    )
 
-    UserCardModel.objects.update_or_create(**defaults, defaults=defaults)
+    new_transaction, created = PaystackTransaction.objects.get_or_create(
+        **paystack_transaction_object
+    )
+
+    return new_transaction

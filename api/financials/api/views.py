@@ -25,7 +25,11 @@ from financials.api.serializers import (
     UserCardSerializer,
 )
 from financials.models import TransferRecipient, UserCard
-from financials.utils.cards import generate_add_card_paystack_payload
+from financials.utils.cards import (
+    generate_add_card_paystack_payload,
+    handle_card_addition_paystack_transaction_object_creation,
+    handle_card_object_creation,
+)
 from financials.utils.transfer_recipients import (
     generate_paystack_transfer_recipient_payload,
     handle_transfer_recipient_object_creation,
@@ -46,9 +50,36 @@ class PaystackWebhookHandlerAPIView(APIView):
     @extend_schema(responses={200: OpenApiResponse()})
     def post(self, request):
 
-        data = request.data
+        request_data = request.data
 
-        print(data)
+        event = request_data.get("event")
+        data = request_data.get("data")
+
+        if event == "charge.success":
+            authorization = data.get("authorization")
+            customer = data.get("customer")
+            metadata = data.get("metadata")
+
+            user_id = metadata.get("user_id")
+            user = get_user_by_id(user_id)
+
+            # Check if it is card addition before running these.
+            new_card = handle_card_object_creation(
+                authorization,
+                customer,
+                user,
+            )
+
+            new_transaction = handle_card_addition_paystack_transaction_object_creation(
+                data,
+                metadata,
+                new_card,
+                user,
+                request_data,
+            )
+
+            print(new_card)
+            print(new_transaction)
 
         return Response(status=status.HTTP_200_OK)
 

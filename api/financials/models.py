@@ -3,26 +3,36 @@ from django.db import models
 
 from bills.models import Action
 from core.models import AbstractTimeStampedUUIDModel
-from financials.utils.cards import create_card
 from financials.utils.common import delete_and_set_newest_as_default, set_as_default
 
 
 class UserCard(AbstractTimeStampedUUIDModel, models.Model):
     """
     Stores data returned by Paystack to represent a card.
-
-    channel('card') and reusable(True) have not been added
-    as they would normally be fixed in this case.
-    They should be manually added when transactions are
-    intialized with a card (or Paystack authorization).
     """
 
-    account_name = models.CharField(
-        max_length=100,
-        null=True,
-    )
     authorization_code = models.CharField(
         max_length=100,
+    )
+    first_6 = models.CharField(
+        max_length=10,
+        verbose_name="Card's first 6 digits (bin)",
+    )
+    last_4 = models.CharField(
+        max_length=4,
+        verbose_name="Card's last 4 digits",
+    )
+    exp_month = models.CharField(
+        max_length=10,
+    )
+    exp_year = models.CharField(
+        max_length=10,
+    )
+    channel = models.CharField(
+        max_length=10,
+    )
+    card_type = models.CharField(
+        max_length=10,
     )
     bank = models.CharField(
         max_length=100,
@@ -31,31 +41,23 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
         max_length=2,
         verbose_name="Country where card was issued",
     )
-    card_type = models.CharField(
-        max_length=10,
+    brand = models.CharField(
+        max_length=100,
+    )
+    reusable = models.BooleanField()
+    signature = models.CharField(
+        max_length=100,
+    )
+    account_name = models.CharField(
+        max_length=100,
+        null=True,
     )
     email = models.CharField(
         max_length=100,
-    )
-    exp_month = models.CharField(
-        max_length=10,
-    )
-    exp_year = models.CharField(
-        max_length=10,
-    )
-    first6 = models.CharField(
-        max_length=10,
-        verbose_name="Card's first 6 digits (bin)",
+        null=True,
     )
     is_default = models.BooleanField(
         default=False,
-    )
-    last4 = models.CharField(
-        max_length=4,
-        verbose_name="Card's last 4 digits",
-    )
-    signature = models.CharField(
-        max_length=100,
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -68,7 +70,7 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
 
     def __str__(self) -> str:
         return (
-            f"user: {self.user.full_name}, card: {self.last4}, "
+            f"user: {self.user.full_name}, card: {self.last_4}, "
             f"card type: ({self.card_type})"
         )
 
@@ -87,20 +89,10 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
 
         delete_and_set_newest_as_default(self, "user_card")
 
-    @classmethod
-    def create_card_from_webhook(cls, webhook_data) -> None:
-        """Create card with obtained webhook data.
-
-        Args:
-            webhook_data: Data returned through webhook by Paystack
-        """
-
-        create_card(cls, webhook_data)
-
     class Meta:
         ordering = ["-created", "user"]
-        verbose_name = "User Card"
-        verbose_name_plural = "User Cards"
+        verbose_name = "User card"
+        verbose_name_plural = "User cards"
 
 
 class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
@@ -188,8 +180,8 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
 
     class Meta:
         ordering = ["-created", "user"]
-        verbose_name = "User Transfer Recipient"
-        verbose_name_plural = "User Transfer Recipients"
+        verbose_name = "User transfer recipient"
+        verbose_name_plural = "User transfer recipients"
 
 
 class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
@@ -235,8 +227,8 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
 
     class Meta:
         ordering = ["-created", "user"]
-        verbose_name = "Paystack Plan"
-        verbose_name_plural = "Paystack Plans"
+        verbose_name = "Paystack plan"
+        verbose_name_plural = "Paystack plans"
 
 
 class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
@@ -291,8 +283,8 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
 
     class Meta:
         ordering = ["-created", "user"]
-        verbose_name = "Paystack Subscription"
-        verbose_name_plural = "Paystack Subscriptions"
+        verbose_name = "Paystack subscription"
+        verbose_name_plural = "Paystack subscriptions"
 
 
 class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
@@ -301,8 +293,8 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
     """
 
     class TransactionChoices(models.TextChoices):
-        PARTICIPANT_PAYMENT = "participant_payment", "Participant_payment"
-        CARD_ADDITION = "card-addition", "Card-addition"
+        PARTICIPANT_PAYMENT = "participant-payment", "Participant payment"
+        CARD_ADDITION = "card-addition", "Card addition"
 
     class TransactionOutcomeChoices(models.TextChoices):
         SUCCESSFUL = "successful", "Successful"
@@ -350,6 +342,9 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
         choices=TransactionChoices.choices,
     )
     paystack_transaction_id = models.BigIntegerField()
+    paystack_transaction_reference = models.CharField(
+        max_length=100,
+    )
     complete_paystack_response = models.JSONField(
         editable=False,
     )
@@ -359,8 +354,8 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
 
     class Meta:
         ordering = ["-created"]
-        verbose_name = "Paystack Transaction"
-        verbose_name_plural = "Paystack Transactions"
+        verbose_name = "Paystack transaction"
+        verbose_name_plural = "Paystack transactions"
 
 
 class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
@@ -369,8 +364,8 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
     """
 
     class TransferChoices(models.TextChoices):
-        CREDITOR_SETTLEMENT = "creditor-settlement", "Creditor-settlement"
-        CARD_ADDITION_REFUND = "card-addition-refund", "Card-addition-refund"
+        CREDITOR_SETTLEMENT = "creditor-settlement", "Creditor settlement"
+        CARD_ADDITION_REFUND = "card-addition-refund", "Card addition refund"
 
     class TransferOutcomeChoices(models.TextChoices):
         SUCCESSFUL = "successful", "Successful"
@@ -428,5 +423,5 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
 
     class Meta:
         ordering = ["-created"]
-        verbose_name = "Paystack Transfer"
-        verbose_name_plural = "Paystack Transfers"
+        verbose_name = "Paystack transfer"
+        verbose_name_plural = "Paystack transfers"

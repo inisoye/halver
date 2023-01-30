@@ -1,6 +1,8 @@
 from decimal import Decimal
 from typing import TypedDict, Union
 
+from core.utils.decimals import round_decimal
+
 
 def calculate_paystack_transaction_fee(
     price: Union[int, Decimal],
@@ -104,11 +106,11 @@ def calculate_all_transaction_fees(amount: Union[int, Decimal]):
     card_addition_refund = Decimal(amount) - total_fee
 
     all_transaction_fees = {
-        "paystack_transaction_fee": paystack_transaction_fee,
-        "paystack_transfer_fee": paystack_transfer_fee,
-        "halver_fee": halver_fee,
-        "total_fee": total_fee,
-        "card_addition_refund": card_addition_refund,
+        "paystack_transaction_fee": round_decimal(paystack_transaction_fee),
+        "paystack_transfer_fee": round_decimal(paystack_transfer_fee),
+        "halver_fee": round_decimal(halver_fee),
+        "total_fee": round_decimal(total_fee),
+        "card_addition_refund": round_decimal(card_addition_refund),
     }
 
     return all_transaction_fees
