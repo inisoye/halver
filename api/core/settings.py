@@ -32,7 +32,7 @@ DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS: list[str] = [
     "127.0.0.1",
-    "db6b-105-112-63-211.eu.ngrok.io",
+    "22ce-102-67-1-126.eu.ngrok.io",
 ]
 
 
@@ -206,6 +206,7 @@ REST_FRAMEWORK = {
         "djangorestframework_camel_case.parser.CamelCaseFormParser",
         "djangorestframework_camel_case.parser.CamelCaseMultiPartParser",
         "djangorestframework_camel_case.parser.CamelCaseJSONParser",
+        "core.parsers.CamelCaseFormParser",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
@@ -217,7 +218,7 @@ CORS_ORIGIN_WHITELIST = (
     "http://localhost:3000",
     "http://localhost:5173",
     "http://localhost:8000",
-    "https://db6b-105-112-63-211.eu.ngrok.io",
+    "https://22ce-102-67-1-126.eu.ngrok.io",
 )
 
 
@@ -226,7 +227,7 @@ CORS_ORIGIN_WHITELIST = (
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://db6b-105-112-63-211.eu.ngrok.io",
+    "https://22ce-102-67-1-126.eu.ngrok.io",
 ]
 
 
