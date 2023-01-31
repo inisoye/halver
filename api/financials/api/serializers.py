@@ -16,7 +16,7 @@ class UserCardSerializer(serializers.ModelSerializer):
             "exp_month",
             "exp_year",
             "is_default",
-            "last4",
+            "last_4",
             "signature",
             "user",
             "created",
@@ -31,7 +31,7 @@ class PaystackTransferRecipientListSerializer(serializers.Serializer):
 class TransferRecipientListSerializer(serializers.ModelSerializer):
     recipient_type = serializers.SerializerMethodField()
 
-    def get_recipient_type(self, obj):
+    def get_recipient_type(self, obj) -> str:
         """
         Returns the human-readable version of the recipient_type field.
         https://docs.djangoproject.com/en/dev/ref/models/instances/#django.db.models.Model.get_FOO_display
