@@ -21,6 +21,7 @@ redis = "^4.4.0"
 drf-spectacular = "^0.25.1"
 dj-rest-auth = { extras = ["with-social"], version = "^2.2.7" }
 django-ipware = "^4.0.2"
+flower = "^1.2.0"
 
 [tool.poetry.group.dev.dependencies]
 django-stubs = { extras = ["compatible-mypy"], version = "^1.13.1" }
@@ -34,6 +35,9 @@ make-m = "poetry run python manage.py makemigrations"
 show-m = "poetry run python manage.py showmigrations"
 m = "poetry run python manage.py migrate"
 create-su = "poetry run python manage.py createsuperuser"
+celery = "poetry run celery -A core worker -l INFO -E"
+flower = "poetry run celery -A core flower"
+celery-purge = "poetry run celery -A core purge"
 
 [build-system]
 requires = ["poetry-core"]
