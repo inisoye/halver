@@ -25,14 +25,11 @@ from financials.api.serializers import (
     UserCardSerializer,
 )
 from financials.models import TransferRecipient, UserCard
-from financials.utils.cards import (
-    generate_add_card_paystack_payload,
-    handle_card_addition_paystack_transaction_object_creation,
-    handle_card_object_creation,
-)
+from financials.tasks import process_card_creation
+from financials.utils.cards import generate_add_card_paystack_payload
 from financials.utils.transfer_recipients import (
     generate_paystack_transfer_recipient_payload,
-    handle_transfer_recipient_object_creation,
+    handle_complete_transfer_recipient_creation,
 )
 from libraries.paystack.transaction_requests import TransactionRequests
 from libraries.paystack.transfer_recipient_requests import TransferRecipientRequests
@@ -64,25 +61,17 @@ class PaystackWebhookHandlerAPIView(APIView):
             metadata = data.get("metadata")
 
             user_id = metadata.get("user_id")
-            user = get_user_by_id(user_id)
+            is_card_addition = metadata.get("is_card_addition") == "true"
 
-            # Check if it is card addition before running these.
-            new_card = handle_card_object_creation(
-                authorization,
-                customer,
-                user,
-            )
-
-            new_transaction = handle_card_addition_paystack_transaction_object_creation(
-                data,
-                metadata,
-                new_card,
-                user,
-                request_data,
-            )
-
-            print(new_card)
-            print(new_transaction)
+            if is_card_addition:
+                process_card_creation.delay(
+                    authorization,
+                    customer,
+                    user_id,
+                    data,
+                    metadata,
+                    request_data,
+                )
 
         return Response(status=status.HTTP_200_OK)
 
@@ -296,36 +285,9 @@ class TransferRecipientListCreateAPIView(APIView):
             serializer.validated_data
         )
 
-        response = TransferRecipientRequests.create(**paystack_payload)
-
-        if response["status"]:
-            user = self.request.user
-
-            (
-                is_recipient_new,
-                readable_recipient_type,
-            ) = handle_transfer_recipient_object_creation(
-                paystack_response=response, user=user
-            )
-
-            if not is_recipient_new:
-                return format_exception(
-                    message=(
-                        f"This {readable_recipient_type} has been previously"
-                        f" added to your account on Halver."
-                    ),
-                    status=status.HTTP_409_CONFLICT,
-                )
-
-            return Response(
-                status=status.HTTP_201_CREATED,
-            )
-
-        else:
-            return format_exception(
-                message=response["message"],
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        return handle_complete_transfer_recipient_creation(
+            paystack_payload, user=self.request.user
+        )
 
 
 class TransferRecipientsDestroyView(DestroyAPIView):
@@ -355,6 +317,7 @@ class TransferRecipientsDestroyView(DestroyAPIView):
 
         if response["status"]:
             instance.delete_and_set_newest_as_default()
+
         else:
             return format_exception(
                 message=response["message"],
