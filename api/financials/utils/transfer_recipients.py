@@ -164,7 +164,8 @@ def handle_complete_transfer_recipient_creation(paystack_payload, user):
             is_recipient_new,
             readable_recipient_type,
         ) = handle_transfer_recipient_object_creation(
-            paystack_response=response, user=user
+            paystack_response=response,
+            user=user,
         )
 
         if not is_recipient_new:
@@ -176,12 +177,59 @@ def handle_complete_transfer_recipient_creation(paystack_payload, user):
                 status=status.HTTP_409_CONFLICT,
             )
 
-        return Response(
-            status=status.HTTP_201_CREATED,
-        )
+        return Response(status=status.HTTP_201_CREATED)
 
     else:
         return format_exception(
             message=response["message"],
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+
+def create_card_recipient_from_webhook(
+    metadata,
+    customer,
+    authorization,
+    user,
+    new_card,
+):
+    """
+    Creates a Paystack card recipient from webhook data and associates it
+    with a db user and the db object of the card.
+
+    Args:
+        metadata (dict): The metadata field from the Paystack webhook request.
+        customer (dict): The customer object returned by Paystack.
+        authorization (dict): The authorization object returned by Paystack.
+        user (User object): User model instance to associate the recipient with.
+        new_card (Card object): Card model instance to associate the recipient with.
+    """
+
+    paystack_card_recipient_payload = dict(
+        name=metadata.get("full_name"),
+        type=TransferRecipient.RecipientChoices.CARD,
+        email=customer.get("email"),
+        authorization_code=authorization.get("authorization_code"),
+    )
+
+    response = TransferRecipientRequests.create(**paystack_card_recipient_payload)
+
+    formatted_paystack_response = format_create_paystack_transfer_recipient_response(
+        response,
+    )
+
+    if response["status"]:
+        recipient, created = TransferRecipient.objects.get_or_create(
+            **formatted_paystack_response,
+            user=user,
+            associated_card=new_card,
+        )
+
+        print(created)
+
+        return recipient
+
+    else:
+        paystack_error = response["message"]
+        # TODO Replace print with actual logger.
+        print(f"Error: {paystack_error}")

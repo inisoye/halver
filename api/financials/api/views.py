@@ -1,4 +1,5 @@
 import asyncio
+import json
 
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
@@ -54,6 +55,8 @@ class PaystackWebhookHandlerAPIView(APIView):
 
         event = request_data.get("event")
         data = request_data.get("data")
+
+        print(json.dumps(request_data))
 
         if event == "charge.success":
             authorization = data.get("authorization")

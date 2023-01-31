@@ -5,11 +5,11 @@ from financials.models import PaystackTransaction, UserCard
 def generate_add_card_paystack_payload(charge_amount, user):
     """
     Formats the payload for adding a card on Paystack through the initialize
-       transaction API endpoint.
+    transaction API endpoint.
 
     Args:
         charge_amount (decimal.Decimal): The amount to charge the user in the default
-            currency.
+        currency (usally Naira).
         user (User): The user for whom the card is being added.
 
     Returns:
@@ -37,7 +37,7 @@ def generate_add_card_paystack_payload(charge_amount, user):
     )
 
 
-def handle_card_object_creation(authorization, customer, user) -> UserCard:
+def create_card_object_from_webhook(authorization, customer, user) -> UserCard:
     """
     Create a new UserCard object.
 
@@ -76,7 +76,7 @@ def handle_card_object_creation(authorization, customer, user) -> UserCard:
     return new_card
 
 
-def handle_card_addition_paystack_transaction_object_creation(
+def create_card_addition_paystack_transaction_object(
     data,
     metadata,
     new_card,
