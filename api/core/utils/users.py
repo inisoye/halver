@@ -22,5 +22,6 @@ def get_user_by_id(user_id) -> CustomUser:
 
     try:
         return User.objects.get(uuid=user_id)
+
     except User.DoesNotExist:
         raise ObjectDoesNotExist(f"User with user ID: {user_id} not found")

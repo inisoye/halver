@@ -4,7 +4,7 @@ from financials.models import PaystackTransaction, UserCard
 
 def generate_add_card_paystack_payload(charge_amount, user):
     """
-       Formats the payload for adding a card on Paystack through the initialize
+    Formats the payload for adding a card on Paystack through the initialize
        transaction API endpoint.
 
     Args:
@@ -38,7 +38,8 @@ def generate_add_card_paystack_payload(charge_amount, user):
 
 
 def handle_card_object_creation(authorization, customer, user) -> UserCard:
-    """Create a new UserCard object.
+    """
+    Create a new UserCard object.
 
     Args:
         authorization (dict): The authorization object returned by Paystack.
