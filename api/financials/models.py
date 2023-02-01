@@ -47,6 +47,7 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
     reusable = models.BooleanField()
     signature = models.CharField(
         max_length=100,
+        unique=True,
     )
     account_name = models.CharField(
         max_length=100,
@@ -110,6 +111,7 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
     )
     recipient_code = models.CharField(
         max_length=100,
+        unique=True,
     )
     recipient_type = models.CharField(
         max_length=50,
@@ -151,6 +153,7 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         UserCard,
         on_delete=models.CASCADE,
         null=True,
+        unique=True,
         related_name="associated_transfer_recipient",
     )
     complete_paystack_response = models.JSONField(

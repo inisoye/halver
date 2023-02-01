@@ -71,21 +71,28 @@ def return_readable_recipient_type(
 
 def format_create_paystack_transfer_recipient_response(paystack_response):
     """
-    Formats response from Paystack API for creating a transfer recipient
-    object in local db.
+    Formats the response from the Paystack API for creating a transfer recipient
+    object in the local database.
 
     Args:
-        paystack_response (dict): Response from Paystack API.
+        paystack_response (dict): The response from the Paystack API.
 
     Returns:
-        dict: Formatted response from Paystack API for creating a transfer recipient.
+        tuple: A tuple containing two elements:
+            recipient_code (str): The recipient code separated from the rest of the
+            data. Used to check for duplicates.
+            defaults (dict): The formatted response from the Paystack API for
+            creating a transfer recipient.
     """
 
     response_data_object = paystack_response["data"]
     response_data_details_object = paystack_response["data"]["details"]
 
-    return dict(
-        recipient_code=response_data_object["recipient_code"],
+    # Recipient code separated from rest of data as it would be used in lookup.
+    # It has a uniqueness constraint and is used in get part of get_or_create.
+    recipient_code = response_data_object["recipient_code"]
+
+    defaults = dict(
         recipient_type=response_data_object["type"],
         name=response_data_object["name"],
         account_number=response_data_details_object["account_number"],
@@ -95,6 +102,8 @@ def format_create_paystack_transfer_recipient_response(paystack_response):
         authorization_code=response_data_details_object["authorization_code"],
         complete_paystack_response=paystack_response,
     )
+
+    return recipient_code, defaults
 
 
 def handle_transfer_recipient_object_creation(paystack_response, user):
@@ -116,13 +125,16 @@ def handle_transfer_recipient_object_creation(paystack_response, user):
     recipient_type = paystack_response["data"]["type"]
     readable_recipient_type = return_readable_recipient_type(recipient_type)
 
-    formatted_paystack_response = format_create_paystack_transfer_recipient_response(
+    recipient_code, defaults = format_create_paystack_transfer_recipient_response(
         paystack_response,
     )
 
     recipient, created = TransferRecipient.objects.get_or_create(
-        **formatted_paystack_response,
-        user=user,
+        recipient_code=recipient_code,
+        defaults=dict(
+            **defaults,
+            user=user,
+        ),
     )
 
     if recipient_type == TransferRecipient.RecipientChoices.CARD:
@@ -214,18 +226,19 @@ def create_card_recipient_from_webhook(
 
     response = TransferRecipientRequests.create(**paystack_card_recipient_payload)
 
-    formatted_paystack_response = format_create_paystack_transfer_recipient_response(
+    recipient_code, defaults = format_create_paystack_transfer_recipient_response(
         response,
     )
 
     if response["status"]:
         recipient, created = TransferRecipient.objects.get_or_create(
-            **formatted_paystack_response,
-            user=user,
-            associated_card=new_card,
+            recipient_code=recipient_code,
+            defaults=dict(
+                **defaults,
+                user=user,
+                associated_card=new_card,
+            ),
         )
-
-        print(created)
 
         return recipient
 

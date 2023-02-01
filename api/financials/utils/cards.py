@@ -50,7 +50,9 @@ def create_card_object_from_webhook(authorization, customer, user) -> UserCard:
         UserCard: The newly created UserCard object.
     """
 
-    new_card_object = dict(
+    signature = authorization.get("signature")
+
+    defaults = dict(
         authorization_code=authorization.get("authorization_code"),
         first_6=authorization.get("bin"),
         last_4=authorization.get("last_4"),
@@ -62,7 +64,6 @@ def create_card_object_from_webhook(authorization, customer, user) -> UserCard:
         country_code=authorization.get("country_code"),
         brand=authorization.get("brand"),
         reusable=authorization.get("reusable"),
-        signature=authorization.get("signature"),
         account_name=authorization.get("account_name"),
         email=customer.get("email"),
         user=user,
@@ -70,7 +71,7 @@ def create_card_object_from_webhook(authorization, customer, user) -> UserCard:
     )
 
     new_card, created = UserCard.objects.get_or_create(
-        **new_card_object,
+        signature=signature, defaults=defaults
     )
 
     return new_card
