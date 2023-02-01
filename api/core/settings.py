@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     "drf_spectacular",
     "debug_toolbar",
+    "import_export",
     # Local
     "accounts.apps.AccountsConfig",
     "financials.apps.FinancialsConfig",
