@@ -1,4 +1,5 @@
 from celery import shared_task
+from celery.utils.log import get_task_logger
 
 from core.utils.users import get_user_by_id
 from financials.utils.cards import (
@@ -6,6 +7,8 @@ from financials.utils.cards import (
     create_card_object_from_webhook,
 )
 from financials.utils.transfer_recipients import create_card_recipient_from_webhook
+
+logger = get_task_logger(__name__)
 
 
 @shared_task
@@ -42,7 +45,7 @@ def process_card_creation(
         new_card,
     )
 
-    # Create transfer recipient w/handle_complete_transfer_recipient_creation
+    # Create transfer recipient w/create_local_and_remote_transfer_recipient
     # format paystack payload and pass user as well.
     # Go on to initiate and record transfer
     # Transfer would also be checked for in webhook by calling another delayed function

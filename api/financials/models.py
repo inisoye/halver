@@ -148,6 +148,7 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         max_length=100,
         blank=True,
         null=True,
+        unique=True,
     )
     associated_card = models.OneToOneField(
         UserCard,

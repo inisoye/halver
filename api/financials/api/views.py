@@ -26,11 +26,11 @@ from financials.api.serializers import (
     UserCardSerializer,
 )
 from financials.models import TransferRecipient, UserCard
-from financials.tasks import process_card_creation
+from financials.tasks.cards import process_card_creation
 from financials.utils.cards import generate_add_card_paystack_payload
 from financials.utils.transfer_recipients import (
+    create_local_and_remote_transfer_recipient,
     generate_paystack_transfer_recipient_payload,
-    handle_complete_transfer_recipient_creation,
 )
 from libraries.paystack.transaction_requests import TransactionRequests
 from libraries.paystack.transfer_recipient_requests import TransferRecipientRequests
@@ -288,7 +288,7 @@ class TransferRecipientListCreateAPIView(APIView):
             serializer.validated_data
         )
 
-        return handle_complete_transfer_recipient_creation(
+        return create_local_and_remote_transfer_recipient(
             paystack_payload, user=self.request.user
         )
 

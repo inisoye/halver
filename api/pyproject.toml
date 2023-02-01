@@ -37,7 +37,7 @@ show-m = "poetry run python manage.py showmigrations"
 collectstatic = "poetry run python manage.py collectstatic"
 m = "poetry run python manage.py migrate"
 create-su = "poetry run python manage.py createsuperuser"
-celery = "poetry run celery -A core worker -l INFO -E"
+celery = "poetry run celery -A core worker -l info"
 flower = "poetry run celery -A core flower"
 celery-purge = "poetry run celery -A core purge"
 

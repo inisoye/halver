@@ -1,5 +1,6 @@
 from typing import Literal
 
+from celery.utils.log import get_task_logger
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, status
 from rest_framework.response import Response
@@ -7,6 +8,8 @@ from rest_framework.response import Response
 from core.utils.responses import format_exception
 from financials.models import TransferRecipient, UserCard
 from libraries.paystack.transfer_recipient_requests import TransferRecipientRequests
+
+logger = get_task_logger(__name__)
 
 
 def generate_paystack_transfer_recipient_payload(validated_data):
@@ -106,7 +109,9 @@ def format_create_paystack_transfer_recipient_response(paystack_response):
     return recipient_code, defaults
 
 
-def handle_transfer_recipient_object_creation(paystack_response, user):
+def create_transfer_recipient_object(
+    paystack_response, user
+) -> tuple[bool, Literal["bank account", "card"]]:
     """
     Create or retrieve transfer recipient object based on the response from
     the Paystack API.
@@ -154,7 +159,7 @@ def handle_transfer_recipient_object_creation(paystack_response, user):
     return (created, readable_recipient_type)
 
 
-def handle_complete_transfer_recipient_creation(paystack_payload, user):
+def create_local_and_remote_transfer_recipient(paystack_payload, user) -> Response:
     """
     Handles remote (Paystack) and local (db) transfer recipient creation.
 
@@ -172,10 +177,7 @@ def handle_complete_transfer_recipient_creation(paystack_payload, user):
     if response["status"]:
         user = user
 
-        (
-            is_recipient_new,
-            readable_recipient_type,
-        ) = handle_transfer_recipient_object_creation(
+        is_recipient_new, readable_recipient_type = create_transfer_recipient_object(
             paystack_response=response,
             user=user,
         )
@@ -204,7 +206,7 @@ def create_card_recipient_from_webhook(
     authorization,
     user,
     new_card,
-):
+) -> TransferRecipient | None:
     """
     Creates a Paystack card recipient from webhook data and associates it
     with a db user and the db object of the card.
@@ -244,5 +246,6 @@ def create_card_recipient_from_webhook(
 
     else:
         paystack_error = response["message"]
-        # TODO Replace print with actual logger.
-        print(f"Error: {paystack_error}")
+        logger.error(f"Error: {paystack_error}")
+
+        return None
