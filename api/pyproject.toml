@@ -22,6 +22,7 @@ drf-spectacular = "^0.25.1"
 dj-rest-auth = { extras = ["with-social"], version = "^2.2.7" }
 django-ipware = "^4.0.2"
 flower = "^1.2.0"
+django-import-export = "^3.0.2"
 
 [tool.poetry.group.dev.dependencies]
 django-stubs = { extras = ["compatible-mypy"], version = "^1.13.1" }
@@ -33,6 +34,7 @@ dev = "poetry run python manage.py runserver"
 test-m = "poetry run python manage.py makemigrations --dry-run"
 make-m = "poetry run python manage.py makemigrations"
 show-m = "poetry run python manage.py showmigrations"
+collectstatic = "poetry run python manage.py collectstatic"
 m = "poetry run python manage.py migrate"
 create-su = "poetry run python manage.py createsuperuser"
 celery = "poetry run celery -A core worker -l INFO -E"

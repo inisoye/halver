@@ -490,6 +490,18 @@ files = [
 ]
 
 [[package]]
+name = "diff-match-patch"
+version = "20200713"
+description = "Repackaging of Google's Diff Match and Patch libraries. Offers robust algorithms to perform the operations required for synchronizing plain text."
+category = "main"
+optional = false
+python-versions = ">=2.7"
+files = [
+    {file = "diff-match-patch-20200713.tar.gz", hash = "sha256:da6f5a01aa586df23dfc89f3827e1cafbb5420be9d87769eeb079ddfd9477a18"},
+    {file = "diff_match_patch-20200713-py3-none-any.whl", hash = "sha256:8bf9d9c4e059d917b5c6312bac0c137971a32815ddbda9c682b949f2986b4d34"},
+]
+
+[[package]]
 name = "dj-database-url"
 version = "1.2.0"
 description = "Use Database URLs in your Django Application."
@@ -616,6 +628,23 @@ files = [
 [package.dependencies]
 django = ">=3.2.4"
 sqlparse = ">=0.2"
+
+[[package]]
+name = "django-import-export"
+version = "3.0.2"
+description = "Django application and library for importing and exporting data with included admin integration."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "django-import-export-3.0.2.tar.gz", hash = "sha256:ae77a44c08d94b98e50dec11ea53fd5f65702b7d8c3c929c88c310a4e4444507"},
+    {file = "django_import_export-3.0.2-py3-none-any.whl", hash = "sha256:f0f08f119b1f3a39e67dab8f945609ee13e264a798be532bdd7210e1c851efe2"},
+]
+
+[package.dependencies]
+diff-match-patch = "*"
+Django = ">=3.2"
+tablib = {version = ">=3.2.1", extras = ["html", "ods", "xls", "xlsx", "yaml"]}
 
 [[package]]
 name = "django-ipware"
@@ -767,6 +796,18 @@ dev = ["dj-database-url", "dj-email-url", "django-cache-url", "flake8 (==4.0.1)"
 django = ["dj-database-url", "dj-email-url", "django-cache-url"]
 lint = ["flake8 (==4.0.1)", "flake8-bugbear (==21.9.2)", "mypy (==0.910)", "pre-commit (>=2.4,<3.0)"]
 tests = ["dj-database-url", "dj-email-url", "django-cache-url", "pytest"]
+
+[[package]]
+name = "et-xmlfile"
+version = "1.1.0"
+description = "An implementation of lxml.xmlfile for the standard library"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "et_xmlfile-1.1.0-py3-none-any.whl", hash = "sha256:a2ba85d1d6a74ef63837eed693bcb89c3f752169b0e3e7ae5b16ca5e1b3deada"},
+    {file = "et_xmlfile-1.1.0.tar.gz", hash = "sha256:8eb9e2bc2f8c97e37a2dc85a09ecdcdec9d8a396530a6d5a33b30b9a92da0c5c"},
+]
 
 [[package]]
 name = "flower"
@@ -963,6 +1004,17 @@ yaml = ["PyYAML (>=3.10)"]
 zookeeper = ["kazoo (>=1.3.1)"]
 
 [[package]]
+name = "markuppy"
+version = "1.14"
+description = "An HTML/XML generator"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "MarkupPy-1.14.tar.gz", hash = "sha256:1adee2c0a542af378fe84548ff6f6b0168f3cb7f426b46961038a2bcfaad0d5f"},
+]
+
+[[package]]
 name = "marshmallow"
 version = "3.19.0"
 description = "A lightweight library for converting complex datatypes to and from native Python datatypes."
@@ -1138,6 +1190,35 @@ files = [
 rsa = ["cryptography (>=3.0.0)"]
 signals = ["blinker (>=1.4.0)"]
 signedtoken = ["cryptography (>=3.0.0)", "pyjwt (>=2.0.0,<3)"]
+
+[[package]]
+name = "odfpy"
+version = "1.4.1"
+description = "Python API and tools to manipulate OpenDocument files"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "odfpy-1.4.1.tar.gz", hash = "sha256:db766a6e59c5103212f3cc92ec8dd50a0f3a02790233ed0b52148b70d3c438ec"},
+]
+
+[package.dependencies]
+defusedxml = "*"
+
+[[package]]
+name = "openpyxl"
+version = "3.1.0"
+description = "A Python library to read/write Excel 2010 xlsx/xlsm files"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "openpyxl-3.1.0-py2.py3-none-any.whl", hash = "sha256:24d7d361025d186ba91eff58135d50855cf035a84371b891e58fb6eb5125660f"},
+    {file = "openpyxl-3.1.0.tar.gz", hash = "sha256:eccedbe1cdd8b2494057e73959b496821141038dbb7eb9266ea59e3f34208231"},
+]
+
+[package.dependencies]
+et-xmlfile = "*"
 
 [[package]]
 name = "packaging"
@@ -1600,6 +1681,36 @@ files = [
 ]
 
 [[package]]
+name = "tablib"
+version = "3.3.0"
+description = "Format agnostic tabular data library (XLS, JSON, YAML, CSV)"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tablib-3.3.0-py3-none-any.whl", hash = "sha256:f7f2e214a1a68577f2599927a8870495adac0f7f2673b1819130f2060e1914ab"},
+    {file = "tablib-3.3.0.tar.gz", hash = "sha256:11e02a6f81d256e0666877d8397972d10302307a54c04fd7157e92faf740cb10"},
+]
+
+[package.dependencies]
+markuppy = {version = "*", optional = true, markers = "extra == \"html\""}
+odfpy = {version = "*", optional = true, markers = "extra == \"ods\""}
+openpyxl = {version = ">=2.6.0", optional = true, markers = "extra == \"xlsx\""}
+pyyaml = {version = "*", optional = true, markers = "extra == \"yaml\""}
+xlrd = {version = "*", optional = true, markers = "extra == \"xls\""}
+xlwt = {version = "*", optional = true, markers = "extra == \"xls\""}
+
+[package.extras]
+all = ["markuppy", "odfpy", "openpyxl (>=2.6.0)", "pandas", "pyyaml", "tabulate", "xlrd", "xlwt"]
+cli = ["tabulate"]
+html = ["markuppy"]
+ods = ["odfpy"]
+pandas = ["pandas"]
+xls = ["xlrd", "xlwt"]
+xlsx = ["openpyxl (>=2.6.0)"]
+yaml = ["pyyaml"]
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -1761,6 +1872,35 @@ files = [
 ]
 
 [[package]]
+name = "xlrd"
+version = "2.0.1"
+description = "Library for developers to extract data from Microsoft Excel (tm) .xls spreadsheet files"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
+files = [
+    {file = "xlrd-2.0.1-py2.py3-none-any.whl", hash = "sha256:6a33ee89877bd9abc1158129f6e94be74e2679636b8a205b43b85206c3f0bbdd"},
+    {file = "xlrd-2.0.1.tar.gz", hash = "sha256:f72f148f54442c6b056bf931dbc34f986fd0c3b0b6b5a58d013c9aef274d0c88"},
+]
+
+[package.extras]
+build = ["twine", "wheel"]
+docs = ["sphinx"]
+test = ["pytest", "pytest-cov"]
+
+[[package]]
+name = "xlwt"
+version = "1.3.0"
+description = "Library to create spreadsheet files compatible with MS Excel 97/2000/XP/2003 XLS files, on any platform, with Python 2.6, 2.7, 3.3+"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "xlwt-1.3.0-py2.py3-none-any.whl", hash = "sha256:a082260524678ba48a297d922cc385f58278b8aa68741596a87de01a9c628b2e"},
+    {file = "xlwt-1.3.0.tar.gz", hash = "sha256:c59912717a9b28f1a3c2a98fd60741014b06b043936dcecbc113eaaada156c88"},
+]
+
+[[package]]
 name = "yarl"
 version = "1.8.2"
 description = "Yet another URL library"
@@ -1851,4 +1991,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "3d2e5396930fc4aa73a8dfae994a6f80e1fb988c3c1929f708d635fd79156d28"
+content-hash = "23efab64ca862051bf63277a7fe2ceaee6dafc792fa8bc25d3f672a03df99e25"
