@@ -49,10 +49,10 @@ class FlutterwaveBase(Borg):
             "Authorization": authorization,
         }
 
-        arguments = dict(
-            api_base_url=FLUTTERWAVE_API_BASE_URL,
-            headers=headers,
-        )
+        arguments = {
+            "api_base_url": FLUTTERWAVE_API_BASE_URL,
+            "headers": headers,
+        }
 
         if not hasattr(self, "requests"):
             new_requests_attr = FlutterwaveRequest(**arguments)

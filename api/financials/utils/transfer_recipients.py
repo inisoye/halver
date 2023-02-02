@@ -27,20 +27,20 @@ def generate_paystack_transfer_recipient_payload(validated_data):
     """
 
     if validated_data["recipient_type"] == TransferRecipient.RecipientChoices.ACCOUNT:
-        return dict(
-            name=validated_data["name"],
-            type=validated_data["recipient_type"],
-            account_number=validated_data["account_number"],
-            bank_code=validated_data["bank_code"],
-        )
+        return {
+            "name": validated_data["name"],
+            "type": validated_data["recipient_type"],
+            "account_number": validated_data["account_number"],
+            "bank_code": validated_data["bank_code"],
+        }
 
     elif validated_data["recipient_type"] == TransferRecipient.RecipientChoices.CARD:
-        return dict(
-            name=validated_data["name"],
-            type=validated_data["recipient_type"],
-            email=validated_data["email"],
-            authorization_code=validated_data["authorization_code"],
-        )
+        return {
+            "name": validated_data["name"],
+            "type": validated_data["recipient_type"],
+            "email": validated_data["email"],
+            "authorization_code": validated_data["authorization_code"],
+        }
 
     else:
         raise serializers.ValidationError("Unknown recipient type")
@@ -95,16 +95,16 @@ def format_create_paystack_transfer_recipient_response(paystack_response):
     # It has a uniqueness constraint and is used in get part of get_or_create.
     recipient_code = response_data_object["recipient_code"]
 
-    defaults = dict(
-        recipient_type=response_data_object["type"],
-        name=response_data_object["name"],
-        account_number=response_data_details_object["account_number"],
-        bank_code=response_data_details_object["bank_code"],
-        bank_name=response_data_details_object["bank_name"],
-        email=response_data_object["email"],
-        authorization_code=response_data_details_object["authorization_code"],
-        complete_paystack_response=paystack_response,
-    )
+    defaults = {
+        "recipient_type": response_data_object["type"],
+        "name": response_data_object["name"],
+        "account_number": response_data_details_object["account_number"],
+        "bank_code": response_data_details_object["bank_code"],
+        "bank_name": response_data_details_object["bank_name"],
+        "email": response_data_object["email"],
+        "authorization_code": response_data_details_object["authorization_code"],
+        "complete_paystack_response": paystack_response,
+    }
 
     return recipient_code, defaults
 
@@ -136,10 +136,10 @@ def create_transfer_recipient_object(
 
     recipient, created = TransferRecipient.objects.get_or_create(
         recipient_code=recipient_code,
-        defaults=dict(
+        defaults={
             **defaults,
-            user=user,
-        ),
+            "user": user,
+        },
     )
 
     if recipient_type == TransferRecipient.RecipientChoices.CARD:
@@ -219,12 +219,12 @@ def create_card_recipient_from_webhook(
         new_card (Card object): Card model instance to associate the recipient with.
     """
 
-    paystack_card_recipient_payload = dict(
-        name=metadata.get("full_name"),
-        type=TransferRecipient.RecipientChoices.CARD,
-        email=customer.get("email"),
-        authorization_code=authorization.get("authorization_code"),
-    )
+    paystack_card_recipient_payload = {
+        "name": metadata.get("full_name"),
+        "type": TransferRecipient.RecipientChoices.CARD,
+        "email": customer.get("email"),
+        "authorization_code": authorization.get("authorization_code"),
+    }
 
     response = TransferRecipientRequests.create(**paystack_card_recipient_payload)
 
@@ -235,11 +235,11 @@ def create_card_recipient_from_webhook(
     if response["status"]:
         recipient, created = TransferRecipient.objects.get_or_create(
             recipient_code=recipient_code,
-            defaults=dict(
+            defaults={
                 **defaults,
-                user=user,
-                associated_card=new_card,
-            ),
+                "user": user,
+                "associated_card": new_card,
+            },
         )
 
         return recipient

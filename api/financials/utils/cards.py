@@ -23,18 +23,18 @@ def generate_add_card_paystack_payload(charge_amount, user):
     refundable_amount = calculate_all_transaction_fees(AMOUNT)["card_addition_refund"]
 
     email = user.email
-    metadata = dict(
-        full_name=user.full_name,
-        user_id=user.uuid.__str__(),
-        is_card_addition=True,
-        refundable_amount=str(refundable_amount),
-    )
+    metadata = {
+        "full_name": user.full_name,
+        "user_id": user.uuid.__str__(),
+        "is_card_addition": True,
+        "refundable_amount": str(refundable_amount),
+    }
 
-    return dict(
-        email=email,
-        amount=AMOUNT_IN_KOBO,
-        metadata=metadata,
-    )
+    return {
+        "email": email,
+        "amount": AMOUNT_IN_KOBO,
+        "metadata": metadata,
+    }
 
 
 def create_card_object_from_webhook(authorization, customer, user) -> UserCard:
@@ -52,23 +52,23 @@ def create_card_object_from_webhook(authorization, customer, user) -> UserCard:
 
     signature = authorization.get("signature")
 
-    defaults = dict(
-        authorization_code=authorization.get("authorization_code"),
-        first_6=authorization.get("bin"),
-        last_4=authorization.get("last_4"),
-        exp_month=authorization.get("exp_month"),
-        exp_year=authorization.get("exp_year"),
-        channel=authorization.get("channel"),
-        card_type=authorization.get("card_type"),
-        bank=authorization.get("bank"),
-        country_code=authorization.get("country_code"),
-        brand=authorization.get("brand"),
-        reusable=authorization.get("reusable"),
-        account_name=authorization.get("account_name"),
-        email=customer.get("email"),
-        user=user,
-        complete_paystack_response=authorization,
-    )
+    defaults = {
+        "authorization_code": authorization.get("authorization_code"),
+        "first_6": authorization.get("bin"),
+        "last_4": authorization.get("last_4"),
+        "exp_month": authorization.get("exp_month"),
+        "exp_year": authorization.get("exp_year"),
+        "channel": authorization.get("channel"),
+        "card_type": authorization.get("card_type"),
+        "bank": authorization.get("bank"),
+        "country_code": authorization.get("country_code"),
+        "brand": authorization.get("brand"),
+        "reusable": authorization.get("reusable"),
+        "account_name": authorization.get("account_name"),
+        "email": customer.get("email"),
+        "user": user,
+        "complete_paystack_response": authorization,
+    }
 
     new_card, created = UserCard.objects.get_or_create(
         signature=signature, defaults=defaults
@@ -98,17 +98,17 @@ def create_card_addition_paystack_transaction_object(
         PaystackTransaction: The newly created PaystackTransaction object.
     """
 
-    paystack_transaction_object = dict(
-        amount=data.get("amount"),
-        refundable_amount=metadata.get("refundable_amount"),
-        card=new_card,
-        paying_user=user,
-        transaction_outcome=PaystackTransaction.TransactionOutcomeChoices.SUCCESSFUL,
-        transaction_type=PaystackTransaction.TransactionChoices.CARD_ADDITION,
-        paystack_transaction_id=data.get("id"),
-        paystack_transaction_reference=data.get("reference"),
-        complete_paystack_response=request_data,
-    )
+    paystack_transaction_object = {
+        "amount": data.get("amount"),
+        "refundable_amount": metadata.get("refundable_amount"),
+        "card": new_card,
+        "paying_user": user,
+        "transaction_outcome": PaystackTransaction.TransactionOutcomeChoices.SUCCESSFUL,
+        "transaction_type": PaystackTransaction.TransactionChoices.CARD_ADDITION,
+        "paystack_transaction_id": data.get("id"),
+        "paystack_transaction_reference": data.get("reference"),
+        "complete_paystack_response": request_data,
+    }
 
     new_transaction, created = PaystackTransaction.objects.get_or_create(
         **paystack_transaction_object
