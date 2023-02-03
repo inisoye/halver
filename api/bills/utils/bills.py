@@ -11,7 +11,7 @@ def create_actions_for_bill(bill) -> None:
     created. Used in the bill model's save method.
     """
 
-    from bills.models import Action
+    from bills.models import BillAction
 
     # TODO
     # This function should create paystack one paystack plan for the bill if the
@@ -22,10 +22,10 @@ def create_actions_for_bill(bill) -> None:
     # Actions should be created for participants as usual before the plans are created.
 
     actions = [
-        Action(bill=bill, participant=participant)
+        BillAction(bill=bill, participant=participant)
         for participant in bill.participants.all()
     ]
-    Action.objects.bulk_create(actions)
+    BillAction.objects.bulk_create(actions)
 
 
 def format_participant_contribution_index(
@@ -74,7 +74,7 @@ def add_contributions_and_fees_to_actions(bill, participant_contribution_index):
             }
     """
 
-    from bills.models import Action
+    from bills.models import BillAction
     from bills.utils.fees import calculate_all_transaction_fees
 
     formatted_participant_contribution_index: dict[
@@ -82,7 +82,7 @@ def add_contributions_and_fees_to_actions(bill, participant_contribution_index):
     ] = format_participant_contribution_index(participant_contribution_index)
 
     # Filter out actions of the bill's participants
-    actions = Action.objects.filter(participant__in=bill.participants.all())
+    actions = BillAction.objects.filter(participant__in=bill.participants.all())
 
     # Load the user object of the actions to prevent multiple (N+1) queries in loop below
     actions = actions.select_related("participant")
@@ -93,7 +93,7 @@ def add_contributions_and_fees_to_actions(bill, participant_contribution_index):
         all_transaction_fees = calculate_all_transaction_fees(contribution)
 
         actions_to_update.append(
-            Action(
+            BillAction(
                 id=action.id,
                 contribution=contribution,
                 paystack_transaction_fee=all_transaction_fees.paystack_transaction_fee,
@@ -104,7 +104,7 @@ def add_contributions_and_fees_to_actions(bill, participant_contribution_index):
         )
 
     # Perform bulk update outside loop for efficiency.
-    Action.objects.bulk_update(
+    BillAction.objects.bulk_update(
         actions_to_update,
         [
             "contribution",

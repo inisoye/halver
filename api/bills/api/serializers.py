@@ -15,7 +15,6 @@ class BillSerializer(serializers.ModelSerializer):
     def validate(self, data):
         validate_bill_serializer_dates(self)
         validate_participant_contribution_index(data)
-
         return data
 
     class Meta:

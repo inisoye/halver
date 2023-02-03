@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 
-from bills.models import Action
+from bills.models import BillAction
 from core.models import AbstractTimeStampedUUIDModel
 from financials.utils.common import delete_and_set_newest_as_default, set_as_default
 
@@ -325,7 +325,7 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
         ),
     )
     action = models.ForeignKey(
-        Action,
+        BillAction,
         on_delete=models.SET_NULL,
         null=True,
         related_name="paystack_transactions",
@@ -398,7 +398,7 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
         ),
     )
     action = models.ForeignKey(
-        Action,
+        BillAction,
         on_delete=models.SET_NULL,
         null=True,
         related_name="paystack_transfers",

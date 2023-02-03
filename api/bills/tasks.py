@@ -3,9 +3,7 @@
 # from celery.decorators import periodic_task
 # from django.db import transaction
 
-# from bills.models import Action
-
-# TODO Add flower to track all tasks across application
+# from bills.models import BillAction
 
 
 # @transaction.atomic
@@ -17,7 +15,7 @@
 # def update_overdue_statuses():
 #     try:
 #         # Get all actions with pending statuses and deadlines in the past
-#         overdue_and_incomplete_actions = Action.objects.filter(
+#         overdue_and_incomplete_actions = BillAction.objects.filter(
 #             bill__deadline__lt=datetime.date.today(), status="pending"
 #         )
 

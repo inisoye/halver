@@ -122,7 +122,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         return f"name: {self.name}, creator: {self.creator.full_name}"
 
 
-class Action(AbstractTimeStampedUUIDModel, models.Model):
+class BillAction(AbstractTimeStampedUUIDModel, models.Model):
     """
     Actions broadly represent a snapshot of a user's standing in a bill.
     The model is also joined with the Plan and Subscription for recurring bills.
@@ -201,7 +201,7 @@ class Action(AbstractTimeStampedUUIDModel, models.Model):
         )
 
 
-class Transaction(AbstractTimeStampedUUIDModel, models.Model):
+class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
     """
     Stores a transaction particular completed by a user. This is usually only
     populated when a payment has gone through without any issues.
