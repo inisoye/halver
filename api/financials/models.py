@@ -423,7 +423,10 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
     )
 
     def __str__(self) -> str:
-        return f"amount: {self.amount}, type: {self.transfer_outcome}"
+        return (
+            f"amount: {self.amount}, outcome: {self.transfer_outcome}"
+            f" type: {self.transfer_type}"
+        )
 
     class Meta:
         ordering = ["-created"]

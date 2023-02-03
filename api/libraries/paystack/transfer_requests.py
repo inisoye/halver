@@ -13,7 +13,7 @@ class TransferRequests(PaystackBase):
 
         Args:
             source: Where should we transfer from? Only balance for now
-            amount: Amount to transfer in kobo (for NGN), pesewas for (GHN)
+            amount: Amount to transfer in kobo (for NGN), pesewas (for GHC)
             recipient: Code for transfer recipient
             reference: uuidv4 identifier for transfer
             reason: The reason for the transfer

@@ -9,7 +9,7 @@ from core.utils import validate_date_not_in_past
 
 def validate_bill_serializer_dates(serializer_instance):
     """
-    Ensuee the dates provided in the serializer are not in the past. If the bill is not
+    Ensure the dates provided in the serializer are not in the past. If the bill is not
     recurring (interval == "none"), only the deadline date is validated. Otherwise,
     both the first_charge_date and next_charge_date are validated.
 

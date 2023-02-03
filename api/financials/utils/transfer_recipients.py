@@ -246,6 +246,6 @@ def create_card_recipient_from_webhook(
 
     else:
         paystack_error = response["message"]
-        logger.error(f"Error: {paystack_error}")
+        logger.error(f"Error creating transfer recipient on Paystack: {paystack_error}")
 
         return None

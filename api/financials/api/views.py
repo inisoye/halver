@@ -1,5 +1,4 @@
 import asyncio
-import json
 
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
@@ -26,8 +25,8 @@ from financials.api.serializers import (
     UserCardSerializer,
 )
 from financials.models import TransferRecipient, UserCard
-from financials.tasks.cards import process_card_creation
 from financials.utils.cards import generate_add_card_paystack_payload
+from financials.utils.paystack_webhook import handle_paystack_webhook_response
 from financials.utils.transfer_recipients import (
     create_local_and_remote_transfer_recipient,
     generate_paystack_transfer_recipient_payload,
@@ -53,28 +52,7 @@ class PaystackWebhookHandlerAPIView(APIView):
 
         request_data = request.data
 
-        event = request_data.get("event")
-        data = request_data.get("data")
-
-        print(json.dumps(request_data))
-
-        if event == "charge.success":
-            authorization = data.get("authorization")
-            customer = data.get("customer")
-            metadata = data.get("metadata")
-
-            user_id = metadata.get("user_id")
-            is_card_addition = metadata.get("is_card_addition") == "true"
-
-            if is_card_addition:
-                process_card_creation.delay(
-                    authorization,
-                    customer,
-                    user_id,
-                    data,
-                    metadata,
-                    request_data,
-                )
+        handle_paystack_webhook_response(request_data)
 
         return Response(status=status.HTTP_200_OK)
 
