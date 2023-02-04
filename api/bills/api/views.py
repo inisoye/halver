@@ -15,8 +15,7 @@ class BillCreateView(APIView):
         Returns: A dictionary containing details of the newly created bill.
         """
 
-        serializer = BillSerializer(data=self.request.data)
-
+        serializer = self.serializer_class(data=self.request.data)
         serializer.is_valid(raise_exception=True)
 
         # Remove amount paid as it should default to zero on bill creation.
