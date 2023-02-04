@@ -160,6 +160,13 @@ cython_debug/
 #.idea/
 
 schema.yml
+
+# Ignore redis binary dump (dump.rdb) files
+*.rdb
+
+# Custom scripts for testing
 testpaystack.py
 testflutterwave.py
 testplayground.py
+
+
