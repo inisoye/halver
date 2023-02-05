@@ -4,7 +4,7 @@ from uuid import UUID
 
 from rest_framework import serializers
 
-from core.utils import validate_date_not_in_past
+from core.utils.dates_and_time import validate_date_not_in_past
 
 
 def validate_bill_serializer_dates(serializer_instance):
