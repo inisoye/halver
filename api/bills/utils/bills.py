@@ -25,6 +25,7 @@ def create_actions_for_bill(bill) -> None:
         BillAction(bill=bill, participant=participant)
         for participant in bill.participants.all()
     ]
+
     BillAction.objects.bulk_create(actions)
 
 
