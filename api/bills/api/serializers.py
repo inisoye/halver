@@ -9,7 +9,10 @@ from bills.utils.validation import (
 
 
 class BillSerializer(serializers.ModelSerializer):
-    creator = serializers.HiddenField(default=CurrentUserDefault(), read_only=True)
+    creator = serializers.PrimaryKeyRelatedField(
+        default=serializers.CreateOnlyDefault(CurrentUserDefault()),
+        read_only=True,
+    )
     participant_contribution_index = serializers.DictField(required=True)
 
     def validate(self, data):
@@ -19,7 +22,9 @@ class BillSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bill
+        # TODO Replace creditor and participants with the ids the client would return
         fields = (
+            "creator",
             "creditor",
             "participants",
             "name",
@@ -30,14 +35,15 @@ class BillSerializer(serializers.ModelSerializer):
             "interval",
             "notes",
             "total_amount_due",
-            "total_amount_paid",
             "currency_name",
             "currency_symbol",
             "currency_code",
             "created",
             "modified",
             "uuid",
+            "participant_contribution_index",
         )
+
         read_only_fields = (
             "created",
             "modified",

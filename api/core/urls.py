@@ -34,6 +34,13 @@ urlpatterns = [
         ),
     ),
     path(
+        "api/v1/bills/",
+        include(
+            "bills.urls",
+            namespace="bills",
+        ),
+    ),
+    path(
         "api/schema/",
         SpectacularAPIView.as_view(),
         name="schema",
