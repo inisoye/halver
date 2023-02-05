@@ -15,7 +15,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.utils.responses import format_exception
-from core.utils.users import get_user_by_id
+from core.utils.users import get_user_by_id_drf
 from financials.api.permissions import IsOwner, IsPaystack
 from financials.api.serializers import (
     PaystackTransferRecipientListSerializer,
@@ -207,7 +207,7 @@ class PaystackTransferRecipientListAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         user_id = serializer.validated_data.get("user_id")
 
-        user = get_user_by_id(user_id)
+        user = get_user_by_id_drf(user_id)
 
         recipient_codes = user.get_recipient_codes()
         recipients = asyncio.run(
