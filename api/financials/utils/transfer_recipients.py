@@ -72,7 +72,7 @@ def return_readable_recipient_type(
         raise serializers.ValidationError("Unknown recipient type")
 
 
-def format_create_paystack_transfer_recipient_response(paystack_response):
+def format_paystack_transfer_recipient_response(paystack_response):
     """
     Formats the response from the Paystack API for creating a transfer recipient
     object in the local database.
@@ -130,7 +130,7 @@ def create_transfer_recipient_object(
     recipient_type = paystack_response["data"]["type"]
     readable_recipient_type = return_readable_recipient_type(recipient_type)
 
-    recipient_code, defaults = format_create_paystack_transfer_recipient_response(
+    recipient_code, defaults = format_paystack_transfer_recipient_response(
         paystack_response,
     )
 
@@ -228,7 +228,7 @@ def create_card_recipient_from_webhook(
 
     response = TransferRecipientRequests.create(**paystack_card_recipient_payload)
 
-    recipient_code, defaults = format_create_paystack_transfer_recipient_response(
+    recipient_code, defaults = format_paystack_transfer_recipient_response(
         response,
     )
 

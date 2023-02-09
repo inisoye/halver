@@ -15,7 +15,7 @@ class PlanRequests(PaystackBase):
 
         Args:
             name: Plan's name.
-            amount: Amount for the plan in kobo. Kobo if currency is NGN.
+            amount (int): Amount for the plan in kobo. Kobo if currency is NGN.
                     Pesewas, if currency is GHS, and cents, if currency is ZAR
             interval: Plan's interval: daily, weekly, monthly, biannually, annually.
             description: Description of the plan.

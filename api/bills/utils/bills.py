@@ -2,31 +2,80 @@ from decimal import Decimal
 from uuid import UUID
 
 from django.db import transaction
+from django.db.models import Q
+
+from bills.utils.fees import calculate_all_transaction_fees
+from core.utils.users import get_user_by_id_drf, get_users_by_ids_drf
+
+
+def create_bill(bill_model, validated_data):
+    """
+    Create a bill instance
+
+    Args:
+        bill_model (Model): The bill model.
+        validated_data (dict): The validated data to use for creating the bill.
+
+    Returns:
+        bill (Model): The created bill instance.
+    """
+
+    # Editable fields represent values from serializer that are not immediately
+    # stored but would be modified before they are actually used
+    editable_fields = (
+        "participant_contribution_index",
+        "creditor_id",
+        "participants_ids",
+    )
+
+    validated_data_without_editable_fields = {
+        key: value
+        for key, value in validated_data.items()
+        if key not in editable_fields
+    }
+
+    creditor_id = validated_data["creditor_id"]
+    creditor = get_user_by_id_drf(creditor_id)
+
+    participants_ids = validated_data["participants_ids"]
+    participants = get_users_by_ids_drf(participants_ids)
+
+    new_bill = bill_model.objects.create(
+        creditor=creditor,
+        participants=participants,
+        **validated_data_without_editable_fields,
+    )
+
+    participant_contribution_index = validated_data["participant_contribution_index"]
+    new_bill.update_contributions_and_fees_for_actions(participant_contribution_index)
+
+    return new_bill
 
 
 @transaction.atomic
 def create_actions_for_bill(bill) -> None:
     """
-    Automatically creates bill participant and action objects each time a new bill is
-    created. Used in the bill model's save method.
+    Creates action objects for each partipant/unregistered participant. Used in the bill
+    model's save method.
     """
 
     from bills.models import BillAction
-
-    # TODO
-    # This function should create paystack one paystack plan for the bill if the
-    # following condition passes: if bill.is_recurring:
-    # The plan should be created by sending an API call to paystack in a background job
-    # After the each remote creation in a celery bg task is complete, the plans should
-    # also be created locally with 'PaystackPlan.objects.create'. Ensure to avoid n+1.
-    # Actions should be created for participants as usual before the plans are created.
 
     actions = [
         BillAction(bill=bill, participant=participant)
         for participant in bill.participants.all()
     ]
 
-    BillAction.objects.bulk_create(actions)
+    actions_for_unregistered_participants = [
+        BillAction(
+            bill=bill,
+            unregistered_participant=unregistered_participant,
+            status=BillAction.StatusChoices.UNREGISTERED,
+        )
+        for unregistered_participant in bill.unregistered_participants.all()
+    ]
+
+    BillAction.objects.bulk_create(actions + actions_for_unregistered_participants)
 
 
 def format_participant_contribution_index(
@@ -58,10 +107,15 @@ def format_participant_contribution_index(
 
 
 @transaction.atomic
-def add_contributions_and_fees_to_actions(bill, participant_contribution_index):
+def add_participant_contributions_and_fees_to_actions(
+    bill, participant_contribution_index
+):
     """
-    Update the contributions of the participants and their
+    Update the contributions of the participants/unregistered participants and their
     associated actions based on the given contribution index.
+
+    The participant contribution index is only used for authenticated users. Detailed
+    for unregistered participants are obtained from a dedicated joined model.
 
     Args:
         bill: The bill instance with actions to be updated.
@@ -76,21 +130,30 @@ def add_contributions_and_fees_to_actions(bill, participant_contribution_index):
     """
 
     from bills.models import BillAction
-    from bills.utils.fees import calculate_all_transaction_fees
 
     formatted_participant_contribution_index: dict[
         UUID, Decimal
     ] = format_participant_contribution_index(participant_contribution_index)
 
-    # Filter out actions of the bill's participants
-    actions = BillAction.objects.filter(participant__in=bill.participants.all())
+    # Filter out actions of the bill's participants and unregistered participants
+    actions = BillAction.objects.filter(
+        Q(participant__in=bill.participants.all())
+        | Q(unregistered_participant__in=bill.unregistered_participants.all())
+    )
 
-    # Load the user object of the actions to prevent multiple (N+1) queries in loop below
-    actions = actions.select_related("participant")
+    # Load the participant/unregistered_participant objects of the actions to prevent
+    # multiple (N+1) queries in loop below
+    actions = actions.select_related("participant", "unregistered_participant")
 
     actions_to_update = []
     for action in actions:
-        contribution = formatted_participant_contribution_index[action.participant.uuid]
+        if action.participant:
+            contribution = formatted_participant_contribution_index[
+                action.participant.uuid
+            ]
+        else:
+            contribution = action.unregistered_participant.contribution
+
         all_transaction_fees = calculate_all_transaction_fees(contribution)
 
         actions_to_update.append(

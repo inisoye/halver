@@ -52,3 +52,29 @@ def get_user_by_id_drf(uuid) -> CustomUser:
         )
 
     return user
+
+
+def get_users_by_ids_drf(uuids):
+    """
+    Get multiple users by IDs in a DRF context.
+
+    Args:
+        uuids (list): List of UUIDs of the users to retrieve.
+
+    Returns:
+        CustomUser: The users with the specified IDs.
+
+    Raises:
+        serializers.ValidationError: If any of the users with the specified IDs do not
+        exist.
+    """
+    User = get_user_model()
+
+    users = User.objects.filter(uuid__in=uuids)
+
+    if not users.exists():
+        raise serializers.ValidationError(
+            {"uuid": f"None of the users with IDs {uuids} were found"}
+        )
+
+    return users

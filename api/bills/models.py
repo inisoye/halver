@@ -1,9 +1,11 @@
 from django.conf import settings
 from django.db import models, transaction
+from phonenumber_field.modelfields import PhoneNumberField
 
 from bills.utils.bills import (
-    add_contributions_and_fees_to_actions,
+    add_participant_contributions_and_fees_to_actions,
     create_actions_for_bill,
+    create_bill,
 )
 from core.models import AbstractCurrencyModel, AbstractTimeStampedUUIDModel
 from core.utils.dates_and_time import get_one_week_from_now, validate_date_not_in_past
@@ -83,23 +85,16 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         decimal_places=4,
         default=0,
     )
+    paystack_plan = models.OneToOneField(
+        "financials.PaystackPlan",
+        on_delete=models.PROTECT,
+        null=True,
+        related_name="actions",
+    )
 
     @property
     def is_recurring(self) -> bool:
         return self.interval != "none"
-
-    def update_contributions_and_fees_for_actions(
-        self, participant_contribution_index
-    ) -> None:
-        """
-        Called from view. Adds contribution amounts and fees to bill actions.
-
-        Args:
-            participant_contribution_index: Dictionary connecting participant uuids
-            with contributions.
-        """
-
-        add_contributions_and_fees_to_actions(self, participant_contribution_index)
 
     def save(self, *args, **kwargs) -> None:
         with transaction.atomic():
@@ -108,6 +103,12 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
             if self.pk is None:
                 create_actions_for_bill(self)
 
+    def clean(self) -> None:
+        self._validate_dates()
+
+    def __str__(self) -> str:
+        return f"name: {self.name}, creator: {self.creator.full_name}"
+
     def _validate_dates(self) -> None:
         if self.is_recurring:
             validate_date_not_in_past(self.first_charge_date, "First Charge Date")
@@ -115,11 +116,61 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         else:
             validate_date_not_in_past(self.deadline, "Deadline")
 
-    def clean(self) -> None:
-        self._validate_dates()
+    @classmethod
+    def create_bill_from_validated_data(cls, validated_data):
+        """
+        Called from view to create a new bill.
+
+        Args:
+            validated_data (dict): The validated data obtained from the serializer to
+            be used in the creation of the bill
+        """
+
+        create_bill(cls, validated_data)
+
+    def update_contributions_and_fees_for_actions(
+        self, participant_contribution_index
+    ) -> None:
+        """
+        Called after bill creation. Adds contribution amounts and fees to bill actions.
+
+        Args:
+            participant_contribution_index: Dictionary connecting participant uuids
+            with contributions.
+        """
+
+        add_participant_contributions_and_fees_to_actions(
+            self, participant_contribution_index
+        )
+
+
+class BillUnregisteredParticipant(AbstractTimeStampedUUIDModel, models.Model):
+    name = models.CharField(
+        max_length=100,
+    )
+    bill = models.ForeignKey(
+        Bill,
+        on_delete=models.CASCADE,
+        related_name="unregistered_participants",
+    )
+    phone = PhoneNumberField(
+        unique=True,
+        error_messages={
+            "unique": "Duplicate phone numbers are not allowed.",
+        },
+    )
+    email = models.EmailField(
+        null=True,
+        blank=True,
+    )
+    contribution = models.DecimalField(
+        verbose_name="Bill contribution of unregistered participant",
+        max_digits=19,
+        decimal_places=4,
+    )
 
     def __str__(self) -> str:
-        return f"name: {self.name}, creator: {self.creator.full_name}"
+        return f"name: {self.name}"
 
 
 class BillAction(AbstractTimeStampedUUIDModel, models.Model):
@@ -130,6 +181,7 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
 
     class StatusChoices(models.TextChoices):
         # For all bill types.
+        UNREGISTERED = "unregistered", "Unregistered"
         PENDING = "pending", "Pending"
         OVERDUE = "overdue", "Overdue"
         DECLINED = "declined", "Declined"
@@ -148,11 +200,12 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
     participant = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        null=True,
         related_name="actions",
     )
-    paystack_plan = models.ForeignKey(
-        "financials.PaystackPlan",
-        on_delete=models.PROTECT,
+    unregistered_participant = models.ForeignKey(
+        BillUnregisteredParticipant,
+        on_delete=models.CASCADE,
         null=True,
         related_name="actions",
     )
@@ -196,7 +249,7 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
 
     def __str__(self) -> str:
         return (
-            f"participant: {self.participant.full_name}, "
+            f"participant: {self.participant or self.unregistered_participant}, "
             f"contribution: {self.contribution}, bill: ({self.bill.name})"
         )
 

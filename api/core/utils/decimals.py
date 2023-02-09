@@ -1,7 +1,7 @@
 from decimal import Decimal, InvalidOperation, getcontext
 
 
-def round_decimal(value):
+def round_decimal(value: Decimal):
     """
     Rounds a Decimal object to 4 decimal places.
 
