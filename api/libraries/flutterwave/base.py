@@ -1,6 +1,4 @@
-"""
-Custom base script for Flutterwave API features.
-"""
+"""Custom base script for Flutterwave API features."""
 
 from typing import Any
 
@@ -16,11 +14,10 @@ FLUTTERWAVE_API_BASE_URL = "https://api.flutterwave.com/v3/"
 
 
 class Borg:
-    """
-    Borg class making class attributes global.
+    """Borg class making class attributes global.
 
-    This class holds the state that all instances of the FlutterwaveBase child instance
-    would share.
+    This class holds the state that all instances of the FlutterwaveBase child
+    instance would share.
     """
 
     _shared_state: dict[str, Any] = {}
@@ -30,14 +27,11 @@ class Borg:
 
 
 class FlutterwaveBase(Borg):
-    """
-    Base class used across all subclasses dedicated to Flutterwave features.
-    """
+    """Base class used across all subclasses dedicated to Flutterwave
+    features."""
 
     def __init__(self, **kwargs):
-        """
-        Initialize Flutterwave with secret key.
-        """
+        """Initialize Flutterwave with secret key."""
 
         Borg.__init__(self)
 
@@ -65,8 +59,7 @@ class FlutterwaveRequest(object):
         api_base_url="https://api.flutterwave.com/v3/",
         headers=None,
     ):
-        """
-        Initialize Flutterwave Request object for browsing resource.
+        """Initialize Flutterwave Request object for browsing resource.
 
         Args:
             api_base_url: str
@@ -77,8 +70,7 @@ class FlutterwaveRequest(object):
         self.headers = headers
 
     def _request(self, method, resource_uri, **kwargs):
-        """
-        Perform a method on a resource.
+        """Perform a method on a resource.
 
         Args:
             method: requests.`method`
@@ -104,8 +96,7 @@ class FlutterwaveRequest(object):
         return response.json()
 
     async def _request_async(self, _session, method, endpoint, **kwargs):
-        """
-        Perform an HTTP method on a resource asynchronously.
+        """Perform an HTTP method on a resource asynchronously.
 
         Args:
             session: aiohttp.ClientSession object
@@ -132,8 +123,7 @@ class FlutterwaveRequest(object):
             return await response.json()
 
     def get(self, endpoint, **kwargs):
-        """
-        Get a resource.
+        """Get a resource.
 
         Args:
             endpoint: resource endpoint.
@@ -146,8 +136,7 @@ class FlutterwaveRequest(object):
         )
 
     async def get_async(self, endpoint, **kwargs):
-        """
-        Get a resource asynchronously.
+        """Get a resource asynchronously.
 
         Args:
             endpoint: resource endpoint.
@@ -165,8 +154,7 @@ class FlutterwaveRequest(object):
             )
 
     def post(self, endpoint, **kwargs):
-        """
-        Create a resource.
+        """Create a resource.
 
         Args:
             endpoint: resource endpoint.
@@ -182,8 +170,7 @@ class FlutterwaveRequest(object):
         )
 
     async def post_async(self, endpoint, **kwargs):
-        """
-        Post a resource asynchronously.
+        """Post a resource asynchronously.
 
         Args:
             endpoint: resource endpoint.
@@ -201,8 +188,7 @@ class FlutterwaveRequest(object):
             )
 
     def put(self, endpoint, **kwargs):
-        """
-        Update a resource.
+        """Update a resource.
 
         Args:
             endpoint: resource endpoint.
@@ -218,8 +204,7 @@ class FlutterwaveRequest(object):
         )
 
     async def put_async(self, endpoint, **kwargs):
-        """
-        Update a resource asynchronously.
+        """Update a resource asynchronously.
 
         Args:
             endpoint: resource endpoint.
@@ -237,8 +222,7 @@ class FlutterwaveRequest(object):
             )
 
     def delete(self, endpoint, **kwargs):
-        """
-        Delete a resource.
+        """Delete a resource.
 
         Args:
             endpoint: resource endpoint.
@@ -254,8 +238,7 @@ class FlutterwaveRequest(object):
         )
 
     async def delete_async(self, endpoint, **kwargs):
-        """
-        Delete a resource asynchronously.
+        """Delete a resource asynchronously.
 
         Args:
             endpoint: resource endpoint.

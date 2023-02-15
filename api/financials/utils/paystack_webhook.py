@@ -7,8 +7,7 @@ from financials.tasks.cards import (
 
 
 def handle_paystack_webhook_response(request_data):
-    """
-    Handle Paystack webhook response.
+    """Handle Paystack webhook response.
 
     This function handles the response of a Paystack webhook by triggering the
     appropriate tasks based on the event. The events handled are:

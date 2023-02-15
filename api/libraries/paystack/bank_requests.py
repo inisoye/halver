@@ -2,14 +2,11 @@ from libraries.paystack.base import PaystackBase
 
 
 class BankRequests(PaystackBase):
-    """
-    Methods for handling and obtaining Paystack bank data.
-    """
+    """Methods for handling and obtaining Paystack bank data."""
 
     @classmethod
     def list(cls, **kwargs):
-        """
-        List banks supported by Paystack.
+        """List banks supported by Paystack.
 
         Args:
             No argument is required.
@@ -33,8 +30,7 @@ class BankRequests(PaystackBase):
 
     @classmethod
     async def list_async(cls, **kwargs):
-        """
-        List banks supported by Paystack.
+        """List banks supported by Paystack.
 
         Args:
             No argument is required.
@@ -62,8 +58,7 @@ class BankRequests(PaystackBase):
 
     @classmethod
     def resolve_account_number(cls, **kwargs):
-        """
-        Confirm the owner of an account with it's number.
+        """Confirm the owner of an account with it's number.
 
         Args:
             account_number (str): customer's account number.

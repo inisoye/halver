@@ -10,9 +10,8 @@ def calculate_paystack_transaction_fee(
     flat_fee=100,
     fee_cap=2000,
 ) -> Decimal:
-    """
-    Calculate the final amount for Paystack's transaction fee
-    based on the given price, decimal fee, flat fee, and fee cap.
+    """Calculate the final amount for Paystack's transaction fee based on the
+    given price, decimal fee, flat fee, and fee cap.
 
     Calculation and variable names culled from Paystack's guidelines:
     1.https://support.paystack.com/hc/en-us/articles/360009973579-Can-I-pass-the-transaction-charges-to-my-customers-
@@ -51,8 +50,7 @@ def calculate_paystack_transaction_fee(
 
 
 def calculate_paystack_transfer_fee(transfer_amount: Union[int, Decimal]) -> Decimal:
-    """
-    Calculate the transfer fee based on the given transfer amount.
+    """Calculate the transfer fee based on the given transfer amount.
 
     Calculation and variable names culled from Paystack's guidelines:
     1.https://support.paystack.com/hc/en-us/articles/360012276559-Transfers
@@ -82,8 +80,7 @@ class AllTransactionFees(TypedDict):
 
 
 def calculate_all_transaction_fees(amount: Union[int, Decimal]):
-    """
-    Calculate the Halver transaction fee in addition to the Paystack fees.
+    """Calculate the Halver transaction fee in addition to the Paystack fees.
 
     The Halver fee is equivalent to the total amount sent to Paystack.
     As a result, the total fee is double whatever is remitted to Paystack.

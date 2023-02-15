@@ -34,9 +34,8 @@ class PlanRequests(PaystackBase):
 
     @classmethod
     async def create_async(cls, **kwargs):
-        """Create a plan asynchronously. The request is sent
-        asynchronously to facilitate the create_multiple
-        method.
+        """Create a plan asynchronously. The request is sent asynchronously to
+        facilitate the create_multiple method.
 
         Note: Some params have been left out. Check https://paystack.com/docs/api/#plan.
 
@@ -64,8 +63,8 @@ class PlanRequests(PaystackBase):
 
     @classmethod
     async def create_multiple(cls, plan_creation_payloads):
-        """Create multiple paystack plans by running the
-        create method multiple times, concurrently.
+        """Create multiple paystack plans by running the create method multiple
+        times, concurrently.
 
         Args:
             plan_creation_payloads: A list of payloads to be used in the creation

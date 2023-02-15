@@ -2,17 +2,13 @@ from libraries.flutterwave.base import FlutterwaveBase
 
 
 class Payments(FlutterwaveBase):
-    """
-    Methods for initializing a Flutterwave payment.
-    """
+    """Methods for initializing a Flutterwave payment."""
 
     @classmethod
     def initialize(cls, **kwargs):
-        """
-        Initialize a payment to get a payment link as a response.
-        Primarily intended to be used to add cards as this endpoint is not in
-        rave-python package.
-        Akin to Paystack initialize transaction method.
+        """Initialize a payment to get a payment link as a response. Primarily
+        intended to be used to add cards as this endpoint is not in rave-python
+        package. Akin to Paystack initialize transaction method.
 
         Args:
             tx_ref: A unique reference peculiar for the transaction.

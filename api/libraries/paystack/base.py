@@ -1,9 +1,8 @@
 """Base scripts for Paystack API features.
 
 Initially based on patterns used by the paystackapi package.
-https://github.com/andela-sjames/paystack-python
-Modifiedand
-to allow for asynchronous requests.
+https://github.com/andela-sjames/paystack-python Modified to allow for
+asynchronous requests.
 """
 
 from typing import Any

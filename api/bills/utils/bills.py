@@ -8,8 +8,7 @@ from core.utils.users import get_user_by_id_drf, get_users_by_ids_drf
 
 
 def create_bill(bill_model, validated_data):
-    """
-    Create a bill instance and and add actions to it.
+    """Create a bill instance and and add actions to it.
 
     Args:
         bill_model (Model): The bill model.
@@ -53,9 +52,9 @@ def create_bill(bill_model, validated_data):
 
 @transaction.atomic
 def create_actions_for_bill(bill) -> None:
-    """
-    Creates action objects for each partipant/unregistered participant. Used in the bill
-    model's save method.
+    """Creates action objects for each partipant/unregistered participant.
+
+    Used in the bill model's save method.
     """
 
     from bills.models import BillAction
@@ -80,8 +79,7 @@ def create_actions_for_bill(bill) -> None:
 def format_participant_contribution_index(
     participant_contribution_index,
 ) -> dict[UUID, Decimal]:
-    """
-    Cleans up participant contribution index by ensuring all keys are UUIDs
+    """Cleans up participant contribution index by ensuring all keys are UUIDs
     and values are Decimals.
 
     Args:
@@ -109,9 +107,8 @@ def format_participant_contribution_index(
 def add_participant_contributions_and_fees_to_actions(
     bill, participant_contribution_index
 ):
-    """
-    Update the contributions of the participants/unregistered participants and their
-    associated actions based on the given contribution index.
+    """Update the contributions of the participants/unregistered participants
+    and their associated actions based on the given contribution index.
 
     The participant contribution index is only used for authenticated users. Detailed
     for unregistered participants are obtained from a dedicated joined model.

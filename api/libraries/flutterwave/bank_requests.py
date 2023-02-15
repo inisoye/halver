@@ -2,15 +2,11 @@ from libraries.flutterwave.base import FlutterwaveBase
 
 
 class BankRequests(FlutterwaveBase):
-
-    """
-    Methods for handling and obtaining Flutterwave bank data.
-    """
+    """Methods for handling and obtaining Flutterwave bank data."""
 
     @classmethod
     def list(cls, country):
-        """
-        List banks supported by Flutterwave.
+        """List banks supported by Flutterwave.
 
         Args:
             country (required): The country code of the Banks being queried.
@@ -26,8 +22,7 @@ class BankRequests(FlutterwaveBase):
 
     @classmethod
     def resolve_account_details(cls, **kwargs):
-        """
-        Confirm the owner of an account with it's number.
+        """Confirm the owner of an account with it's number.
 
         Args:
             account_number (str): customer's Nigerian account number.

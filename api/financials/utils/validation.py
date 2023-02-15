@@ -5,8 +5,8 @@ from financials.utils.transfer_recipients import return_readable_recipient_type
 
 
 def validate_new_recipient_data(data):
-    """
-    Ensures that every new recipient has required fields depending on its type.
+    """Ensures that every new recipient has required fields depending on its
+    type.
 
     Args:
         data: The data passed in to the serializer for a new recipient.

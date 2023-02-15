@@ -2,14 +2,11 @@ from libraries.paystack.base import PaystackBase
 
 
 class TransactionRequests(PaystackBase):
-    """
-    Methods for querying handling Paystack transactions.
-    """
+    """Methods for querying handling Paystack transactions."""
 
     @classmethod
     def initialize(cls, **kwargs):
-        """
-        Initialize transaction.
+        """Initialize transaction.
 
         Args:
             reference: Unique transaction reference
@@ -31,8 +28,7 @@ class TransactionRequests(PaystackBase):
 
     @classmethod
     def charge(cls, **kwargs):
-        """
-        Charge a reusable authorization.
+        """Charge a reusable authorization.
 
         Args:
             reference: Unique transaction reference
@@ -51,8 +47,7 @@ class TransactionRequests(PaystackBase):
 
     @classmethod
     def charge_token(cls, **kwargs):
-        """
-        Charge token.
+        """Charge token.
 
         Args:
             reference: unique transaction reference
@@ -62,7 +57,6 @@ class TransactionRequests(PaystackBase):
 
         Returns:
             JSON data from Paystack API.
-
         """
         return cls().requests.post(
             "transaction/charge_token",
@@ -71,8 +65,7 @@ class TransactionRequests(PaystackBase):
 
     @classmethod
     def fetch(cls, transaction_id):
-        """
-        Get a single transaction.
+        """Get a single transaction.
 
         Args:
             transaction_id: Transaction id (integer).
@@ -87,8 +80,7 @@ class TransactionRequests(PaystackBase):
 
     @classmethod
     def list(cls, **kwargs):
-        """
-        List transactions.
+        """List transactions.
 
         Args:
             perPage: Records you want to retrieve per page (Integer).
@@ -110,8 +102,7 @@ class TransactionRequests(PaystackBase):
 
     @classmethod
     def totals(cls, **kwargs):
-        """
-        Get totals.
+        """Get totals.
 
         Args:
             No argument required.
@@ -127,8 +118,7 @@ class TransactionRequests(PaystackBase):
 
     @classmethod
     def verify(cls, reference):
-        """
-        Verify transactions.
+        """Verify transactions.
 
         Args:
             reference: a unique value needed for transaction.

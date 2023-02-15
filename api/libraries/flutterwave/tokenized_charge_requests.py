@@ -2,15 +2,12 @@ from libraries.flutterwave.base import FlutterwaveBase
 
 
 class TokenizedCharges(FlutterwaveBase):
-    """
-    Methods for initializing a Flutterwave payment.
-    """
+    """Methods for initializing a Flutterwave payment."""
 
     @classmethod
     def charge(cls, **kwargs):
-        """
-        Initiate a tokenized transaction. Charges a saved card.
-        Akin to Paystack's charge authorization method.
+        """Initiate a tokenized transaction. Charges a saved card. Akin to
+        Paystack's charge authorization method.
 
         Args:
             token: The card token (obtained from card saved to DB).

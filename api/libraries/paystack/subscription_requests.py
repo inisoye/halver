@@ -2,14 +2,11 @@ from libraries.paystack.base import PaystackBase
 
 
 class SubscriptionRequests(PaystackBase):
-    """
-    Methods for querying and handling Paystack subscriptions.
-    """
+    """Methods for querying and handling Paystack subscriptions."""
 
     @classmethod
     def create(cls, **kwargs):
-        """
-        Create a subscription.
+        """Create a subscription.
 
         Args:
             customer: Customer's email address or customer code
@@ -28,8 +25,7 @@ class SubscriptionRequests(PaystackBase):
 
     @classmethod
     def list(cls, **kwargs):
-        """
-        List subscriptions.
+        """List subscriptions.
 
         Args:
             perPage: Records you want to retrieve per page (Integer)
@@ -48,8 +44,7 @@ class SubscriptionRequests(PaystackBase):
 
     @classmethod
     def fetch(cls, id_or_code):
-        """
-        Fetch subscription.
+        """Fetch subscription.
 
         Args:
             id_or_code: Subscription ID or code.
@@ -64,8 +59,7 @@ class SubscriptionRequests(PaystackBase):
 
     @classmethod
     def disable(cls, **kwargs):
-        """
-        Disable a subscription.
+        """Disable a subscription.
 
         Args:
             code: Subscription code.
@@ -82,8 +76,7 @@ class SubscriptionRequests(PaystackBase):
 
     @classmethod
     def enable(cls, **kwargs):
-        """
-        Enable a subscription.
+        """Enable a subscription.
 
         Args:
             code: Subscription code
@@ -100,8 +93,7 @@ class SubscriptionRequests(PaystackBase):
 
     @classmethod
     def generate_update_link(cls, subscription_code):
-        """
-        Generate a link for users to update the card on a subscription.
+        """Generate a link for users to update the card on a subscription.
 
         Args:
             code: Subscription code.
@@ -116,8 +108,7 @@ class SubscriptionRequests(PaystackBase):
 
     @classmethod
     def send_update_email(cls, subscription_code):
-        """
-        Send an email with which users can update the card on a subscription.
+        """Send an email with which users can update the card on a subscription.
 
         Args:
             code: Subscription code.

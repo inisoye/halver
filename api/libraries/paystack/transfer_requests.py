@@ -2,14 +2,11 @@ from libraries.paystack.base import PaystackBase
 
 
 class TransferRequests(PaystackBase):
-    """
-    Methods for handling Paystack transfers.
-    """
+    """Methods for handling Paystack transfers."""
 
     @classmethod
     def initiate(cls, **kwargs):
-        """
-        Initiate a transfer.
+        """Initiate a transfer.
 
         Args:
             source: Where should we transfer from? Only balance for now
@@ -31,8 +28,7 @@ class TransferRequests(PaystackBase):
 
     @classmethod
     def list(cls, **kwargs):
-        """
-        List all transfers made on integration.
+        """List all transfers made on integration.
 
         Args:
             perPage: Records you want to retrieve per page (Integer).
@@ -52,8 +48,7 @@ class TransferRequests(PaystackBase):
 
     @classmethod
     def fetch(cls, id_or_code):
-        """
-        Fetch a transfer.
+        """Fetch a transfer.
 
         Args:
             id_or_code: An id or code for the transfer you want to retrieve.
@@ -87,8 +82,7 @@ class TransferRequests(PaystackBase):
 
     @classmethod
     def initiate_bulk_transfer(cls, **kwargs):
-        """
-        Initiate bulk transfer.
+        """Initiate bulk transfer.
 
         Args:
             currency: Currency type to use
@@ -115,8 +109,7 @@ class TransferRequests(PaystackBase):
 
     @classmethod
     def verify(cls, reference):
-        """
-        Verify a transfer.
+        """Verify a transfer.
 
         Args:
             reference: The transfer reference.

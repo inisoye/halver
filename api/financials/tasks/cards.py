@@ -16,8 +16,7 @@ logger = get_task_logger(__name__)
 
 @shared_task
 def process_card_creation_and_refund(request_data):
-    """
-    Processes card creation and initiates a refund for the card creation fee.
+    """Processes card creation and initiates a refund for the card creation fee.
 
     Args:
         request_data (dict): The JSON request data received from the Paystack webhook.
@@ -67,8 +66,7 @@ def process_card_creation_and_refund(request_data):
 
 @shared_task
 def retry_failed_card_addition_charge_refund(request_data):
-    """
-    Retries failed card addition charge refunds.
+    """Retries failed card addition charge refunds.
 
     Args:
         request_data (dict): The JSON request data received from the Paystack webhook.
@@ -96,8 +94,7 @@ def retry_failed_card_addition_charge_refund(request_data):
 
 @shared_task
 def record_card_addition_transfer_object(request_data, transfer_outcome):
-    """
-    Create or update a PaystackTransfer object with data from the
+    """Create or update a PaystackTransfer object with data from the
     request_data and the outcome of the transfer.
 
     The task is dedicated to transfers made to refund money paid to add cards.

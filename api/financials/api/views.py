@@ -36,8 +36,7 @@ from libraries.paystack.transfer_recipient_requests import TransferRecipientRequ
 
 
 class PaystackWebhookHandlerAPIView(APIView):
-    """
-    View for handling Paystack webhooks.
+    """View for handling Paystack webhooks.
 
     Accepts POST requests.
     """
@@ -46,9 +45,7 @@ class PaystackWebhookHandlerAPIView(APIView):
 
     @extend_schema(responses={200: OpenApiResponse()})
     def post(self, request):
-        """
-        Method to handle webhook requests made by Paystack.
-        """
+        """Method to handle webhook requests made by Paystack."""
 
         request_data = request.data
 
@@ -58,8 +55,7 @@ class PaystackWebhookHandlerAPIView(APIView):
 
 
 class DefaultCardRetrieveView(RetrieveAPIView):
-    """
-    View for retrieving the default card for a user.
+    """View for retrieving the default card for a user.
 
     Accepts GET requests.
     """
@@ -69,8 +65,7 @@ class DefaultCardRetrieveView(RetrieveAPIView):
     serializer_class = UserCardSerializer
 
     def get_object(self):
-        """
-        Returns the default card for the current user.
+        """Returns the default card for the current user.
 
         Returns:
             The default card object.
@@ -83,8 +78,7 @@ class DefaultCardRetrieveView(RetrieveAPIView):
 
 @extend_schema(request=None, responses={204: OpenApiResponse()})
 class DefaultCardUpdateView(UpdateAPIView):
-    """
-    View for updating the default card for a user.
+    """View for updating the default card for a user.
 
     Accepts PUT requests.
     """
@@ -96,8 +90,8 @@ class DefaultCardUpdateView(UpdateAPIView):
     http_method_names = ["patch"]
 
     def partial_update(self, request, uuid) -> Response:
-        """
-        Sets the card with the given UUID as the default card for the current user.
+        """Sets the card with the given UUID as the default card for the current
+        user.
 
         Args:
             uuid: The UUID of the card to be set as the default card.
@@ -112,8 +106,7 @@ class DefaultCardUpdateView(UpdateAPIView):
 
 
 class UserCardAdditionTransactionAPIView(APIView):
-    """
-    View for handling the Paystack transaction for card addition.
+    """View for handling the Paystack transaction for card addition.
 
     Accepts POST requests.
     """
@@ -124,8 +117,7 @@ class UserCardAdditionTransactionAPIView(APIView):
         },
     )
     def post(self, request) -> Response:
-        """
-        Initializes a Paystack transaction strictly for card addition.
+        """Initializes a Paystack transaction strictly for card addition.
 
         Returns:
             JSON response from Paystack.
@@ -145,8 +137,7 @@ class UserCardAdditionTransactionAPIView(APIView):
 
 
 class UserCardListView(ListAPIView):
-    """
-    View for listing all cards for a user.
+    """View for listing all cards for a user.
 
     Accepts GET requests.
     """
@@ -156,8 +147,7 @@ class UserCardListView(ListAPIView):
     serializer_class = UserCardSerializer
 
     def get_queryset(self):
-        """
-        Returns a queryset containing all cards for the current user.
+        """Returns a queryset containing all cards for the current user.
 
         Returns:
             A queryset of card objects for current user.
@@ -166,8 +156,7 @@ class UserCardListView(ListAPIView):
 
 
 class UserCardRetrieveDestroyView(RetrieveDestroyAPIView):
-    """
-    View for retrieving and deleting a specific card for a user.
+    """View for retrieving and deleting a specific card for a user.
 
     Accepts GET and DELETE requests.
     """
@@ -179,9 +168,8 @@ class UserCardRetrieveDestroyView(RetrieveDestroyAPIView):
 
 
 class PaystackTransferRecipientListAPIView(APIView):
-    """
-    View for obtaining a specified user's transfer recipients directly
-    from the Paystack API. Could be used to check any user's added data.
+    """View for obtaining a specified user's transfer recipients directly from
+    the Paystack API. Could be used to check any user's added data.
 
     Accepts GET requests.
     """
@@ -196,8 +184,7 @@ class PaystackTransferRecipientListAPIView(APIView):
         },
     )
     def get(self, request) -> Response:
-        """
-        Handles GET requests to retrieve a list of transfer recipients.
+        """Handles GET requests to retrieve a list of transfer recipients.
 
         Returns:
             A list of transfer recipient objects.
@@ -217,8 +204,7 @@ class PaystackTransferRecipientListAPIView(APIView):
 
 
 class TransferRecipientListCreateAPIView(APIView):
-    """
-    View for managing transfer recipients.
+    """View for managing transfer recipients.
 
     Accepts GET and POST requests.
     """
@@ -230,8 +216,7 @@ class TransferRecipientListCreateAPIView(APIView):
     queryset = TransferRecipient.objects.all()
 
     def get(self, request) -> Response:
-        """
-        Retrieves a list of all transfer recipients for the current user.
+        """Retrieves a list of all transfer recipients for the current user.
 
         Returns:
             A list of transfer recipients for the current user in JSON format,
@@ -252,8 +237,7 @@ class TransferRecipientListCreateAPIView(APIView):
         },
     )
     def post(self, request) -> Response:
-        """
-        Creates a new transfer recipient.
+        """Creates a new transfer recipient.
 
         Returns:
             An empty response.
@@ -272,8 +256,7 @@ class TransferRecipientListCreateAPIView(APIView):
 
 
 class TransferRecipientsDestroyView(DestroyAPIView):
-    """
-    View for deleting transfer recipients.
+    """View for deleting transfer recipients.
 
     Accepts DELETE requests.
     """
@@ -284,8 +267,7 @@ class TransferRecipientsDestroyView(DestroyAPIView):
     serializer_class = TransferRecipientUpdateDeleteSerializer
 
     def perform_destroy(self, instance):
-        """
-        Deletes a transfer recipient.
+        """Deletes a transfer recipient.
 
         Args:
             instance: The transfer recipient object to be deleted.
@@ -307,8 +289,7 @@ class TransferRecipientsDestroyView(DestroyAPIView):
 
 
 class DefaultTransferRecipientRetrieveView(RetrieveAPIView):
-    """
-    View for retrieving the default transfer recipient for a user.
+    """View for retrieving the default transfer recipient for a user.
 
     Accepts GET requests.
     """
@@ -319,8 +300,7 @@ class DefaultTransferRecipientRetrieveView(RetrieveAPIView):
     http_method_names = ["get"]
 
     def get_object(self):
-        """
-        Returns the default transfer recipient for the current user.
+        """Returns the default transfer recipient for the current user.
 
         Returns:
             The default transfer recipient object.
@@ -333,8 +313,7 @@ class DefaultTransferRecipientRetrieveView(RetrieveAPIView):
 
 @extend_schema(request=None, responses={204: OpenApiResponse()})
 class DefaultTransferRecipientUpdateView(UpdateAPIView):
-    """
-    View for updating the default transfer recipient for a user.
+    """View for updating the default transfer recipient for a user.
 
     Accepts PUT requests.
     """
@@ -346,9 +325,8 @@ class DefaultTransferRecipientUpdateView(UpdateAPIView):
     http_method_names = ["patch"]
 
     def partial_update(self, request, uuid) -> Response:
-        """
-        Sets the recipient with the given UUID as the default recipient
-        for the current user.
+        """Sets the recipient with the given UUID as the default recipient for
+        the current user.
 
         Args:
             uuid: The UUID of the recipient to be set as the default recipient.

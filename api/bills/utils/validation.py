@@ -9,13 +9,14 @@ from core.utils.users import get_user_by_id_drf
 
 
 def validate_bill_serializer_dates(serializer_instance):
-    """
-    Ensure the dates provided in the serializer are not in the past. If the bill is not
-    recurring (interval == "none"), only the deadline date is validated. Otherwise,
-    both the first_charge_date and next_charge_date are validated.
+    """Ensure the dates provided in the serializer are not in the past. If the
+    bill is not recurring (interval == "none"), only the deadline date is
+    validated. Otherwise, both the first_charge_date and next_charge_date are
+    validated.
 
-    serializer_instance.validated_data is used here as the validation in this function
-    is performed after the default validation (based on the model) have been carried out.
+    serializer_instance.validated_data is used here as the validation in this
+    function is performed after the default validation (based on the model) have
+    been carried out.
     """
 
     if serializer_instance.validated_data["interval"] == "none":
@@ -34,9 +35,8 @@ def validate_bill_serializer_dates(serializer_instance):
 
 
 def validate_participant_contribution_index(serializer_data):
-    """
-    Check that the participant_contribution_index is a
-    valid dictionary of uuid keys and amount values.
+    """Check that the participant_contribution_index is a valid dictionary of
+    uuid keys and amount values.
 
     Args:
         serializer_data: A dictionary containing the serializer's data.
@@ -67,10 +67,9 @@ def validate_participant_contribution_index(serializer_data):
 def validate_participants_and_unregistered_participants(
     serializer_instance, serializer_data
 ):
-    """
-    Ensure that the bill has at least one participant or unregistered participant, and
-    that the details of the creator (id/uuid, email, phone number) are not in either of
-    these lists.
+    """Ensure that the bill has at least one participant or unregistered
+    participant, and that the details of the creator (id/uuid, email, phone
+    number) are not in either of these lists.
 
     Args:
         serializer_data: A dictionary of data from the serializer.

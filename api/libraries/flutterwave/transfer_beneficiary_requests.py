@@ -4,14 +4,11 @@ from libraries.flutterwave.base import FlutterwaveBase
 
 
 class TransferBeneficiariesRequests(FlutterwaveBase):
-    """
-    Methods for initializing a Flutterwave payment.
-    """
+    """Methods for initializing a Flutterwave payment."""
 
     @classmethod
     def create(cls, **kwargs):
-        """
-        Create transfer beneficiary.
+        """Create transfer beneficiary.
 
         Should be called after account number has been verified (if nuban).
         Bank codes can be obtained from the List Banks endpoint.
@@ -32,8 +29,7 @@ class TransferBeneficiariesRequests(FlutterwaveBase):
 
     @classmethod
     def list(cls, **kwargs):
-        """
-        List transfer beneficiaries.
+        """List transfer beneficiaries.
 
         Args:
             page (optional) (integer): The page you want to retrieve.
@@ -49,8 +45,7 @@ class TransferBeneficiariesRequests(FlutterwaveBase):
 
     @classmethod
     def delete(cls, id):
-        """
-        Delete a single transfer beneficiary.
+        """Delete a single transfer beneficiary.
 
         Args:
             id: The id for the beneficiary whose details you want to delete.
@@ -65,9 +60,8 @@ class TransferBeneficiariesRequests(FlutterwaveBase):
 
     @classmethod
     async def fetch_async(cls, id):
-        """
-        Asynchronously get a single transfer beneficiary.
-        The request is sent asynchronously to facilitate the fetch multiple method.
+        """Asynchronously get a single transfer beneficiary. The request is sent
+        asynchronously to facilitate the fetch multiple method.
 
         Args:
             id: An ID or code for the beneficiary
@@ -87,9 +81,8 @@ class TransferBeneficiariesRequests(FlutterwaveBase):
 
     @classmethod
     async def fetch_multiple(cls, beneficiary_ids):
-        """
-        Get multiple, specified transfer beneficiaries by running
-        the fetch method multiple times concurrently.
+        """Get multiple, specified transfer beneficiaries by running the fetch
+        method multiple times concurrently.
 
         Args:
             beneficiary_ids: A list of the ids for the transfer beneficiaries
