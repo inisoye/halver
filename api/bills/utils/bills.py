@@ -2,7 +2,6 @@ from decimal import Decimal
 from uuid import UUID
 
 from django.db import transaction
-from django.db.models import Q
 
 from bills.utils.fees import calculate_all_transaction_fees
 from core.utils.users import get_user_by_id_drf, get_users_by_ids_drf
@@ -10,7 +9,7 @@ from core.utils.users import get_user_by_id_drf, get_users_by_ids_drf
 
 def create_bill(bill_model, validated_data):
     """
-    Create a bill instance
+    Create a bill instance and and add actions to it.
 
     Args:
         bill_model (Model): The bill model.
@@ -135,11 +134,8 @@ def add_participant_contributions_and_fees_to_actions(
         UUID, Decimal
     ] = format_participant_contribution_index(participant_contribution_index)
 
-    # Filter out actions of the bill's participants and unregistered participants
-    actions = BillAction.objects.filter(
-        Q(participant__in=bill.participants.all())
-        | Q(unregistered_participant__in=bill.unregistered_participants.all())
-    )
+    # Get all actions for the bill
+    actions = bill.actions.all()
 
     # Load the participant/unregistered_participant objects of the actions to prevent
     # multiple (N+1) queries in loop below
@@ -156,6 +152,10 @@ def add_participant_contributions_and_fees_to_actions(
 
         all_transaction_fees = calculate_all_transaction_fees(contribution)
 
+        total_fee = all_transaction_fees.total_fee
+
+        total_payment_due = contribution + total_fee
+
         actions_to_update.append(
             BillAction(
                 id=action.id,
@@ -163,7 +163,8 @@ def add_participant_contributions_and_fees_to_actions(
                 paystack_transaction_fee=all_transaction_fees.paystack_transaction_fee,
                 paystack_transfer_fee=all_transaction_fees.paystack_transfer_fee,
                 halver_fee=all_transaction_fees.halver_fee,
-                total_fee=all_transaction_fees.total_fee,
+                total_fee=total_fee,
+                total_payment_due=total_payment_due,
             )
         )
 

@@ -12,15 +12,15 @@ from core.utils.dates_and_time import get_one_week_from_now, validate_date_not_i
 
 
 class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
-    """
-    Stores a particular user's bill.
+    """Stores a particular user's bill.
 
-    Should not be deletable. All bill actions should be marked as cancelled when a
-    bill is cancelled instead. Subscriptions should also be ended.
-
-    ! All user's "bills_created", actions and paystack subscriptions should be cancelled.
-    ! when a user deletes their account.
+    Should not be deletable. All bill actions should be
+    marked as cancelled when a bill is cancelled instead.
+    Subscriptions should also be ended.
     """
+
+    # ! All user's "bills_created", actions and paystack subscriptions should be
+    # ! cancelled when a user deletes their account.
 
     class IntervalChoices(models.TextChoices):
         DAILY = "daily", "Daily"
@@ -85,12 +85,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         decimal_places=4,
         default=0,
     )
-    paystack_plan = models.OneToOneField(
-        "financials.PaystackPlan",
-        on_delete=models.PROTECT,
-        null=True,
-        related_name="actions",
-    )
+    is_discreet = models.BooleanField(default=False)
 
     @property
     def is_recurring(self) -> bool:
@@ -118,25 +113,27 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
 
     @classmethod
     def create_bill_from_validated_data(cls, validated_data):
-        """
-        Called from view to create a new bill.
+        """Called from view to create a new bill with
+        actions.
 
         Args:
-            validated_data (dict): The validated data obtained from the serializer to
-            be used in the creation of the bill
+            validated_data (dict): The validated data obtained from the serializer
+            to be used in the creation of the bill
         """
 
-        create_bill(cls, validated_data)
+        new_bill = create_bill(cls, validated_data)
+
+        return new_bill
 
     def update_contributions_and_fees_for_actions(
         self, participant_contribution_index
     ) -> None:
-        """
-        Called after bill creation. Adds contribution amounts and fees to bill actions.
+        """Called after bill creation. Adds contribution
+        amounts and fees to bill actions.
 
         Args:
-            participant_contribution_index: Dictionary connecting participant uuids
-            with contributions.
+            participant_contribution_index: Dictionary connecting participant uuids with
+            contributions.
         """
 
         add_participant_contributions_and_fees_to_actions(
@@ -174,9 +171,11 @@ class BillUnregisteredParticipant(AbstractTimeStampedUUIDModel, models.Model):
 
 
 class BillAction(AbstractTimeStampedUUIDModel, models.Model):
-    """
-    Actions broadly represent a snapshot of a user's standing in a bill.
-    The model is also joined with the Plan and Subscription for recurring bills.
+    """Actions broadly represent a snapshot of a user's
+    standing in a bill.
+
+    The model is also joined with the Plan and Subscription
+    for recurring bills.
     """
 
     class StatusChoices(models.TextChoices):
@@ -209,12 +208,6 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
         null=True,
         related_name="actions",
     )
-    paystack_subscription = models.OneToOneField(
-        "financials.PaystackSubscription",
-        on_delete=models.PROTECT,
-        null=True,
-        related_name="paystack_subscription",
-    )
     contribution = models.DecimalField(
         verbose_name="Bill contribution of participant (excludes fees)",
         max_digits=19,
@@ -246,20 +239,30 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
         decimal_places=4,
         null=True,
     )
+    total_payment_due = models.DecimalField(
+        verbose_name=(
+            "Summation of contribution and total fees. Actual amount to be paid"
+        ),
+        max_digits=19,
+        decimal_places=4,
+        null=True,
+    )
 
     def __str__(self) -> str:
         return (
-            f"participant: {self.participant or self.unregistered_participant}, "
-            f"contribution: {self.contribution}, bill: ({self.bill.name})"
+            f"participant: {self.participant or self.unregistered_participant},"
+            f" contribution: {self.contribution}, bill: ({self.bill.name})"
         )
 
 
 class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
-    """
-    Stores a transaction particular completed by a user. This is usually only
-    populated when a payment has gone through without any issues.
-    That is, a paystack transaction (card payment) and paystack transfer to the
-    creditor, must have been successful for a transaction to be recorded here
+    """Stores a transaction particular completed by a user.
+
+    This is usually only populated when a payment has gone
+    through without any issues. That is, a paystack
+    transaction (card payment) and paystack transfer to the
+    creditor, must have been successful for a transaction to
+    be recorded here
     """
 
     bill = models.ForeignKey(

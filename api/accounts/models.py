@@ -45,6 +45,17 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    """Custom user model built Django's default model.
+
+    Args:
+        AbstractBaseUser
+        PermissionsMixin
+    """
+
+    # ! Ensure the user object has all its joined models disabled before it is deleted.
+    # This includes bills, paystack subs and paystack plans.
+    # TODO These should be joined with models.SET_NULL and not any other strategy.
+
     username_validator = ASCIIUsernameValidator()
 
     username = CICharField(
@@ -52,7 +63,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         max_length=150,
         unique=True,
         help_text=_(
-            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_" " only."
+            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
         ),
         validators=[username_validator],
         error_messages={
@@ -130,29 +141,24 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     @property
     def full_name(self) -> str:
-        """
-        Return the first_name plus the last_name, with a space in between.
-        """
+        """Return the first_name plus the last_name, with a
+        space in between."""
 
         return f"{self.first_name} {self.last_name}"
 
     def get_short_name(self) -> str:
-        """
-        Return the short name for the user.
-        """
+        """Return the short name for the user."""
 
         return self.first_name
 
     def email_user(self, subject, message, from_email=None, **kwargs) -> None:
-        """
-        Send an email to this user.
-        """
+        """Send an email to this user."""
 
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def get_recipient_codes(self) -> list:
-        """
-        Obtain all the (Paystack) recipient codes for this user.
+        """Obtain all the (Paystack) recipient codes for
+        this user.
 
         Returns:
             list: A list of this user's recipient codes.

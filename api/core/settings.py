@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "debug_toolbar",
     "import_export",
+    "phonenumber_field",
     # Local
     "accounts.apps.AccountsConfig",
     "financials.apps.FinancialsConfig",

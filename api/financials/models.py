@@ -7,9 +7,8 @@ from financials.utils.common import delete_and_set_newest_as_default, set_as_def
 
 
 class UserCard(AbstractTimeStampedUUIDModel, models.Model):
-    """
-    Stores data returned by Paystack to represent a card.
-    """
+    """Stores data returned by Paystack to represent a
+    card."""
 
     authorization_code = models.CharField(
         max_length=100,
@@ -76,16 +75,16 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
         )
 
     def set_as_default_card(self) -> None:
-        """
-        Sets current card instance as the default.
-        """
+        """Sets current card instance as the default."""
 
         set_as_default(self, "user_card")
 
     def delete_and_set_newest_as_default(self) -> None:
-        """
-        Deletes the current card instance. If the deleted instance was the default card,
-        the newest of the remaining instances will be set as the new default.
+        """Deletes the current card instance.
+
+        If the deleted instance was the default card, the
+        newest of the remaining instances will be set as the
+        new default.
         """
 
         delete_and_set_newest_as_default(self, "user_card")
@@ -97,10 +96,9 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
 
 
 class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
-    """
-    Stores data returned by Paystack to represent an account (nuban)
-    or card (authorization) transfer recipient.
-    """
+    """Stores data returned by Paystack to represent an
+    account (nuban) or card (authorization) transfer
+    recipient."""
 
     class RecipientChoices(models.TextChoices):
         CARD = "authorization", "Card"
@@ -167,17 +165,17 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         )
 
     def set_as_default_recipient(self) -> None:
-        """
-        Sets current transfer recipient instance as the default.
-        """
+        """Sets current transfer recipient instance as the
+        default."""
 
         set_as_default(self, "transfer_recipient")
 
     def delete_and_set_newest_as_default(self) -> None:
-        """
-        Deletes the current transfer recipient instance. If the deleted instance was
-        the default recipient, the newest of the remaining instances will be set as the
-        new default.
+        """Deletes the current transfer recipient instance.
+
+        If the deleted instance was the default recipient,
+        the newest of the remaining instances will be set as
+        the new default.
         """
 
         delete_and_set_newest_as_default(self, "transfer_recipient")
@@ -189,8 +187,7 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
 
 
 class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
-    """
-    Stores data returned by Paystack to represent a plan.
+    """Stores data returned by Paystack to represent a plan.
 
     Should not be deletable.
     """
@@ -217,10 +214,19 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
         max_digits=19,
         decimal_places=4,
     )
+    action = models.OneToOneField(
+        BillAction,
+        on_delete=models.PROTECT,
+        related_name="paystack_plan",
+    )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="paystack_plans",
+    )
+    complete_paystack_payload = models.JSONField(
+        null=True,
+        editable=False,
     )
     complete_paystack_response = models.JSONField(
         editable=False,
@@ -236,10 +242,11 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
 
 
 class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
-    """
-    Stores data returned by Paystack to represent a subscription.
+    """Stores data returned by Paystack to represent a
+    subscription.
 
-    Should not be deletable. Subscriptions should be recorded as cancelled when they end.
+    Should not be deletable. Subscriptions should be
+    recorded as cancelled when they end.
     """
 
     class SubscriptionChoices(models.TextChoices):
@@ -251,7 +258,7 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
 
     plan = models.ForeignKey(
         PaystackPlan,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="paystack_subscriptions",
     )
     user = models.ForeignKey(
@@ -265,7 +272,7 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
     )
     card = models.ForeignKey(
         UserCard,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=True,
         related_name="paystack_subscriptions",
         help_text=(
@@ -273,8 +280,17 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
             " on Halver. Check full paystack data for card details."
         ),
     )
+    action = models.OneToOneField(
+        BillAction,
+        on_delete=models.PROTECT,
+        related_name="paystack_subscription",
+    )
     start_date = models.DateTimeField()
     next_payment_date = models.DateTimeField()
+    complete_paystack_payload = models.JSONField(
+        null=True,
+        editable=False,
+    )
     complete_paystack_response = models.JSONField(
         editable=False,
     )
@@ -292,9 +308,8 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
 
 
 class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
-    """
-    Stores data returned by Paystack after a verified card transaction.
-    """
+    """Stores data returned by Paystack after a verified
+    card transaction."""
 
     class TransactionChoices(models.TextChoices):
         PARTICIPANT_PAYMENT = "participant-payment", "Participant payment"
@@ -363,9 +378,8 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
 
 
 class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
-    """
-    Stores data returned by Paystack after a verified transfer.
-    """
+    """Stores data returned by Paystack after a verified
+    transfer."""
 
     class TransferChoices(models.TextChoices):
         CREDITOR_SETTLEMENT = "creditor-settlement", "Creditor settlement"

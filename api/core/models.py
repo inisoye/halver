@@ -19,6 +19,8 @@ class AbstractTimeStampedUUIDModel(models.Model):
         verbose_name="Public identifier",
     )
 
+    # TODO ensure uuid is indexed for every model
+
     class Meta:
         abstract = True
 

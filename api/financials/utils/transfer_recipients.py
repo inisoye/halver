@@ -13,8 +13,8 @@ logger = get_task_logger(__name__)
 
 
 def generate_paystack_transfer_recipient_payload(validated_data):
-    """
-    Generates payload for creating a transfer recipient with Paystack API call.
+    """Generates payload for creating a transfer recipient
+    with Paystack API call.
 
     Args:
         validated_data (dict): Validated data from a serializer.
@@ -49,8 +49,7 @@ def generate_paystack_transfer_recipient_payload(validated_data):
 def return_readable_recipient_type(
     type: Literal["nuban", "authorization"]
 ) -> Literal["bank account", "card"]:
-    """
-    Returns the recipient type in a more readable format.
+    """Returns the recipient type in a more readable format.
 
     Args:
         type (Literal["nuban", "authorization"]): Type of recipient.
@@ -73,9 +72,9 @@ def return_readable_recipient_type(
 
 
 def format_paystack_transfer_recipient_response(paystack_response):
-    """
-    Formats the response from the Paystack API for creating a transfer recipient
-    object in the local database.
+    """Formats the response from the Paystack API for
+    creating a transfer recipient object in the local
+    database.
 
     Args:
         paystack_response (dict): The response from the Paystack API.
@@ -112,9 +111,8 @@ def format_paystack_transfer_recipient_response(paystack_response):
 def create_transfer_recipient_object(
     paystack_response, user
 ) -> tuple[bool, Literal["bank account", "card"]]:
-    """
-    Create or retrieve transfer recipient object based on the response from
-    the Paystack API.
+    """Create or retrieve transfer recipient object based on
+    the response from the Paystack API.
 
     Args:
         paystack_response (dict): The response from the Paystack API after
@@ -160,8 +158,8 @@ def create_transfer_recipient_object(
 
 
 def create_local_and_remote_transfer_recipient(paystack_payload, user) -> Response:
-    """
-    Handles remote (Paystack) and local (db) transfer recipient creation.
+    """Handles remote (Paystack) and local (db) transfer
+    recipient creation.
 
     Args:
         paystack_payload (dict): The Paystack transfer recipient payload as defined in
@@ -177,6 +175,7 @@ def create_local_and_remote_transfer_recipient(paystack_payload, user) -> Respon
     if response["status"]:
         user = user
 
+        # TODO add paystack payloads to all relevant models.
         is_recipient_new, readable_recipient_type = create_transfer_recipient_object(
             paystack_response=response,
             user=user,
@@ -186,7 +185,7 @@ def create_local_and_remote_transfer_recipient(paystack_payload, user) -> Respon
             return format_exception(
                 message=(
                     f"This {readable_recipient_type} has been previously"
-                    f" added to your account on Halver."
+                    " added to your account on Halver."
                 ),
                 status=status.HTTP_409_CONFLICT,
             )
@@ -207,9 +206,9 @@ def create_card_recipient_from_webhook(
     user,
     new_card,
 ) -> TransferRecipient | None:
-    """
-    Creates a Paystack card recipient from webhook data and associates it
-    with a db user and the db object of the card.
+    """Creates a Paystack card recipient from webhook data
+    and associates it with a db user and the db object of
+    the card.
 
     Args:
         metadata (dict): The metadata field from the Paystack webhook request.
@@ -232,6 +231,7 @@ def create_card_recipient_from_webhook(
         response,
     )
 
+    # TODO add paystack payloads to all relevant models.
     if response["status"]:
         recipient, created = TransferRecipient.objects.get_or_create(
             recipient_code=recipient_code,

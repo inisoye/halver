@@ -1,8 +1,9 @@
-"""
-Base scripts for Paystack API features.
+"""Base scripts for Paystack API features.
+
 Initially based on patterns used by the paystackapi package.
 https://github.com/andela-sjames/paystack-python
-Modified to improve readability and to allow for asynchronous requests.
+Modifiedand
+to allow for asynchronous requests.
 """
 
 from typing import Any
@@ -19,11 +20,10 @@ PAYSTACK_API_BASE_URL = "https://api.paystack.co/"
 
 
 class Borg:
-    """
-    Borg class making class attributes global.
+    """Borg class making class attributes global.
 
-    This class holds the state that all instances of the PaystackBase child instance
-    would share.
+    This class holds the state that all instances of the PaystackBase child
+    instance would share.
     """
 
     _shared_state: dict[str, Any] = {}
@@ -33,14 +33,10 @@ class Borg:
 
 
 class PaystackBase(Borg):
-    """
-    Base class used across all subclasses dedicated to Paystack features.
-    """
+    """Base class used across all subclasses dedicated to Paystack features."""
 
     def __init__(self, **kwargs):
-        """
-        Initialize Paystack with secret key.
-        """
+        """Initialize Paystack with secret key."""
 
         Borg.__init__(self)
 
@@ -68,8 +64,7 @@ class PaystackRequest(object):
         api_base_url="https://api.paystack.co/",
         headers=None,
     ):
-        """
-        Initialize Paystack Request object for browsing resource.
+        """Initialize Paystack Request object for browsing resource.
 
         Args:
             api_base_url: str
@@ -80,8 +75,7 @@ class PaystackRequest(object):
         self.headers = headers
 
     def _request(self, method, endpoint, **kwargs):
-        """
-        Perform an HTTP method on a resource.
+        """Perform an HTTP method on a resource.
 
         Args:
             method: requests.`method`
@@ -107,8 +101,7 @@ class PaystackRequest(object):
         return response.json()
 
     async def _request_async(self, _session, method, endpoint, **kwargs):
-        """
-        Perform an HTTP method on a resource asynchronously.
+        """Perform an HTTP method on a resource asynchronously.
 
         Args:
             session: aiohttp.ClientSession object
@@ -135,8 +128,7 @@ class PaystackRequest(object):
             return await response.json()
 
     def get(self, endpoint, **kwargs):
-        """
-        Get a resource.
+        """Get a resource.
 
         Args:
             endpoint: resource endpoint.
@@ -149,8 +141,7 @@ class PaystackRequest(object):
         )
 
     async def get_async(self, endpoint, **kwargs):
-        """
-        Get a resource asynchronously.
+        """Get a resource asynchronously.
 
         Args:
             endpoint: resource endpoint.
@@ -168,8 +159,7 @@ class PaystackRequest(object):
             )
 
     def post(self, endpoint, **kwargs):
-        """
-        Create a resource.
+        """Create a resource.
 
         Args:
             endpoint: resource endpoint.
@@ -185,8 +175,7 @@ class PaystackRequest(object):
         )
 
     async def post_async(self, endpoint, **kwargs):
-        """
-        Post a resource asynchronously.
+        """Post a resource asynchronously.
 
         Args:
             endpoint: resource endpoint.
@@ -204,8 +193,7 @@ class PaystackRequest(object):
             )
 
     def put(self, endpoint, **kwargs):
-        """
-        Update a resource.
+        """Update a resource.
 
         Args:
             endpoint: resource endpoint.
@@ -221,8 +209,7 @@ class PaystackRequest(object):
         )
 
     async def put_async(self, endpoint, **kwargs):
-        """
-        Update a resource asynchronously.
+        """Update a resource asynchronously.
 
         Args:
             endpoint: resource endpoint.
@@ -240,8 +227,7 @@ class PaystackRequest(object):
             )
 
     def delete(self, endpoint, **kwargs):
-        """
-        Delete a resource.
+        """Delete a resource.
 
         Args:
             endpoint: resource endpoint.
@@ -257,8 +243,7 @@ class PaystackRequest(object):
         )
 
     async def delete_async(self, endpoint, **kwargs):
-        """
-        Delete a resource asynchronously.
+        """Delete a resource asynchronously.
 
         Args:
             endpoint: resource endpoint.

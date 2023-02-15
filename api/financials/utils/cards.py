@@ -10,8 +10,7 @@ logger = get_task_logger(__name__)
 
 
 def generate_add_card_paystack_payload(charge_amount, user):
-    """
-    Formats the payload for adding a card on Paystack through the initialize
+    """Formats the payload for adding a card on Paystack through the initialize
     transaction API endpoint.
 
     Args:
@@ -45,8 +44,7 @@ def generate_add_card_paystack_payload(charge_amount, user):
 
 
 def create_card_object_from_webhook(authorization, customer, user) -> UserCard:
-    """
-    Create a new UserCard object.
+    """Create a new UserCard object.
 
     Args:
         authorization (dict): The authorization object returned by Paystack.
@@ -91,8 +89,7 @@ def create_card_addition_paystack_transaction_object(
     user,
     request_data,
 ) -> PaystackTransaction:
-    """
-    Create a new PaystackTransaction object for the addition of a card.
+    """Create a new PaystackTransaction object for the addition of a card.
 
     Args:
         data (dict): The data field from the Paystack webhook request.

@@ -4,14 +4,11 @@ from libraries.paystack.base import PaystackBase
 
 
 class TransferRecipientRequests(PaystackBase):
-    """
-    Methods for the Paystack transfer recipient feature.
-    """
+    """Methods for the Paystack transfer recipient feature."""
 
     @classmethod
     def create(cls, **kwargs):
-        """
-        Create transfer recipient.
+        """Create transfer recipient.
 
         Should be called after account number has been verified (if nuban).
         Bank codes can be obtained from the List Banks endpoint.
@@ -35,8 +32,7 @@ class TransferRecipientRequests(PaystackBase):
 
     @classmethod
     def list(cls, **kwargs):
-        """
-        List transfer recipients.
+        """List transfer recipients.
 
         Args:
             perPage: records you want to retrieve per page (Integer)
@@ -53,8 +49,7 @@ class TransferRecipientRequests(PaystackBase):
 
     @classmethod
     def fetch(cls, id_or_code):
-        """
-        Get a single transfer recipient.
+        """Get a single transfer recipient.
 
         Args:
             id_or_code: Recipient id or code.
@@ -69,8 +64,7 @@ class TransferRecipientRequests(PaystackBase):
 
     @classmethod
     def delete(cls, id_or_code):
-        """
-        Delete a single transfer recipient.
+        """Delete a single transfer recipient.
 
         Args:
             id_or_code: An ID or code for the recipient
@@ -86,9 +80,8 @@ class TransferRecipientRequests(PaystackBase):
 
     @classmethod
     async def fetch_async(cls, id_or_code):
-        """
-        Asynchronously get a single transfer recipient.
-        The request is sent asynchronously to facilitate the fetch multiple method.
+        """Asynchronously get a single transfer recipient. The request is sent
+        asynchronously to facilitate the fetch multiple method.
 
         Args:
             id_or_code: An ID or code for the recipient
@@ -108,9 +101,8 @@ class TransferRecipientRequests(PaystackBase):
 
     @classmethod
     async def fetch_multiple(cls, recipient_codes):
-        """
-        Get multiple, specified transfer recipients by running
-        the fetch method multiple times concurrently.
+        """Get multiple, specified transfer recipients by running the fetch
+        method multiple times concurrently.
 
         Args:
             recipient_codes: A list of the codes for transfer recipients
