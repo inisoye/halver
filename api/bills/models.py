@@ -14,9 +14,8 @@ from core.utils.dates_and_time import get_one_week_from_now, validate_date_not_i
 class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     """Stores a particular user's bill.
 
-    Should not be deletable. All bill actions should be
-    marked as cancelled when a bill is cancelled instead.
-    Subscriptions should also be ended.
+    Should not be deletable. All bill actions should be marked as cancelled when
+    a bill is cancelled instead. Subscriptions should also be ended.
     """
 
     # ! All user's "bills_created", actions and paystack subscriptions should be
@@ -47,7 +46,6 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     name = models.CharField(
         max_length=100,
     )
-    # TODO find a way to make this field uneditable after bill creation.
     first_charge_date = models.DateTimeField(
         blank=True,
         null=True,
@@ -85,7 +83,13 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         decimal_places=4,
         default=0,
     )
-    is_discreet = models.BooleanField(default=False)
+    is_discreet = models.BooleanField(
+        verbose_name=(
+            "Are transactions and actions hidden from non-creditor, non-creator"
+            " participants"
+        ),
+        default=False,
+    )
 
     @property
     def is_recurring(self) -> bool:
@@ -105,16 +109,15 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         return f"name: {self.name}, creator: {self.creator.full_name}"
 
     def _validate_dates(self) -> None:
+        validate_date_not_in_past(self.deadline, "Deadline")
+
         if self.is_recurring:
             validate_date_not_in_past(self.first_charge_date, "First Charge Date")
             validate_date_not_in_past(self.next_charge_date, "Next Charge Date")
-        else:
-            validate_date_not_in_past(self.deadline, "Deadline")
 
     @classmethod
     def create_bill_from_validated_data(cls, validated_data):
-        """Called from view to create a new bill with
-        actions.
+        """Called from view to create a new bill with actions.
 
         Args:
             validated_data (dict): The validated data obtained from the serializer
@@ -128,8 +131,8 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     def update_contributions_and_fees_for_actions(
         self, participant_contribution_index
     ) -> None:
-        """Called after bill creation. Adds contribution
-        amounts and fees to bill actions.
+        """Called after bill creation. Adds contribution amounts and fees to
+        bill actions.
 
         Args:
             participant_contribution_index: Dictionary connecting participant uuids with
@@ -139,6 +142,78 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         add_participant_contributions_and_fees_to_actions(
             self, participant_contribution_index
         )
+
+    def get_total_participants(self):
+        return self.participants.count() + self.unregistered_participants.count()
+
+    def get_actions_counts(self):
+        """Returns the count of actions for each status on this bill.
+
+        Returns:
+            A dictionary mapping all the statuses of the bill's actions to their
+            frequency.
+        """
+        actions = self.actions.all()
+        counts = (
+            actions.values("status")
+            .annotate(count=models.Count("status"))
+            .order_by("-count")
+        )
+        return {item["status"]: item["count"] for item in counts}
+
+    def get_bill_status(self):
+        """Returns a human-readable string describing the status of the bill.
+
+        Returns:
+            A string describing the status of the bill.
+        """
+
+        # TODO There should be a get long status and get short status.
+        # Both different fields to be sent over the API. The former for display and the
+        # latter for color coding
+
+        status_counts = self.get_actions_counts()
+        total_statuses_count = sum(status_counts.values())
+
+        most_common_status = max(status_counts, key=status_counts.get)
+        most_common_status_count = status_counts[most_common_status]
+
+        all_actions_are_one_type = most_common_status_count == total_statuses_count
+
+        bill_status_message_prefix = (
+            "All" if all_actions_are_one_type else f"{most_common_status_count}"
+        )
+
+        # Map status codes to messages
+        status_message_index = {
+            BillAction.StatusChoices.PENDING_TRANSFER: (
+                f"{bill_status_message_prefix} transfers pending"
+            ),
+            BillAction.StatusChoices.OVERDUE: (
+                f"{bill_status_message_prefix} payments overdue"
+            ),
+            BillAction.StatusChoices.CANCELLED: "Bill cancelled"
+            if all_actions_are_one_type
+            else f"{bill_status_message_prefix} opted out",
+            BillAction.StatusChoices.COMPLETED: (
+                f"{bill_status_message_prefix} payments completed"
+            ),
+            BillAction.StatusChoices.ONGOING: (
+                f"{bill_status_message_prefix} subscriptions ongoing"
+            ),
+            BillAction.StatusChoices.DECLINED: (
+                f"{bill_status_message_prefix} opted out"
+            ),
+            BillAction.StatusChoices.PENDING: (
+                f"{bill_status_message_prefix} yet to accept"
+            ),
+            BillAction.StatusChoices.UNREGISTERED: (
+                f"{bill_status_message_prefix} participants unregistered"
+            ),
+        }
+
+        # Return the message for the most common status
+        return status_message_index.get(most_common_status, "")
 
 
 class BillUnregisteredParticipant(AbstractTimeStampedUUIDModel, models.Model):
@@ -171,11 +246,9 @@ class BillUnregisteredParticipant(AbstractTimeStampedUUIDModel, models.Model):
 
 
 class BillAction(AbstractTimeStampedUUIDModel, models.Model):
-    """Actions broadly represent a snapshot of a user's
-    standing in a bill.
+    """Actions broadly represent a snapshot of a user's standing in a bill.
 
-    The model is also joined with the Plan and Subscription
-    for recurring bills.
+    The model is also joined with the Plan and Subscription for recurring bills.
     """
 
     class StatusChoices(models.TextChoices):
@@ -258,11 +331,10 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
 class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
     """Stores a transaction particular completed by a user.
 
-    This is usually only populated when a payment has gone
-    through without any issues. That is, a paystack
-    transaction (card payment) and paystack transfer to the
-    creditor, must have been successful for a transaction to
-    be recorded here
+    This is usually only populated when a payment has gone through without any
+    issues. That is, a paystack transaction (card payment) and paystack transfer
+    to the creditor, must have been successful for a transaction to be recorded
+    here
     """
 
     bill = models.ForeignKey(
