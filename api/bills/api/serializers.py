@@ -12,7 +12,6 @@ from bills.utils.validation import (
 class BillUnregisteredParticipantSerializer(serializers.ModelSerializer):
     class Meta:
         model = BillUnregisteredParticipant
-
         fields = (
             "name",
             "phone",
@@ -22,7 +21,6 @@ class BillUnregisteredParticipantSerializer(serializers.ModelSerializer):
             "modified",
             "uuid",
         )
-
         read_only_fields = (
             "created",
             "modified",
@@ -50,7 +48,6 @@ class BillCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bill
-
         fields = (
             "creator",
             "creditor_id",
@@ -72,9 +69,62 @@ class BillCreateSerializer(serializers.ModelSerializer):
             "uuid",
             "participant_contribution_index",
         )
-
         read_only_fields = (
             "created",
             "modified",
             "uuid",
         )
+
+
+class BillListSerializer(serializers.ModelSerializer):
+    interval = serializers.SerializerMethodField()
+    total_participants = serializers.IntegerField(source="get_total_participants")
+
+    def get_interval(self, obj) -> str:
+        """Returns the human-readable version of the interval field.
+
+        https://docs.djangoproject.com/en/dev/ref/models/instances/#django.db.models.Model.get_FOO_display.
+
+        Parameters:
+            obj (Bill): An instance of the Bill model.
+
+        Returns:
+            str: A human-readable string of the interval field.
+        """
+
+        return obj.get_interval_display()
+
+    # TODO ensure participant count and bill status are returned for each bill
+
+    class Meta:
+        model = Bill
+        fields = (
+            "participants",
+            "unregistered_participants",
+            "name",
+            "interval",
+            "total_participants",
+        )
+        read_only = (
+            "participants",
+            "unregistered_participants",
+            "name",
+            "interval",
+            "total_participants",
+        )
+
+
+# TODO Add a BillDetailSerializer
+
+
+class BillDetailsUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bill
+        fields = ("name", "notes", "evidence", "is_discreet", "deadline")
+        extra_kwargs = {
+            "name": {"required": False},
+            "notes": {"required": False},
+            "evidence": {"required": False},
+            "is_discreet": {"required": False},
+            "deadline": {"required": False},
+        }

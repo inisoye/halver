@@ -80,7 +80,7 @@ class DefaultCardRetrieveView(RetrieveAPIView):
 class DefaultCardUpdateView(UpdateAPIView):
     """View for updating the default card for a user.
 
-    Accepts PUT requests.
+    Accepts PATCH requests.
     """
 
     lookup_field = "uuid"
@@ -315,7 +315,7 @@ class DefaultTransferRecipientRetrieveView(RetrieveAPIView):
 class DefaultTransferRecipientUpdateView(UpdateAPIView):
     """View for updating the default transfer recipient for a user.
 
-    Accepts PUT requests.
+    Accepts PATCH requests.
     """
 
     lookup_field = "uuid"
