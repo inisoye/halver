@@ -6,6 +6,7 @@ from bills.utils.bills import (
     add_participant_contributions_and_fees_to_actions,
     create_actions_for_bill,
     create_bill,
+    generate_long_status_index,
 )
 from core.models import AbstractCurrencyModel, AbstractTimeStampedUUIDModel
 from core.utils.dates_and_time import get_one_week_from_now, validate_date_not_in_past
@@ -125,7 +126,6 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         """
 
         new_bill = create_bill(cls, validated_data)
-
         return new_bill
 
     def update_contributions_and_fees_for_actions(
@@ -146,71 +146,72 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     def get_total_participants(self):
         return self.participants.count() + self.unregistered_participants.count()
 
-    def get_actions_counts(self):
-        """Returns the count of actions for each status on this bill.
+    def get_most_common_status_details(self):
+        """Returns the most common status and its frequency, as well as a flag
+        indicating whether all actions are of the same status.
 
         Returns:
-            A dictionary mapping all the statuses of the bill's actions to their
-            frequency.
+            A tuple of (most_common_status: str, most_common_status_count: int,
+                all_actions_are_one_type: bool)
+            most_common_status: The status code that appears most frequently among
+                the bill's actions.
+            most_common_status_count: The number of times that most_common_status
+                appears among the bill's actions.
+            all_actions_are_one_type: A flag indicating whether all actions in the bill
+                have the same status code.
         """
+
         actions = self.actions.all()
         counts = (
             actions.values("status")
             .annotate(count=models.Count("status"))
             .order_by("-count")
         )
-        return {item["status"]: item["count"] for item in counts}
 
-    def get_bill_status(self):
+        action_counts_index = {item["status"]: item["count"] for item in counts}
+        total_statuses_count = sum(action_counts_index.values())
+
+        most_common_status = max(action_counts_index, key=action_counts_index.get)
+        most_common_status_count = action_counts_index[most_common_status]
+
+        all_actions_are_one_type: bool = (
+            most_common_status_count == total_statuses_count
+        )
+
+        return (
+            most_common_status,
+            most_common_status_count,
+            all_actions_are_one_type,
+        )
+
+    def get_short_bill_status(self):
+        """Returns the most common status of the bill.
+
+        Short codes would enable easy color coding on the client.
+
+        Returns:
+            A string representing the most common status of the bill.
+        """
+
+        most_common_status_details = self.get_most_common_status_details()
+        return most_common_status_details[0]
+
+    def get_long_bill_status(self):
         """Returns a human-readable string describing the status of the bill.
 
         Returns:
             A string describing the status of the bill.
         """
 
-        # TODO There should be a get long status and get short status.
-        # Both different fields to be sent over the API. The former for display and the
-        # latter for color coding
+        (
+            most_common_status,
+            most_common_status_count,
+            all_actions_are_one_type,
+        ) = self.get_most_common_status_details()
 
-        status_counts = self.get_actions_counts()
-        total_statuses_count = sum(status_counts.values())
-
-        most_common_status = max(status_counts, key=status_counts.get)
-        most_common_status_count = status_counts[most_common_status]
-
-        all_actions_are_one_type = most_common_status_count == total_statuses_count
-
-        bill_status_message_prefix = (
-            "All" if all_actions_are_one_type else f"{most_common_status_count}"
+        status_message_index = generate_long_status_index(
+            all_actions_are_one_type, most_common_status_count
         )
-
-        # Map status codes to messages
-        status_message_index = {
-            BillAction.StatusChoices.PENDING_TRANSFER: (
-                f"{bill_status_message_prefix} transfers pending"
-            ),
-            BillAction.StatusChoices.OVERDUE: (
-                f"{bill_status_message_prefix} payments overdue"
-            ),
-            BillAction.StatusChoices.CANCELLED: "Bill cancelled"
-            if all_actions_are_one_type
-            else f"{bill_status_message_prefix} opted out",
-            BillAction.StatusChoices.COMPLETED: (
-                f"{bill_status_message_prefix} payments completed"
-            ),
-            BillAction.StatusChoices.ONGOING: (
-                f"{bill_status_message_prefix} subscriptions ongoing"
-            ),
-            BillAction.StatusChoices.DECLINED: (
-                f"{bill_status_message_prefix} opted out"
-            ),
-            BillAction.StatusChoices.PENDING: (
-                f"{bill_status_message_prefix} yet to accept"
-            ),
-            BillAction.StatusChoices.UNREGISTERED: (
-                f"{bill_status_message_prefix} participants unregistered"
-            ),
-        }
 
         # Return the message for the most common status
         return status_message_index.get(most_common_status, "")

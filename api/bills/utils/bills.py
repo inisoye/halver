@@ -176,3 +176,59 @@ def add_participant_contributions_and_fees_to_actions(
             "total_fee",
         ],
     )
+
+
+def generate_long_status_index(all_actions_are_one_type, most_common_status_count):
+    """Generates a dictionary mapping the most common status code to its
+    corresponding human-readable message.
+
+    Args:
+        all_actions_are_one_type (bool): Whether or not all bill actions have the same
+            status.
+        most_common_status_count (int): The number of bill actions with the most common
+            status.
+
+    Returns:
+        A dictionary mapping the most common status code to its corresponding
+        human-readable message.
+    """
+
+    from bills.models import BillAction
+
+    bill_status_message_prefix = (
+        "All" if all_actions_are_one_type else f"{most_common_status_count}"
+    )
+
+    # Check if the status count is plural
+    status_count_is_plural: bool = most_common_status_count > 1
+    plural_suffix = "s" if status_count_is_plural else ""
+
+    # Map status codes to messages
+    status_message_index = {
+        BillAction.StatusChoices.PENDING_TRANSFER: (
+            f"{bill_status_message_prefix} transfer{plural_suffix} pending"
+        ),
+        BillAction.StatusChoices.OVERDUE: (
+            f"{bill_status_message_prefix} payment{plural_suffix} overdue"
+        ),
+        BillAction.StatusChoices.CANCELLED: "Bill cancelled"
+        if all_actions_are_one_type
+        else f"{bill_status_message_prefix} participant{plural_suffix} opted out",
+        BillAction.StatusChoices.COMPLETED: (
+            f"{bill_status_message_prefix} payment{plural_suffix} completed"
+        ),
+        BillAction.StatusChoices.ONGOING: (
+            f"{bill_status_message_prefix} subscription{plural_suffix} ongoing"
+        ),
+        BillAction.StatusChoices.DECLINED: (
+            f"{bill_status_message_prefix} participant{plural_suffix} opted out"
+        ),
+        BillAction.StatusChoices.PENDING: (
+            f"{bill_status_message_prefix} participant{plural_suffix} yet to accept"
+        ),
+        BillAction.StatusChoices.UNREGISTERED: (
+            f"{bill_status_message_prefix} participant{plural_suffix} unregistered"
+        ),
+    }
+
+    return status_message_index
