@@ -1,25 +1,64 @@
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from bills.api.permissions import IsCreator, IsCreditor
-from bills.api.serializers import BillCreateSerializer, BillDetailsUpdateSerializer
+from bills.api.permissions import IsCreator, IsCreditor, IsParticipant
+from bills.api.serializers import (
+    BillCreateSerializer,
+    BillDetailSerializer,
+    BillDetailsUpdateSerializer,
+    BillListSerializer,
+)
 from bills.models import Bill
 from financials.tasks.plans import create_paystack_plans_for_recurring_bills
 
 
-class BillCreateView(APIView):
-    permission_classes = (IsCreator,)
-    serializer_class = BillCreateSerializer
-    queryset = Bill.objects.all()
+class BillListCreateView(APIView):
+    """View for listing Bills or creating new Bills.
 
-    def post(self, request):
-        """Creates a new bill and all its actions. If the bill recurs, paystack
-        plans would be created for each action as well.
+    Accepts GET and POST requests.
+    """
+
+    permission_classes = (IsParticipant,)
+    serializer_class = BillCreateSerializer
+    list_serializer_class = BillListSerializer
+
+    def get(self, request):
+        """Retrieves a list of bills for which the current user is a
+        participant.
+
+        Args:
+            request (rest_framework.request.Request): The HTTP request object.
 
         Returns:
-            An empty response.
+            Response: A Response object containing a serialized list of Bill
+                objects for which the current user is a participant.
+        """
+
+        # Filter bills where the current user is a participant
+        bills = Bill.objects.prefetch_related("participants").filter(
+            participants__contains=[request.user]
+        )
+
+        serializer = self.list_serializer_class(bills, many=True)
+        return Response(serializer.data)
+
+    @extend_schema(request=None, responses={201: OpenApiResponse()})
+    def post(self, request):
+        """Creates a new bill and associated actions. If the bill is recurring,
+        Paystack plans will also be created for each action.
+
+        Args:
+            request (rest_framework.request.Request): The HTTP request object.
+
+        Raises:
+            ValidationError: If the serializer data is invalid.
+
+        Returns:
+            Response: An empty response with status code 201 (Created) for a
+                successful POST request.
         """
 
         serializer = self.serializer_class(data=self.request.data)
@@ -33,31 +72,84 @@ class BillCreateView(APIView):
         return Response(status=status.HTTP_201_CREATED)
 
 
-class BillDetailsUpdateView(APIView):
-    """View for updating specific fields on Bill object. These fields ("name",
-    "notes", "evidence", "is_discreet", "deadline") have been collectively
-    called bill details.
+class BillDetailUpdateView(APIView):
+    """View for getting or updating a single Bill object.
 
-    Accepts PATCH requests.
+    Accepts GET and PATCH requests.
     """
 
     permission_classes = (IsCreator, IsCreditor)
-    serializer_class = BillDetailsUpdateSerializer
+    serializer_class = BillDetailSerializer
+    update_serializer_class = BillDetailsUpdateSerializer
 
-    def patch(self, request, uuid):
-        """Updates any of the following fields in the Bill with the provided
-        UUID: "name", "notes", "evidence", "is_discreet", "deadline".
+    def get_permissions(self):
+        """
+        Returns the permission classes to be used for the request.
+        """
+        if self.request.method == "GET":
+            return (IsParticipant,)
+        return self.permission_classes
+
+    def get(self, request, uuid):
+        """Returns the bill details for a given Bill UUID.
+
+        If the bill is discreet and the requester is neither the bill's
+        creditor nor its creator, the discreet ("actions" and "transactions") fields are
+        excluded from the response.
 
         Args:
-            uuid: The UUID of the bill to be updated.
+            request (rest_framework.request.Request): The HTTP request object.
+            uuid (str): The UUID of the Bill object to retrieve.
+
+        Raises:
+            Http404: If no Bill object with the given UUID exists.
 
         Returns:
-            An empty response.
+            Response: A Response object containing the serialized Bill object.
         """
 
         bill = get_object_or_404(Bill, uuid=uuid)
 
-        serializer = BillDetailsUpdateSerializer(bill, data=request.data, partial=True)
+        serializer = self.serializer_class(bill)
+        serializer.is_valid(raise_exception=True)
+
+        are_discreet_fields_hidden = (
+            bill.is_discreet
+            and bill.creator != request.user
+            and bill.creditor != request.user
+        )
+
+        if are_discreet_fields_hidden:
+            discreet_fields = ("actions", "transactions")
+            serializer_data = serializer.data.copy()
+            for field in discreet_fields:
+                serializer_data.pop(field, None)
+            return Response(serializer_data, status=status.HTTP_200_OK)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @extend_schema(request=None, responses={204: OpenApiResponse()})
+    def patch(self, request, uuid):
+        """Updates the specified fields in the Bill object with the provided
+        UUID.
+
+        Accepts a JSON payload of the fields to update.
+
+        Args:
+            request (rest_framework.request.Request): The HTTP request object.
+            uuid (str): The UUID of the Bill object to update.
+
+        Raises:
+            Http404: If no Bill object with the given UUID exists.
+
+        Returns:
+            Response: An empty response with status code 204 (No Content) for a
+                successful PATCH request.
+        """
+
+        bill = get_object_or_404(Bill, uuid=uuid)
+
+        serializer = self.update_serializer_class(bill, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
         for field, value in request.data.items():

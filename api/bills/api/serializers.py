@@ -78,7 +78,10 @@ class BillCreateSerializer(serializers.ModelSerializer):
 
 class BillListSerializer(serializers.ModelSerializer):
     interval = serializers.SerializerMethodField()
+    is_recurring = serializers.BooleanField()
     total_participants = serializers.IntegerField(source="get_total_participants")
+    short_status = serializers.CharField(source="get_short_bill_status")
+    long_status = serializers.CharField(source="get_long_bill_status")
 
     def get_interval(self, obj) -> str:
         """Returns the human-readable version of the interval field.
@@ -94,8 +97,6 @@ class BillListSerializer(serializers.ModelSerializer):
 
         return obj.get_interval_display()
 
-    # TODO ensure participant count and bill status are returned for each bill
-
     class Meta:
         model = Bill
         fields = (
@@ -104,17 +105,63 @@ class BillListSerializer(serializers.ModelSerializer):
             "name",
             "interval",
             "total_participants",
+            "short_status",
+            "long_status",
+            "is_recurring",
         )
-        read_only = (
-            "participants",
-            "unregistered_participants",
-            "name",
+        read_only = fields
+
+
+class BillDetailSerializer(serializers.ModelSerializer):
+    interval = serializers.SerializerMethodField()
+    is_recurring = serializers.BooleanField()
+    total_participants = serializers.IntegerField(source="get_total_participants")
+    short_status = serializers.CharField(source="get_short_bill_status")
+    long_status = serializers.CharField(source="get_long_bill_status")
+
+    def get_interval(self, obj) -> str:
+        """Returns the human-readable version of the interval field.
+
+        https://docs.djangoproject.com/en/dev/ref/models/instances/#django.db.models.Model.get_FOO_display.
+
+        Parameters:
+            obj (Bill): An instance of the Bill model.
+
+        Returns:
+            str: A human-readable string of the interval field.
+        """
+
+        return obj.get_interval_display()
+
+    class Meta:
+        model = Bill
+        fields = (
+            "creator",
+            "creditor",
+            "deadline",
+            "evidence",
+            "first_charge_date",
             "interval",
+            "is_discreet",
+            "long_status",
+            "name",
+            "next_charge_date",
+            "notes",
+            "participants",
+            "short_status",
+            "total_amount_due",
+            "total_amount_paid",
             "total_participants",
+            "unregistered_participants",
+            "created",
+            "modified",
+            "uuid",
+            "is_recurring",
+            "actions",
+            "transactions",
         )
 
-
-# TODO Add a BillDetailSerializer
+        read_only = fields
 
 
 class BillDetailsUpdateSerializer(serializers.ModelSerializer):
