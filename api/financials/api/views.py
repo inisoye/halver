@@ -61,7 +61,7 @@ class DefaultCardRetrieveView(RetrieveAPIView):
     """
 
     permission_classes = (IsOwner,)
-    queryset = UserCard.objects.all()
+    queryset = UserCard.objects.all().defer("complete_paystack_response")
     serializer_class = UserCardSerializer
 
     def get_object(self):
@@ -85,7 +85,7 @@ class DefaultCardUpdateView(UpdateAPIView):
 
     lookup_field = "uuid"
     permission_classes = (IsOwner,)
-    queryset = UserCard.objects.all()
+    queryset = UserCard.objects.all().defer("complete_paystack_response")
     serializer_class = UserCardSerializer
     http_method_names = ["patch"]
 
@@ -143,7 +143,7 @@ class UserCardListView(ListAPIView):
     """
 
     permission_classes = (IsOwner,)
-    queryset = UserCard.objects.all()
+    queryset = UserCard.objects.all().defer("complete_paystack_response")
     serializer_class = UserCardSerializer
 
     def get_queryset(self):
@@ -163,7 +163,7 @@ class UserCardRetrieveDestroyView(RetrieveDestroyAPIView):
 
     lookup_field = "uuid"
     permission_classes = (IsOwner,)
-    queryset = UserCard.objects.all()
+    queryset = UserCard.objects.all().defer("complete_paystack_response")
     serializer_class = UserCardSerializer
 
 
@@ -213,7 +213,7 @@ class TransferRecipientListCreateAPIView(APIView):
     serializer_class = TransferRecipientListSerializer
     list_serializer_class = TransferRecipientListSerializer
     create_serializer_class = TransferRecipientCreateSerializer
-    queryset = TransferRecipient.objects.all()
+    queryset = TransferRecipient.objects.all().defer("complete_paystack_response")
 
     def get(self, request) -> Response:
         """Retrieves a list of all transfer recipients for the current user.
@@ -263,7 +263,7 @@ class TransferRecipientsDestroyView(DestroyAPIView):
 
     lookup_field = "recipient_code"
     permission_classes = (IsOwner,)
-    queryset = TransferRecipient.objects.all()
+    queryset = TransferRecipient.objects.all().defer("complete_paystack_response")
     serializer_class = TransferRecipientUpdateDeleteSerializer
 
     def perform_destroy(self, instance):
@@ -295,7 +295,7 @@ class DefaultTransferRecipientRetrieveView(RetrieveAPIView):
     """
 
     permission_classes = (IsOwner,)
-    queryset = TransferRecipient.objects.all()
+    queryset = TransferRecipient.objects.all().defer("complete_paystack_response")
     serializer_class = TransferRecipientListSerializer
     http_method_names = ["get"]
 
@@ -320,7 +320,7 @@ class DefaultTransferRecipientUpdateView(UpdateAPIView):
 
     lookup_field = "uuid"
     permission_classes = (IsOwner,)
-    queryset = TransferRecipient.objects.all()
+    queryset = TransferRecipient.objects.all().defer("complete_paystack_response")
     serializer_class = TransferRecipientUpdateDeleteSerializer
     http_method_names = ["patch"]
 
