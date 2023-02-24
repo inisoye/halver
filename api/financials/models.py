@@ -90,7 +90,6 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
         delete_and_set_newest_as_default(self, "user_card")
 
     class Meta:
-        ordering = ["-created", "user"]
         verbose_name = "User card"
         verbose_name_plural = "User cards"
 
@@ -164,6 +163,10 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
             f"bank name: {self.bank_name}" if self.bank_name else ""
         )
 
+    class Meta:
+        verbose_name = "User transfer recipient"
+        verbose_name_plural = "User transfer recipients"
+
     def set_as_default_recipient(self) -> None:
         """Sets current transfer recipient instance as the
         default."""
@@ -179,11 +182,6 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         """
 
         delete_and_set_newest_as_default(self, "transfer_recipient")
-
-    class Meta:
-        ordering = ["-created", "user"]
-        verbose_name = "User transfer recipient"
-        verbose_name_plural = "User transfer recipients"
 
 
 class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
@@ -232,13 +230,12 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
         editable=False,
     )
 
-    def __str__(self) -> str:
-        return f"name: {self.name}, interval: {self.interval}, amount: {self.amount}"
-
     class Meta:
-        ordering = ["-created", "user"]
         verbose_name = "Paystack plan"
         verbose_name_plural = "Paystack plans"
+
+    def __str__(self) -> str:
+        return f"name: {self.name}, interval: {self.interval}, amount: {self.amount}"
 
 
 class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
@@ -295,16 +292,15 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
         editable=False,
     )
 
+    class Meta:
+        verbose_name = "Paystack subscription"
+        verbose_name_plural = "Paystack subscriptions"
+
     def __str__(self) -> str:
         return (
             f"user: {self.user.full_name}, plan interval: {self.plan.interval},"
             f" plan amount: {self.plan.amount}"
         )
-
-    class Meta:
-        ordering = ["-created", "user"]
-        verbose_name = "Paystack subscription"
-        verbose_name_plural = "Paystack subscriptions"
 
 
 class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
@@ -368,13 +364,12 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
         editable=False,
     )
 
-    def __str__(self) -> str:
-        return f"amount: {self.amount}, type: {self.transaction_outcome}"
-
     class Meta:
-        ordering = ["-created"]
         verbose_name = "Paystack transaction"
         verbose_name_plural = "Paystack transactions"
+
+    def __str__(self) -> str:
+        return f"amount: {self.amount}, type: {self.transaction_outcome}"
 
 
 class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
@@ -436,13 +431,12 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
         editable=False,
     )
 
+    class Meta:
+        verbose_name = "Paystack transfer"
+        verbose_name_plural = "Paystack transfers"
+
     def __str__(self) -> str:
         return (
             f"amount: {self.amount}, outcome: {self.transfer_outcome}"
             f" type: {self.transfer_type}"
         )
-
-    class Meta:
-        ordering = ["-created"]
-        verbose_name = "Paystack transfer"
-        verbose_name_plural = "Paystack transfers"
