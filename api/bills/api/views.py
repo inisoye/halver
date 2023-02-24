@@ -37,7 +37,6 @@ class BillListCreateView(APIView):
                 objects for which the current user is a participant.
         """
 
-        # Filter bills where the current user is a participant
         bills = Bill.objects.prefetch_related("participants").filter(
             participants__contains=[request.user]
         )
@@ -121,10 +120,14 @@ class BillDetailUpdateView(APIView):
 
         if are_discreet_fields_hidden:
             discreet_fields = ("actions", "transactions")
-            serializer_data = serializer.data.copy()
+            serializer_data_without_discreet_fields = serializer.data.copy()
+
             for field in discreet_fields:
-                serializer_data.pop(field, None)
-            return Response(serializer_data, status=status.HTTP_200_OK)
+                serializer_data_without_discreet_fields.pop(field, None)
+
+            return Response(
+                serializer_data_without_discreet_fields, status=status.HTTP_200_OK
+            )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
