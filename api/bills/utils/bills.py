@@ -26,11 +26,9 @@ def create_bill(bill_model, validated_data):
         "participants_ids",
     )
 
-    validated_data_without_editable_fields = {
-        key: value
-        for key, value in validated_data.items()
-        if key not in editable_fields
-    }
+    validated_data_without_editable_fields = validated_data.copy()
+    for field in editable_fields:
+        validated_data_without_editable_fields.pop(field, None)
 
     creditor_id = validated_data["creditor_id"]
     creditor = get_user_by_id_drf(creditor_id)
