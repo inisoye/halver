@@ -4,7 +4,10 @@ from uuid import UUID
 
 from rest_framework import serializers
 
-from core.utils.dates_and_time import validate_date_not_in_past
+from core.utils.dates_and_time import (
+    validate_date_is_at_least_one_week_into_future,
+    validate_date_not_in_past,
+)
 from core.utils.users import get_user_by_id_drf
 
 
@@ -31,6 +34,10 @@ def validate_bill_serializer_dates(serializer_instance):
         validate_date_not_in_past(
             serializer_instance.validated_data.get("next_charge_date"),
             "Next Charge Date",
+        )
+        validate_date_is_at_least_one_week_into_future(
+            serializer_instance.validated_data.get("first_charge_date"),
+            "First Charge Date",
         )
 
 
