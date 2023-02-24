@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -9,7 +10,11 @@ from bills.utils.bills import (
     generate_long_status_index,
 )
 from core.models import AbstractCurrencyModel, AbstractTimeStampedUUIDModel
-from core.utils.dates_and_time import get_one_week_from_now, validate_date_not_in_past
+from core.utils.dates_and_time import (
+    get_one_week_from_now,
+    validate_date_is_at_least_one_week_into_future,
+    validate_date_not_in_past,
+)
 
 
 class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
@@ -26,7 +31,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         DAILY = "daily", "Daily"
         WEEKLY = "weekly", "Weekly"
         MONTHLY = "monthly", "Monthly"
-        BIANNUALLY = "biannually", "Biannually"
+        QUARTERLY = "quarterly", "Quarterly"
         ANNUALLY = "annually", "Annually"
         NONE = "none", "None"
 
@@ -92,9 +97,12 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         default=False,
     )
 
-    @property
-    def is_recurring(self) -> bool:
-        return self.interval != "none"
+    class Meta:
+        verbose_name = "Bill"
+        verbose_name_plural = "Bills"
+
+    def __str__(self) -> str:
+        return f"name: {self.name}, creator: {self.creator.full_name}"
 
     def save(self, *args, **kwargs) -> None:
         with transaction.atomic():
@@ -106,8 +114,14 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     def clean(self) -> None:
         self._validate_dates()
 
-    def __str__(self) -> str:
-        return f"name: {self.name}, creator: {self.creator.full_name}"
+        if self.pk is None:
+            validate_date_is_at_least_one_week_into_future(
+                self.first_charge_date, "First Charge Date"
+            )
+
+    @property
+    def is_recurring(self) -> bool:
+        return self.interval != "none"
 
     def _validate_dates(self) -> None:
         validate_date_not_in_past(self.deadline, "Deadline")
@@ -115,6 +129,10 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         if self.is_recurring:
             validate_date_not_in_past(self.first_charge_date, "First Charge Date")
             validate_date_not_in_past(self.next_charge_date, "Next Charge Date")
+
+    def _validate_amounts(self) -> None:
+        if self.total_amount_due < 0:
+            raise ValidationError("Total amount due cannot be negative.")
 
     @classmethod
     def create_bill_from_validated_data(cls, validated_data):
@@ -187,7 +205,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     def get_short_bill_status(self):
         """Returns the most common status of the bill.
 
-        Short codes would enable easy color coding on the client.
+        Short status would enable easy color coding on the client.
 
         Returns:
             A string representing the most common status of the bill.
@@ -241,6 +259,10 @@ class BillUnregisteredParticipant(AbstractTimeStampedUUIDModel, models.Model):
         max_digits=19,
         decimal_places=4,
     )
+
+    class Meta:
+        verbose_name = "Bill unregistered participant"
+        verbose_name_plural = "Bill unregistered participants"
 
     def __str__(self) -> str:
         return f"name: {self.name}"
@@ -322,6 +344,10 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
         null=True,
     )
 
+    class Meta:
+        verbose_name = "Bill action"
+        verbose_name_plural = "Bill actions"
+
     def __str__(self) -> str:
         return (
             f"participant: {self.participant or self.unregistered_participant},"
@@ -379,6 +405,10 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
         on_delete=models.PROTECT,
         related_name="halver_transaction",
     )
+
+    class Meta:
+        verbose_name = "Bill transaction"
+        verbose_name_plural = "Bill transactions"
 
     def __str__(self) -> str:
         return (
