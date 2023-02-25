@@ -60,7 +60,9 @@ class BillListCreateView(APIView):
                 successful POST request.
         """
 
-        # The request is passed as context to enable serializer to obtain current user.
+        # The request is passed as context to make it possible to obtain the bill's
+        # creator by default, in the serializer.
+        # (check the validate_participants_and_unregistered_participants helper).
         serializer = self.serializer_class(
             data=self.request.data, context={"request": request}
         )
