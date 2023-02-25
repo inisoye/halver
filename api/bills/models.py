@@ -112,6 +112,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
                 create_actions_for_bill(self)
 
     def clean(self) -> None:
+        super().clean()
         self._validate_dates()
 
         if self.pk is None:
@@ -131,8 +132,10 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
             validate_date_not_in_past(self.next_charge_date, "Next Charge Date")
 
     def _validate_amounts(self) -> None:
-        if self.total_amount_due < 0:
-            raise ValidationError("Total amount due cannot be negative.")
+        if self.total_amount_due <= 0:
+            raise ValidationError(
+                "The total amount due must be a postive nonzero value."
+            )
 
     @classmethod
     def create_bill_from_validated_data(cls, validated_data):
@@ -259,6 +262,16 @@ class BillUnregisteredParticipant(AbstractTimeStampedUUIDModel, models.Model):
         max_digits=19,
         decimal_places=4,
     )
+
+    def _validate_contribution(self) -> None:
+        if not self.contribution or self.contribution <= 0:
+            raise ValidationError(
+                f"{self.name} must have a positive, nonzero contribution."
+            )
+
+    def clean(self):
+        super().clean()
+        self._validate_contribution()
 
     class Meta:
         verbose_name = "Bill unregistered participant"
