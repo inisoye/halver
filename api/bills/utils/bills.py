@@ -22,7 +22,7 @@ def create_bill(bill_model, validated_data):
 
     # Editable fields represent values from serializer that are not immediately
     # stored but would be modified before they are actually used
-    editable_fields = ("participant_contribution_index", "creditor_id")
+    editable_fields = ("participants_contribution_index", "creditor_id")
 
     validated_data_without_editable_fields = validated_data.copy()
     for field in editable_fields:
@@ -31,12 +31,12 @@ def create_bill(bill_model, validated_data):
     creditor_id = validated_data["creditor_id"]
     creditor = get_user_by_id_drf(creditor_id)
 
-    participant_contribution_index = validated_data.get(
-        "participant_contribution_index"
+    participants_contribution_index = validated_data.get(
+        "participants_contribution_index"
     )
     participants = (
-        get_users_by_ids_drf(participant_contribution_index.keys())
-        if participant_contribution_index
+        get_users_by_ids_drf(participants_contribution_index.keys())
+        if participants_contribution_index
         else []
     )
 
@@ -48,7 +48,7 @@ def create_bill(bill_model, validated_data):
     if participants:
         new_bill.participants.set(participants)
 
-    new_bill.update_contributions_and_fees_for_actions(participant_contribution_index)
+    new_bill.update_contributions_and_fees_for_actions(participants_contribution_index)
 
     return new_bill
 
@@ -79,14 +79,14 @@ def create_actions_for_bill(bill) -> None:
     BillAction.objects.bulk_create(actions + actions_for_unregistered_participants)
 
 
-def format_participant_contribution_index(
-    participant_contribution_index,
+def format_participants_contribution_index(
+    participants_contribution_index,
 ) -> dict[UUID, Decimal]:
     """Cleans up participant contribution index by ensuring all keys are UUIDs
     and values are Decimals.
 
     Args:
-        participant_contribution_index:
+        participants_contribution_index:
             A dictionary mapping bill participant UUIDs (as string values) to their
             contributions (string, integer, or float values sent by the client).
 
@@ -95,27 +95,27 @@ def format_participant_contribution_index(
     """
 
     # Ensure contributions are positive
-    for contribution in participant_contribution_index.values():
+    for contribution in participants_contribution_index.values():
         if isinstance(contribution, str) and not contribution.isnumeric():
             raise ValidationError("Contribution amount must be a positive number.")
         elif isinstance(contribution, (int, float)) and contribution <= 0:
             raise ValidationError("Contribution amount must be a positive number.")
 
-    formatted_participant_contribution_index = {}
+    formatted_participants_contribution_index = {}
 
     # Iterate over the original index dictionary to fix types
-    for participant_uuid_str, contribution in participant_contribution_index.items():
+    for participant_uuid_str, contribution in participants_contribution_index.items():
         participant_uuid = UUID(participant_uuid_str)
         contribution = Decimal(str(contribution))
 
-        formatted_participant_contribution_index[participant_uuid] = contribution
+        formatted_participants_contribution_index[participant_uuid] = contribution
 
-    return formatted_participant_contribution_index
+    return formatted_participants_contribution_index
 
 
 @transaction.atomic
 def add_participant_contributions_and_fees_to_actions(
-    bill, participant_contribution_index
+    bill, participants_contribution_index
 ):
     """Update the contributions of the participants/unregistered participants
     and their associated actions based on the given contribution index.
@@ -125,10 +125,10 @@ def add_participant_contributions_and_fees_to_actions(
 
     Args:
         bill: The bill instance with actions to be updated.
-        participant_contribution_index:
+        participants_contribution_index:
             A dictionary mapping bill participant UUIDs (as string values) to their
             contributions (string, integer, or float values sent by the client).
-            e.g participant_contribution_index = {
+            e.g participants_contribution_index = {
                 "73c9d9b7-fc01-4c01-b22c-cfa7d8f4a75a": "100.00",
                 "2d3837c1-a7e5-4fdd-b181-a4f4e7d4c9d9": 200,
                 "3c2db1bb-6e5f-4420-9c5b-79b524c9d9cd": 300.50,
@@ -137,9 +137,9 @@ def add_participant_contributions_and_fees_to_actions(
 
     from bills.models import BillAction
 
-    formatted_participant_contribution_index: dict[
+    formatted_participants_contribution_index: dict[
         UUID, Decimal
-    ] = format_participant_contribution_index(participant_contribution_index)
+    ] = format_participants_contribution_index(participants_contribution_index)
 
     # Get all actions for the bill
     actions = bill.actions.all()
@@ -151,7 +151,7 @@ def add_participant_contributions_and_fees_to_actions(
     actions_to_update = []
     for action in actions:
         if action.participant:
-            contribution = formatted_participant_contribution_index[
+            contribution = formatted_participants_contribution_index[
                 action.participant.uuid
             ]
         else:

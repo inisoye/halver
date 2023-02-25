@@ -40,23 +40,23 @@ def validate_bill_serializer_dates(serializer_data):
         )
 
 
-def validate_participant_contribution_index(serializer_data):
-    """Check that the participant_contribution_index is a valid dictionary of
+def validate_participants_contribution_index(serializer_data):
+    """Check that the participants_contribution_index is a valid dictionary of
     uuid keys and amount values.
 
     Args:
         serializer_data: A dictionary containing the serializer's data.
 
     Raises:
-        serializers.ValidationError: If the participant_contribution_index is invalid.
+        serializers.ValidationError: If the participants_contribution_index is invalid.
     """
 
-    participant_contribution_index = serializer_data.get(
-        "participant_contribution_index"
+    participants_contribution_index = serializer_data.get(
+        "participants_contribution_index"
     )
 
-    if participant_contribution_index:
-        for key, val in participant_contribution_index.items():
+    if participants_contribution_index:
+        for key, val in participants_contribution_index.items():
             try:
                 UUID(key)
             except ValueError:
@@ -82,15 +82,15 @@ def validate_total_amount_due(serializer_data):
         unregistered participantcontributions does not equal the total amount due.
     """
 
-    participant_contribution_index = serializer_data.get(
-        "participant_contribution_index"
+    participants_contribution_index = serializer_data.get(
+        "participants_contribution_index"
     )
     unregistered_participants = serializer_data.get("unregistered_participants")
     total_amount_due = serializer_data.get("total_amount_due")
 
-    total_participant_contributions = (
-        sum_numeric_dictionary_values(participant_contribution_index)
-        if participant_contribution_index
+    total_participants_contributions = (
+        sum_numeric_dictionary_values(participants_contribution_index)
+        if participants_contribution_index
         else 0
     )
 
@@ -101,7 +101,7 @@ def validate_total_amount_due(serializer_data):
     )
 
     total_contributions = (
-        total_participant_contributions + total_unregistered_participants_contributions
+        total_participants_contributions + total_unregistered_participants_contributions
     )
 
     if total_contributions != total_amount_due:
@@ -126,11 +126,13 @@ def validate_participants_and_unregistered_participants(
     """
 
     unregistered_participants = serializer_data.get("unregistered_participants", [])
-    participant_contribution_index = serializer_data.get(
-        "participant_contribution_index"
+    participants_contribution_index = serializer_data.get(
+        "participants_contribution_index"
     )
     participants_ids = (
-        participant_contribution_index.keys() if participant_contribution_index else []
+        participants_contribution_index.keys()
+        if participants_contribution_index
+        else []
     )
 
     if not participants_ids and not unregistered_participants:

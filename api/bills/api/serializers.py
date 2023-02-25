@@ -4,8 +4,8 @@ from rest_framework.fields import CurrentUserDefault
 from bills.models import Bill, BillUnregisteredParticipant
 from bills.utils.validation import (
     validate_bill_serializer_dates,
-    validate_participant_contribution_index,
     validate_participants_and_unregistered_participants,
+    validate_participants_contribution_index,
     validate_total_amount_due,
 )
 
@@ -41,13 +41,13 @@ class BillCreateSerializer(serializers.ModelSerializer):
     unregistered_participants = BillUnregisteredParticipantSerializer(
         many=True, required=False
     )
-    participant_contribution_index = serializers.DictField(
+    participants_contribution_index = serializers.DictField(
         required=False,
     )
 
     def validate(self, data):
         validate_bill_serializer_dates(data)
-        validate_participant_contribution_index(data)
+        validate_participants_contribution_index(data)
         validate_total_amount_due(data)
         validate_participants_and_unregistered_participants(self, data)
         return data
@@ -72,7 +72,7 @@ class BillCreateSerializer(serializers.ModelSerializer):
             "created",
             "modified",
             "uuid",
-            "participant_contribution_index",
+            "participants_contribution_index",
         )
         read_only_fields = (
             "created",

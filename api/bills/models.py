@@ -150,18 +150,18 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         return new_bill
 
     def update_contributions_and_fees_for_actions(
-        self, participant_contribution_index
+        self, participants_contribution_index
     ) -> None:
         """Called after bill creation. Adds contribution amounts and fees to
         bill actions.
 
         Args:
-            participant_contribution_index: Dictionary connecting participant uuids with
+            participants_contribution_index: Dictionary connecting participant uuids with
             contributions.
         """
 
         add_participant_contributions_and_fees_to_actions(
-            self, participant_contribution_index
+            self, participants_contribution_index
         )
 
     def get_total_participants(self):
