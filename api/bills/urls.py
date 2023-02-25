@@ -8,7 +8,7 @@ urlpatterns = [
     path(
         route="",
         view=BillListCreateView.as_view(),
-        name="bills",
+        name="bills/",
     ),
     path(
         route="<uuid:uuid>/",
