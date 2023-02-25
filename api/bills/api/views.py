@@ -60,7 +60,10 @@ class BillListCreateView(APIView):
                 successful POST request.
         """
 
-        serializer = self.serializer_class(data=self.request.data)
+        # The request is passed as context to enable serializer to obtain current user.
+        serializer = self.serializer_class(
+            data=self.request.data, context={"request": request}
+        )
         serializer.is_valid(raise_exception=True)
 
         new_bill = Bill.create_bill_from_validated_data(serializer.validated_data)

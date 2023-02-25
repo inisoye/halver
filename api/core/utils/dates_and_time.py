@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 
 
-def validate_date_not_in_past(date: datetime.datetime | None, date_name: str) -> None:
+def validate_date_not_in_past(dt: datetime.datetime | None, date_name: str) -> None:
     """Validate that a given date is not in the past.
 
     Args:
@@ -12,10 +12,10 @@ def validate_date_not_in_past(date: datetime.datetime | None, date_name: str) ->
     date_name: The name of the date, used in the error message.
     """
 
-    if date is None:
+    if dt is None:
         raise ValidationError(f"{date_name} must be provided.")
 
-    if date < datetime.date.today():
+    if dt.date() < datetime.date.today():
         raise ValidationError(f"{date_name} cannot be in the past.")
 
 

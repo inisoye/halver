@@ -8,35 +8,34 @@ from core.utils.dates_and_time import (
     validate_date_is_at_least_one_week_into_future,
     validate_date_not_in_past,
 )
+from core.utils.dictionaries import sum_numeric_dictionary_values
+from core.utils.lists import sum_list_of_dictionary_values
 from core.utils.users import get_user_by_id_drf
 
 
-def validate_bill_serializer_dates(serializer_instance):
+def validate_bill_serializer_dates(serializer_data):
     """Ensure the dates provided in the serializer are not in the past. If the
     bill is not recurring (interval == "none"), only the deadline date is
     validated. Otherwise, both the first_charge_date and next_charge_date are
     validated.
 
-    serializer_instance.validated_data is used here as the validation in this
-    function is performed after the default validation (based on the model) have
-    been carried out.
+    Args:
+        serializer_data: A dictionary containing the serializer's data.
     """
 
-    if serializer_instance.validated_data["interval"] == "none":
-        validate_date_not_in_past(
-            serializer_instance.validated_data.get("deadline"), "Deadline"
-        )
+    if serializer_data["interval"] == "none":
+        validate_date_not_in_past(serializer_data.get("deadline"), "Deadline")
     else:
         validate_date_not_in_past(
-            serializer_instance.validated_data.get("first_charge_date"),
+            serializer_data.get("first_charge_date"),
             "First Charge Date",
         )
         validate_date_not_in_past(
-            serializer_instance.validated_data.get("next_charge_date"),
+            serializer_data.get("next_charge_date"),
             "Next Charge Date",
         )
         validate_date_is_at_least_one_week_into_future(
-            serializer_instance.validated_data.get("first_charge_date"),
+            serializer_data.get("first_charge_date"),
             "First Charge Date",
         )
 
@@ -56,19 +55,57 @@ def validate_participant_contribution_index(serializer_data):
         "participant_contribution_index"
     )
 
-    if participant_contribution_index is None:
-        raise serializers.ValidationError("Participant contribution index is required")
+    if participant_contribution_index:
+        for key, val in participant_contribution_index.items():
+            try:
+                UUID(key)
+            except ValueError:
+                raise serializers.ValidationError(f"Invalid User ID: {key}")
 
-    for key, val in participant_contribution_index.items():
-        try:
-            UUID(key)
-        except ValueError:
-            raise serializers.ValidationError(f"Invalid User ID: {key}")
+            try:
+                Decimal(str(val))
+            except InvalidDecimalOperation:
+                raise serializers.ValidationError(f"Invalid amount value: {val}")
 
-        try:
-            Decimal(str(val))
-        except InvalidDecimalOperation:
-            raise serializers.ValidationError(f"Invalid amount value: {val}")
+
+def validate_total_amount_due(serializer_data):
+    """
+    Validates whether the total contributions made by participants and unregistered
+    participants add up to the total amount due.
+
+    Args:
+        serializer_data: A dictionary containing the serializer's data.
+
+
+    Raises:
+        serializers.ValidationError: If the sum of participant contributions and
+        unregistered participantcontributions does not equal the total amount due.
+    """
+
+    participant_contribution_index = serializer_data.get(
+        "participant_contribution_index"
+    )
+    unregistered_participants = serializer_data.get("unregistered_participants")
+    total_amount_due = serializer_data.get("total_amount_due")
+
+    total_participant_contributions = (
+        sum_numeric_dictionary_values(participant_contribution_index)
+        if participant_contribution_index
+        else 0
+    )
+
+    total_unregistered_participants_contributions = (
+        sum_list_of_dictionary_values(unregistered_participants, "contribution")
+        if unregistered_participants
+        else 0
+    )
+
+    total_contributions = (
+        total_participant_contributions + total_unregistered_participants_contributions
+    )
+
+    if total_contributions != total_amount_due:
+        raise serializers.ValidationError("Contributions do not add up to total amount")
 
 
 def validate_participants_and_unregistered_participants(
@@ -88,8 +125,13 @@ def validate_participants_and_unregistered_participants(
         serializers.ValidationError: If any of the validation checks fail.
     """
 
-    participants_ids = serializer_data.get("participants_ids", [])
     unregistered_participants = serializer_data.get("unregistered_participants", [])
+    participant_contribution_index = serializer_data.get(
+        "participant_contribution_index"
+    )
+    participants_ids = (
+        participant_contribution_index.keys() if participant_contribution_index else []
+    )
 
     if not participants_ids and not unregistered_participants:
         raise serializers.ValidationError(

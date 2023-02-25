@@ -1,12 +1,14 @@
 from decimal import Decimal
 from uuid import UUID
 
+from django.core.exceptions import ValidationError
 from django.db import transaction
 
 from bills.utils.fees import calculate_all_transaction_fees
 from core.utils.users import get_user_by_id_drf, get_users_by_ids_drf
 
 
+@transaction.atomic
 def create_bill(bill_model, validated_data):
     """Create a bill instance and and add actions to it.
 
@@ -20,11 +22,7 @@ def create_bill(bill_model, validated_data):
 
     # Editable fields represent values from serializer that are not immediately
     # stored but would be modified before they are actually used
-    editable_fields = (
-        "participant_contribution_index",
-        "creditor_id",
-        "participants_ids",
-    )
+    editable_fields = ("participant_contribution_index", "creditor_id")
 
     validated_data_without_editable_fields = validated_data.copy()
     for field in editable_fields:
@@ -33,16 +31,23 @@ def create_bill(bill_model, validated_data):
     creditor_id = validated_data["creditor_id"]
     creditor = get_user_by_id_drf(creditor_id)
 
-    participants_ids = validated_data["participants_ids"]
-    participants = get_users_by_ids_drf(participants_ids)
+    participant_contribution_index = validated_data.get(
+        "participant_contribution_index"
+    )
+    participants = (
+        get_users_by_ids_drf(participant_contribution_index.keys())
+        if participant_contribution_index
+        else []
+    )
 
     new_bill = bill_model.objects.create(
         creditor=creditor,
-        participants=participants,
         **validated_data_without_editable_fields,
     )
 
-    participant_contribution_index = validated_data["participant_contribution_index"]
+    if participants:
+        new_bill.participants.set(participants)
+
     new_bill.update_contributions_and_fees_for_actions(participant_contribution_index)
 
     return new_bill
@@ -88,6 +93,13 @@ def format_participant_contribution_index(
     Returns:
         The contribution index with UUID keys and Decimal values.
     """
+
+    # Ensure contributions are positive
+    for contribution in participant_contribution_index.values():
+        if isinstance(contribution, str) and not contribution.isnumeric():
+            raise ValidationError("Contribution amount must be a positive number.")
+        elif isinstance(contribution, (int, float)) and contribution <= 0:
+            raise ValidationError("Contribution amount must be a positive number.")
 
     formatted_participant_contribution_index = {}
 

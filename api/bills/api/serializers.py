@@ -6,6 +6,7 @@ from bills.utils.validation import (
     validate_bill_serializer_dates,
     validate_participant_contribution_index,
     validate_participants_and_unregistered_participants,
+    validate_total_amount_due,
 )
 
 
@@ -33,16 +34,21 @@ class BillCreateSerializer(serializers.ModelSerializer):
         default=serializers.CreateOnlyDefault(CurrentUserDefault()),
         read_only=True,
     )
-    creditor_id = serializers.UUIDField(write_only=True)
-    participants_ids = serializers.ListField(
-        child=serializers.UUIDField(), write_only=True
+    creditor_id = serializers.UUIDField(
+        write_only=True,
+        required=True,
     )
-    unregistered_participants = BillUnregisteredParticipantSerializer(many=True)
-    participant_contribution_index = serializers.DictField(required=True)
+    unregistered_participants = BillUnregisteredParticipantSerializer(
+        many=True, required=False
+    )
+    participant_contribution_index = serializers.DictField(
+        required=False,
+    )
 
     def validate(self, data):
-        validate_bill_serializer_dates(self)
+        validate_bill_serializer_dates(data)
         validate_participant_contribution_index(data)
+        validate_total_amount_due(data)
         validate_participants_and_unregistered_participants(self, data)
         return data
 
@@ -51,7 +57,6 @@ class BillCreateSerializer(serializers.ModelSerializer):
         fields = (
             "creator",
             "creditor_id",
-            "participants_ids",
             "unregistered_participants",
             "name",
             "first_charge_date",
@@ -160,7 +165,6 @@ class BillDetailSerializer(serializers.ModelSerializer):
             "actions",
             "transactions",
         )
-
         read_only = fields
 
 
