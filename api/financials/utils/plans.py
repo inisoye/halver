@@ -1,6 +1,9 @@
+from celery.utils.log import get_task_logger
 from django.db import transaction
 
-from financials.models import PaystackPlan
+from financials.models import PaystackPlan, PaystackPlanFailures
+
+logger = get_task_logger(__name__)
 
 
 def format_paystack_plan_payloads(bill_actions):
@@ -83,9 +86,8 @@ def get_uuids_for_participant_and_bill_from_plan(
 ):
     """Extract the participant and bill UUIDs from a plan's name string in the
     format: "Plan for participant with id: <participant_uuid> on the bill with
-    id: <bill_uuid>" or "Plan for unregistered participant with id:
-
-    <participant_uuid> on the bill with id: <bill_uuid>".
+    id: <bill_uuid>" or "Plan for unregistered participant with id: <participant_uuid>
+    on the bill with id: <bill_uuid>".
 
     Args:
         plan_name_string (str): The plan's name string to extract the UUIDs from
@@ -105,6 +107,52 @@ def get_uuids_for_participant_and_bill_from_plan(
     bill_uuid = plan_name_string[bill_index:].strip()
 
     return participant_uuid, bill_uuid
+
+
+def create_participants_and_actions_index(bill_actions):
+    """Create dictionary indexes that can be used to find specific objects
+    inside for loop below (over paystack responses), without making (n+1) queries.
+
+    Participant objects should have been prefetched earlier.
+
+    ! Currently replaced with an approach base on positional index.
+    ! Come back to use this if the positional index based approach proves to be buggy.
+    In such a case the actions index would be used like this:
+        - action = actions_index.get(participant_uuid)
+    and the participants index like this:
+        - user = participants_index.get(participant_uuid)
+    The uuid would be obtained from the plan name with:
+        - participant_uuid = get_uuid_for_participant_from_plan(name)
+
+    Args:
+        bill_actions: The actions on the bill
+
+    Raises:
+        ValueError: In an unlikely case where any action has no partipant attached to it.
+    """
+
+    participants_index = {}
+    actions_index = {}
+
+    for action in bill_actions:
+        user_uuid = getattr(
+            action.participant,
+            "uuid",
+            getattr(action.unregistered_participant, "uuid", None),
+        )
+        if user_uuid is None:
+            raise ValueError(
+                "Neither participant UUID nor unregistered participant UUID found."
+            )
+
+        if action.participant:
+            participants_index[str(user_uuid)] = action.participant
+        else:
+            participants_index[str(user_uuid)] = action.unregistered_participant
+
+        actions_index[str(user_uuid)] = action
+
+    return participants_index, actions_index
 
 
 @transaction.atomic
@@ -127,46 +175,47 @@ def create_paystack_plan_objects(
         ValueError: If a Paystack plan response cannot be associated with a BillAction.
     """
 
-    # Create dictionary indexes that can be used to find specific objects
-    # inside for loop below, without making (n+1) queries.
-    # Participant objects should have been prefetched earlier.
-    participants_index = {
-        str(
-            getattr(action, "participant_uuid", action.unregistered_participant_uuid)
-        ): (action.participant or action.unregistered_participant)
-        for action in bill_actions
-    }
-    actions_index = {
-        str(
-            getattr(action, "participant_uuid", action.unregistered_participant_uuid)
-        ): action
-        for action in bill_actions
-    }
-
     paystack_plan_objects = []
+    paystack_plan_failures = []
 
     for index, plan_response in enumerate(paystack_plan_responses):
-        # Get the participant UUID from the Paystack plan name.
-        name = plan_response["data"]["name"]
-        participant_uuid = get_uuid_for_participant_from_plan(name)
+        # Test thoroughly to ensure positional indexes always match up between
+        # plan responses and the actions used to create them. Revert to old approach
+        # (create_participants_and_actions_index) and delete failures model if it proves
+        # to be buggy.
+        action = bill_actions[index]
+        participant = action.participant
+        unregistered_participant = action.unregistered_participant
 
-        # Get the remaining data from the Paystack plan response and the indexes.
-        interval = plan_response["data"]["interval"]
-        plan_code = plan_response["data"]["plan_code"]
-        amount = plan_response["data"]["amount"]
-        action = actions_index.get(participant_uuid)
-        user = participants_index.get(participant_uuid)
+        if not plan_response["status"]:
+            failure = PaystackPlanFailures(
+                action=action,
+                failure_message=plan_response["message"],
+                participant=participant,
+                unregistered_participant=unregistered_participant,
+            )
+            paystack_plan_failures.append(failure)
+        else:
+            name = plan_response["data"]["name"]
+            interval = plan_response["data"]["interval"]
+            plan_code = plan_response["data"]["plan_code"]
+            amount = plan_response["data"]["amount"]
 
-        paystack_plan_object = PaystackPlan(
-            name=name,
-            interval=interval,
-            plan_code=plan_code,
-            amount=amount,
-            action=action,
-            user=user,
-            complete_paystack_payload=paystack_plan_payloads[index],
-            complete_paystack_response=plan_response,
-        )
-        paystack_plan_objects.append(paystack_plan_object)
+            paystack_plan_object = PaystackPlan(
+                name=name,
+                interval=interval,
+                plan_code=plan_code,
+                amount=amount,
+                action=action,
+                participant=participant,
+                unregistered_participant=unregistered_participant,
+                complete_paystack_payload=paystack_plan_payloads[index],
+                complete_paystack_response=plan_response,
+            )
+            paystack_plan_objects.append(paystack_plan_object)
 
-    PaystackPlan.objects.bulk_create(paystack_plan_objects)
+    if len(paystack_plan_failures) > 0:
+        PaystackPlanFailures.objects.bulk_create(paystack_plan_failures)
+
+    if len(paystack_plan_objects) > 0:
+        PaystackPlan.objects.bulk_create(paystack_plan_objects)

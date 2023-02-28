@@ -9,7 +9,7 @@ from core.utils.users import get_user_by_id_drf, get_users_by_ids_drf
 
 
 @transaction.atomic
-def create_bill(bill_model, validated_data):
+def create_bill(bill_model, validated_data, creator):
     """Create a bill instance and and add actions to it.
 
     Args:
@@ -20,16 +20,33 @@ def create_bill(bill_model, validated_data):
         bill (Model): The created bill instance.
     """
 
-    # Editable fields represent values from serializer that are not immediately
-    # stored but would be modified before they are actually used
-    editable_fields = ("participants_contribution_index", "creditor_id")
+    from bills.models import BillUnregisteredParticipant
 
-    validated_data_without_editable_fields = validated_data.copy()
-    for field in editable_fields:
-        validated_data_without_editable_fields.pop(field, None)
+    # Modified fields represent values from serializer that are not immediately
+    # stored but would be modified before they are actually used.
+    modified_fields = (
+        "participants_contribution_index",
+        "creditor_id",
+        "unregistered_participants",
+        "next_charge_date",
+    )
+
+    validated_data_without_modified_fields = validated_data.copy()
+    for field in modified_fields:
+        validated_data_without_modified_fields.pop(field, None)
 
     creditor_id = validated_data["creditor_id"]
     creditor = get_user_by_id_drf(creditor_id)
+
+    # TODO Add a check to ensure that the creditor has a default transfer recipient
+    # TODO Next charge date should be updated for the bill when user's subscribe.
+    # TODO Consider moving next charge date to action model instead!
+
+    new_bill = bill_model.objects.create(
+        creditor=creditor,
+        creator=creator,
+        **validated_data_without_modified_fields,
+    )
 
     participants_contribution_index = validated_data.get(
         "participants_contribution_index"
@@ -40,15 +57,22 @@ def create_bill(bill_model, validated_data):
         else []
     )
 
-    new_bill = bill_model.objects.create(
-        creditor=creditor,
-        **validated_data_without_editable_fields,
-    )
-
     if participants:
         new_bill.participants.set(participants)
 
-    new_bill.update_contributions_and_fees_for_actions(participants_contribution_index)
+    unregistered_participants_data = validated_data.get("unregistered_participants")
+
+    if unregistered_participants_data:
+        unregistered_participants = [
+            BillUnregisteredParticipant(**unregistered_participant, bill=new_bill)
+            for unregistered_participant in unregistered_participants_data
+        ]
+        BillUnregisteredParticipant.objects.bulk_create(unregistered_participants)
+
+    create_actions_for_bill(new_bill)
+    add_participant_contributions_and_fees_to_bill_actions(
+        new_bill, participants_contribution_index
+    )
 
     return new_bill
 
@@ -60,7 +84,11 @@ def create_actions_for_bill(bill) -> None:
     Used in the bill model's save method.
     """
 
-    from bills.models import BillAction
+    from bills.models import Bill, BillAction
+
+    bill = Bill.objects.prefetch_related(
+        "participants", "unregistered_participants"
+    ).get(pk=bill.pk)
 
     actions = [
         BillAction(bill=bill, participant=participant)
@@ -91,30 +119,42 @@ def format_participants_contribution_index(
             contributions (string, integer, or float values sent by the client).
 
     Returns:
-        The contribution index with UUID keys and Decimal values.
+        The contribution index with UUID keys and Decimal values. If
+        participants_contribution_index is empty, an empty dictionary is returned.
+
+    Raises:
+        ValidationError: If any of the contribution amounts are not positive numbers.
     """
 
-    # Ensure contributions are positive
-    for contribution in participants_contribution_index.values():
-        if isinstance(contribution, str) and not contribution.isnumeric():
-            raise ValidationError("Contribution amount must be a positive number.")
-        elif isinstance(contribution, (int, float)) and contribution <= 0:
-            raise ValidationError("Contribution amount must be a positive number.")
+    if participants_contribution_index:
+        formatted_participants_contribution_index = {}
 
-    formatted_participants_contribution_index = {}
+        # Iterate over the original index dictionary to fix types
+        for (
+            participant_uuid_str,
+            contribution,
+        ) in participants_contribution_index.items():
+            if isinstance(contribution, str) and not contribution.isnumeric():
+                raise ValidationError(
+                    "All contribution amounts must be positive numbers"
+                )
+            elif isinstance(contribution, (int, float)) and contribution <= 0:
+                raise ValidationError(
+                    "All contribution amounts must be positive numbers"
+                )
 
-    # Iterate over the original index dictionary to fix types
-    for participant_uuid_str, contribution in participants_contribution_index.items():
-        participant_uuid = UUID(participant_uuid_str)
-        contribution = Decimal(str(contribution))
+            participant_uuid = UUID(participant_uuid_str)
+            contribution = Decimal(str(contribution))
 
-        formatted_participants_contribution_index[participant_uuid] = contribution
+            formatted_participants_contribution_index[participant_uuid] = contribution
 
-    return formatted_participants_contribution_index
+        return formatted_participants_contribution_index
+
+    return {}
 
 
 @transaction.atomic
-def add_participant_contributions_and_fees_to_actions(
+def add_participant_contributions_and_fees_to_bill_actions(
     bill, participants_contribution_index
 ):
     """Update the contributions of the participants/unregistered participants
@@ -159,7 +199,7 @@ def add_participant_contributions_and_fees_to_actions(
 
         all_transaction_fees = calculate_all_transaction_fees(contribution)
 
-        total_fee = all_transaction_fees.total_fee
+        total_fee = all_transaction_fees["total_fee"]
 
         total_payment_due = contribution + total_fee
 
@@ -167,9 +207,11 @@ def add_participant_contributions_and_fees_to_actions(
             BillAction(
                 id=action.id,
                 contribution=contribution,
-                paystack_transaction_fee=all_transaction_fees.paystack_transaction_fee,
-                paystack_transfer_fee=all_transaction_fees.paystack_transfer_fee,
-                halver_fee=all_transaction_fees.halver_fee,
+                paystack_transaction_fee=all_transaction_fees[
+                    "paystack_transaction_fee"
+                ],
+                paystack_transfer_fee=all_transaction_fees["paystack_transfer_fee"],
+                halver_fee=all_transaction_fees["halver_fee"],
                 total_fee=total_fee,
                 total_payment_due=total_payment_due,
             )
@@ -184,6 +226,7 @@ def add_participant_contributions_and_fees_to_actions(
             "paystack_transfer_fee",
             "halver_fee",
             "total_fee",
+            "total_payment_due",
         ],
     )
 

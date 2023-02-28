@@ -1,8 +1,8 @@
 from django.contrib import admin
-# from import_export import resources
 
 from financials.models import (
     PaystackPlan,
+    PaystackPlanFailures,
     PaystackSubscription,
     PaystackTransaction,
     PaystackTransfer,
@@ -10,9 +10,13 @@ from financials.models import (
     UserCard,
 )
 
+# from import_export import resources
+
+
 admin.site.register(UserCard)
 admin.site.register(TransferRecipient)
 admin.site.register(PaystackPlan)
+admin.site.register(PaystackPlanFailures)
 admin.site.register(PaystackSubscription)
 admin.site.register(PaystackTransaction)
 admin.site.register(PaystackTransfer)

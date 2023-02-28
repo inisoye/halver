@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
@@ -37,11 +38,13 @@ class BillListCreateView(APIView):
                 objects for which the current user is a participant.
         """
 
-        bills = Bill.objects.prefetch_related("participants").filter(
-            participants__contains=[request.user]
+        bills = Bill.objects.filter(
+            Q(participants=request.user) | Q(creditor=request.user)
         )
 
-        serializer = self.list_serializer_class(bills, many=True)
+        serializer = self.list_serializer_class(
+            bills, many=True, context={"request": request}
+        )
         return Response(serializer.data)
 
     @extend_schema(request=None, responses={201: OpenApiResponse()})
@@ -60,18 +63,20 @@ class BillListCreateView(APIView):
                 successful POST request.
         """
 
-        # The request is passed as context to make it possible to obtain the bill's
-        # creator by default, in the serializer.
+        # The request is passed in context to make it possible to obtain the bill's
+        # creator, in the serializer.
         # (check the validate_participants_and_unregistered_participants helper).
         serializer = self.serializer_class(
             data=self.request.data, context={"request": request}
         )
         serializer.is_valid(raise_exception=True)
 
-        new_bill = Bill.create_bill_from_validated_data(serializer.validated_data)
+        new_bill = Bill.create_bill_from_validated_data(
+            serializer.validated_data, creator=request.user
+        )
 
         if new_bill.is_recurring:
-            create_paystack_plans_for_recurring_bills.delay(new_bill)
+            create_paystack_plans_for_recurring_bills.delay(new_bill.id)
 
         return Response(status=status.HTTP_201_CREATED)
 
@@ -82,7 +87,6 @@ class BillDetailUpdateView(APIView):
     Accepts GET and PATCH requests.
     """
 
-    permission_classes = (IsCreator, IsCreditor)
     serializer_class = BillDetailSerializer
     update_serializer_class = BillDetailsUpdateSerializer
 
@@ -91,8 +95,8 @@ class BillDetailUpdateView(APIView):
         Returns the permission classes to be used for the request.
         """
         if self.request.method == "GET":
-            return (IsParticipant,)
-        return self.permission_classes
+            return (IsParticipant(),)
+        return (IsCreator(), IsCreditor())
 
     def get(self, request, uuid):
         """Returns the bill details for a given Bill UUID.
@@ -114,8 +118,7 @@ class BillDetailUpdateView(APIView):
 
         bill = get_object_or_404(Bill, uuid=uuid)
 
-        serializer = self.serializer_class(bill)
-        serializer.is_valid(raise_exception=True)
+        serializer = self.serializer_class(bill, context={"request": request})
 
         are_discreet_fields_hidden = (
             bill.is_discreet

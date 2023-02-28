@@ -1,14 +1,9 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.db import models, transaction
+from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
-from bills.utils.bills import (
-    add_participant_contributions_and_fees_to_actions,
-    create_actions_for_bill,
-    create_bill,
-    generate_long_status_index,
-)
+from bills.utils.bills import create_bill, generate_long_status_index
 from core.models import AbstractCurrencyModel, AbstractTimeStampedUUIDModel
 from core.utils.dates_and_time import (
     get_one_week_from_now,
@@ -32,6 +27,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         WEEKLY = "weekly", "Weekly"
         MONTHLY = "monthly", "Monthly"
         QUARTERLY = "quarterly", "Quarterly"
+        BIANNUALLY = "biannually", "Biannually"
         ANNUALLY = "annually", "Annually"
         NONE = "none", "None"
 
@@ -79,18 +75,18 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         null=True,
     )
     total_amount_due = models.DecimalField(
-        verbose_name="Total amount to be paid",
+        help_text="Total amount to be paid",
         max_digits=19,
         decimal_places=4,
     )
     total_amount_paid = models.DecimalField(
-        verbose_name="Total amount already paid",
+        help_text="Total amount already paid",
         max_digits=19,
         decimal_places=4,
         default=0,
     )
     is_discreet = models.BooleanField(
-        verbose_name=(
+        help_text=(
             "Are transactions and actions hidden from non-creditor, non-creator"
             " participants"
         ),
@@ -104,20 +100,15 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     def __str__(self) -> str:
         return f"name: {self.name}, creator: {self.creator.full_name}"
 
-    def save(self, *args, **kwargs) -> None:
-        with transaction.atomic():
-            super().save(*args, **kwargs)
-
-            if self.pk is None:
-                create_actions_for_bill(self)
-
     def clean(self) -> None:
         super().clean()
         self._validate_dates()
 
         if self.pk is None:
             validate_date_is_at_least_one_week_into_future(
-                self.first_charge_date, "First Charge Date"
+                self.first_charge_date,
+                "First Charge Date",
+                use_day_start=True,
             )
 
     @property
@@ -138,7 +129,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
             )
 
     @classmethod
-    def create_bill_from_validated_data(cls, validated_data):
+    def create_bill_from_validated_data(cls, validated_data, creator):
         """Called from view to create a new bill with actions.
 
         Args:
@@ -146,23 +137,8 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
             to be used in the creation of the bill
         """
 
-        new_bill = create_bill(cls, validated_data)
+        new_bill = create_bill(cls, validated_data, creator)
         return new_bill
-
-    def update_contributions_and_fees_for_actions(
-        self, participants_contribution_index
-    ) -> None:
-        """Called after bill creation. Adds contribution amounts and fees to
-        bill actions.
-
-        Args:
-            participants_contribution_index: Dictionary connecting participant uuids with
-            contributions.
-        """
-
-        add_participant_contributions_and_fees_to_actions(
-            self, participants_contribution_index
-        )
 
     def get_total_participants(self):
         return self.participants.count() + self.unregistered_participants.count()
@@ -247,18 +223,13 @@ class BillUnregisteredParticipant(AbstractTimeStampedUUIDModel, models.Model):
         on_delete=models.CASCADE,
         related_name="unregistered_participants",
     )
-    phone = PhoneNumberField(
-        unique=True,
-        error_messages={
-            "unique": "Duplicate phone numbers are not allowed.",
-        },
-    )
+    phone = PhoneNumberField()
     email = models.EmailField(
         null=True,
         blank=True,
     )
     contribution = models.DecimalField(
-        verbose_name="Bill contribution of unregistered participant",
+        help_text="Bill contribution of unregistered participant",
         max_digits=19,
         decimal_places=4,
     )
@@ -318,7 +289,7 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
         related_name="actions",
     )
     contribution = models.DecimalField(
-        verbose_name="Bill contribution of participant (excludes fees)",
+        help_text="Bill contribution of participant (excludes fees)",
         max_digits=19,
         null=True,
         decimal_places=4,
@@ -349,9 +320,7 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
         null=True,
     )
     total_payment_due = models.DecimalField(
-        verbose_name=(
-            "Summation of contribution and total fees. Actual amount to be paid"
-        ),
+        help_text="Summation of contribution and total fees. Actual amount to be paid",
         max_digits=19,
         decimal_places=4,
         null=True,
@@ -383,12 +352,12 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
         related_name="transactions",
     )
     contribution = models.DecimalField(
-        verbose_name="Bill contribution of participant (excludes fees)",
+        help_text="Bill contribution of participant (excludes fees)",
         max_digits=19,
         decimal_places=4,
     )
     total_payment = models.DecimalField(
-        verbose_name="Total amount paid (includes fees)",
+        help_text="Total amount paid (includes fees)",
         max_digits=19,
         decimal_places=4,
     )

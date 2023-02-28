@@ -1,14 +1,14 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 
-from bills.models import BillAction
+from bills.models import BillAction, BillUnregisteredParticipant
 from core.models import AbstractTimeStampedUUIDModel
 from financials.utils.common import delete_and_set_newest_as_default, set_as_default
 
 
 class UserCard(AbstractTimeStampedUUIDModel, models.Model):
-    """Stores data returned by Paystack to represent a
-    card."""
+    """Stores data returned by Paystack to represent a card."""
 
     authorization_code = models.CharField(
         max_length=100,
@@ -82,9 +82,8 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
     def delete_and_set_newest_as_default(self) -> None:
         """Deletes the current card instance.
 
-        If the deleted instance was the default card, the
-        newest of the remaining instances will be set as the
-        new default.
+        If the deleted instance was the default card, the newest of the
+        remaining instances will be set as the new default.
         """
 
         delete_and_set_newest_as_default(self, "user_card")
@@ -95,9 +94,8 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
 
 
 class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
-    """Stores data returned by Paystack to represent an
-    account (nuban) or card (authorization) transfer
-    recipient."""
+    """Stores data returned by Paystack to represent an account (nuban) or card
+    (authorization) transfer recipient."""
 
     class RecipientChoices(models.TextChoices):
         CARD = "authorization", "Card"
@@ -168,17 +166,15 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         verbose_name_plural = "User transfer recipients"
 
     def set_as_default_recipient(self) -> None:
-        """Sets current transfer recipient instance as the
-        default."""
+        """Sets current transfer recipient instance as the default."""
 
         set_as_default(self, "transfer_recipient")
 
     def delete_and_set_newest_as_default(self) -> None:
         """Deletes the current transfer recipient instance.
 
-        If the deleted instance was the default recipient,
-        the newest of the remaining instances will be set as
-        the new default.
+        If the deleted instance was the default recipient, the newest of the
+        remaining instances will be set as the new default.
         """
 
         delete_and_set_newest_as_default(self, "transfer_recipient")
@@ -194,11 +190,12 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
         DAILY = "daily", "Daily"
         WEEKLY = "weekly", "Weekly"
         MONTHLY = "monthly", "Monthly"
+        QUARTERLY = "quarterly", "Quarterly"
         BIANNUALLY = "biannually", "Biannually"
         ANNUALLY = "annually", "Annually"
 
     name = models.CharField(
-        max_length=100,
+        max_length=200,
     )
     interval = models.CharField(
         max_length=50,
@@ -208,7 +205,11 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
         max_length=100,
     )
     amount = models.DecimalField(
-        verbose_name="Amount to be paid within each interval",
+        verbose_name="Amount in Kobo or other subunit",
+        help_text=(
+            "Amount to be paid within each interval, in kobo (or other subunit),"
+            " according to Paystack's standard approach."
+        ),
         max_digits=19,
         decimal_places=4,
     )
@@ -217,9 +218,16 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
         on_delete=models.PROTECT,
         related_name="paystack_plan",
     )
-    user = models.ForeignKey(
+    participant = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        null=True,
+        related_name="paystack_plans",
+    )
+    unregistered_participant = models.ForeignKey(
+        BillUnregisteredParticipant,
+        on_delete=models.CASCADE,
+        null=True,
         related_name="paystack_plans",
     )
     complete_paystack_payload = models.JSONField(
@@ -237,13 +245,63 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
     def __str__(self) -> str:
         return f"name: {self.name}, interval: {self.interval}, amount: {self.amount}"
 
+    def clean(self):
+        if self.participant is None and self.unregistered_participant is None:
+            raise ValidationError(
+                "Either participant or unregistered participant must be provided."
+            )
+
+
+class PaystackPlanFailures(AbstractTimeStampedUUIDModel, models.Model):
+    """Stores data returned by Paystack when a plan creation call fails.
+
+    These could be displayed in the UI to allow the bill creator/creditor to
+    retry plan creation.
+    """
+
+    action = models.OneToOneField(
+        BillAction,
+        on_delete=models.PROTECT,
+        related_name="paystack_plan_failure",
+    )
+    failure_message = models.CharField(
+        max_length=150,
+    )
+    participant = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="paystack_plan_failures",
+    )
+    unregistered_participant = models.ForeignKey(
+        BillUnregisteredParticipant,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="paystack_plan_failures",
+    )
+
+    class Meta:
+        verbose_name = "Paystack plan failure"
+        verbose_name_plural = "Paystack plan failures"
+
+    def __str__(self) -> str:
+        return (
+            f" participant: {self.participant or self.unregistered_participant},"
+            f" message: {self.failure_message}"
+        )
+
+    def clean(self):
+        if self.participant is None and self.unregistered_participant is None:
+            raise ValidationError(
+                "Either participant or unregistered participant must be provided."
+            )
+
 
 class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
-    """Stores data returned by Paystack to represent a
-    subscription.
+    """Stores data returned by Paystack to represent a subscription.
 
-    Should not be deletable. Subscriptions should be
-    recorded as cancelled when they end.
+    Should not be deletable. Subscriptions should be recorded as cancelled when
+    they end.
     """
 
     class SubscriptionChoices(models.TextChoices):
@@ -258,7 +316,7 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
         on_delete=models.PROTECT,
         related_name="paystack_subscriptions",
     )
-    user = models.ForeignKey(
+    participant = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="paystack_subscriptions",
@@ -298,14 +356,13 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
 
     def __str__(self) -> str:
         return (
-            f"user: {self.user.full_name}, plan interval: {self.plan.interval},"
-            f" plan amount: {self.plan.amount}"
+            f"participant: {self.participant.full_name}, plan interval:"
+            f" {self.plan.interval}, plan amount: {self.plan.amount}"
         )
 
 
 class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
-    """Stores data returned by Paystack after a verified
-    card transaction."""
+    """Stores data returned by Paystack after a verified card transaction."""
 
     class TransactionChoices(models.TextChoices):
         PARTICIPANT_PAYMENT = "participant-payment", "Participant payment"
@@ -373,8 +430,7 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
 
 
 class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
-    """Stores data returned by Paystack after a verified
-    transfer."""
+    """Stores data returned by Paystack after a verified transfer."""
 
     class TransferChoices(models.TextChoices):
         CREDITOR_SETTLEMENT = "creditor-settlement", "Creditor settlement"

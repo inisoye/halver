@@ -130,5 +130,3 @@ def record_card_addition_transfer_object(request_data, transfer_outcome):
     new_transfer, created = PaystackTransfer.objects.get_or_create(
         **paystack_transfer_object
     )
-
-    logger.info(new_transfer)

@@ -22,7 +22,7 @@ dj-rest-auth = { extras = ["with-social"], version = "^2.2.7" }
 django-ipware = "^4.0.2"
 flower = "^1.2.0"
 django-import-export = "^3.0.2"
-django-phonenumber-field = {extras = ["phonenumberslite"], version = "^7.0.2"}
+django-phonenumber-field = { extras = ["phonenumberslite"], version = "^7.0.2" }
 
 [tool.poetry.group.dev.dependencies]
 django-stubs = { extras = ["compatible-mypy"], version = "^1.13.1" }
@@ -38,6 +38,7 @@ show-m = "poetry run python manage.py showmigrations"
 m = "poetry run python manage.py migrate"
 create-su = "poetry run python manage.py createsuperuser"
 collectstatic = "poetry run python manage.py collectstatic"
+redis = "redis-server"
 celery = "poetry run celery -A core worker -l info"
 flower = "poetry run celery -A core flower"
 celery-purge = "poetry run celery -A core purge"

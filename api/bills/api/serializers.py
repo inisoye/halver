@@ -3,10 +3,10 @@ from rest_framework.fields import CurrentUserDefault
 
 from bills.models import Bill, BillUnregisteredParticipant
 from bills.utils.validation import (
-    validate_bill_serializer_dates,
+    validate_contributions_and_total_amount_due,
+    validate_create_bill_serializer_dates,
     validate_participants_and_unregistered_participants,
     validate_participants_contribution_index,
-    validate_total_amount_due,
 )
 
 
@@ -38,41 +38,41 @@ class BillCreateSerializer(serializers.ModelSerializer):
         write_only=True,
         required=True,
     )
-    unregistered_participants = BillUnregisteredParticipantSerializer(
-        many=True, required=False
-    )
     participants_contribution_index = serializers.DictField(
         required=False,
     )
+    unregistered_participants = BillUnregisteredParticipantSerializer(
+        many=True, required=False
+    )
 
     def validate(self, data):
-        validate_bill_serializer_dates(data)
+        validate_create_bill_serializer_dates(data)
         validate_participants_contribution_index(data)
-        validate_total_amount_due(data)
+        validate_contributions_and_total_amount_due(data)
         validate_participants_and_unregistered_participants(self, data)
         return data
 
     class Meta:
         model = Bill
         fields = (
+            "created",
             "creator",
             "creditor_id",
-            "unregistered_participants",
-            "name",
-            "first_charge_date",
-            "next_charge_date",
-            "deadline",
-            "evidence",
-            "interval",
-            "notes",
-            "total_amount_due",
+            "currency_code",
             "currency_name",
             "currency_symbol",
-            "currency_code",
-            "created",
+            "deadline",
+            "evidence",
+            "first_charge_date",
+            "interval",
             "modified",
-            "uuid",
+            "name",
+            "next_charge_date",
+            "notes",
             "participants_contribution_index",
+            "total_amount_due",
+            "unregistered_participants",
+            "uuid",
         )
         read_only_fields = (
             "created",
@@ -83,10 +83,12 @@ class BillCreateSerializer(serializers.ModelSerializer):
 
 class BillListSerializer(serializers.ModelSerializer):
     interval = serializers.SerializerMethodField()
+    is_creator = serializers.SerializerMethodField()
+    is_creditor = serializers.SerializerMethodField()
     is_recurring = serializers.BooleanField()
-    total_participants = serializers.IntegerField(source="get_total_participants")
-    short_status = serializers.CharField(source="get_short_bill_status")
     long_status = serializers.CharField(source="get_long_bill_status")
+    short_status = serializers.CharField(source="get_short_bill_status")
+    total_participants = serializers.IntegerField(source="get_total_participants")
 
     def get_interval(self, obj) -> str:
         """Returns the human-readable version of the interval field.
@@ -102,27 +104,38 @@ class BillListSerializer(serializers.ModelSerializer):
 
         return obj.get_interval_display()
 
+    def get_is_creditor(self, obj) -> bool:
+        return obj.creditor == self.context["request"].user
+
+    def get_is_creator(self, obj) -> bool:
+        return obj.creator == self.context["request"].user
+
     class Meta:
         model = Bill
         fields = (
-            "participants",
-            "unregistered_participants",
-            "name",
+            "created",
             "interval",
-            "total_participants",
-            "short_status",
-            "long_status",
+            "is_creator",
+            "is_creditor",
             "is_recurring",
+            "long_status",
+            "modified",
+            "name",
+            "short_status",
+            "total_participants",
+            "uuid",
         )
         read_only = fields
 
 
 class BillDetailSerializer(serializers.ModelSerializer):
     interval = serializers.SerializerMethodField()
+    is_creator = serializers.SerializerMethodField()
+    is_creditor = serializers.SerializerMethodField()
     is_recurring = serializers.BooleanField()
-    total_participants = serializers.IntegerField(source="get_total_participants")
-    short_status = serializers.CharField(source="get_short_bill_status")
     long_status = serializers.CharField(source="get_long_bill_status")
+    short_status = serializers.CharField(source="get_short_bill_status")
+    total_participants = serializers.IntegerField(source="get_total_participants")
 
     def get_interval(self, obj) -> str:
         """Returns the human-readable version of the interval field.
@@ -138,17 +151,29 @@ class BillDetailSerializer(serializers.ModelSerializer):
 
         return obj.get_interval_display()
 
+    def get_is_creditor(self, obj) -> bool:
+        return obj.creditor == self.context["request"].user
+
+    def get_is_creator(self, obj) -> bool:
+        return obj.creator == self.context["request"].user
+
     class Meta:
         model = Bill
         fields = (
+            "actions",
+            "created",
             "creator",
             "creditor",
             "deadline",
             "evidence",
             "first_charge_date",
             "interval",
+            "is_creator",
+            "is_creditor",
             "is_discreet",
+            "is_recurring",
             "long_status",
+            "modified",
             "name",
             "next_charge_date",
             "notes",
@@ -157,15 +182,12 @@ class BillDetailSerializer(serializers.ModelSerializer):
             "total_amount_due",
             "total_amount_paid",
             "total_participants",
-            "unregistered_participants",
-            "created",
-            "modified",
-            "uuid",
-            "is_recurring",
-            "actions",
             "transactions",
+            "unregistered_participants",
+            "uuid",
         )
         read_only = fields
+        depth = 1
 
 
 class BillDetailsUpdateSerializer(serializers.ModelSerializer):

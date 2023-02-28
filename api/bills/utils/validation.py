@@ -8,16 +8,17 @@ from core.utils.dates_and_time import (
     validate_date_is_at_least_one_week_into_future,
     validate_date_not_in_past,
 )
-from core.utils.dictionaries import sum_numeric_dictionary_values
-from core.utils.lists import sum_list_of_dictionary_values
 from core.utils.users import get_user_by_id_drf
 
 
-def validate_bill_serializer_dates(serializer_data):
+def validate_create_bill_serializer_dates(serializer_data):
     """Ensure the dates provided in the serializer are not in the past. If the
     bill is not recurring (interval == "none"), only the deadline date is
     validated. Otherwise, both the first_charge_date and next_charge_date are
     validated.
+
+    Next charge date is left out of validation as it is made equal to first charge date
+    on bill creation.
 
     Args:
         serializer_data: A dictionary containing the serializer's data.
@@ -30,13 +31,10 @@ def validate_bill_serializer_dates(serializer_data):
             serializer_data.get("first_charge_date"),
             "First Charge Date",
         )
-        validate_date_not_in_past(
-            serializer_data.get("next_charge_date"),
-            "Next Charge Date",
-        )
         validate_date_is_at_least_one_week_into_future(
             serializer_data.get("first_charge_date"),
             "First Charge Date",
+            use_day_start=True,
         )
 
 
@@ -68,10 +66,62 @@ def validate_participants_contribution_index(serializer_data):
                 raise serializers.ValidationError(f"Invalid amount value: {val}")
 
 
-def validate_total_amount_due(serializer_data):
+def validate_contribution_amounts(
+    participants_contribution_index, unregistered_participants
+):
+    """Validates the list of contributions to be made by participants and unregistered
+    participants on a bill.
+
+    Args:
+        participants_contribution_index (dict): A dictionary mapping bill participant
+            UUIDs (as string values) to their contributions (string, integer, or float
+            values sent by the client).
+        unregistered_participants (list): A list of objects containing data about
+            unregistered participants.
+
+    Raises:
+        serializers.ValidationError: If any contribution value is less than the minimum
+        amount.
+
+    Returns:
+        tuple: A tuple of two lists that contains the contributions of participants and
+        unregistered participants.
+    """
+
+    # Currently set in NGN. Determined by Paystack's rules.
+    MINIMUM_CONTRIBUTION = 100
+
+    participants_contributions = []
+    if participants_contribution_index:
+        for value in participants_contribution_index.values():
+            contribution = float(value)
+            if contribution < MINIMUM_CONTRIBUTION:
+                raise serializers.ValidationError(
+                    "A participant's contribution cannot be less than"
+                    f" {MINIMUM_CONTRIBUTION} Naira (NGN)"
+                )
+            participants_contributions.append(contribution)
+
+    unregistered_participants_contributions = []
+    for participant in unregistered_participants:
+        contribution = float(participant["contribution"])
+        if contribution < MINIMUM_CONTRIBUTION:
+            raise serializers.ValidationError(
+                "An unregistered participant's contribution cannot be less than"
+                f" {MINIMUM_CONTRIBUTION} Naira (NGN)"
+            )
+        unregistered_participants_contributions.append(contribution)
+
+    return participants_contributions, unregistered_participants_contributions
+
+
+def validate_contributions_and_total_amount_due(serializer_data):
     """
     Validates whether the total contributions made by participants and unregistered
     participants add up to the total amount due.
+
+    Also perfoms validations on minimum amounts. Contributions and the total amount due
+    must be greater than stipulated constants.
 
     Args:
         serializer_data: A dictionary containing the serializer's data.
@@ -79,7 +129,8 @@ def validate_total_amount_due(serializer_data):
 
     Raises:
         serializers.ValidationError: If the sum of participant contributions and
-        unregistered participantcontributions does not equal the total amount due.
+        unregistered participant contributions does not equal the total amount due.
+        Also raised if amounts are below specified thresholds.
     """
 
     participants_contribution_index = serializer_data.get(
@@ -88,16 +139,17 @@ def validate_total_amount_due(serializer_data):
     unregistered_participants = serializer_data.get("unregistered_participants")
     total_amount_due = serializer_data.get("total_amount_due")
 
-    total_participants_contributions = (
-        sum_numeric_dictionary_values(participants_contribution_index)
-        if participants_contribution_index
-        else 0
+    (
+        participants_contributions,
+        unregistered_participants_contributions,
+    ) = validate_contribution_amounts(
+        participants_contribution_index, unregistered_participants
     )
 
-    total_unregistered_participants_contributions = (
-        sum_list_of_dictionary_values(unregistered_participants, "contribution")
-        if unregistered_participants
-        else 0
+    total_participants_contributions = sum(participants_contributions)
+
+    total_unregistered_participants_contributions = sum(
+        unregistered_participants_contributions
     )
 
     total_contributions = (
@@ -105,14 +157,24 @@ def validate_total_amount_due(serializer_data):
     )
 
     if total_contributions != total_amount_due:
-        raise serializers.ValidationError("Contributions do not add up to total amount")
+        raise serializers.ValidationError(
+            "Contributions do not add up to the total amount due"
+        )
+
+    # Currently set in NGN
+    MINIMUM_BILL_AMOUNT = 500
+
+    if total_contributions < MINIMUM_BILL_AMOUNT:
+        raise serializers.ValidationError(
+            f"Total contributions must be at least {MINIMUM_BILL_AMOUNT} Naira (NGN)"
+        )
 
 
 def validate_participants_and_unregistered_participants(
     serializer_instance, serializer_data
 ):
     """Ensure that the bill has at least one participant or unregistered
-    participant, and that the details of the creator (id/uuid, email, phone
+    participant, and that the details of the creditor (id/uuid, email, phone
     number) are not in either of these lists.
 
     Args:
@@ -149,12 +211,20 @@ def validate_participants_and_unregistered_participants(
 
     if creditor_id in participants_ids:
         raise serializers.ValidationError(
-            "A bill's creditor should not be listed as a participant"
+            "A bill's creditor should not be listed as a participant."
         )
 
     creditor = get_user_by_id_drf(creditor_id)
+
     # Creator obtained with this approach as it is a read only field.
     creator = serializer_instance.context["request"].user
+
+    is_creator_the_creditor = creditor.uuid == creator.uuid
+
+    if (not is_creator_the_creditor) and (creator.uuid not in participants_ids):
+        raise serializers.ValidationError(
+            "Creators who are not creditors must be listed as participants."
+        )
 
     for participant in unregistered_participants:
         if (participant.get("email") in [creditor.email, creator.email]) or (
