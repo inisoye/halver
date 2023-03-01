@@ -35,7 +35,6 @@ def create_paystack_plans_for_recurring_bills(new_bill_id):
 
     paystack_plan_payloads = format_paystack_plan_payloads(bill_actions)
 
-    # TODO Decide on what to do if any of these fail.
     paystack_plan_responses = asyncio.run(
         PlanRequests.create_multiple(paystack_plan_payloads)
     )

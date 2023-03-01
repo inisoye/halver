@@ -20,8 +20,6 @@ def create_bill(bill_model, validated_data, creator):
         bill (Model): The created bill instance.
     """
 
-    from bills.models import BillUnregisteredParticipant
-
     # Modified fields represent values from serializer that are not immediately
     # stored but would be modified before they are actually used.
     modified_fields = (
@@ -48,6 +46,7 @@ def create_bill(bill_model, validated_data, creator):
         **validated_data_without_modified_fields,
     )
 
+    # Add (registered) participants to the bill
     participants_contribution_index = validated_data.get(
         "participants_contribution_index"
     )
@@ -56,25 +55,95 @@ def create_bill(bill_model, validated_data, creator):
         if participants_contribution_index
         else []
     )
-
     if participants:
         new_bill.participants.set(participants)
 
     unregistered_participants_data = validated_data.get("unregistered_participants")
 
-    if unregistered_participants_data:
-        unregistered_participants = [
-            BillUnregisteredParticipant(**unregistered_participant, bill=new_bill)
-            for unregistered_participant in unregistered_participants_data
-        ]
-        BillUnregisteredParticipant.objects.bulk_create(unregistered_participants)
+    unregistered_participants_contribution_index = (
+        create_unregistered_participants_for_bill(
+            new_bill, unregistered_participants_data
+        )
+    )
 
     create_actions_for_bill(new_bill)
     add_participant_contributions_and_fees_to_bill_actions(
-        new_bill, participants_contribution_index
+        new_bill,
+        participants_contribution_index,
+        unregistered_participants_contribution_index,
     )
 
     return new_bill
+
+
+@transaction.atomic
+def create_unregistered_participants_for_bill(bill, unregistered_participants_data):
+    """Adds unregistered participants to the bill, creating new instances if
+    necessary.
+
+    Args:
+        bill (Bill): The bill to which the unregistered participants should be added.
+        unregistered_participants_data (list[dict]): A list of dictionaries containing
+            unregistered participant data in the following format:
+            {
+                "name": str,
+                "phone": str,
+                "contribution": Decimal,
+            }
+
+    Returns:
+        dict: A dictionary with unregistered participants' phone numbers as keys and
+            their contributions as values.
+    """
+
+    from bills.models import BillUnregisteredParticipant
+
+    if unregistered_participants_data:
+        # Create a map that, mainly to update actions later on
+        unregistered_participants_contribution_index = {
+            unregistered_participant["phone"]: unregistered_participant["contribution"]
+            for unregistered_participant in unregistered_participants_data
+        }
+
+        # Extract all phone numbers from unregistered_participants_data
+        phone_numbers = unregistered_participants_contribution_index.keys()
+
+        # Find any existing participants with the same phone numbers
+        existing_unregistered_participants = BillUnregisteredParticipant.objects.filter(
+            phone__in=phone_numbers
+        )
+        # Add existing unregistered participants to the bill
+        bill.unregistered_participants.add(*existing_unregistered_participants)
+
+        existing_phone_numbers = set(
+            existing_unregistered_participants.values_list("phone", flat=True)
+        )
+
+        # Next, generate a list of new_unregistered_participants_data filtered out of
+        # the original unregistered_participants_data
+        new_unregistered_participants_data = [
+            unregistered_participant
+            for unregistered_participant in unregistered_participants_data
+            if unregistered_participant["phone"] not in existing_phone_numbers
+        ]
+
+        # Create new unregistered participants objects
+        new_unregistered_participants_objects = [
+            BillUnregisteredParticipant(
+                name=new_unregistered_participant["name"],
+                phone=new_unregistered_participant["phone"],
+            )
+            for new_unregistered_participant in new_unregistered_participants_data
+        ]
+        # Add them to the db with one query.
+        new_unregistered_participants = BillUnregisteredParticipant.objects.bulk_create(
+            new_unregistered_participants_objects
+        )
+        bill.unregistered_participants.add(*new_unregistered_participants)
+
+        return unregistered_participants_contribution_index
+
+    return {}
 
 
 @transaction.atomic
@@ -155,7 +224,7 @@ def format_participants_contribution_index(
 
 @transaction.atomic
 def add_participant_contributions_and_fees_to_bill_actions(
-    bill, participants_contribution_index
+    bill, participants_contribution_index, unregistered_participants_contribution_index
 ):
     """Update the contributions of the participants/unregistered participants
     and their associated actions based on the given contribution index.
@@ -195,7 +264,9 @@ def add_participant_contributions_and_fees_to_bill_actions(
                 action.participant.uuid
             ]
         else:
-            contribution = action.unregistered_participant.contribution
+            contribution = unregistered_participants_contribution_index[
+                action.unregistered_participant.phone
+            ]
 
         all_transaction_fees = calculate_all_transaction_fees(contribution)
 

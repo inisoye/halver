@@ -45,6 +45,10 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         settings.AUTH_USER_MODEL,
         related_name="bills",
     )
+    unregistered_participants = models.ManyToManyField(
+        "BillUnregisteredParticipant",
+        related_name="bills",
+    )
     name = models.CharField(
         max_length=100,
     )
@@ -218,31 +222,12 @@ class BillUnregisteredParticipant(AbstractTimeStampedUUIDModel, models.Model):
     name = models.CharField(
         max_length=100,
     )
-    bill = models.ForeignKey(
-        Bill,
-        on_delete=models.CASCADE,
-        related_name="unregistered_participants",
+    phone = PhoneNumberField(
+        unique=True,
+        error_messages={
+            "unique": "A user with that phone number already exists.",
+        },
     )
-    phone = PhoneNumberField()
-    email = models.EmailField(
-        null=True,
-        blank=True,
-    )
-    contribution = models.DecimalField(
-        help_text="Bill contribution of unregistered participant",
-        max_digits=19,
-        decimal_places=4,
-    )
-
-    def _validate_contribution(self) -> None:
-        if not self.contribution or self.contribution <= 0:
-            raise ValidationError(
-                f"{self.name} must have a positive, nonzero contribution."
-            )
-
-    def clean(self):
-        super().clean()
-        self._validate_contribution()
 
     class Meta:
         verbose_name = "Bill unregistered participant"
@@ -335,6 +320,14 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
             f"participant: {self.participant or self.unregistered_participant},"
             f" contribution: {self.contribution}, bill: ({self.bill.name})"
         )
+
+    def clean(self):
+        super().clean()
+        self._validate_contribution()
+
+    def _validate_contribution(self) -> None:
+        if not self.contribution or self.contribution <= 0:
+            raise ValidationError("Actions must have a positive, nonzero contribution.")
 
 
 class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):

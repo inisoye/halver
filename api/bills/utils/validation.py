@@ -174,7 +174,7 @@ def validate_participants_and_unregistered_participants(
     serializer_instance, serializer_data
 ):
     """Ensure that the bill has at least one participant or unregistered
-    participant, and that the details of the creditor (id/uuid, email, phone
+    participant, and that the details of the creditor (id/uuid, phone
     number) are not in either of these lists.
 
     Args:
@@ -227,9 +227,7 @@ def validate_participants_and_unregistered_participants(
         )
 
     for participant in unregistered_participants:
-        if (participant.get("email") in [creditor.email, creator.email]) or (
-            participant.get("phone") in [creditor.phone, creator.phone]
-        ):
+        if participant.get("phone") in [creditor.phone, creator.phone]:
             raise serializers.ValidationError(
                 "Neither the creator nor creditor should be listed as a bill's ",
                 "unregistered participant.",

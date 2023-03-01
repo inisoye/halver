@@ -1,3 +1,4 @@
+from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
 
@@ -11,12 +12,16 @@ from bills.utils.validation import (
 
 
 class BillUnregisteredParticipantSerializer(serializers.ModelSerializer):
+    contribution = serializers.DecimalField(
+        max_digits=19, decimal_places=4, coerce_to_string=False, allow_null=False
+    )
+    phone = PhoneNumberField(required=True)
+
     class Meta:
         model = BillUnregisteredParticipant
         fields = (
             "name",
             "phone",
-            "email",
             "contribution",
             "created",
             "modified",
