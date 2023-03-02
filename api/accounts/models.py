@@ -8,6 +8,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager, PermissionsMixin
 from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.contrib.postgres.fields import CICharField, CIEmailField
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
@@ -146,6 +147,20 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
         return f"{self.first_name} {self.last_name}"
 
+    @property
+    def default_transfer_recipient(self):
+        try:
+            return self.transfer_recipients.get(is_default=True)
+        except ObjectDoesNotExist:
+            return None
+
+    @property
+    def default_card(self):
+        try:
+            return self.cards.get(is_default=True)
+        except ObjectDoesNotExist:
+            return None
+
     def get_short_name(self) -> str:
         """Return the short name for the user."""
 
@@ -157,8 +172,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def get_recipient_codes(self) -> list:
-        """Obtain all the (Paystack) recipient codes for
-        this user.
+        """Obtain all the (Paystack) recipient codes for this user.
 
         Returns:
             list: A list of this user's recipient codes.

@@ -114,9 +114,7 @@ def create_card_addition_paystack_transaction_object(
         "complete_paystack_response": request_data,
     }
 
-    new_transaction, created = PaystackTransaction.objects.get_or_create(
-        **paystack_transaction_object
-    )
+    new_transaction = PaystackTransaction.objects.create(**paystack_transaction_object)
 
     return new_transaction
 

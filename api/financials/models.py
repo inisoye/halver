@@ -365,8 +365,8 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
     """Stores data returned by Paystack after a verified card transaction."""
 
     class TransactionChoices(models.TextChoices):
-        PARTICIPANT_PAYMENT = "participant-payment", "Participant payment"
-        CARD_ADDITION = "card-addition", "Card addition"
+        PARTICIPANT_PAYMENT = "participant_payment", "Participant payment"
+        CARD_ADDITION = "card_addition", "Card addition"
 
     class TransactionOutcomeChoices(models.TextChoices):
         SUCCESSFUL = "successful", "Successful"
@@ -433,8 +433,8 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
     """Stores data returned by Paystack after a verified transfer."""
 
     class TransferChoices(models.TextChoices):
-        CREDITOR_SETTLEMENT = "creditor-settlement", "Creditor settlement"
-        CARD_ADDITION_REFUND = "card-addition-refund", "Card addition refund"
+        CREDITOR_SETTLEMENT = "creditor_settlement", "Creditor settlement"
+        CARD_ADDITION_REFUND = "card_addition_refund", "Card addition refund"
 
     class TransferOutcomeChoices(models.TextChoices):
         SUCCESSFUL = "successful", "Successful"

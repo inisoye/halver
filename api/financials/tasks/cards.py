@@ -40,6 +40,9 @@ def process_card_creation_and_refund(request_data):
         user,
     )
 
+    # New cards should be made default.
+    new_card.set_as_default_card()
+
     new_card_addition_transaction = create_card_addition_paystack_transaction_object(
         data,
         metadata,

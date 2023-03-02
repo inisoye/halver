@@ -46,24 +46,6 @@ class TransactionRequests(PaystackBase):
         )
 
     @classmethod
-    def charge_token(cls, **kwargs):
-        """Charge token.
-
-        Args:
-            reference: unique transaction reference
-            token: paystack token
-            email: Email Address
-            amount: Amount in Kobo
-
-        Returns:
-            JSON data from Paystack API.
-        """
-        return cls().requests.post(
-            "transaction/charge_token",
-            data=kwargs,
-        )
-
-    @classmethod
     def fetch(cls, transaction_id):
         """Get a single transaction.
 

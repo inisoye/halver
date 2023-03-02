@@ -344,7 +344,7 @@ def generate_long_status_index(all_actions_are_one_type, most_common_status_coun
         BillAction.StatusChoices.ONGOING: (
             f"{bill_status_message_prefix} subscription{plural_suffix} ongoing"
         ),
-        BillAction.StatusChoices.DECLINED: (
+        BillAction.StatusChoices.OPTED_OUT: (
             f"{bill_status_message_prefix} participant{plural_suffix} opted out"
         ),
         BillAction.StatusChoices.PENDING: (

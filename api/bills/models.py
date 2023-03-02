@@ -248,8 +248,8 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
         UNREGISTERED = "unregistered", "Unregistered"
         PENDING = "pending", "Pending"
         OVERDUE = "overdue", "Overdue"
-        DECLINED = "declined", "Declined"
-        PENDING_TRANSFER = "pending_transfer", "Pending Transfer"
+        OPTED_OUT = "opted_out", "Opted out"
+        PENDING_TRANSFER = "pending_transfer", "Pending transfer"
         CANCELLED = "cancelled", "Cancelled"
         # For one-time bills.
         COMPLETED = "completed", "Completed"

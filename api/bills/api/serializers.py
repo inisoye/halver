@@ -2,7 +2,7 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
 
-from bills.models import Bill, BillUnregisteredParticipant
+from bills.models import Bill, BillAction, BillUnregisteredParticipant
 from bills.utils.validation import (
     validate_contributions_and_total_amount_due,
     validate_create_bill_serializer_dates,
@@ -206,3 +206,11 @@ class BillDetailsUpdateSerializer(serializers.ModelSerializer):
             "is_discreet": {"required": False},
             "deadline": {"required": False},
         }
+
+
+class ActionResponseUpdateSerializer(serializers.ModelSerializer):
+    participant_has_agreed = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = BillAction
+        fields = ("status", "participant_has_agreed")
