@@ -1,6 +1,7 @@
 from celery.utils.log import get_task_logger
 from django.db import transaction
 
+from core.utils.currency import convert_to_kobo_integer
 from financials.models import PaystackPlan, PaystackPlanFailures
 
 logger = get_task_logger(__name__)
@@ -32,7 +33,7 @@ def format_paystack_plan_payloads(bill_actions):
             )
         )
         name = f"Plan for {user_uuid} on the bill with id: {action.bill.uuid}."
-        amount = int(float(action.total_payment_due)) * 100  # Convert to Kobo.
+        amount_in_kobo = convert_to_kobo_integer(action.total_payment_due)
         interval = action.bill.interval
         description = (
             "Paystack plan for "
@@ -44,7 +45,7 @@ def format_paystack_plan_payloads(bill_actions):
         paystack_plan_payloads.append(
             {
                 "name": name,
-                "amount": amount,
+                "amount": amount_in_kobo,
                 "interval": interval,
                 "description": description,
                 "currency": currency,
