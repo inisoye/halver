@@ -329,6 +329,16 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
         if not self.contribution or self.contribution <= 0:
             raise ValidationError("Actions must have a positive, nonzero contribution.")
 
+    def opt_out_of_bill(self):
+        """Marks the current BillAction instance as opted-out and saves the
+        updated status to the database.
+
+        Used to signify that a participant refused to participate in a bill.
+        """
+
+        self.status = BillAction.StatusChoices.OPTED_OUT
+        self.save(update_fields=["status"])
+
 
 class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
     """Stores a transaction particular completed by a user.

@@ -209,8 +209,8 @@ class BillDetailsUpdateSerializer(serializers.ModelSerializer):
 
 
 class ActionResponseUpdateSerializer(serializers.ModelSerializer):
-    participant_has_agreed = serializers.BooleanField(read_only=True)
+    has_participant_agreed = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = BillAction
-        fields = ("status", "participant_has_agreed")
+        fields = ("status", "has_participant_agreed")

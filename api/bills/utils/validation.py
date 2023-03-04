@@ -58,7 +58,7 @@ def validate_participants_contribution_index(serializer_data):
             try:
                 UUID(key)
             except ValueError:
-                raise serializers.ValidationError(f"Invalid User ID: {key}")
+                raise serializers.ValidationError(f"Invalid User UUID: {key}")
 
             try:
                 Decimal(str(val))
@@ -158,7 +158,7 @@ def validate_contributions_and_total_amount_due(serializer_data):
 
     if total_contributions != total_amount_due:
         raise serializers.ValidationError(
-            "Contributions do not add up to the total amount due"
+            "Contributions do not add up to the total amount due."
         )
 
     # Currently set in NGN

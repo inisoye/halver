@@ -5,7 +5,12 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from bills.api.permissions import IsCreator, IsCreditor, IsParticipant
+from bills.api.permissions import (
+    IsCreditorOrCreator,
+    IsParticipantOrCreditor,
+    IsRegisteredParticipant,
+    ParticipantHasDefaultCard,
+)
 from bills.api.serializers import (
     ActionResponseUpdateSerializer,
     BillCreateSerializer,
@@ -14,6 +19,7 @@ from bills.api.serializers import (
     BillListSerializer,
 )
 from bills.models import Bill, BillAction
+from bills.utils.actions import handle_bill_contribution
 from core.utils.responses import format_exception
 from financials.tasks.plans import create_paystack_plans_for_recurring_bills
 
@@ -24,7 +30,7 @@ class BillListCreateView(APIView):
     Accepts GET and POST requests.
     """
 
-    permission_classes = (IsParticipant,)
+    permission_classes = (IsParticipantOrCreditor,)
     serializer_class = BillCreateSerializer
     list_serializer_class = BillListSerializer
 
@@ -89,6 +95,7 @@ class BillDetailUpdateView(APIView):
     Accepts GET and PATCH requests.
     """
 
+    permission_classes = IsCreditorOrCreator
     serializer_class = BillDetailSerializer
     update_serializer_class = BillDetailsUpdateSerializer
 
@@ -97,8 +104,11 @@ class BillDetailUpdateView(APIView):
         Returns the permission classes to be used for the request.
         """
         if self.request.method == "GET":
-            return (IsParticipant(),)
-        return (IsCreator(), IsCreditor())
+            permissions = [IsParticipantOrCreditor()]
+        else:
+            permissions = [IsCreditorOrCreator()]
+
+        return permissions
 
     def get(self, request, uuid):
         """Returns the bill details for a given Bill UUID.
@@ -120,6 +130,9 @@ class BillDetailUpdateView(APIView):
 
         bill = get_object_or_404(Bill, uuid=uuid)
 
+        # Check object-level permissions
+        self.check_object_permissions(request, bill)
+
         serializer = self.serializer_class(bill, context={"request": request})
 
         are_discreet_fields_hidden = (
@@ -130,10 +143,10 @@ class BillDetailUpdateView(APIView):
 
         # TODO ensure all discreet fields are added to this list.
         if are_discreet_fields_hidden:
-            discreet_fields = ("actions", "transactions")
+            DISCREET_FIELDS = ("actions", "transactions")
             serializer_data_without_discreet_fields = serializer.data.copy()
 
-            for field in discreet_fields:
+            for field in DISCREET_FIELDS:
                 serializer_data_without_discreet_fields.pop(field, None)
 
             return Response(
@@ -163,6 +176,9 @@ class BillDetailUpdateView(APIView):
 
         bill = get_object_or_404(Bill, uuid=uuid)
 
+        # Check object-level permissions
+        self.check_object_permissions(request, bill)
+
         serializer = self.update_serializer_class(bill, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
@@ -180,6 +196,7 @@ class BillDetailUpdateView(APIView):
 class ActionResponseUpdateView(APIView):
     """ """
 
+    permission_classes = (IsRegisteredParticipant, ParticipantHasDefaultCard)
     serializer_class = ActionResponseUpdateSerializer
 
     def patch(self, request, uuid):
@@ -187,49 +204,25 @@ class ActionResponseUpdateView(APIView):
 
         action = get_object_or_404(BillAction, uuid=uuid)
 
+        # Check object-level permissions
+        self.check_object_permissions(request, action)
+
         serializer = self.serializer_class(action, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
-        participant = action.participant
+        has_participant_agreed = request.data.get("has_participant_agreed")
 
-        if not participant:
-            return format_exception(
-                message="Only registered participants can respond to bills.",
-                status=status.HTTP_403_FORBIDDEN,
-            )
-
-        participant_card = participant.default_card
-
-        if not participant_card:
-            return format_exception(
-                message=(
-                    "A participant must have a default card before they can contribute"
-                    " to a bill."
-                ),
-                status=status.HTTP_403_FORBIDDEN,
-            )
-
-        participant_has_agreed = request.data.get("participant_has_agreed")
-
-        if not participant_has_agreed:
-            action.status = BillAction.StatusChoices.OPTED_OUT
-            action.save(update_fields=["status"])
+        if not has_participant_agreed:
+            action.opt_out_of_bill()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-        bill = action.bill
+        response = handle_bill_contribution(action)
 
-        amount = action.total_payment_due
-        amount_in_kobo = amount * 100
+        if response["status"]:
+            return Response(response, status=status.HTTP_200_OK)
 
-        is_bill_recurring = bill.is_recurring
-
-        if not is_bill_recurring:
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
-        creditor = bill.creditor
-        creditor_transfer_recipient = creditor.default_transfer_recipient
-
-        print(creditor_transfer_recipient)
-        print(amount_in_kobo)
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return format_exception(
+                message=response["message"],
+                status=status.HTTP_400_BAD_REQUEST,
+            )

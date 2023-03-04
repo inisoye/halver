@@ -133,7 +133,14 @@ class UserCardAdditionTransactionAPIView(APIView):
 
         response = TransactionRequests.initialize(**paystack_payload)
 
-        return Response(response, status=status.HTTP_200_OK)
+        if response["status"]:
+            return Response(response, status=status.HTTP_200_OK)
+
+        else:
+            return format_exception(
+                message=response["message"],
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class UserCardListView(ListAPIView):

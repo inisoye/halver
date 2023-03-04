@@ -29,17 +29,43 @@ def generate_add_card_paystack_payload(charge_amount, user):
     refundable_amount = calculate_all_transaction_fees(AMOUNT)["card_addition_refund"]
 
     email = user.email
+    uuid_string = user.uuid.__str__()
+    refundable_amount_string = str(refundable_amount)
+
     metadata = {
         "full_name": user.full_name,
-        "user_id": user.uuid.__str__(),
+        "user_id": uuid_string,
         "is_card_addition": True,
-        "refundable_amount": str(refundable_amount),
+        "refundable_amount": refundable_amount_string,
+        "custom_fields": [
+            {
+                "display_name": "User's Full Name",
+                "variable_name": "full_name",
+                "value": user.full_name,
+            },
+            {
+                "display_name": "User ID",
+                "variable_name": "user_id",
+                "value": uuid_string,
+            },
+            {
+                "display_name": "Transaction Type",
+                "variable_name": "transaction_type",
+                "value": "Card addition",
+            },
+            {
+                "display_name": "Refundable Amount",
+                "variable_name": "refundable_amount",
+                "value": refundable_amount_string,
+            },
+        ],
     }
 
     return {
         "email": email,
         "amount": AMOUNT_IN_KOBO,
         "metadata": metadata,
+        "channels": ["card"],
     }
 
 

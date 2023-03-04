@@ -2,8 +2,7 @@ from decimal import Decimal, InvalidOperation, getcontext
 
 
 def round_decimal(value: Decimal):
-    """
-    Rounds a Decimal object to 4 decimal places.
+    """Rounds a Decimal object to 4 decimal places.
 
     Args:
         value (Decimal): Decimal object to be rounded.
@@ -13,7 +12,6 @@ def round_decimal(value: Decimal):
 
     Raises:
         InvalidOperation: If there is an error in the operation.
-
     """
 
     # Set precision for Decimal object to 19

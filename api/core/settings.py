@@ -32,7 +32,7 @@ DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS: list[str] = [
     "127.0.0.1",
-    "0753-41-58-217-77.eu.ngrok.io",
+    "b455-41-58-201-192.eu.ngrok.io",
 ]
 
 
@@ -211,6 +211,11 @@ REST_FRAMEWORK = {
         "core.parsers.CamelCaseFormParser",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    # Prevent the conversion of these as they have uuid keys nested.
+    "JSON_UNDERSCOREIZE": {
+        "ignore_fields": ("participants_contribution_index",),
+        "ignore_keys": ("participants_contribution_index",),
+    },
 }
 
 
@@ -220,7 +225,7 @@ CORS_ORIGIN_WHITELIST = (
     "http://localhost:3000",
     "http://localhost:5173",
     "http://localhost:8000",
-    "https://0753-41-58-217-77.eu.ngrok.io",
+    "https://b455-41-58-201-192.eu.ngrok.io",
 )
 
 
@@ -229,7 +234,7 @@ CORS_ORIGIN_WHITELIST = (
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://0753-41-58-217-77.eu.ngrok.io",
+    "https://b455-41-58-201-192.eu.ngrok.io",
 ]
 
 

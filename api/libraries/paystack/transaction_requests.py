@@ -12,7 +12,6 @@ class TransactionRequests(PaystackBase):
             reference: Unique transaction reference
             amount: Transaction amount (in Kobo for Naira payments)
             email: Email address of customer
-            reference: uuidv4 identifier for transaction
             plan: Specified plan for subscriptions (optional)
             channels: Paystack channels to be exposed
             metadata: Stringified JSON object of custom data.
@@ -31,10 +30,11 @@ class TransactionRequests(PaystackBase):
         """Charge a reusable authorization.
 
         Args:
-            reference: Unique transaction reference
             authorization_code: Authorization code for the transaction
             email: Email Address of the user with the authorization code
             amount: Transaction amount (in Kobo for Naira payments)
+            reference: Unique transaction reference
+            metadata: Stringified JSON object of custom data.
 
         Returns:
             JSON data from Paystack API.

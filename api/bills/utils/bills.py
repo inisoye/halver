@@ -36,7 +36,8 @@ def create_bill(bill_model, validated_data, creator):
     creditor_id = validated_data["creditor_id"]
     creditor = get_user_by_id_drf(creditor_id)
 
-    # TODO Add a check to ensure that the creditor has a default transfer recipient
+    # TODO Add a check to ensure that the creditor has a default transfer recipient.
+    # Check here an check in model method as well.
     # TODO Next charge date should be updated for the bill when user's subscribe.
     # TODO Consider moving next charge date to action model instead!
 
