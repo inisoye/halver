@@ -2,7 +2,8 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
 
-from bills.models import Bill, BillAction, BillUnregisteredParticipant
+from accounts.models import CustomUser
+from bills.models import Bill, BillAction, BillTransaction, BillUnregisteredParticipant
 from bills.utils.validation import (
     validate_contributions_and_total_amount_due,
     validate_create_bill_serializer_dates,
@@ -133,6 +134,81 @@ class BillListSerializer(serializers.ModelSerializer):
         read_only = fields
 
 
+# --------------------------------------------------------------
+# Serializers nested inside BillDetailSerializer
+# --------------------------------------------------------------
+
+
+class BillCreatorCreditorParticipantSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField()
+
+    class Meta:
+        model = CustomUser
+        fields = (
+            "date_joined",
+            "first_name",
+            "full_name",
+            "last_name",
+            "profile_image",
+            "username",
+            "uuid",
+        )
+        read_only = fields
+
+
+class BillDetailUnregisteredParticipantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BillUnregisteredParticipant
+        fields = (
+            "created",
+            "modified",
+            "uuid",
+            "name",
+            "phone",
+        )
+        read_only_fields = fields
+
+
+class BillDetailActionSerializer(serializers.ModelSerializer):
+    participant = BillCreatorCreditorParticipantSerializer()
+    unregistered_participant = BillDetailUnregisteredParticipantSerializer()
+
+    class Meta:
+        model = BillAction
+        fields = (
+            "contribution",
+            "created",
+            "modified",
+            "participant",
+            "status",
+            "total_payment_due",
+            "unregistered_participant",
+            "uuid",
+        )
+        read_only = fields
+
+
+class BillDetailTransactionSerializer(serializers.ModelSerializer):
+    action = BillDetailActionSerializer()
+
+    class Meta:
+        model = BillTransaction
+        fields = (
+            "created",
+            "modified",
+            "uuid",
+            "contribution",
+            "total_payment",
+            "action",
+        )
+        read_only = fields
+
+
+# --------------------------------------------------------------
+# Serializers nested inside BillDetailSerializer end.
+# --------------------------------------------------------------
+
+
 class BillDetailSerializer(serializers.ModelSerializer):
     interval = serializers.SerializerMethodField()
     is_creator = serializers.SerializerMethodField()
@@ -147,6 +223,12 @@ class BillDetailSerializer(serializers.ModelSerializer):
     long_status = serializers.CharField(source="get_long_bill_status")
     short_status = serializers.CharField(source="get_short_bill_status")
     total_participants = serializers.IntegerField(source="get_total_participants")
+    creator = BillCreatorCreditorParticipantSerializer()
+    creditor = BillCreatorCreditorParticipantSerializer()
+    participants = BillCreatorCreditorParticipantSerializer(many=True)
+    unregistered_participants = BillDetailUnregisteredParticipantSerializer(many=True)
+    actions = BillDetailActionSerializer(many=True)
+    transactions = BillDetailTransactionSerializer(many=True)
 
     def get_interval(self, obj) -> str:
         """Returns the human-readable version of the interval field.
@@ -198,7 +280,6 @@ class BillDetailSerializer(serializers.ModelSerializer):
             "uuid",
         )
         read_only = fields
-        depth = 1
 
 
 class BillDetailsUpdateSerializer(serializers.ModelSerializer):
