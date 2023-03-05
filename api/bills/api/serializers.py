@@ -10,6 +10,7 @@ from bills.utils.validation import (
     validate_participants_and_unregistered_participants,
     validate_participants_contribution_index,
 )
+from financials.models import UserCard
 
 
 class BillUnregisteredParticipantSerializer(serializers.ModelSerializer):
@@ -21,11 +22,11 @@ class BillUnregisteredParticipantSerializer(serializers.ModelSerializer):
     class Meta:
         model = BillUnregisteredParticipant
         fields = (
-            "name",
-            "phone",
             "contribution",
             "created",
             "modified",
+            "name",
+            "phone",
             "uuid",
         )
         read_only_fields = (
@@ -139,13 +140,31 @@ class BillListSerializer(serializers.ModelSerializer):
 # --------------------------------------------------------------
 
 
+class BillActionDefaultCardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserCard
+        fields = (
+            "account_name",
+            "bank",
+            "card_type",
+            "created",
+            "exp_month",
+            "exp_year",
+            "first_6",
+            "last_4",
+            "uuid",
+        )
+
+
 class BillCreatorCreditorParticipantSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField()
+    default_card = BillActionDefaultCardSerializer()
 
     class Meta:
         model = CustomUser
         fields = (
             "date_joined",
+            "default_card",
             "first_name",
             "full_name",
             "last_name",
@@ -162,9 +181,9 @@ class BillDetailUnregisteredParticipantSerializer(serializers.ModelSerializer):
         fields = (
             "created",
             "modified",
-            "uuid",
             "name",
             "phone",
+            "uuid",
         )
         read_only_fields = fields
 
@@ -194,12 +213,12 @@ class BillDetailTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = BillTransaction
         fields = (
+            "action",
+            "contribution",
             "created",
             "modified",
-            "uuid",
-            "contribution",
             "total_payment",
-            "action",
+            "uuid",
         )
         read_only = fields
 
