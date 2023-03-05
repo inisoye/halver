@@ -300,4 +300,4 @@ class ActionResponseUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BillAction
-        fields = ("status", "has_participant_agreed")
+        fields = ("has_participant_agreed",)
