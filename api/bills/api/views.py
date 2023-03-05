@@ -202,7 +202,10 @@ class ActionResponseUpdateView(APIView):
     def patch(self, request, uuid):
         """ """
 
-        action = get_object_or_404(BillAction, uuid=uuid)
+        actions_queryset = BillAction.objects.select_related(
+            "bill", "bill__creditor", "participant"
+        ).filter(uuid=uuid)
+        action = get_object_or_404(actions_queryset)
 
         # Check object-level permissions
         self.check_object_permissions(request, action)
@@ -211,10 +214,16 @@ class ActionResponseUpdateView(APIView):
         serializer.is_valid(raise_exception=True)
 
         has_participant_agreed = request.data.get("has_participant_agreed")
-
         if not has_participant_agreed:
             action.opt_out_of_bill()
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+        has_paid_before = action.paystack_transactions.exists()
+        if has_paid_before:
+            return format_exception(
+                "A payment has already been made by you on this bill.",
+                status=status.HTTP_409_CONFLICT,
+            )
 
         response = handle_bill_contribution(action)
 

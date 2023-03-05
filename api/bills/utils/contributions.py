@@ -80,7 +80,7 @@ def handle_one_time_contribution(
 def handle_bill_contribution(action):
     """Handle a contribution to a bill by either creating a Paystack charge for
     a one-time payment or creating a subscription to automatically charge the
-    participant's card.
+    participant's card over a given interval.
 
     The function is called after a valid response to a bill action is recieved.
 

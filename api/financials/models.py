@@ -418,7 +418,6 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
         null=True,
         related_name="paystack_transactions",
     )
-    # TODO Detect failure from both status==False and also data.status!="success"
     transaction_outcome = models.CharField(
         max_length=50,
         choices=TransactionOutcomeChoices.choices,
