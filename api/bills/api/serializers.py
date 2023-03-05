@@ -138,6 +138,12 @@ class BillDetailSerializer(serializers.ModelSerializer):
     is_creator = serializers.SerializerMethodField()
     is_creditor = serializers.SerializerMethodField()
     is_recurring = serializers.BooleanField()
+    total_amount_paid = serializers.DecimalField(
+        help_text="Total amount already paid",
+        max_digits=19,
+        decimal_places=4,
+        default=0,
+    )
     long_status = serializers.CharField(source="get_long_bill_status")
     short_status = serializers.CharField(source="get_short_bill_status")
     total_participants = serializers.IntegerField(source="get_total_participants")

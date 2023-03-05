@@ -83,12 +83,6 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         max_digits=19,
         decimal_places=4,
     )
-    total_amount_paid = models.DecimalField(
-        help_text="Total amount already paid",
-        max_digits=19,
-        decimal_places=4,
-        default=0,
-    )
     is_discreet = models.BooleanField(
         help_text=(
             "Are transactions and actions hidden from non-creditor, non-creator"
@@ -118,6 +112,26 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     @property
     def is_recurring(self) -> bool:
         return self.interval != "none"
+
+    @property
+    def total_amount_paid(self):
+        """Return the total amount paid by all transactions.
+
+        This method uses the aggregate function to sum up the contribution field of each
+        completed transaction associated with a bill instance. If there are no
+        transactions, it returns zero.
+
+        For recurring bills, it should return total amount of money that has been paid
+        towards a bill
+
+        Returns:
+            Decimal: The total amount paid in contribution towards bill.
+        """
+
+        result = self.transactions.aggregate(
+            total_contribution=models.Sum("contribution")
+        )["total_contribution"]
+        return result if result else 0
 
     def _validate_dates(self) -> None:
         validate_date_not_in_past(self.deadline, "Deadline")
@@ -329,15 +343,20 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
         if not self.contribution or self.contribution <= 0:
             raise ValidationError("Actions must have a positive, nonzero contribution.")
 
-    def opt_out_of_bill(self):
-        """Marks the current BillAction instance as opted-out and saves the
-        updated status to the database.
-
-        Used to signify that a participant refused to participate in a bill.
-        """
-
-        self.status = BillAction.StatusChoices.OPTED_OUT
+    def _update_status(self, status):
+        self.status = status
         self.save(update_fields=["status"])
+
+    def opt_out_of_bill(self):
+        """Signifies that a participant refused to participate in a bill."""
+
+        self._update_status(self.StatusChoices.OPTED_OUT)
+
+    def mark_as_pending_transfer(self):
+        self._update_status(self.StatusChoices.PENDING_TRANSFER)
+
+    def mark_as_completed(self):
+        self._update_status(self.StatusChoices.COMPLETED)
 
 
 class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
@@ -364,21 +383,10 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
         max_digits=19,
         decimal_places=4,
     )
-    paystack_transaction_fee = models.DecimalField(
-        max_digits=19,
-        decimal_places=4,
-    )
-    paystack_transfer_fee = models.DecimalField(
-        max_digits=19,
-        decimal_places=4,
-    )
-    halver_fee = models.DecimalField(
-        max_digits=19,
-        decimal_places=4,
-    )
-    total_fee = models.DecimalField(
-        max_digits=19,
-        decimal_places=4,
+    action = models.OneToOneField(
+        BillAction,
+        on_delete=models.PROTECT,
+        related_name="halver_transaction",
     )
     paystack_transaction = models.OneToOneField(
         "financials.PaystackTransaction",

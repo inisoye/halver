@@ -1,3 +1,8 @@
+from bills.tasks.contributions import (
+    finalize_one_time_contribution,
+    process_action_updates_and_contribution_transfer,
+    record_contribution_transfer_object,
+)
 from financials.models import PaystackTransfer
 from financials.tasks.cards import (
     process_card_creation_and_refund,
@@ -27,13 +32,22 @@ def handle_paystack_webhook_response(request_data):
     data = request_data.get("data")
 
     if event == "charge.success":
-        is_card_addition = data.get("metadata").get("is_card_addition") == "true"
+        metadata = data.get("metadata")
+        is_card_addition = metadata.get("is_card_addition") == "true"
+        is_contribution = metadata.get("is_contribution") == "true"
 
         if is_card_addition:
             process_card_creation_and_refund.delay(request_data)
 
+        if is_contribution:
+            process_action_updates_and_contribution_transfer.delay(request_data)
+
     if event == "transfer.success":
-        is_card_addition_refund = data.get("reason") == "Refund for card creation"
+        reason = data.get("reason")
+        is_card_addition_refund = reason == "Refund for card creation"
+        is_one_time_contribution_transfer = reason.startswith(
+            "One-time contribution transfer for action"
+        )
 
         if is_card_addition_refund:
             record_card_addition_transfer_object.delay(
@@ -41,8 +55,18 @@ def handle_paystack_webhook_response(request_data):
                 PaystackTransfer.TransferOutcomeChoices.SUCCESSFUL,
             )
 
+        if is_one_time_contribution_transfer:
+            finalize_one_time_contribution.delay(
+                request_data,
+                PaystackTransfer.TransferOutcomeChoices.SUCCESSFUL,
+            )
+
     if event == "transfer.failed":
-        is_card_addition_refund = data.get("reason") == "Refund for card creation"
+        reason = data.get("reason")
+        is_card_addition_refund = reason == "Refund for card creation"
+        is_one_time_contribution_transfer = reason.startswith(
+            "One-time contribution transfer for action"
+        )
 
         if is_card_addition_refund:
             record_card_addition_transfer_object.delay(
@@ -52,11 +76,29 @@ def handle_paystack_webhook_response(request_data):
             # Retry failed transaction with same reference.
             retry_failed_card_addition_charge_refund.delay(request_data)
 
+        if is_one_time_contribution_transfer:
+            record_contribution_transfer_object.delay(
+                request_data,
+                PaystackTransfer.TransferOutcomeChoices.FAILED,
+            )
+
+            # TODO Add retry here.
+
     if event == "transfer.reversed":
-        is_card_addition_refund = data.get("reason") == "Refund for card creation"
+        reason = data.get("reason")
+        is_card_addition_refund = reason == "Refund for card creation"
+        is_one_time_contribution_transfer = reason.startswith(
+            "One-time contribution transfer for action"
+        )
 
         if is_card_addition_refund:
             record_card_addition_transfer_object.delay(
+                request_data,
+                PaystackTransfer.TransferOutcomeChoices.REVERSED,
+            )
+
+        if is_one_time_contribution_transfer:
+            record_contribution_transfer_object.delay(
                 request_data,
                 PaystackTransfer.TransferOutcomeChoices.REVERSED,
             )

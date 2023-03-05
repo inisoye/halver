@@ -1,7 +1,7 @@
 from celery.utils.log import get_task_logger
 from django.db import transaction
 
-from core.utils.currency import convert_to_kobo_integer
+from core.utils.currency import convert_to_kobo_integer, convert_to_naira
 from financials.models import PaystackPlan, PaystackPlanFailures
 
 logger = get_task_logger(__name__)
@@ -202,11 +202,14 @@ def create_paystack_plan_objects(
             plan_code = plan_response["data"]["plan_code"]
             amount = plan_response["data"]["amount"]
 
+            amount_in_naira = convert_to_naira(amount)
+
             paystack_plan_object = PaystackPlan(
                 name=name,
                 interval=interval,
                 plan_code=plan_code,
                 amount=amount,
+                amount_in_naira=amount_in_naira,
                 action=action,
                 participant=participant,
                 unregistered_participant=unregistered_participant,

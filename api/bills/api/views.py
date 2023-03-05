@@ -19,7 +19,7 @@ from bills.api.serializers import (
     BillListSerializer,
 )
 from bills.models import Bill, BillAction
-from bills.utils.actions import handle_bill_contribution
+from bills.utils.contributions import handle_bill_contribution
 from core.utils.responses import format_exception
 from financials.tasks.plans import create_paystack_plans_for_recurring_bills
 

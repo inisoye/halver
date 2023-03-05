@@ -3,13 +3,14 @@ from celery.utils.log import get_task_logger
 
 from core.utils.currency import convert_to_kobo_integer
 from core.utils.users import get_user_by_id
-from financials.models import PaystackTransfer, TransferRecipient
+from financials.models import PaystackTransfer
 from financials.utils.cards import (
     create_card_addition_paystack_transaction_object,
     create_card_object_from_webhook,
     initiate_card_addition_charge_refund,
 )
 from financials.utils.transfer_recipients import create_card_recipient_from_webhook
+from financials.utils.transfers import create_paystack_transfer_object
 from libraries.paystack.transfer_requests import TransferRequests
 
 logger = get_task_logger(__name__)
@@ -117,20 +118,8 @@ def record_card_addition_transfer_object(request_data, transfer_outcome):
         None
     """
 
-    data = request_data.get("data")
-
-    recipient_code = data.get("recipient").get("recipient_code")
-    recipient = TransferRecipient.objects.get(recipient_code=recipient_code)
-
-    paystack_transfer_object = {
-        "amount": data.get("amount"),
-        "paystack_transfer_reference": data.get("reference"),
-        "uuid": data.get("reference"),
-        "recipient": recipient,
-        "receiving_user": recipient.user,
-        "transfer_outcome": transfer_outcome,
-        "transfer_type": PaystackTransfer.TransferChoices.CARD_ADDITION_REFUND,
-        "complete_paystack_response": request_data,
-    }
-
-    PaystackTransfer.objects.create(**paystack_transfer_object)
+    create_paystack_transfer_object(
+        request_data,
+        transfer_outcome,
+        PaystackTransfer.TransferChoices.CARD_ADDITION_REFUND,
+    )

@@ -3,6 +3,7 @@ import uuid
 from celery.utils.log import get_task_logger
 
 from bills.utils.fees import calculate_all_transaction_fees
+from core.utils.currency import convert_to_naira
 from financials.models import PaystackTransaction, UserCard
 from libraries.paystack.transfer_requests import TransferRequests
 
@@ -128,8 +129,12 @@ def create_card_addition_paystack_transaction_object(
         PaystackTransaction: The newly created PaystackTransaction object.
     """
 
+    amount = data.get("amount")
+    amount_in_naira = convert_to_naira(amount)
+
     paystack_transaction_object = {
-        "amount": data.get("amount"),
+        "amount": amount,
+        "amount_in_naira": amount_in_naira,
         "refundable_amount": metadata.get("refundable_amount"),
         "card": new_card,
         "paying_user": user,

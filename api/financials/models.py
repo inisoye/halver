@@ -213,6 +213,12 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
         max_digits=19,
         decimal_places=4,
     )
+    amount_in_naira = models.DecimalField(
+        max_digits=19,
+        decimal_places=4,
+        blank=True,
+        null=True,
+    )
     action = models.OneToOneField(
         BillAction,
         on_delete=models.PROTECT,
@@ -373,8 +379,16 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
         FAILED = "failed", "Failed"
 
     amount = models.DecimalField(
+        verbose_name="Amount in Kobo or other subunit",
         max_digits=19,
         decimal_places=4,
+        help_text="Amount returned by Paystack, in Kobo (or other subunit)",
+    )
+    amount_in_naira = models.DecimalField(
+        max_digits=19,
+        decimal_places=4,
+        blank=True,
+        null=True,
     )
     refundable_amount = models.DecimalField(
         max_digits=19,
@@ -442,11 +456,17 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
         REVERSED = "reversed", "Reversed"
 
     amount = models.DecimalField(
+        verbose_name="Amount in Kobo or other subunit",
         max_digits=19,
         decimal_places=4,
+        help_text="Amount returned by Paystack, in Kobo (or other subunit)",
     )
-    # TODO Create a new uuidv4 for this field. The field should be created at point
-    # the transfer is initiated. Can be made to match the object's uuid field value.
+    amount_in_naira = models.DecimalField(
+        max_digits=19,
+        decimal_places=4,
+        blank=True,
+        null=True,
+    )
     paystack_transfer_reference = models.UUIDField(
         unique=True,
         editable=False,
@@ -474,7 +494,6 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
         null=True,
         related_name="paystack_transfers_received",
     )
-    # TODO Success should have data.status=="success" and so on
     transfer_outcome = models.CharField(
         max_length=50,
         choices=TransferOutcomeChoices.choices,

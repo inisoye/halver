@@ -1,10 +1,19 @@
-from core.utils.currency import convert_to_kobo_integer
+import uuid
+
+from celery.utils.log import get_task_logger
+
+from core.utils.currency import convert_to_kobo_integer, convert_to_naira
+from financials.models import PaystackTransaction, UserCard
 from libraries.paystack.transaction_requests import TransactionRequests
+from libraries.paystack.transfer_requests import TransferRequests
+
+logger = get_task_logger(__name__)
 
 
 def handle_one_time_contribution(
     bill_name,
     participant_name,
+    action_uuid_string,
     participant_uuid_string,
     creditor_uuid_string,
     participant_card,
@@ -33,6 +42,7 @@ def handle_one_time_contribution(
 
     metadata = {
         "full_name": participant_name,
+        "action_id": action_uuid_string,
         "user_id": participant_uuid_string,
         "creditor_id": creditor_uuid_string,
         "is_contribution": True,
@@ -83,6 +93,8 @@ def handle_bill_contribution(action):
             (if the bill is not recurring) or a dictionary representing the subscription.
     """
 
+    action_uuid_string = action.uuid.__str__()
+
     bill = action.bill
     bill_name = bill.name
     is_bill_recurring = bill.is_recurring
@@ -102,6 +114,7 @@ def handle_bill_contribution(action):
     if not is_bill_recurring:
         charge_response = handle_one_time_contribution(
             bill_name=bill_name,
+            action_uuid_string=action_uuid_string,
             participant_name=participant_name,
             participant_uuid_string=participant_uuid_string,
             creditor_uuid_string=creditor_uuid_string,
@@ -110,3 +123,48 @@ def handle_bill_contribution(action):
         )
 
         return charge_response
+
+
+def create_contribution_transaction_object(data, action, participant, request_data):
+    amount = data.get("amount")
+    amount_in_naira = convert_to_naira(amount)
+
+    authorization_signature = data.get("authorization").get("signature")
+    card = UserCard.objects.get(signature=authorization_signature)
+
+    paystack_transaction_object = {
+        "amount": amount,
+        "amount_in_naira": amount_in_naira,
+        "card": card,
+        "action": action,
+        "paying_user": participant,
+        "transaction_outcome": PaystackTransaction.TransactionOutcomeChoices.SUCCESSFUL,
+        "transaction_type": PaystackTransaction.TransactionChoices.PARTICIPANT_PAYMENT,
+        "paystack_transaction_id": data.get("id"),
+        "paystack_transaction_reference": data.get("reference"),
+        "complete_paystack_response": request_data,
+    }
+
+    new_transaction = PaystackTransaction.objects.create(**paystack_transaction_object)
+
+    return new_transaction
+
+
+def initiate_contribution_transfer(
+    contribution_amount,
+    creditor_default_recipient_code,
+    reason,
+) -> None:
+    paystack_transfer_payload = {
+        "source": "balance",
+        "amount": contribution_amount,
+        "recipient": creditor_default_recipient_code,
+        "reason": reason,
+        "reference": str(uuid.uuid4()),
+    }
+
+    response = TransferRequests.initiate(**paystack_transfer_payload)
+
+    if not response["status"]:
+        paystack_error = response["message"]
+        logger.error(f"Error intiating Paystack transfer: {paystack_error}")
