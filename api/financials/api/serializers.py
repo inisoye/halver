@@ -12,14 +12,15 @@ class UserCardSerializer(serializers.ModelSerializer):
             "authorization_code",
             "bank",
             "card_type",
+            "created",
             "email",
             "exp_month",
             "exp_year",
+            "first_6",
             "is_default",
             "last_4",
             "signature",
             "user",
-            "created",
             "uuid",
         )
 
@@ -48,34 +49,33 @@ class TransferRecipientListSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransferRecipient
         fields = (
-            "is_default",
-            "recipient_code",
-            "recipient_type",
-            "name",
             "account_number",
+            "associated_card",
+            "authorization_code",
             "bank_code",
             "bank_name",
-            "email",
-            "authorization_code",
-            "associated_card",
             "created",
+            "email",
+            "is_default",
+            "name",
+            "recipient_code",
+            "recipient_type",
             "uuid",
         )
-
-        read_only = "__all__"
+        read_only = fields
 
 
 class TransferRecipientCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransferRecipient
         fields = (
-            "is_default",
-            "recipient_type",
-            "name",
             "account_number",
+            "authorization_code",
             "bank_code",
             "email",
-            "authorization_code",
+            "is_default",
+            "name",
+            "recipient_type",
         )
 
     def validate(self, data):
@@ -87,8 +87,8 @@ class TransferRecipientUpdateDeleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransferRecipient
         fields = (
+            "is_default",
             "recipient_code",
             "uuid",
-            "is_default",
         )
         read_only = ("recipient_code", "uuid")

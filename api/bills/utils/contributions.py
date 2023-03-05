@@ -124,6 +124,10 @@ def handle_bill_contribution(action):
 
         return charge_response
 
+    has_subscription_been_created = action.paystack_subscription.exists()
+
+    # if not has_subscription_been_created:
+
 
 def create_contribution_transaction_object(data, action, participant, request_data):
     amount = data.get("amount")
