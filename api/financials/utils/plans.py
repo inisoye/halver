@@ -32,6 +32,8 @@ def format_paystack_plan_payloads(bill_actions):
                 f" {action.unregistered_participant.uuid}"
             )
         )
+        # ! Be careful not to change name without good reason.
+        # ! Subscription flow is heavily dependent on the uuids in it.
         name = (
             f"Plan for {user_uuid} on the bill with id: {action.bill.uuid}. Action id:"
             f" {action.uuid}"
@@ -61,11 +63,13 @@ def format_paystack_plan_payloads(bill_actions):
 def get_uuid_for_participant_from_plan(
     plan_name_string,
 ):
-    """Extract the participant's UUID from a plan's name string in the format:
-    "Plan for participant with id: <participant_uuid> on the bill with id:
+    """Extract the participant's UUID from a plan's name string.
 
-    <bill_uuid>" or "Plan for unregistered participant with id:
-    <participant_uuid> on the bill with id: <bill_uuid>".
+    The name string format is: "Plan for participant with id: <participant_uuid> on the
+    bill with id: <bill_uuid>. Action id: <action_uuid>" or "Plan for unregistered
+    participant with id: <participant_uuid> on the bill with id: <bill_uuid>. Action id:
+    <action_uuid>"
+
 
     Args:
         plan_name_string (str): The plan's name string to extract the UUIDs from
@@ -88,10 +92,10 @@ def get_uuid_for_participant_from_plan(
 def get_uuids_for_participant_and_bill_and_action_from_plan(plan_name_string):
     """Extract the participant, bill and action UUIDs from a plan's name string.
 
-    The name string format: "Plan for participant with id: <participant_uuid> on the
+    The name string format is: "Plan for participant with id: <participant_uuid> on the
     bill with id: <bill_uuid>. Action id: <action_uuid>" or "Plan for unregistered
     participant with id: <participant_uuid> on the bill with id: <bill_uuid>. Action id:
-    <action_uuid>".
+    <action_uuid>"
 
     Args:
         plan_name_string (str): The plan's name string to extract the UUIDs from
