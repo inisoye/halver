@@ -32,7 +32,10 @@ def format_paystack_plan_payloads(bill_actions):
                 f" {action.unregistered_participant.uuid}"
             )
         )
-        name = f"Plan for {user_uuid} on the bill with id: {action.bill.uuid}."
+        name = (
+            f"Plan for {user_uuid} on the bill with id: {action.bill.uuid}. Action id:"
+            f" {action.uuid}"
+        )
         amount_in_kobo = convert_to_kobo_integer(action.total_payment_due)
         interval = action.bill.interval
         description = (
@@ -82,32 +85,38 @@ def get_uuid_for_participant_from_plan(
     return participant_uuid
 
 
-def get_uuids_for_participant_and_bill_from_plan(
-    plan_name_string,
-):
-    """Extract the participant and bill UUIDs from a plan's name string in the
-    format: "Plan for participant with id: <participant_uuid> on the bill with
-    id: <bill_uuid>" or "Plan for unregistered participant with id: <participant_uuid>
-    on the bill with id: <bill_uuid>".
+def get_uuids_for_participant_and_bill_and_action_from_plan(plan_name_string):
+    """Extract the participant, bill and action UUIDs from a plan's name string.
+
+    The name string format: "Plan for participant with id: <participant_uuid> on the
+    bill with id: <bill_uuid>. Action id: <action_uuid>" or "Plan for unregistered
+    participant with id: <participant_uuid> on the bill with id: <bill_uuid>. Action id:
+    <action_uuid>".
 
     Args:
         plan_name_string (str): The plan's name string to extract the UUIDs from
 
     Returns:
-        tuple: A tuple containing the participant UUID and bill UUID
+        tuple: A tuple containing the participant UUID, bill UUID, and action UUID
     """
 
     participant_index = plan_name_string.index("participant with id: ") + len(
         "participant with id: "
     )
     bill_index = plan_name_string.index("bill with id: ") + len("bill with id: ")
+    action_index = plan_name_string.index("Action id: ") + len("Action id: ")
 
     participant_uuid = plan_name_string[
         participant_index : plan_name_string.index(" on the ")  # noqa E203
     ].strip()
-    bill_uuid = plan_name_string[bill_index:].strip()
 
-    return participant_uuid, bill_uuid
+    bill_uuid = plan_name_string[
+        bill_index : plan_name_string.index(". Action id: ")  # noqa E203
+    ].strip()
+
+    action_uuid = plan_name_string[action_index:].strip()
+
+    return participant_uuid, bill_uuid, action_uuid
 
 
 def create_participants_and_actions_index(bill_actions):
