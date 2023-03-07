@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
@@ -48,7 +49,7 @@ class BillListCreateView(APIView):
 
         bills = Bill.objects.filter(
             Q(participants=request.user) | Q(creditor=request.user)
-        )
+        ).select_related("creditor", "creator")
 
         serializer = self.list_serializer_class(
             bills, many=True, context={"request": request}
@@ -95,7 +96,6 @@ class BillDetailUpdateView(APIView):
     Accepts GET and PATCH requests.
     """
 
-    permission_classes = IsCreditorOrCreator
     serializer_class = BillDetailSerializer
     update_serializer_class = BillDetailsUpdateSerializer
 
@@ -128,7 +128,11 @@ class BillDetailUpdateView(APIView):
             Response: A Response object containing the serialized Bill object.
         """
 
-        bill = get_object_or_404(Bill, uuid=uuid)
+        bill = Bill.get_bill_with_details(uuid)
+
+        if bill is None:
+            # Handle the case where the bill with the given uuid does not exist.
+            return HttpResponseNotFound()
 
         # Check object-level permissions
         self.check_object_permissions(request, bill)
@@ -141,7 +145,6 @@ class BillDetailUpdateView(APIView):
             and bill.creditor != request.user
         )
 
-        # TODO ensure all discreet fields are added to this list.
         if are_discreet_fields_hidden:
             DISCREET_FIELDS = ("actions", "transactions")
             serializer_data_without_discreet_fields = serializer.data.copy()

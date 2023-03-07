@@ -1,8 +1,10 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Prefetch
 from phonenumber_field.modelfields import PhoneNumberField
 
+from accounts.models import CustomUser
 from bills.utils.bills import create_bill, generate_long_status_index
 from core.models import AbstractCurrencyModel, AbstractTimeStampedUUIDModel
 from core.utils.dates_and_time import (
@@ -56,10 +58,6 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         blank=True,
         null=True,
         default=get_one_week_from_now,
-    )
-    next_charge_date = models.DateTimeField(
-        blank=True,
-        null=True,
     )
     deadline = models.DateTimeField(
         blank=True,
@@ -133,12 +131,15 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         )["total_contribution"]
         return result if result else 0
 
+    @property
+    def total_participants(self):
+        return self.participants.count() + self.unregistered_participants.count()
+
     def _validate_dates(self) -> None:
         validate_date_not_in_past(self.deadline, "Deadline")
 
         if self.is_recurring:
             validate_date_not_in_past(self.first_charge_date, "First Charge Date")
-            validate_date_not_in_past(self.next_charge_date, "Next Charge Date")
 
     def _validate_amounts(self) -> None:
         if self.total_amount_due <= 0:
@@ -158,8 +159,52 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         new_bill = create_bill(cls, validated_data, creator)
         return new_bill
 
-    def get_total_participants(self):
-        return self.participants.count() + self.unregistered_participants.count()
+    @classmethod
+    def get_bill_with_details(cls, uuid):
+        """Retrieve a bill with all relevant data joined to it.
+
+        To be used in get bill details view. Has been customised to work with fields
+        included in the serializer.
+
+        Args:
+            uuid (str): The uuid of the bill to retrieve.
+
+        Returns:
+            Bill object: A Bill object with all relevant data joined to it.
+            If the bill with the given uuid does not exist, return None.
+        """
+
+        # Use Prefetch to specify custom prefetched related objects.
+        # This prevents the serializer from performing n+1 queries when fetching data
+        # from joined tables.
+
+        # Define custom Prefetch objects for actions and related objects.
+        action_participant_prefetch = Prefetch(
+            "participant", queryset=CustomUser.objects.all()
+        )
+        action_unregistered_participant_prefetch = Prefetch(
+            "unregistered_participant",
+            queryset=BillUnregisteredParticipant.objects.all(),
+        )
+
+        actions_prefetch = Prefetch(
+            "actions",
+            queryset=BillAction.objects.prefetch_related(
+                action_participant_prefetch, action_unregistered_participant_prefetch
+            ),
+        )
+
+        try:
+            # Obtain the specific bill with all relevant data joined to it
+            return (
+                cls.objects.select_related("creditor", "creator")
+                .prefetch_related("transactions", "participants", actions_prefetch)
+                .get(uuid=uuid)
+            )
+
+        except cls.DoesNotExist:
+            # Handle the case where the bill with the given uuid does not exist.
+            return None
 
     def get_most_common_status_details(self):
         """Returns the most common status and its frequency, as well as a flag
@@ -230,6 +275,10 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
 
         # Return the message for the most common status
         return status_message_index.get(most_common_status, "")
+
+    def change_first_charge_date(self, new_first_charge_date):
+        self.first_charge_date = new_first_charge_date
+        self.save(update_fields=["first_charge_date"])
 
 
 class BillUnregisteredParticipant(AbstractTimeStampedUUIDModel, models.Model):

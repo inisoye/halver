@@ -185,6 +185,5 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return list(recipient_codes)
 
     class Meta:
-        ordering = ["first_name", "last_name", "email"]
         verbose_name = _("user")
         verbose_name_plural = _("users")

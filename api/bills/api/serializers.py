@@ -74,7 +74,6 @@ class BillCreateSerializer(serializers.ModelSerializer):
             "interval",
             "modified",
             "name",
-            "next_charge_date",
             "notes",
             "participants_contribution_index",
             "total_amount_due",
@@ -90,7 +89,6 @@ class BillCreateSerializer(serializers.ModelSerializer):
 
 class BillListSerializer(serializers.ModelSerializer):
     interval = serializers.SerializerMethodField()
-    is_creator = serializers.SerializerMethodField()
     is_creditor = serializers.SerializerMethodField()
     is_recurring = serializers.BooleanField()
     long_status = serializers.CharField(source="get_long_bill_status")
@@ -114,15 +112,11 @@ class BillListSerializer(serializers.ModelSerializer):
     def get_is_creditor(self, obj) -> bool:
         return obj.creditor == self.context["request"].user
 
-    def get_is_creator(self, obj) -> bool:
-        return obj.creator == self.context["request"].user
-
     class Meta:
         model = Bill
         fields = (
             "created",
             "interval",
-            "is_creator",
             "is_creditor",
             "is_recurring",
             "long_status",
@@ -158,13 +152,12 @@ class BillActionDefaultCardSerializer(serializers.ModelSerializer):
 
 class BillCreatorCreditorParticipantSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField()
-    default_card = BillActionDefaultCardSerializer()
 
     class Meta:
         model = CustomUser
         fields = (
             "date_joined",
-            "default_card",
+            "email",
             "first_name",
             "full_name",
             "last_name",
@@ -208,12 +201,9 @@ class BillDetailActionSerializer(serializers.ModelSerializer):
 
 
 class BillDetailTransactionSerializer(serializers.ModelSerializer):
-    action = BillDetailActionSerializer()
-
     class Meta:
         model = BillTransaction
         fields = (
-            "action",
             "contribution",
             "created",
             "modified",
@@ -229,24 +219,22 @@ class BillDetailTransactionSerializer(serializers.ModelSerializer):
 
 
 class BillDetailSerializer(serializers.ModelSerializer):
+    actions = BillDetailActionSerializer(many=True)
+    creator = BillCreatorCreditorParticipantSerializer()
+    creditor = BillCreatorCreditorParticipantSerializer()
     interval = serializers.SerializerMethodField()
     is_creator = serializers.SerializerMethodField()
     is_creditor = serializers.SerializerMethodField()
     is_recurring = serializers.BooleanField()
+    long_status = serializers.CharField(source="get_long_bill_status")
+    short_status = serializers.CharField(source="get_short_bill_status")
     total_amount_paid = serializers.DecimalField(
         help_text="Total amount already paid",
         max_digits=19,
         decimal_places=4,
         default=0,
     )
-    long_status = serializers.CharField(source="get_long_bill_status")
-    short_status = serializers.CharField(source="get_short_bill_status")
-    total_participants = serializers.IntegerField(source="get_total_participants")
-    creator = BillCreatorCreditorParticipantSerializer()
-    creditor = BillCreatorCreditorParticipantSerializer()
-    participants = BillCreatorCreditorParticipantSerializer(many=True)
-    unregistered_participants = BillDetailUnregisteredParticipantSerializer(many=True)
-    actions = BillDetailActionSerializer(many=True)
+    total_participants = serializers.IntegerField()
     transactions = BillDetailTransactionSerializer(many=True)
 
     def get_interval(self, obj) -> str:
@@ -276,6 +264,9 @@ class BillDetailSerializer(serializers.ModelSerializer):
             "created",
             "creator",
             "creditor",
+            "currency_code",
+            "currency_name",
+            "currency_symbol",
             "deadline",
             "evidence",
             "first_charge_date",
@@ -287,15 +278,12 @@ class BillDetailSerializer(serializers.ModelSerializer):
             "long_status",
             "modified",
             "name",
-            "next_charge_date",
             "notes",
-            "participants",
             "short_status",
             "total_amount_due",
             "total_amount_paid",
             "total_participants",
             "transactions",
-            "unregistered_participants",
             "uuid",
         )
         read_only = fields
