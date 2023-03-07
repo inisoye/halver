@@ -17,9 +17,8 @@ class AbstractTimeStampedUUIDModel(models.Model):
         editable=False,
         default=uuid.uuid4,
         verbose_name="Public identifier",
+        db_index=True,
     )
-
-    # TODO ensure uuid is indexed for every model
 
     class Meta:
         abstract = True
