@@ -91,8 +91,7 @@ class BillListSerializer(serializers.ModelSerializer):
     interval = serializers.SerializerMethodField()
     is_creditor = serializers.SerializerMethodField()
     is_recurring = serializers.BooleanField()
-    long_status = serializers.CharField(source="get_long_bill_status")
-    short_status = serializers.CharField(source="get_short_bill_status")
+    status = serializers.DictField()
     total_participants = serializers.IntegerField()
 
     def get_interval(self, obj) -> str:
@@ -119,10 +118,9 @@ class BillListSerializer(serializers.ModelSerializer):
             "interval",
             "is_creditor",
             "is_recurring",
-            "long_status",
             "modified",
             "name",
-            "short_status",
+            "status",
             "total_participants",
             "uuid",
         )
@@ -226,8 +224,7 @@ class BillDetailSerializer(serializers.ModelSerializer):
     is_creator = serializers.SerializerMethodField()
     is_creditor = serializers.SerializerMethodField()
     is_recurring = serializers.BooleanField()
-    long_status = serializers.CharField(source="get_long_bill_status")
-    short_status = serializers.CharField(source="get_short_bill_status")
+    status = serializers.DictField()
     total_amount_paid = serializers.DecimalField(
         help_text="Total amount already paid",
         max_digits=19,
@@ -275,11 +272,10 @@ class BillDetailSerializer(serializers.ModelSerializer):
             "is_creditor",
             "is_discreet",
             "is_recurring",
-            "long_status",
             "modified",
             "name",
             "notes",
-            "short_status",
+            "status",
             "total_amount_due",
             "total_amount_paid",
             "total_participants",

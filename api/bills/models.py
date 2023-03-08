@@ -107,6 +107,18 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
                 use_day_start=True,
             )
 
+    def _validate_dates(self) -> None:
+        validate_date_not_in_past(self.deadline, "Deadline")
+
+        if self.is_recurring:
+            validate_date_not_in_past(self.first_charge_date, "First Charge Date")
+
+    def _validate_amounts(self) -> None:
+        if self.total_amount_due <= 0:
+            raise ValidationError(
+                "The total amount due must be a postive nonzero value."
+            )
+
     @property
     def is_recurring(self) -> bool:
         return self.interval != "none"
@@ -135,17 +147,22 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     def total_participants(self):
         return self.participants.count() + self.unregistered_participants.count()
 
-    def _validate_dates(self) -> None:
-        validate_date_not_in_past(self.deadline, "Deadline")
+    @property
+    def status(self):
+        (
+            most_common_status,
+            most_common_status_count,
+            all_actions_are_one_type,
+        ) = self.get_most_common_status_details()
 
-        if self.is_recurring:
-            validate_date_not_in_past(self.first_charge_date, "First Charge Date")
+        status_message_index = generate_long_status_index(
+            all_actions_are_one_type, most_common_status_count
+        )
 
-    def _validate_amounts(self) -> None:
-        if self.total_amount_due <= 0:
-            raise ValidationError(
-                "The total amount due must be a postive nonzero value."
-            )
+        return {
+            "short": most_common_status,
+            "long": status_message_index.get(most_common_status, ""),
+        }
 
     @classmethod
     def create_bill_from_validated_data(cls, validated_data, creator):
@@ -243,38 +260,6 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
             most_common_status_count,
             all_actions_are_one_type,
         )
-
-    def get_short_bill_status(self):
-        """Returns the most common status of the bill.
-
-        Short status would enable easy color coding on the client.
-
-        Returns:
-            A string representing the most common status of the bill.
-        """
-
-        most_common_status_details = self.get_most_common_status_details()
-        return most_common_status_details[0]
-
-    def get_long_bill_status(self):
-        """Returns a human-readable string describing the status of the bill.
-
-        Returns:
-            A string describing the status of the bill.
-        """
-
-        (
-            most_common_status,
-            most_common_status_count,
-            all_actions_are_one_type,
-        ) = self.get_most_common_status_details()
-
-        status_message_index = generate_long_status_index(
-            all_actions_are_one_type, most_common_status_count
-        )
-
-        # Return the message for the most common status
-        return status_message_index.get(most_common_status, "")
 
     def change_first_charge_date(self, new_first_charge_date):
         self.first_charge_date = new_first_charge_date
