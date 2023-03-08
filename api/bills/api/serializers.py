@@ -93,7 +93,7 @@ class BillListSerializer(serializers.ModelSerializer):
     is_recurring = serializers.BooleanField()
     long_status = serializers.CharField(source="get_long_bill_status")
     short_status = serializers.CharField(source="get_short_bill_status")
-    total_participants = serializers.IntegerField(source="get_total_participants")
+    total_participants = serializers.IntegerField()
 
     def get_interval(self, obj) -> str:
         """Returns the human-readable version of the interval field.
