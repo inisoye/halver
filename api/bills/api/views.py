@@ -64,15 +64,9 @@ class BillDetailUpdateView(APIView):
     update_serializer_class = BillDetailsUpdateSerializer
 
     def get_permissions(self):
-        """
-        Returns the permission classes to be used for the request.
-        """
         if self.request.method == "GET":
-            permissions = [IsParticipantOrCreditor()]
-        else:
-            permissions = [IsCreditorOrCreator()]
-
-        return permissions
+            return [IsParticipantOrCreditor()]
+        return [IsCreditorOrCreator()]
 
     def get(self, request, uuid):
         """Returns the bill details for a given Bill UUID.
@@ -135,8 +129,7 @@ class BillDetailUpdateView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# TODO Add logic or an additional view that converts unregistered participants to
-# registered participants
+# TODO Add additional view that converts unregistered participants to registered
 
 
 class ActionResponseUpdateView(APIView):

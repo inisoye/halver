@@ -91,14 +91,7 @@ class DefaultCardUpdateView(UpdateAPIView):
 
     def partial_update(self, request, uuid) -> Response:
         """Sets the card with the given UUID as the default card for the current
-        user.
-
-        Args:
-            uuid: The UUID of the card to be set as the default card.
-
-        Returns:
-            An empty response.
-        """
+        user."""
 
         card = self.get_object()
         card.set_as_default_card()
@@ -154,11 +147,8 @@ class UserCardListView(ListAPIView):
     serializer_class = UserCardSerializer
 
     def get_queryset(self):
-        """Returns a queryset containing all cards for the current user.
+        """Returns a queryset containing all cards for the current user."""
 
-        Returns:
-            A queryset of card objects for current user.
-        """
         return self.queryset.filter(user=self.request.user)
 
 
@@ -274,14 +264,7 @@ class TransferRecipientsDestroyView(DestroyAPIView):
     serializer_class = TransferRecipientUpdateDeleteSerializer
 
     def perform_destroy(self, instance):
-        """Deletes a transfer recipient.
-
-        Args:
-            instance: The transfer recipient object to be deleted.
-
-        Returns:
-            An empty response.
-        """
+        """Deletes a transfer recipient."""
 
         response = TransferRecipientRequests.delete(instance.recipient_code)
 
@@ -307,11 +290,7 @@ class DefaultTransferRecipientRetrieveView(RetrieveAPIView):
     http_method_names = ["get"]
 
     def get_object(self):
-        """Returns the default transfer recipient for the current user.
-
-        Returns:
-            The default transfer recipient object.
-        """
+        """Returns the default transfer recipient for the current user."""
 
         user = self.request.user
         queryset = user.transfer_recipients.filter(is_default=True)
@@ -333,14 +312,7 @@ class DefaultTransferRecipientUpdateView(UpdateAPIView):
 
     def partial_update(self, request, uuid) -> Response:
         """Sets the recipient with the given UUID as the default recipient for
-        the current user.
-
-        Args:
-            uuid: The UUID of the recipient to be set as the default recipient.
-
-        Returns:
-            An empty response.
-        """
+        the current user."""
 
         transfer_recipient = self.get_object()
         transfer_recipient.set_as_default_recipient()
