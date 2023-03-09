@@ -54,7 +54,7 @@ class BillListCreateView(ListCreateAPIView):
             create_paystack_plans_for_recurring_bills.delay(new_bill.id)
 
 
-class BillDetailUpdateView(APIView):
+class BillRetrieveUpdateView(APIView):
     """View for getting or updating a single Bill object.
 
     Accepts GET and PATCH requests.
@@ -82,7 +82,6 @@ class BillDetailUpdateView(APIView):
             # Handle the case where the bill with the given uuid does not exist.
             return HttpResponseNotFound()
 
-        # Check object-level permissions
         self.check_object_permissions(request, bill)
 
         serializer = self.serializer_class(bill, context={"request": request})
@@ -116,7 +115,6 @@ class BillDetailUpdateView(APIView):
 
         bill = get_object_or_404(Bill, uuid=uuid)
 
-        # Check object-level permissions
         self.check_object_permissions(request, bill)
 
         serializer = self.update_serializer_class(bill, data=request.data, partial=True)
@@ -146,7 +144,6 @@ class ActionResponseUpdateView(APIView):
         ).filter(uuid=uuid)
         action = get_object_or_404(actions_queryset)
 
-        # Check object-level permissions
         self.check_object_permissions(request, action)
 
         serializer = self.serializer_class(action, data=request.data, partial=True)
