@@ -202,14 +202,14 @@ def validate_participants_and_unregistered_participants(
             "A bill must have at least one participant or unregistered participant."
         )
 
-    creditor_id = serializer_data.get("creditor_id", "")
+    creditor_id = serializer_data.get("creditor_id")
 
     if not creditor_id:
         raise serializers.ValidationError(
             "A creditor is required for bill to be created."
         )
 
-    if creditor_id in participants_ids:
+    if str(creditor_id) in participants_ids:
         raise serializers.ValidationError(
             "A bill's creditor should not be listed as a participant."
         )

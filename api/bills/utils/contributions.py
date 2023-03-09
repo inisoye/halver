@@ -157,8 +157,6 @@ def handle_bill_contribution(action):
             subscription_start_date = new_first_charge_date
 
         else:
-            # Where either the first charge date is in the future or there are already
-            # subscriptions on the bill, run the conditional below.
             subscription_start_date = (
                 selected_next_start_date
                 if is_first_charge_date_in_past
