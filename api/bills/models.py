@@ -264,7 +264,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
                 status_count_subquery.values("count")[:1]
             ),
             are_all_statuses_same=~Exists(status_count_subquery[1:]),
-        )
+        ).order_by("-created")
 
         return bills_with_status_info
 
