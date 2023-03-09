@@ -1,9 +1,8 @@
-from django.conf import settings
 from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -26,7 +25,7 @@ from core.utils.responses import format_exception
 from financials.tasks.plans import create_paystack_plans_for_recurring_bills
 
 
-class BillListCreateView(APIView):
+class BillListCreateView(ListCreateAPIView):
     """View for listing Bills or creating new Bills.
 
     Accepts GET and POST requests.
@@ -36,49 +35,23 @@ class BillListCreateView(APIView):
     serializer_class = BillCreateSerializer
     list_serializer_class = BillListSerializer
 
-    def get(self, request):
-        """Retrieves a list of bills for which the current user is a
-        participant.
-        """
+    def get_queryset(self):
+        return Bill.get_users_bills_with_status_info(user=self.request.user)
 
-        bills_with_status_info = Bill.get_users_bills_with_status_info(
-            user=request.user
-        )
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return self.list_serializer_class
 
-        # create an instance of the PageNumberPagination class
-        paginator = PageNumberPagination()
-        paginator.page_size = 10
+        return self.serializer_class
 
-        # paginate the bills
-        paginated_bills = paginator.paginate_queryset(bills_with_status_info, request)
-
-        serializer = self.list_serializer_class(
-            paginated_bills,
-            many=True,
-            context={"request": request},
-        )
-
-        return Response(serializer.data)
-
-    @extend_schema(request=None, responses={201: OpenApiResponse()})
-    def post(self, request):
-        """Creates a new bill and associated actions. If the bill is recurring,
-        Paystack plans will also be created for each action.
-        """
-
-        serializer = self.serializer_class(
-            data=self.request.data, context={"request": request}
-        )
-        serializer.is_valid(raise_exception=True)
-
+    def perform_create(self, serializer):
         new_bill = Bill.create_bill_from_validated_data(
-            serializer.validated_data, creator=request.user
+            serializer.validated_data, creator=self.request.user
         )
 
+        # If the bill is recurring, Paystack plans will also be created for each action.
         if new_bill.is_recurring:
             create_paystack_plans_for_recurring_bills.delay(new_bill.id)
-
-        return Response(status=status.HTTP_201_CREATED)
 
 
 class BillDetailUpdateView(APIView):
@@ -107,16 +80,6 @@ class BillDetailUpdateView(APIView):
         If the bill is discreet and the requester is neither the bill's
         creditor nor its creator, the discreet ("actions" and "transactions") fields are
         excluded from the response.
-
-        Args:
-            request (rest_framework.request.Request): The HTTP request object.
-            uuid (str): The UUID of the Bill object to retrieve.
-
-        Raises:
-            Http404: If no Bill object with the given UUID exists.
-
-        Returns:
-            Response: A Response object containing the serialized Bill object.
         """
 
         bill = Bill.get_bill_with_details(uuid)
@@ -155,17 +118,6 @@ class BillDetailUpdateView(APIView):
         UUID.
 
         Accepts a JSON payload of the fields to update.
-
-        Args:
-            request (rest_framework.request.Request): The HTTP request object.
-            uuid (str): The UUID of the Bill object to update.
-
-        Raises:
-            Http404: If no Bill object with the given UUID exists.
-
-        Returns:
-            Response: An empty response with status code 204 (No Content) for a
-                successful PATCH request.
         """
 
         bill = get_object_or_404(Bill, uuid=uuid)

@@ -87,13 +87,6 @@ class BillCreateSerializer(serializers.ModelSerializer):
         )
 
 
-class BillCreateOutputSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Bill
-        fields = ("uuid",)
-        read_only_fields = ("uuid",)
-
-
 class BillListSerializer(serializers.ModelSerializer):
     interval = serializers.SerializerMethodField()
     is_creator = serializers.SerializerMethodField()
