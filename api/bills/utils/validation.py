@@ -221,7 +221,7 @@ def validate_participants_and_unregistered_participants(
 
     is_creator_the_creditor = creditor.uuid == creator.uuid
 
-    if (not is_creator_the_creditor) and (creator.uuid not in participants_ids):
+    if (not is_creator_the_creditor) and (str(creator.uuid) not in participants_ids):
         raise serializers.ValidationError(
             "Creators who are not creditors must be listed as participants."
         )

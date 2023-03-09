@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Prefetch
+from django.db.models import Count, Exists, OuterRef, Prefetch, Q, Subquery
 from phonenumber_field.modelfields import PhoneNumberField
 
 from accounts.models import CustomUser
@@ -222,6 +222,51 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         except cls.DoesNotExist:
             # Handle the case where the bill with the given uuid does not exist.
             return None
+
+    @classmethod
+    def get_users_bills_with_status_info(cls, user):
+        """Returns a queryset of bills related to the user with additional
+        status information.
+
+        This has been added to prevent the n+1 query. It removes the need to call
+        get_most_common_status_details in the bill list serializer. The status info
+        returned would be used to determine the long status on the client.
+
+        Args:
+            user: The user making the request. Usually provided by view consuming method.
+
+        Returns:
+            A queryset of Bill objects with the following annotations:
+                - most_common_status: The status that occurs most frequently among
+                    the bill actions.
+                - most_common_status_count: The number of bill actions with the most
+                    common status.
+                - are_all_statuses_same: A boolean flag indicating whether all bill
+                    actions have the same status or not.
+        """
+
+        bills = (
+            Bill.objects.select_related("creditor", "creator")
+            .prefetch_related("unregistered_participants", "participants")
+            .filter(Q(participants=user) | Q(creditor=user))
+        )
+
+        status_count_subquery = (
+            BillAction.objects.filter(bill=OuterRef("pk"))
+            .values("status")
+            .annotate(count=Count("status"))
+            .order_by("-count")
+        )
+
+        bills_with_status_info = bills.annotate(
+            most_common_status=Subquery(status_count_subquery.values("status")[:1]),
+            most_common_status_count=Subquery(
+                status_count_subquery.values("count")[:1]
+            ),
+            are_all_statuses_same=~Exists(status_count_subquery[1:]),
+        )
+
+        return bills_with_status_info
 
     def get_most_common_status_details(self):
         """Returns the most common status and its frequency, as well as a flag

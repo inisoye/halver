@@ -132,8 +132,8 @@ def handle_bill_contribution(action):
         first_charge_date = bill.first_charge_date
         is_first_charge_date_in_past = check_date_is_in_past(first_charge_date)
 
-        # Pick a random next start date to use when first charge date is already
-        # in the past.
+        # Pick a random next start date (within the bill) to use when first charge date
+        # is already in the past.
         first_action_with_subscription = bill.actions.filter(
             paystack_subscription__isnull=False
         ).first()

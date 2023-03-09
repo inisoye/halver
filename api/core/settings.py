@@ -211,8 +211,10 @@ REST_FRAMEWORK = {
         "core.parsers.CamelCaseFormParser",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    # Prevent the conversion of these as they have uuid keys nested.
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
     "JSON_UNDERSCOREIZE": {
+        # Prevent the conversion of these as they have uuid keys nested.
         "ignore_fields": ("participants_contribution_index",),
         "ignore_keys": ("participants_contribution_index",),
     },

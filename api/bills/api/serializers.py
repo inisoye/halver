@@ -87,11 +87,19 @@ class BillCreateSerializer(serializers.ModelSerializer):
         )
 
 
+class BillCreateOutputSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bill
+        fields = ("uuid",)
+        read_only_fields = ("uuid",)
+
+
 class BillListSerializer(serializers.ModelSerializer):
     interval = serializers.SerializerMethodField()
+    is_creator = serializers.SerializerMethodField()
     is_creditor = serializers.SerializerMethodField()
     is_recurring = serializers.BooleanField()
-    status = serializers.DictField()
+    status_info = serializers.SerializerMethodField()
     total_participants = serializers.IntegerField()
 
     def get_interval(self, obj) -> str:
@@ -108,19 +116,30 @@ class BillListSerializer(serializers.ModelSerializer):
 
         return obj.get_interval_display()
 
+    def get_is_creator(self, obj) -> bool:
+        return obj.creator == self.context["request"].user
+
     def get_is_creditor(self, obj) -> bool:
         return obj.creditor == self.context["request"].user
+
+    def get_status_info(self, obj):
+        return {
+            "most_common_status": obj.most_common_status,
+            "most_common_status_count": obj.most_common_status_count,
+            "are_all_statuses_same": obj.are_all_statuses_same,
+        }
 
     class Meta:
         model = Bill
         fields = (
             "created",
             "interval",
+            "is_creator",
             "is_creditor",
             "is_recurring",
             "modified",
             "name",
-            "status",
+            "status_info",
             "total_participants",
             "uuid",
         )
