@@ -18,6 +18,7 @@ def handle_paystack_webhook_response(request_data):
     appropriate tasks based on the event. The events handled are:
         * charge.success
         * transfer.success
+        * subscription.create
         * transfer.failed
         * transfer.reversed
 
@@ -41,6 +42,9 @@ def handle_paystack_webhook_response(request_data):
 
         if is_contribution:
             process_action_updates_and_contribution_transfer.delay(request_data)
+
+    if event == "subscription.create":
+        print(data)
 
     if event == "transfer.success":
         reason = data.get("reason")

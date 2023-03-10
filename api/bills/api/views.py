@@ -79,7 +79,6 @@ class BillRetrieveUpdateView(APIView):
         bill = Bill.get_bill_with_details(uuid)
 
         if bill is None:
-            # Handle the case where the bill with the given uuid does not exist.
             return HttpResponseNotFound()
 
         self.check_object_permissions(request, bill)
@@ -127,7 +126,8 @@ class BillRetrieveUpdateView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# TODO Add additional view that converts unregistered participants to registered
+# TODO Add additional view that converts unregistered participants to registered.
+# Paystack plans should be moved as well as actions and bills!!
 
 
 class ActionResponseUpdateView(APIView):
