@@ -32,7 +32,7 @@ DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS: list[str] = [
     "127.0.0.1",
-    "b455-41-58-201-192.eu.ngrok.io",
+    "ca7f-102-67-1-124.eu.ngrok.io",
 ]
 
 
@@ -227,7 +227,7 @@ CORS_ORIGIN_WHITELIST = (
     "http://localhost:3000",
     "http://localhost:5173",
     "http://localhost:8000",
-    "https://b455-41-58-201-192.eu.ngrok.io",
+    "https://ca7f-102-67-1-124.eu.ngrok.io",
 )
 
 
@@ -236,7 +236,7 @@ CORS_ORIGIN_WHITELIST = (
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://b455-41-58-201-192.eu.ngrok.io",
+    "https://ca7f-102-67-1-124.eu.ngrok.io",
 ]
 
 

@@ -24,26 +24,33 @@ def format_paystack_plan_payloads(bill_actions):
     paystack_plan_payloads = []
 
     for action in bill_actions:
+        user_name = (
+            action.participant.full_name
+            if action.participant
+            else action.unregistered_participant.name
+        )
+
         user_uuid = (
-            f"participant with id: {action.participant.uuid}"
+            f"Participant id: {action.participant.uuid}"
             if action.participant
             else (
-                "unregistered participant with id:"
-                f" {action.unregistered_participant.uuid}"
+                f"Unregistered participant id: {action.unregistered_participant.uuid}"
             )
         )
-        # ! Be careful not to change name without good reason.
-        # ! Subscription flow is heavily dependent on the uuids in it.
+
+        # ! Be careful not to change name without a good reason.
+        # ! The subscription flow is heavily dependent on the uuids in it.
+
         name = (
-            f"Plan for {user_uuid} on the bill with id: {action.bill.uuid}. Action id:"
-            f" {action.uuid}"
+            "Plan for"
+            f" {user_name} on"
+            f" the '{action.bill.name}' bill. {user_uuid}. Action id: {action.uuid}"
         )
         amount_in_kobo = convert_to_kobo_integer(action.total_payment_due)
         interval = action.bill.interval
         description = (
             "Paystack plan for "
-            f"{action.participant or action.unregistered_participant} "
-            f"on the '{action.bill.name}' bill."
+            f"{user_name} on the '{action.bill.name}' bill. Bill id: {action.bill.uuid}"
         )
         currency = action.bill.currency_code
 
@@ -60,67 +67,44 @@ def format_paystack_plan_payloads(bill_actions):
     return paystack_plan_payloads
 
 
-def get_uuid_for_participant_from_plan(
-    plan_name_string,
-):
-    """Extract the participant's UUID from a plan's name string.
+def get_participant_and_action_uuids_from_plan(plan_name_string):
+    """Extract the participant and action UUIDs from a plan's name string.
 
-    The name string format is: "Plan for participant with id: <participant_uuid> on the
-    bill with id: <bill_uuid>. Action id: <action_uuid>" or "Plan for unregistered
-    participant with id: <participant_uuid> on the bill with id: <bill_uuid>. Action id:
-    <action_uuid>"
-
+    The name string format is:
+        "Plan for <participant_name> on the '<bill_name>' bill. Participant id:
+        <participant_uuid>. Action id: <action_uuid>"
+        or
+        "Plan for <unregistered_participant_name> on the '<bill_name>' bill.
+        Unregistered participant id: <unregistered participant_uuid>. Action id:
+        <action_uuid>"
 
     Args:
         plan_name_string (str): The plan's name string to extract the UUIDs from
 
     Returns:
-        tuple: The participant UUID
+        tuple: The participant UUID, boolean indicating if participant is registered,
+            and the action UUID
     """
 
-    participant_index = plan_name_string.index("participant with id: ") + len(
-        "participant with id: "
-    )
+    if "Participant id:" in plan_name_string:
+        is_participant_registered = True
+        participant_index = plan_name_string.index("Participant id:") + len(
+            "Participant id:"
+        )
+    else:
+        is_participant_registered = False
+        participant_index = plan_name_string.index(
+            "Unregistered participant id:"
+        ) + len("Unregistered participant id:")
 
     participant_uuid = plan_name_string[
-        participant_index : plan_name_string.index(" on the ")  # noqa E203
+        participant_index : plan_name_string.index(". Action id")  # noqa E203
     ].strip()
 
-    return participant_uuid
-
-
-def get_uuids_for_participant_and_bill_and_action_from_plan(plan_name_string):
-    """Extract the participant, bill and action UUIDs from a plan's name string.
-
-    The name string format is: "Plan for participant with id: <participant_uuid> on the
-    bill with id: <bill_uuid>. Action id: <action_uuid>" or "Plan for unregistered
-    participant with id: <participant_uuid> on the bill with id: <bill_uuid>. Action id:
-    <action_uuid>"
-
-    Args:
-        plan_name_string (str): The plan's name string to extract the UUIDs from
-
-    Returns:
-        tuple: A tuple containing the participant UUID, bill UUID, and action UUID
-    """
-
-    participant_index = plan_name_string.index("participant with id: ") + len(
-        "participant with id: "
-    )
-    bill_index = plan_name_string.index("bill with id: ") + len("bill with id: ")
     action_index = plan_name_string.index("Action id: ") + len("Action id: ")
-
-    participant_uuid = plan_name_string[
-        participant_index : plan_name_string.index(" on the ")  # noqa E203
-    ].strip()
-
-    bill_uuid = plan_name_string[
-        bill_index : plan_name_string.index(". Action id: ")  # noqa E203
-    ].strip()
-
     action_uuid = plan_name_string[action_index:].strip()
 
-    return participant_uuid, bill_uuid, action_uuid
+    return participant_uuid, is_participant_registered, action_uuid
 
 
 def create_participants_and_actions_index(bill_actions):
