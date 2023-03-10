@@ -191,6 +191,7 @@ def handle_bill_contribution(action):
         and action.paystack_subscription.exists()
     )
 
+    # Handle new subscriptions
     if not has_subscription_been_created_already:
         subscription_creation_response = handle_subscription_creation(
             bill, participant_card, action
@@ -198,11 +199,10 @@ def handle_bill_contribution(action):
 
         return subscription_creation_response
 
-    else:
-        return format_exception(
-            "Your subscription on this bill is already active.",
-            status=status.HTTP_409_CONFLICT,
-        )
+    return format_exception(
+        "Your subscription on this bill is already active.",
+        status=status.HTTP_409_CONFLICT,
+    )
 
 
 def create_contribution_transaction_object(data, action, participant, request_data):
