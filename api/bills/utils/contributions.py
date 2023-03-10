@@ -1,9 +1,11 @@
 import uuid
 
 from celery.utils.log import get_task_logger
+from rest_framework import status
 
 from core.utils.currency import convert_to_kobo_integer, convert_to_naira
-from core.utils.dates_and_time import check_date_is_in_past, get_one_day_from_date
+from core.utils.dates_and_time import check_date_is_in_past, get_one_day_from_now
+from core.utils.responses import format_exception
 from financials.models import PaystackTransaction, UserCard
 from libraries.paystack.subscription_requests import SubscriptionRequests
 from libraries.paystack.transaction_requests import TransactionRequests
@@ -79,6 +81,64 @@ def handle_one_time_contribution(
     return charge_response
 
 
+def handle_subscription_creation(bill, participant_card, action):
+    """
+    Create a subscription for a participant based on a bill, participant's card details,
+    and a triggering action.
+
+    Args:
+        bill: A Bill object.
+        participant_card: A UserCard object containing the participant's card details.
+        action: A BillAction object relevant to the subscription.
+
+    Returns:
+        A response object from SubscriptionRequests.create.
+    """
+
+    first_charge_date = bill.first_charge_date
+    is_first_charge_date_in_past = check_date_is_in_past(first_charge_date)
+
+    # Pick a random next start date (within the bill) to use when first charge date
+    # is already in the past.
+    first_action_with_subscription = bill.actions.filter(
+        paystack_subscription__isnull=False
+    ).first()
+    selected_next_start_date = (
+        first_action_with_subscription.paystack_subscription.next_start_date
+        if first_action_with_subscription
+        else None
+    )
+
+    subscription_start_date = None
+
+    has_first_charge_date_passed_with_no_subscriptions = (
+        is_first_charge_date_in_past and (not first_action_with_subscription)
+    )
+
+    if has_first_charge_date_passed_with_no_subscriptions:
+        new_first_charge_date = get_one_day_from_now(
+            use_day_start=True,
+        )
+        bill.change_first_charge_date(new_first_charge_date)
+        subscription_start_date = new_first_charge_date
+
+    else:
+        subscription_start_date = (
+            selected_next_start_date
+            if is_first_charge_date_in_past
+            else first_charge_date
+        )
+
+    response = SubscriptionRequests.create(
+        customer=participant_card.email,
+        plan=action.paystack_plan.plan_code,
+        authorization=participant_card.authorization_code,
+        start_date=str(subscription_start_date),
+    )
+
+    return response
+
+
 def handle_bill_contribution(action):
     """Handle a contribution to a bill by either creating a Paystack charge for
     a one-time payment or creating a subscription to automatically charge the
@@ -126,51 +186,23 @@ def handle_bill_contribution(action):
 
         return charge_response
 
-    has_subscription_been_created_already = action.paystack_subscription.exists()
+    has_subscription_been_created_already = (
+        hasattr(action, "paystack_subscription")
+        and action.paystack_subscription.exists()
+    )
 
     if not has_subscription_been_created_already:
-        first_charge_date = bill.first_charge_date
-        is_first_charge_date_in_past = check_date_is_in_past(first_charge_date)
-
-        # Pick a random next start date (within the bill) to use when first charge date
-        # is already in the past.
-        first_action_with_subscription = bill.actions.filter(
-            paystack_subscription__isnull=False
-        ).first()
-        selected_next_start_date = (
-            first_action_with_subscription.paystack_subscription.next_start_date
-            if first_action_with_subscription
-            else None
+        subscription_creation_response = handle_subscription_creation(
+            bill, participant_card, action
         )
 
-        subscription_start_date = None
+        return subscription_creation_response
 
-        has_first_charge_date_passed_with_no_subscriptions = (
-            is_first_charge_date_in_past and (not first_action_with_subscription)
+    else:
+        return format_exception(
+            "Your subscription on this bill is already active.",
+            status=status.HTTP_409_CONFLICT,
         )
-
-        if has_first_charge_date_passed_with_no_subscriptions:
-            new_first_charge_date = get_one_day_from_date(
-                date=first_charge_date, use_day_start=True
-            )
-            bill.change_first_charge_date(new_first_charge_date)
-            subscription_start_date = new_first_charge_date
-
-        else:
-            subscription_start_date = (
-                selected_next_start_date
-                if is_first_charge_date_in_past
-                else first_charge_date
-            )
-
-        response = SubscriptionRequests.create(
-            customer=participant_card.email,
-            plan=action.paystack_plan.plan_code,
-            authorization=participant_card.authorization_code,
-            start_date=subscription_start_date,
-        )
-
-        return response
 
 
 def create_contribution_transaction_object(data, action, participant, request_data):
