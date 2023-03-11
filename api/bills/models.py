@@ -25,6 +25,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     # ! cancelled when a user deletes their account.
 
     class IntervalChoices(models.TextChoices):
+        HOURLY = "hourly", "Hourly"
         DAILY = "daily", "Daily"
         WEEKLY = "weekly", "Weekly"
         MONTHLY = "monthly", "Monthly"
@@ -436,6 +437,9 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
 
     def mark_as_completed(self):
         self._update_status(self.StatusChoices.COMPLETED)
+
+    def mark_as_ongoing(self):
+        self._update_status(self.StatusChoices.ONGOING)
 
 
 class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):

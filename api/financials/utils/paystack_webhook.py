@@ -1,8 +1,11 @@
+import json
+
 from bills.tasks.contributions import (
     finalize_one_time_contribution,
     process_action_updates_and_contribution_transfer,
     record_contribution_transfer_object,
 )
+from bills.tasks.subscriptions import process_action_updates_and_subscription_creation
 from financials.models import PaystackTransfer
 from financials.tasks.cards import (
     process_card_creation_and_refund,
@@ -33,6 +36,8 @@ def handle_paystack_webhook_response(request_data):
     data = request_data.get("data")
 
     if event == "charge.success":
+        print("CHARGE SUCCESS", json.dumps(request_data))
+
         metadata = data.get("metadata")
         is_card_addition = metadata.get("is_card_addition") == "true"
         is_contribution = metadata.get("is_contribution") == "true"
@@ -44,7 +49,7 @@ def handle_paystack_webhook_response(request_data):
             process_action_updates_and_contribution_transfer.delay(request_data)
 
     if event == "subscription.create":
-        print(data)
+        process_action_updates_and_subscription_creation.delay(request_data)
 
     if event == "transfer.success":
         reason = data.get("reason")
@@ -106,3 +111,12 @@ def handle_paystack_webhook_response(request_data):
                 request_data,
                 PaystackTransfer.TransferOutcomeChoices.REVERSED,
             )
+
+    if event == "invoice.create":
+        print("INVOICE CREATED", json.dumps(request_data))
+
+    if event == "invoice.payment_failed":
+        print("INVOICE FAILED", json.dumps(request_data))
+
+    if event == "invoice.update":
+        print("INVOICE UPDATED", json.dumps(request_data))

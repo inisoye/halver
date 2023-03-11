@@ -246,6 +246,9 @@ class BillDetailSerializer(serializers.ModelSerializer):
     total_participants = serializers.IntegerField()
     transactions = BillDetailTransactionSerializer(many=True)
 
+    # TODO The requester's action and the subscription tied to it should be returned
+    # here as well.
+
     def get_interval(self, obj) -> str:
         """Returns the human-readable version of the interval field.
 

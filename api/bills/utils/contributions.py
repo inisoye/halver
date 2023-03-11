@@ -1,11 +1,9 @@
 import uuid
 
 from celery.utils.log import get_task_logger
-from rest_framework import status
 
 from core.utils.currency import convert_to_kobo_integer, convert_to_naira
 from core.utils.dates_and_time import check_date_is_in_past, get_one_day_from_now
-from core.utils.responses import format_exception
 from financials.models import PaystackTransaction, UserCard
 from libraries.paystack.subscription_requests import SubscriptionRequests
 from libraries.paystack.transaction_requests import TransactionRequests
@@ -82,9 +80,8 @@ def handle_one_time_contribution(
 
 
 def handle_subscription_creation(bill, participant_card, action):
-    """
-    Create a subscription for a participant based on a bill, participant's card details,
-    and a triggering action.
+    """Create a Paystack subscription for a participant based on a bill,
+    participant's card details, and a triggering action.
 
     Args:
         bill: A Bill object.
@@ -151,8 +148,9 @@ def handle_bill_contribution(action):
             bill and a participant.
 
     Returns:
-        dict: A dictionary representing the Paystack charge created for the contribution
-            (if the bill is not recurring) or a dictionary representing the subscription.
+        dict or none: A dictionary representing the Paystack charge created for the
+            contribution (if the bill is not recurring) or a dictionary representing the
+            subscription. If the subscription has already been created, returns None.
     """
 
     action_uuid_string = action.uuid.__str__()
@@ -188,7 +186,7 @@ def handle_bill_contribution(action):
 
     has_subscription_been_created_already = (
         hasattr(action, "paystack_subscription")
-        and action.paystack_subscription.exists()
+        and action.paystack_subscription is not None
     )
 
     # Handle new subscriptions
@@ -199,13 +197,25 @@ def handle_bill_contribution(action):
 
         return subscription_creation_response
 
-    return format_exception(
-        "Your subscription on this bill is already active.",
-        status=status.HTTP_409_CONFLICT,
-    )
+    # Subscription has already been created
+    return None
 
 
 def create_contribution_transaction_object(data, action, participant, request_data):
+    """
+    Creates a new PaystackTransaction object for a participant payment.
+
+    Args:
+        data (dict): A dictionary containing information about the payment, including
+            the amount and authorization signature. As obtained in Paystack webhook.
+        action (str): The action being performed in the transaction.
+        participant (CustomUser): The participant who is making the payment.
+        request_data (dict): A dictionary containing the complete response from Paystack.
+
+    Returns:
+        PaystackTransaction: The newly created PaystackTransaction object.
+    """
+
     amount = data.get("amount")
     amount_in_naira = convert_to_naira(amount)
 
@@ -235,6 +245,19 @@ def initiate_contribution_transfer(
     creditor_default_recipient_code,
     reason,
 ) -> None:
+    """Initiates a transfer of a contribution to a creditor's default recipient
+        account/card.
+
+    Args:
+        contribution_amount (float): The amount of money to be transferred.
+        creditor_default_recipient_code (str): The code for the creditor's default
+            recipient account/card.
+        reason (str): The reason for the transfer.
+
+    Returns:
+        None
+    """
+
     paystack_transfer_payload = {
         "source": "balance",
         "amount": contribution_amount,

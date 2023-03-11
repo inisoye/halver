@@ -187,6 +187,7 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
     """
 
     class IntervalChoices(models.TextChoices):
+        HOURLY = "hourly", "Hourly"
         DAILY = "daily", "Daily"
         WEEKLY = "weekly", "Weekly"
         MONTHLY = "monthly", "Monthly"
@@ -348,10 +349,6 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
     )
     start_date = models.DateTimeField()
     next_payment_date = models.DateTimeField()
-    complete_paystack_payload = models.JSONField(
-        null=True,
-        editable=False,
-    )
     complete_paystack_response = models.JSONField(
         editable=False,
     )

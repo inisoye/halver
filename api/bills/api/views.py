@@ -71,8 +71,8 @@ class BillRetrieveUpdateView(APIView):
     def get(self, request, uuid):
         """Returns the bill details for a given Bill UUID.
 
-        If the bill is discreet and the requester is neither the bill's
-        creditor nor its creator, the discreet ("actions" and "transactions") fields are
+        If the bill is discreet and the requester is neither the bill's creditor
+        nor its creator, the discreet ("actions" and "transactions") fields are
         excluded from the response.
         """
 
@@ -131,17 +131,33 @@ class BillRetrieveUpdateView(APIView):
 
 
 class ActionResponseUpdateView(APIView):
-    """ """
+    """A view for updating the response of a participant to a bill action.
+
+    Participants can agree or opt out of bill actions, and make contributions to
+    bills they have agreed to. One-time payments and subscriptions are handled
+    with Paystack's services.
+    """
 
     permission_classes = (IsRegisteredParticipant, ParticipantHasDefaultCard)
     serializer_class = ActionResponseUpdateSerializer
 
     def patch(self, request, uuid):
-        """ """
+        """Handles PATCH requests for updating the response of a participant to
+        a bill action. Will make a payment or create a subscription if payload
+        is well formatted.
 
-        actions_queryset = BillAction.objects.select_related(
-            "bill", "bill__creditor", "participant"
-        ).filter(uuid=uuid)
+        Accepts the UUID of the bill action to update.
+        """
+
+        actions_queryset = (
+            BillAction.objects.filter(uuid=uuid)
+            .select_related(
+                "bill",
+                "bill__creditor",
+                "participant",
+            )
+            .prefetch_related("paystack_subscription")
+        )
         action = get_object_or_404(actions_queryset)
 
         self.check_object_permissions(request, action)
@@ -162,6 +178,12 @@ class ActionResponseUpdateView(APIView):
             )
 
         response = handle_bill_contribution(action)
+
+        if response is None:
+            return format_exception(
+                "Your subscription on this bill is already active.",
+                status=409,
+            )
 
         if response["status"]:
             return Response(response, status=status.HTTP_200_OK)
