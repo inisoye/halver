@@ -6,33 +6,33 @@ from django.utils import timezone
 
 def check_date_is_in_past(dt: datetime.datetime | None) -> bool:
     """
-    Check whether a given date is in the past.
+    Check whether a given datetime is in the past.
 
     Args:
-        dt: The date to be checked.
+        dt: The datetime to be checked.
 
     Returns:
-        bool: True if the date is in the past, False otherwise.
+        bool: True if the datetime is in the past, False otherwise.
     """
 
     if dt is None:
         raise ValidationError("A date must be provided.")
 
-    return dt.date() < datetime.date.today()
+    return dt < timezone.now()
 
 
 def validate_date_not_in_past(dt: datetime.datetime | None, date_name: str) -> None:
-    """Validate that a given date is not in the past.
+    """Validate that a given datetime is not in the past.
 
     Args:
-        dt: The date to be validated.
-        date_name: The name of the date, used in the error message.
+        dt: The datetime to be validated.
+        date_name: The name of the datetime, used in the error message.
     """
 
     if dt is None:
         raise ValidationError(f"{date_name} must be provided.")
 
-    if dt.date() < datetime.date.today():
+    if dt < timezone.now():
         raise ValidationError(f"{date_name} cannot be in the past.")
 
 
