@@ -310,12 +310,25 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
 
     bill = action.bill
     bill_name = bill.name
+    is_bill_recurring = bill.is_recurring
 
     creditor = bill.creditor
     creditor_name = creditor.full_name
     creditor_default_recipient_code = creditor.default_transfer_recipient.recipient_code
 
     data = request_data.get("data")
+
+    # Update next payment date on subscription object for recurring bills
+    if is_bill_recurring:
+        subscription_object = action.paystack_subscription
+        subscription_code = subscription_object.paystack_subscription_code
+
+        paystack_subscription_response = SubscriptionRequests.fetch(subscription_code)
+        next_payment_date = paystack_subscription_response.get("data").get(
+            "next_payment_date"
+        )
+
+        subscription_object.change_next_payment_date(next_payment_date)
 
     create_contribution_transaction_object(
         data=data,

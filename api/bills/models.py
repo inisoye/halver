@@ -454,10 +454,10 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
         max_digits=19,
         decimal_places=4,
     )
-    action = models.OneToOneField(
+    action = models.ForeignKey(
         BillAction,
         on_delete=models.PROTECT,
-        related_name="halver_transaction",
+        related_name="halver_transactions",
     )
     paystack_transaction = models.OneToOneField(
         "financials.PaystackTransaction",

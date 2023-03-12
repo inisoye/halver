@@ -318,10 +318,10 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
         COMPLETED = "completed", "Completed"
         CANCELLED = "cancelled", "Cancelled"
 
-    plan = models.ForeignKey(
+    plan = models.OneToOneField(
         PaystackPlan,
         on_delete=models.PROTECT,
-        related_name="paystack_subscriptions",
+        related_name="paystack_subscription",
     )
     participant = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -349,6 +349,9 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
     )
     start_date = models.DateTimeField()
     next_payment_date = models.DateTimeField()
+    paystack_subscription_code = models.CharField(
+        max_length=100,
+    )
     complete_paystack_response = models.JSONField(
         editable=False,
     )
@@ -362,6 +365,10 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
             f"participant: {self.participant.full_name}, plan interval:"
             f" {self.plan.interval}, plan amount: {self.plan.amount}"
         )
+
+    def change_next_payment_date(self, new_next_payment_date):
+        self.next_payment_date = new_next_payment_date
+        self.save(update_fields=["next_payment_date"])
 
 
 class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
