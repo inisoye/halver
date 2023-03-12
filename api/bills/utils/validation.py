@@ -207,7 +207,7 @@ def validate_participants_and_unregistered_participants(
 
     if not creditor.has_default_transfer_recipient:
         raise serializers.ValidationError(
-            "A bill's creditor must have a transfer recipient on their account."
+            "A bill's creditor must have a default transfer recipient on their account."
         )
 
     # Creator obtained with this approach as it is a read only field.

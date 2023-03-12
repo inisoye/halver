@@ -38,7 +38,7 @@ def create_bill(bill_model, validated_data, creator):
 
     if not creditor.has_default_transfer_recipient:
         raise ValidationError(
-            "A bill's creditor must have a transfer recipient on their account."
+            "A bill's creditor must have a default transfer recipient on their account."
         )
 
     new_bill = bill_model.objects.create(
