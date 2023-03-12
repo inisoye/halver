@@ -12,7 +12,7 @@ from financials.models import (
     PaystackTransfer,
     UserCard,
 )
-from financials.utils.plans import get_participant_and_action_uuids_from_plan
+from financials.utils.plans import extract_uuids_from_plan_description
 
 logger = get_task_logger(__name__)
 
@@ -34,16 +34,11 @@ def process_subscription_creation(request_data):
     subscription_code = data.get("subscription_code")
     authorization_signature = data.get("authorization").get("signature")
 
-    plan_name = plan.get("name")
+    plan_description = plan.get("description")
 
     card = UserCard.objects.get(signature=authorization_signature)
 
-    # TODO Move details form plan name to plan description.
-    (
-        participant_uuid,
-        is_participant_registered,
-        action_uuid,
-    ) = get_participant_and_action_uuids_from_plan(plan_name)
+    _, _, action_uuid, _ = extract_uuids_from_plan_description(plan_description)
 
     action = BillAction.objects.get(uuid=action_uuid)
     plan_object = action.paystack_plan
@@ -77,13 +72,9 @@ def process_action_updates_and_subscription_contribution_transfer(request_data):
 
     plan = data.get("plan")
 
-    plan_name = plan.get("name")
+    plan_description = plan.get("description")
 
-    (
-        participant_uuid,
-        is_participant_registered,
-        action_uuid,
-    ) = get_participant_and_action_uuids_from_plan(plan_name)
+    _, _, action_uuid, _ = extract_uuids_from_plan_description(plan_description)
 
     process_contribution_transfer(
         action_id=action_uuid,

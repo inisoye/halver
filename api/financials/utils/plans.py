@@ -13,12 +13,12 @@ def format_paystack_plan_payloads(bill_actions):
 
     Args:
         bill_actions (List[BillAction]): A list of BillAction objects representing
-        actions to be performed on a bill.
+            actions to be performed on a bill.
 
     Returns:
         List[Dict[str, Union[str, int]]]: A list of dictionaries representing Paystack
-        plan payloads. Each dictionary contains the following keys: 'name', 'amount',
-        'interval', 'description', and 'currency'.
+            plan payloads. Each dictionary contains the following keys: 'name', 'amount',
+            'interval', 'description', and 'currency'.
     """
 
     paystack_plan_payloads = []
@@ -30,7 +30,7 @@ def format_paystack_plan_payloads(bill_actions):
             else action.unregistered_participant.name
         )
 
-        user_uuid = (
+        user_uuid_string = (
             f"Participant id: {action.participant.uuid}"
             if action.participant
             else (
@@ -38,20 +38,15 @@ def format_paystack_plan_payloads(bill_actions):
             )
         )
 
-        # ! Be careful not to change name without a good reason.
+        # ! Be careful not to change desctiption without a good reason.
         # ! The subscription flow is heavily dependent on the uuids in it.
-        # TODO move the bulk of this to description to clean up plan name.
 
-        name = (
-            "Plan for"
-            f" {user_name} on"
-            f" the '{action.bill.name}' bill. {user_uuid}. Action id: {action.uuid}"
-        )
+        name = f"Plan for {user_name} on the '{action.bill.name}' bill."
         amount_in_kobo = convert_to_kobo_integer(action.total_payment_due)
         interval = action.bill.interval
         description = (
-            "Paystack plan for "
-            f"{user_name} on the '{action.bill.name}' bill. Bill id: {action.bill.uuid}"
+            f"{user_uuid_string}. Action id: {action.uuid}. Bill id:"
+            f" {action.bill.uuid}."
         )
         currency = action.bill.currency_code
 
@@ -68,44 +63,55 @@ def format_paystack_plan_payloads(bill_actions):
     return paystack_plan_payloads
 
 
-def get_participant_and_action_uuids_from_plan(plan_name_string):
-    """Extract the participant and action UUIDs from a plan's name string.
+def extract_uuids_from_plan_description(description):
+    """Extract the participant/unregistered participant, action, and bill UUIDs from
+    a plan description string.
 
-    The name string format is:
-        "Plan for <participant_name> on the '<bill_name>' bill. Participant id:
-        <participant_uuid>. Action id: <action_uuid>"
-        or
-        "Plan for <unregistered_participant_name> on the '<bill_name>' bill.
-        Unregistered participant id: <unregistered participant_uuid>. Action id:
-        <action_uuid>"
+    The description string format is:
+        "<participant_id_string>. Action id: <action_uuid>. Bill id: <bill_uuid>"
+
+    <participant_id_string> could be either Participant id: <participant_uuid> or
+        Unregistered participant id: <unregistered participant_uuid>
 
     Args:
-        plan_name_string (str): The plan's name string to extract the UUIDs from
+        description (str): The description string to extract the UUIDs from
 
     Returns:
         tuple: The participant UUID, boolean indicating if participant is registered,
-            and the action UUID
+            the action UUID, and bill UUID (with extra text removed)
     """
 
-    if "Participant id:" in plan_name_string:
+    # Extract participant UUID and registration status
+    if "Participant id:" in description:
         is_participant_registered = True
-        participant_index = plan_name_string.index("Participant id:") + len(
+        participant_index = description.index("Participant id:") + len(
             "Participant id:"
         )
     else:
         is_participant_registered = False
-        participant_index = plan_name_string.index(
+        participant_index = description.index("Unregistered participant id:") + len(
             "Unregistered participant id:"
-        ) + len("Unregistered participant id:")
+        )
 
-    participant_uuid = plan_name_string[
-        participant_index : plan_name_string.index(". Action id")  # noqa E203
+    # Extract the participant UUID from the description string
+    participant_uuid = description[
+        participant_index : description.index(". Action id")  # noqa E203
     ].strip()
 
-    action_index = plan_name_string.index("Action id: ") + len("Action id: ")
-    action_uuid = plan_name_string[action_index:].strip()
+    # Extract action UUID
+    action_index = description.index("Action id: ") + len("Action id: ")
+    action_uuid = description[
+        action_index : description.index(". Bill id")  # noqa E203
+    ].strip()
 
-    return participant_uuid, is_participant_registered, action_uuid
+    # Extract bill UUID with extra text
+    bill_index = description.index("Bill id: ") + len("Bill id: ")
+    bill_uuid_with_extra_text = description[bill_index:].strip()
+
+    # Remove any extra text from bill UUID
+    bill_uuid = bill_uuid_with_extra_text.split(".")[0]
+
+    return participant_uuid, is_participant_registered, action_uuid, bill_uuid
 
 
 def create_participants_and_actions_index(bill_actions):
