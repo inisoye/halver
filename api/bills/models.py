@@ -7,11 +7,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from accounts.models import CustomUser
 from bills.utils.bills import create_bill, generate_long_status_index
 from core.models import AbstractCurrencyModel, AbstractTimeStampedUUIDModel
-from core.utils.dates_and_time import (
-    get_one_week_from_now,
-    validate_date_is_at_least_one_week_into_future,
-    validate_date_not_in_past,
-)
+from core.utils.dates_and_time import validate_date_not_in_past
 
 
 class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
@@ -58,7 +54,6 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     first_charge_date = models.DateTimeField(
         blank=True,
         null=True,
-        default=get_one_week_from_now,
     )
     deadline = models.DateTimeField(
         blank=True,
@@ -101,17 +96,10 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         super().clean()
         self._validate_dates()
 
-        if self.pk is None:
-            validate_date_is_at_least_one_week_into_future(
-                self.first_charge_date,
-                "First Charge Date",
-                use_day_start=True,
-            )
-
     def _validate_dates(self) -> None:
         validate_date_not_in_past(self.deadline, "Deadline")
 
-        if self.is_recurring:
+        if self.interval != "none":
             validate_date_not_in_past(self.first_charge_date, "First Charge Date")
 
     def _validate_amounts(self) -> None:
