@@ -40,6 +40,7 @@ def format_paystack_plan_payloads(bill_actions):
 
         # ! Be careful not to change name without a good reason.
         # ! The subscription flow is heavily dependent on the uuids in it.
+        # TODO move the bulk of this to description to clean up plan name.
 
         name = (
             "Plan for"

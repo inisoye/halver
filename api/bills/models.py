@@ -400,7 +400,7 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
     def __str__(self) -> str:
         return (
             f"participant: {self.participant or self.unregistered_participant},"
-            f" payment_due: {self.total_payment_due}, bill: ({self.bill.name})"
+            f" payment_due: {self.total_payment_due}, bill: {self.bill.name}"
         )
 
     def clean(self):

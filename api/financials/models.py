@@ -368,7 +368,14 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
     """Stores data returned by Paystack after a verified card transaction."""
 
     class TransactionChoices(models.TextChoices):
-        PARTICIPANT_PAYMENT = "participant_payment", "Participant payment"
+        ONE_TIME_CONTRIBUTION = (
+            "one_time_contribution",
+            "One-time contribution",
+        )
+        SUBSCRIPTION_CONTRIBUTION = (
+            "subscription_contribution",
+            "Subscription contribution",
+        )
         CARD_ADDITION = "card_addition", "Card addition"
 
     class TransactionOutcomeChoices(models.TextChoices):

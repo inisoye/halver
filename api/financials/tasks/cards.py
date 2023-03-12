@@ -119,7 +119,7 @@ def record_card_addition_transfer_object(request_data, transfer_outcome):
     """
 
     create_paystack_transfer_object(
-        request_data,
-        transfer_outcome,
-        PaystackTransfer.TransferChoices.CARD_ADDITION_REFUND,
+        request_data=request_data,
+        transfer_outcome=transfer_outcome,
+        transfer_type=PaystackTransfer.TransferChoices.CARD_ADDITION_REFUND,
     )

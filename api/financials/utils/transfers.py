@@ -44,3 +44,44 @@ def create_paystack_transfer_object(
     }
 
     return PaystackTransfer.objects.create(**paystack_transfer_object)
+
+
+def extract_paystack_transaction_id_from_transfer_reason(reason: str):
+    """Extract the Paystack transaction ID from a the reason string of a transfer.
+
+    Example:
+        >>> reason = "Subscription contribution transfer for action with ID:"
+        ... " b2196cba-6441-4792-abc0-d1a8763413ae from Inioluwa Akinyosoye to Inioluwa"
+        ... " Akinyosoye, on bill: Subscription tester.  Paystack transaction id:"
+        ... " 2620540701."
+        >>> extract_paystack_transaction_id(reason)
+        '2620540701'
+
+    Args:
+        string (str): The string to extract the Paystack transaction ID from
+
+    Returns:
+        str: The Paystack transaction ID, or None if not found
+    """
+
+    # Check if the string contains the "Paystack transaction id:" substring
+    if "Paystack transaction id:" in reason:
+
+        # Split the string at the "Paystack transaction id:" substring
+        split_string = reason.split("Paystack transaction id:")
+
+        # Get the second substring (after the "Paystack transaction id:" substring)
+        transaction_id_string = split_string[1]
+        # sample value of transaction_id_string: ' 2620540701. jshajkhdjashkjdhakjshj'
+
+        # Split the transaction ID substring on the first period and take the first part
+        transaction_id = transaction_id_string.split(".", 1)[0]
+        # sample value of transaction_id: '2620540701'
+
+        # Strip any leading or trailing whitespace from the transaction ID and return it
+        return transaction_id.strip()
+
+    # If the string does not contain the "Paystack transaction id:" substring,
+    # return None
+    else:
+        return None

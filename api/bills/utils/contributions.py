@@ -2,9 +2,15 @@ import uuid
 
 from celery.utils.log import get_task_logger
 
+from bills.models import BillAction, BillTransaction
 from core.utils.currency import convert_to_kobo_integer, convert_to_naira
 from core.utils.dates_and_time import check_date_is_in_past, get_one_day_from_now
-from financials.models import PaystackTransaction, UserCard
+from core.utils.strings import extract_uuidv4s_from_string
+from financials.models import PaystackTransaction, PaystackTransfer, UserCard
+from financials.utils.transfers import (
+    create_paystack_transfer_object,
+    extract_paystack_transaction_id_from_transfer_reason,
+)
 from libraries.paystack.subscription_requests import SubscriptionRequests
 from libraries.paystack.transaction_requests import TransactionRequests
 from libraries.paystack.transfer_requests import TransferRequests
@@ -184,6 +190,7 @@ def handle_bill_contribution(action):
 
         return charge_response
 
+    # Handle recurring payments/subscriptions
     has_subscription_been_created_already = (
         hasattr(action, "paystack_subscription")
         and action.paystack_subscription is not None
@@ -201,9 +208,10 @@ def handle_bill_contribution(action):
     return None
 
 
-def create_contribution_transaction_object(data, action, participant, request_data):
-    """
-    Creates a new PaystackTransaction object for a participant payment.
+def create_contribution_transaction_object(
+    data, action, participant, request_data, transaction_type
+):
+    """Creates a new PaystackTransaction object for a participant payment.
 
     Args:
         data (dict): A dictionary containing information about the payment, including
@@ -211,6 +219,7 @@ def create_contribution_transaction_object(data, action, participant, request_da
         action (str): The action being performed in the transaction.
         participant (CustomUser): The participant who is making the payment.
         request_data (dict): A dictionary containing the complete response from Paystack.
+        transaction type: PaystackTransaction.TransactionChoices option.
 
     Returns:
         PaystackTransaction: The newly created PaystackTransaction object.
@@ -229,7 +238,7 @@ def create_contribution_transaction_object(data, action, participant, request_da
         "action": action,
         "paying_user": participant,
         "transaction_outcome": PaystackTransaction.TransactionOutcomeChoices.SUCCESSFUL,
-        "transaction_type": PaystackTransaction.TransactionChoices.PARTICIPANT_PAYMENT,
+        "transaction_type": transaction_type,
         "paystack_transaction_id": data.get("id"),
         "paystack_transaction_reference": data.get("reference"),
         "complete_paystack_response": request_data,
@@ -246,7 +255,7 @@ def initiate_contribution_transfer(
     reason,
 ) -> None:
     """Initiates a transfer of a contribution to a creditor's default recipient
-        account/card.
+    account/card.
 
     Args:
         contribution_amount (float): The amount of money to be transferred.
@@ -271,3 +280,126 @@ def initiate_contribution_transfer(
     if not response["status"]:
         paystack_error = response["message"]
         logger.error(f"Error intiating Paystack transfer: {paystack_error}")
+
+
+def process_contribution_transfer(action_id, request_data, transaction_type):
+    """Common function to process contributions and initiate Paystack transfers.
+    Used for one-time and subscription contribution transfers.
+
+    Creates a transaction object in db for the contribution and initiates a Paystack
+    transfer to the bill's creditor.
+
+    Args:
+        action_id (str): The UUID of the BillAction object.
+        request_data (dict): The JSON request data received from the Paystack webhook.
+        transaction_type (str): The type of transaction to be recorded in the
+            PaystackTransaction object.
+    """
+
+    action = BillAction.objects.select_related(
+        "participant", "bill", "bill__creditor"
+    ).get(uuid=action_id)
+
+    action.mark_as_pending_transfer()
+
+    contribution_amount = action.contribution
+    contribution_amount_in_kobo = convert_to_kobo_integer(contribution_amount)
+
+    participant = action.participant
+    participant_name = participant.full_name
+
+    bill = action.bill
+    bill_name = bill.name
+
+    creditor = bill.creditor
+    creditor_name = creditor.full_name
+    creditor_default_recipient_code = creditor.default_transfer_recipient.recipient_code
+
+    data = request_data.get("data")
+
+    create_contribution_transaction_object(
+        data=data,
+        action=action,
+        participant=participant,
+        request_data=request_data,
+        transaction_type=transaction_type,
+    )
+
+    # Use this to get specific transaction when recording bill transaction in db.
+    # Check finalize_contribution method
+    paystack_transaction_id = data.get("id")
+
+    transfer_reason = (
+        f"{transaction_type.label} transfer for action with ID: {action_id} from"
+        f" {participant_name} to {creditor_name}, on bill: {bill_name}. Paystack"
+        f" transaction id: {paystack_transaction_id}."
+    )
+
+    initiate_contribution_transfer(
+        contribution_amount=contribution_amount_in_kobo,
+        creditor_default_recipient_code=creditor_default_recipient_code,
+        reason=transfer_reason,
+    )
+
+
+def finalize_contribution(request_data, transfer_outcome, final_action_status):
+    """Finalizes a contribution by creating a BillTransaction object, a
+    PaystackTransfer object, and marking the corresponding BillAction as
+    completed or ongoing, depending on the provided `action_status` showing
+    it as one-time or recurring contribution.
+
+    Args:
+        request_data (dict): A dictionary of data received from Paystack
+            webhooks containing information on a successful or failed
+            transfer.
+        transfer_outcome (str): A string indicating the outcome of the
+            transfer, should be `PaystackTransfer.TransferOutcome.SUCCESS`.
+        action_status (str): A string indicating what status value the action
+            should be updated to. Could be `BillAction.StatusChoices.COMPLETED` or`
+            BillAction.StatusChoices.ONGOING`, for example.
+    """
+
+    data = request_data.get("data")
+
+    reason = data.get("reason")
+
+    # The final contribution is the amount transferred to the creditor.
+    amount = data.get("amount")
+
+    action_id = extract_uuidv4s_from_string(reason, position=1)
+    action = BillAction.objects.get(uuid=action_id)
+
+    # The action is effectively complete or ongoing as the transfer has been successful.
+    if final_action_status == BillAction.StatusChoices.COMPLETED:
+        action.mark_as_completed()
+
+    elif final_action_status == BillAction.StatusChoices.ONGOING:
+        action.mark_as_ongoing()
+
+    paystack_transfer_object = create_paystack_transfer_object(
+        request_data=request_data,
+        transfer_outcome=transfer_outcome,
+        transfer_type=PaystackTransfer.TransferChoices.CREDITOR_SETTLEMENT,
+        action=action,
+    )
+
+    # Obtain Paystack ID of transaction that triggered this contribution
+    paystack_transaction_id = extract_paystack_transaction_id_from_transfer_reason(
+        reason
+    )
+
+    # Used to obtain the amount paid in transaction
+    paystack_transaction_object = PaystackTransaction.objects.get(
+        paystack_transaction_id=paystack_transaction_id
+    )
+
+    bill_transaction_object = {
+        "bill": action.bill,
+        "contribution": convert_to_naira(amount),
+        "total_payment": paystack_transaction_object.amount_in_naira,
+        "action": action,
+        "paystack_transaction": paystack_transaction_object,
+        "paystack_transfer": paystack_transfer_object,
+    }
+
+    BillTransaction.objects.create(**bill_transaction_object)
