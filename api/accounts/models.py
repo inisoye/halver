@@ -161,6 +161,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         except ObjectDoesNotExist:
             return None
 
+    @property
+    def has_default_transfer_recipient(self):
+        """Return True if the user has a default transfer recipient, False otherwise."""
+
+        return self.default_transfer_recipient is not None
+
+    @property
+    def has_default_card(self):
+        """Return True if the user has a default card, False otherwise."""
+
+        return self.default_card is not None
+
     def get_short_name(self) -> str:
         """Return the short name for the user."""
 
