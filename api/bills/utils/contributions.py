@@ -95,13 +95,13 @@ def handle_subscription_creation(bill, participant_card, action):
     first_charge_date = bill.first_charge_date
     is_first_charge_date_in_past = check_date_is_in_past(first_charge_date)
 
-    # Pick a random next start date (within the bill) to use when first charge date
+    # Pick a random next payment date (within the bill) to use when first charge date
     # is already in the past.
     first_action_with_subscription = bill.actions.filter(
         paystack_subscription__isnull=False
     ).first()
     selected_next_start_date = (
-        first_action_with_subscription.paystack_subscription.next_start_date
+        first_action_with_subscription.paystack_subscription.next_payment_date
         if first_action_with_subscription
         else None
     )
