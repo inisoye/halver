@@ -4,37 +4,26 @@ from uuid import UUID
 
 from rest_framework import serializers
 
-from core.utils.dates_and_time import (
-    validate_date_is_at_least_one_week_into_future,
-    validate_date_not_in_past,
-)
+from core.utils.dates_and_time import validate_date_not_in_past
 from core.utils.users import get_user_by_id_drf
 
 
 def validate_create_bill_serializer_dates(serializer_data):
     """Ensure the dates provided in the serializer are not in the past. If the
     bill is not recurring (interval == "none"), only the deadline date is
-    validated. Otherwise, both the first_charge_date and next_charge_date are
+    validated. Otherwise, both the first_charge_date and next_charge_date are also
     validated.
-
-    Next charge date is left out of validation as it is made equal to first charge date
-    on bill creation.
 
     Args:
         serializer_data: A dictionary containing the serializer's data.
     """
 
-    if serializer_data["interval"] == "none":
-        validate_date_not_in_past(serializer_data.get("deadline"), "Deadline")
-    else:
+    validate_date_not_in_past(serializer_data.get("deadline"), "Deadline")
+
+    if serializer_data["interval"] != "none":
         validate_date_not_in_past(
             serializer_data.get("first_charge_date"),
             "First Charge Date",
-        )
-        validate_date_is_at_least_one_week_into_future(
-            serializer_data.get("first_charge_date"),
-            "First Charge Date",
-            use_day_start=True,
         )
 
 
