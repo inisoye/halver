@@ -2,7 +2,7 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 
 from bills.models import BillAction
-from bills.utils.contributions import (
+from financials.utils.contributions import (
     finalize_contribution,
     process_contribution_transfer,
 )
