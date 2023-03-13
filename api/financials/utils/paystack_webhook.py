@@ -1,20 +1,20 @@
 import json
 
-from bills.tasks.contributions import (
-    finalize_one_time_contribution,
-    process_action_updates_and_one_time_contribution_transfer,
-    record_contribution_transfer_object,
-)
-from bills.tasks.subscriptions import (
-    finalize_subscription_contribution,
-    process_action_updates_and_subscription_contribution_transfer,
-    process_subscription_creation,
-)
 from financials.models import PaystackTransaction, PaystackTransfer
 from financials.tasks.cards import (
     process_card_creation_and_refund,
     record_card_addition_transfer_object,
     retry_failed_card_addition_charge_refund,
+)
+from financials.tasks.contributions import (
+    finalize_one_time_contribution,
+    process_action_updates_and_one_time_contribution_transfer,
+    record_contribution_transfer_object,
+)
+from financials.tasks.subscriptions import (
+    finalize_subscription_contribution,
+    process_action_updates_and_subscription_contribution_transfer,
+    process_subscription_creation,
 )
 
 
@@ -161,8 +161,6 @@ def handle_paystack_webhook_response(request_data):
                 request_data,
                 PaystackTransfer.TransferOutcomeChoices.REVERSED,
             )
-
-            # TODO Add retry here.
 
     if event == "invoice.create":
         print("INVOICE CREATED", json.dumps(request_data))

@@ -342,6 +342,8 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
     # Check finalize_contribution method
     paystack_transaction_id = data.get("id")
 
+    # ! Be careful not to change "transfer_reason" string format without a good reason.
+    # ! The subscription flow is heavily dependent on the uuids in it.
     transfer_reason = (
         f"{transaction_type.label} transfer for action with ID: {action_id} from"
         f" {participant_name} to {creditor_name}, on bill: {bill_name}. Paystack"
