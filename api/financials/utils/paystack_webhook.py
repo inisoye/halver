@@ -71,9 +71,13 @@ def handle_paystack_webhook_response(request_data):
             )
 
     if event == "subscription.create":
+        print("SUBSCRIPTION CREATED", json.dumps(request_data))
+
         process_subscription_creation.delay(request_data)
 
     if event == "transfer.success":
+        print("TRANSFER SUCCESSFUL", json.dumps(request_data))
+
         reason = data.get("reason")
 
         is_card_addition_refund = reason == "Refund for card creation"
