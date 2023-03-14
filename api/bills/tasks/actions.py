@@ -1,30 +1,18 @@
-# TODO Implement this
+from celery.utils.log import get_task_logger
+from django.utils import timezone
 
-# import datetime
+from bills.models import BillAction
+from core.celery import app
 
-# from celery.decorators import periodic_task
-# from django.db import transaction
-
-# from bills.models import BillAction
+logger = get_task_logger(__name__)
 
 
-# @transaction.atomic
-# @periodic_task(
-#     run_every=datetime.timedelta(hours=12),
-#     default_retry_delay=3600,
-#     max_retries=2,
-# )
-# def update_overdue_statuses():
-#     try:
-#         # Get all actions with pending statuses and deadlines in the past
-#         overdue_and_incomplete_actions = BillAction.objects.filter(
-#             bill__deadline__lt=datetime.date.today(), status="pending"
-#         )
+@app.task
+def update_overdue_statuses():
+    # Get all actions with pending statuses and deadlines in the past
+    overdue_and_incomplete_actions = BillAction.objects.filter(
+        bill__deadline__lt=timezone.now(), status="pending"
+    )
 
-#         # Perform bulk update for all overdue actions
-#         overdue_and_incomplete_actions.update(status="overdue")
-
-#     except Exception as e:
-#         # Retry the task if it fails due to a network error or other
-#         # resource availability error
-#         update_overdue_statuses.retry(exc=e)
+    # Perform bulk update for all overdue actions
+    overdue_and_incomplete_actions.update(status="overdue")

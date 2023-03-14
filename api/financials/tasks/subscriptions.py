@@ -2,15 +2,15 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 
 from bills.models import BillAction
-from financials.utils.contributions import (
-    finalize_contribution,
-    process_contribution_transfer,
-)
 from financials.models import (
     PaystackSubscription,
     PaystackTransaction,
     PaystackTransfer,
     UserCard,
+)
+from financials.utils.contributions import (
+    finalize_contribution,
+    process_contribution_transfer,
 )
 from financials.utils.plans import extract_uuids_from_plan_description
 
@@ -45,6 +45,8 @@ def process_subscription_creation(request_data):
     participant = action.participant
     start_date = action.bill.first_charge_date
 
+    # TODO this should be get or create for idempotency.
+    # Prevent drawbacks of duplicate messages. Get by paystack sub code, maybe?
     PaystackSubscription.objects.create(
         plan=plan_object,
         participant=participant,

@@ -17,6 +17,9 @@ from financials.tasks.subscriptions import (
     process_subscription_creation,
 )
 
+# TODO Ensure all Celery tasks are idempotent to prevent duplicate payouts.
+# TODO Stronglyt consider changing broker from Redis to RabbitMQ
+
 
 def handle_paystack_webhook_response(request_data):
     """Handle Paystack webhook response.

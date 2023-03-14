@@ -43,6 +43,8 @@ def create_paystack_transfer_object(
         "complete_paystack_response": request_data,
     }
 
+    # TODO this should be get or create for idempotency.
+    # Prevent drawbacks of duplicate messages. Get by paystack transfer ref, maybe?
     return PaystackTransfer.objects.create(**paystack_transfer_object)
 
 

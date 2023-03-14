@@ -244,6 +244,8 @@ def create_contribution_transaction_object(
         "complete_paystack_response": request_data,
     }
 
+    # TODO this should be get or create for idempotency.
+    # Prevent drawbacks of duplicate messages. Get by paystack transaction ref, maybe?
     new_transaction = PaystackTransaction.objects.create(**paystack_transaction_object)
 
     return new_transaction
@@ -257,6 +259,8 @@ def initiate_contribution_transfer(
     """Initiates a transfer of a contribution to a creditor's default recipient
     account/card.
 
+    Makes a call to the Paystack API to get this done.
+
     Args:
         contribution_amount (float): The amount of money to be transferred.
         creditor_default_recipient_code (str): The code for the creditor's default
@@ -266,6 +270,12 @@ def initiate_contribution_transfer(
     Returns:
         None
     """
+
+    # TODO Verify the reference is enough for the idempotence of this function.
+
+    # The custom reference passed here would help with idempotence.
+    # If Paystack receives the same reference for two transfers,
+    # an error would be thrown.
 
     paystack_transfer_payload = {
         "source": "balance",
@@ -350,6 +360,7 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
         f" transaction id: {paystack_transaction_id}."
     )
 
+    # Idempotency should be ensured within this function.
     initiate_contribution_transfer(
         contribution_amount=contribution_amount_in_kobo,
         creditor_default_recipient_code=creditor_default_recipient_code,
@@ -382,6 +393,7 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
     amount = data.get("amount")
 
     action_id = extract_uuidv4s_from_string(reason, position=1)
+    # TODO this should maybe be a select_for_update to prevent race conditions.
     action = BillAction.objects.get(uuid=action_id)
 
     # The action is effectively complete or ongoing as the transfer has been successful.
@@ -417,4 +429,6 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
         "paystack_transfer": paystack_transfer_object,
     }
 
+    # TODO this should be get or create for idempotency.
+    # Prevent drawbacks of duplicate messages. Get by paystack transaction ref, maybe?
     BillTransaction.objects.create(**bill_transaction_object)
