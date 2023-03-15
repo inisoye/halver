@@ -4,6 +4,7 @@ from bills.api.views import (
     ActionResponseUpdateView,
     BillListCreateView,
     BillRetrieveUpdateView,
+    BillUnregisteredParticipantsListAPIView,
 )
 
 app_name = "bills"
@@ -18,6 +19,11 @@ urlpatterns = [
         route="<uuid:uuid>/",
         view=BillRetrieveUpdateView.as_view(),
         name="bill-detail",
+    ),
+    path(
+        route="<uuid:uuid>/unregistered-participants/",
+        view=BillUnregisteredParticipantsListAPIView.as_view(),
+        name="bill-unregistered-participants",
     ),
     path(
         route="actions/<uuid:uuid>/",

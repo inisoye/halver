@@ -2,7 +2,7 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListAPIView, ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -18,11 +18,12 @@ from bills.api.serializers import (
     BillDetailSerializer,
     BillDetailsUpdateSerializer,
     BillListSerializer,
+    BillUnregisteredParticipantListSerializer,
 )
 from bills.models import Bill, BillAction
-from financials.utils.contributions import handle_bill_contribution
 from core.utils.responses import format_exception
 from financials.tasks.plans import create_paystack_plans_for_recurring_bills
+from financials.utils.contributions import handle_bill_contribution
 
 
 class BillListCreateView(ListCreateAPIView):
@@ -106,8 +107,7 @@ class BillRetrieveUpdateView(APIView):
 
     @extend_schema(request=None, responses={204: OpenApiResponse()})
     def patch(self, request, uuid):
-        """Updates the specified fields in the Bill object with the provided
-        UUID.
+        """Updates the specified fields in the Bill object with the provided UUID.
 
         Accepts a JSON payload of the fields to update.
         """
@@ -124,6 +124,24 @@ class BillRetrieveUpdateView(APIView):
         bill.save(update_fields=request.data.keys())
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class BillUnregisteredParticipantsListAPIView(ListAPIView):
+    """View for listing all unregistered participants on a bill.
+
+    Accepts GET requests.
+    """
+
+    serializer_class = BillUnregisteredParticipantListSerializer
+
+    def get_queryset(self):
+        """Returns a queryset containing all unregistered participants on a
+        particular bill."""
+
+        bill_id = self.kwargs.get("uuid")
+        bill = get_object_or_404(Bill, uuid=bill_id)
+
+        return bill.unregistered_participants.all()
 
 
 # TODO Add additional view that converts unregistered participants to registered.

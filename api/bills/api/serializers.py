@@ -13,7 +13,26 @@ from bills.utils.validation import (
 from financials.models import UserCard
 
 
-class BillUnregisteredParticipantSerializer(serializers.ModelSerializer):
+class BillUnregisteredParticipantListSerializer(serializers.ModelSerializer):
+    phone = PhoneNumberField(required=True)
+
+    class Meta:
+        model = BillUnregisteredParticipant
+        fields = (
+            "created",
+            "modified",
+            "name",
+            "phone",
+            "uuid",
+        )
+        read_only_fields = (
+            "created",
+            "modified",
+            "uuid",
+        )
+
+
+class BillUnregisteredParticipantCreateSerializer(serializers.ModelSerializer):
     contribution = serializers.DecimalField(
         max_digits=19, decimal_places=4, coerce_to_string=False, allow_null=False
     )
@@ -48,7 +67,7 @@ class BillCreateSerializer(serializers.ModelSerializer):
     participants_contribution_index = serializers.DictField(
         required=False,
     )
-    unregistered_participants = BillUnregisteredParticipantSerializer(
+    unregistered_participants = BillUnregisteredParticipantCreateSerializer(
         many=True, required=False
     )
 
