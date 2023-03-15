@@ -40,8 +40,10 @@ create-su = "poetry run python manage.py createsuperuser"
 collectstatic = "poetry run python manage.py collectstatic"
 redis = "redis-server"
 celery = "poetry run celery -A core worker -l info"
+celery-beat = "poetry run celery -A core beat -l info"
 flower = "poetry run celery -A core flower"
 celery-purge = "poetry run celery -A core purge"
+
 
 [build-system]
 requires = ["poetry-core"]

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 from environs import Env
@@ -312,6 +313,15 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_LOADER = "core.celery.app"
+CELERY_IMPORTS = (
+    "bills.tasks.actions",
+)  # Manually added as Celery is not "autodetecting" it
+CELERY_BEAT_SCHEDULE = {
+    "update_overdue_statuses": {
+        "task": "bills.tasks.actions.update_overdue_statuses",
+        "schedule": timedelta(hours=6),
+    },
+}
 
 
 # Django Spectacular configuration
