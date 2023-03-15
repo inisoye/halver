@@ -11,8 +11,8 @@ logger = get_task_logger(__name__)
 def update_overdue_statuses():
     # Get all actions with pending statuses and deadlines in the past
     overdue_and_incomplete_actions = BillAction.objects.filter(
-        bill__deadline__lt=timezone.now(), status="pending"
+        bill__deadline__lt=timezone.now(), status=BillAction.StatusChoices.PENDING
     )
 
     # Perform bulk update for all overdue actions
-    overdue_and_incomplete_actions.update(status="overdue")
+    overdue_and_incomplete_actions.update(status=BillAction.StatusChoices.OVERDUE)

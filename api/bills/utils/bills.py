@@ -152,7 +152,7 @@ def create_unregistered_participants_for_bill(bill, unregistered_participants_da
 def create_actions_for_bill(bill) -> None:
     """Creates action objects for each partipant/unregistered participant.
 
-    Used in the bill model's save method.
+    Used in the create_bill method.
     """
 
     from bills.models import Bill, BillAction
