@@ -140,7 +140,7 @@ class BillListSerializer(serializers.ModelSerializer):
 
 
 # --------------------------------------------------------------
-# Serializers nested inside BillDetailSerializer
+# Serializers nested inside BillDetailSerializer start.
 # --------------------------------------------------------------
 
 

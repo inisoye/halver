@@ -321,6 +321,8 @@ class BillUnregisteredParticipant(AbstractTimeStampedUUIDModel, models.Model):
 
 class BillAction(AbstractTimeStampedUUIDModel, models.Model):
     """Actions broadly represent a snapshot of a user's standing in a bill.
+    It connects a participant (or unregistered participant) with the amount they
+    are to pay (the contribution). It's summary denotes a participant's status as well.
 
     The model is also joined with the Plan and Subscription for recurring bills.
     """
