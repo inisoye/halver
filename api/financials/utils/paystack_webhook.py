@@ -119,6 +119,7 @@ def handle_paystack_webhook_response(request_data):
                 PaystackTransfer.TransferOutcomeChoices.FAILED,
             )
             # Retry failed transaction with same reference.
+            # TODO Find a way to ensure retries are performed ONLY every 6 hours.
             retry_failed_card_addition_charge_refund.delay(request_data)
 
         if is_one_time_contribution_transfer:
