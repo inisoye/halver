@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from financials.models import (
     PaystackPlan,
-    PaystackPlanFailures,
+    PaystackPlanFailure,
     PaystackSubscription,
     PaystackTransaction,
     PaystackTransfer,
@@ -16,7 +16,7 @@ from financials.models import (
 admin.site.register(UserCard)
 admin.site.register(TransferRecipient)
 admin.site.register(PaystackPlan)
-admin.site.register(PaystackPlanFailures)
+admin.site.register(PaystackPlanFailure)
 admin.site.register(PaystackSubscription)
 admin.site.register(PaystackTransaction)
 admin.site.register(PaystackTransfer)

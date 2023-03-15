@@ -2,7 +2,7 @@ from celery.utils.log import get_task_logger
 from django.db import transaction
 
 from core.utils.currency import convert_to_kobo_integer, convert_to_naira
-from financials.models import PaystackPlan, PaystackPlanFailures
+from financials.models import PaystackPlan, PaystackPlanFailure
 
 logger = get_task_logger(__name__)
 
@@ -193,7 +193,7 @@ def create_paystack_plan_objects(
         unregistered_participant = action.unregistered_participant
 
         if not plan_response["status"]:
-            failure = PaystackPlanFailures(
+            failure = PaystackPlanFailure(
                 action=action,
                 failure_message=plan_response["message"],
                 participant=participant,
@@ -223,7 +223,7 @@ def create_paystack_plan_objects(
             paystack_plan_objects.append(paystack_plan_object)
 
     if len(paystack_plan_failures) > 0:
-        PaystackPlanFailures.objects.bulk_create(paystack_plan_failures)
+        PaystackPlanFailure.objects.bulk_create(paystack_plan_failures)
 
     if len(paystack_plan_objects) > 0:
         PaystackPlan.objects.bulk_create(paystack_plan_objects)

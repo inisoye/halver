@@ -259,7 +259,7 @@ class PaystackPlan(AbstractTimeStampedUUIDModel, models.Model):
             )
 
 
-class PaystackPlanFailures(AbstractTimeStampedUUIDModel, models.Model):
+class PaystackPlanFailure(AbstractTimeStampedUUIDModel, models.Model):
     """Stores data returned by Paystack when a plan creation call fails.
 
     These could be displayed in the UI to allow the bill creator/creditor to
