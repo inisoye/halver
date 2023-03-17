@@ -4,6 +4,7 @@ from bills.api.views import (
     ActionResponseUpdateView,
     BillListCreateView,
     BillRetrieveUpdateView,
+    BillUnregisteredParticipantsDataTransferView,
     BillUnregisteredParticipantsListAPIView,
 )
 
@@ -24,6 +25,11 @@ urlpatterns = [
         route="<uuid:uuid>/unregistered-participants/",
         view=BillUnregisteredParticipantsListAPIView.as_view(),
         name="bill-unregistered-participants",
+    ),
+    path(
+        route="unregistered-participants/transfer/",
+        view=BillUnregisteredParticipantsDataTransferView.as_view(),
+        name="bill-unregistered-participants-data-transfer",
     ),
     path(
         route="actions/<uuid:uuid>/",

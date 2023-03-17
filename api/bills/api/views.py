@@ -1,8 +1,8 @@
-from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.generics import ListAPIView, ListCreateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -19,8 +19,10 @@ from bills.api.serializers import (
     BillDetailsUpdateSerializer,
     BillListSerializer,
     BillUnregisteredParticipantListSerializer,
+    BillUnregisteredParticipantsDataTransferSerializer,
 )
 from bills.models import Bill, BillAction
+from bills.utils.participants import transfer_unregistered_participant_data
 from core.utils.responses import format_exception
 from financials.tasks.plans import create_paystack_plans_for_recurring_bills
 from financials.utils.contributions import handle_bill_contribution
@@ -80,7 +82,9 @@ class BillRetrieveUpdateView(APIView):
         bill = Bill.get_bill_with_details(uuid)
 
         if bill is None:
-            return HttpResponseNotFound()
+            return format_exception(
+                message="No bill found", status=status.HTTP_404_NOT_FOUND
+            )
 
         self.check_object_permissions(request, bill)
 
@@ -107,7 +111,8 @@ class BillRetrieveUpdateView(APIView):
 
     @extend_schema(request=None, responses={204: OpenApiResponse()})
     def patch(self, request, uuid):
-        """Updates the specified fields in the Bill object with the provided UUID.
+        """Updates the specified fields in the Bill object with the provided
+        UUID.
 
         Accepts a JSON payload of the fields to update.
         """
@@ -132,6 +137,7 @@ class BillUnregisteredParticipantsListAPIView(ListAPIView):
     Accepts GET requests.
     """
 
+    permission_classes = (IsAuthenticated,)
     serializer_class = BillUnregisteredParticipantListSerializer
 
     def get_queryset(self):
@@ -144,16 +150,49 @@ class BillUnregisteredParticipantsListAPIView(ListAPIView):
         return bill.unregistered_participants.all()
 
 
-# TODO Add additional view that converts unregistered participants to registered.
-# Paystack plans should be moved as well as actions and bills!!
+class BillUnregisteredParticipantsDataTransferView(APIView):
+    """View for converting unregistered participants to registered users.
+
+    Accepts POST requests.
+    """
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = BillUnregisteredParticipantsDataTransferSerializer
+
+    def post(self, request):
+        """Transfers the following data associated with a particular
+        unregistered participant: bills, bill actions, plans and plan
+        failures.
+
+        If a number is provided, any unregistered participant with that number is used.
+        Otherwise, any unregistered participant that shares a phone number with the
+        user making the request is used.
+        """
+
+        registered_user = request.user
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        unregistered_participant_phone = serializer.validated_data.get(
+            "unregistered_participant_phone"
+        )
+
+        transfer_unregistered_participant_data(
+            registered_user, unregistered_participant_phone
+        )
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ActionResponseUpdateView(APIView):
-    """A view for updating the response of a participant to a bill action.
+    """View for updating the response of a participant to a bill action.
 
     Participants can agree or opt out of bill actions, and make contributions to
     bills they have agreed to. One-time payments and subscriptions are handled
     with Paystack's services.
+
+    Accepts PATCH requests.
     """
 
     permission_classes = (IsRegisteredParticipant, ParticipantHasDefaultCard)

@@ -32,6 +32,10 @@ class BillUnregisteredParticipantListSerializer(serializers.ModelSerializer):
         )
 
 
+class BillUnregisteredParticipantsDataTransferSerializer(serializers.Serializer):
+    unregistered_participant_phone = PhoneNumberField(required=False)
+
+
 class BillUnregisteredParticipantCreateSerializer(serializers.ModelSerializer):
     contribution = serializers.DecimalField(
         max_digits=19, decimal_places=4, coerce_to_string=False, allow_null=False
