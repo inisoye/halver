@@ -39,6 +39,7 @@ def transfer_unregistered_participant_data(
     if unregistered_participant_phone is None:
         unregistered_participant_phone = participant.phone
 
+    # TODO Add an index to the unregistered participant phone field.
     unregistered_participant_to_transfer = (
         BillUnregisteredParticipant.objects.get(phone=unregistered_participant_phone)
         if unregistered_participant_phone
@@ -116,17 +117,20 @@ def transfer_unregistered_participant_data(
             # More details available:
             # https://www.notion.so/inisoye/Transfer-of-unregistered-participant-s-data-to-a-registered-user-f376b19d172c4de69e60170a979d5675?pvs=4
 
-            # Create a list of new participant IDs to be added to the bills.
-            # The same participant is added to each bill so it is repeated.
-            new_participant_ids = [participant.id] * bills_to_transfer.count()
+            # ! The order should be kept this way (bulk delete before bulk create).
+            # ! This apparently prevents data integrity issues.
 
-            # Use bulk_delete() to remove the unregistered participants from the bills
+            # Use bulk_delete() to remove the unregistered participants from the bills.
             Bill.unregistered_participants.through.objects.filter(
                 bill__in=bills_to_transfer,
                 billunregisteredparticipant_id=unregistered_participant_to_transfer.id,
             ).delete()
 
-            # Use bulk_create() to add the new participants to the bills
+            # Create a list of new participant IDs to be added to the bills.
+            # The same participant is added to each bill so it is repeated.
+            new_participant_ids = [participant.id] * bills_to_transfer.count()
+
+            # Use bulk_create() to add the new participants to the bills.
             Bill.participants.through.objects.bulk_create(
                 [
                     Bill.participants.through(
@@ -145,6 +149,7 @@ def transfer_unregistered_participant_data(
             return True
 
         else:
+
             # Return false if there was no data to be transferred.
             return False
 
