@@ -66,7 +66,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     interval = models.CharField(
         max_length=50,
         choices=IntervalChoices.choices,
-        default="none",
+        default=IntervalChoices.NONE,
     )
     notes = models.TextField(
         blank=True,
@@ -366,7 +366,7 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
     status = models.CharField(
         max_length=50,
         choices=StatusChoices.choices,
-        default="pending",
+        default=StatusChoices.PENDING,
     )
     paystack_transaction_fee = models.DecimalField(
         max_digits=19,
@@ -441,6 +441,10 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
     here
     """
 
+    class TypeChoices(models.TextChoices):
+        REGULAR = "regular", "Regular"
+        ARREAR = "arrear", "Arrear"
+
     bill = models.ForeignKey(
         Bill,
         on_delete=models.CASCADE,
@@ -450,6 +454,11 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
         help_text="Bill contribution of participant (excludes fees)",
         max_digits=19,
         decimal_places=4,
+    )
+    transaction_type = models.CharField(
+        max_length=50,
+        choices=TypeChoices.choices,
+        default=TypeChoices.REGULAR,
     )
     total_payment = models.DecimalField(
         help_text="Total amount paid (includes fees)",
@@ -482,3 +491,82 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
             f"receiver: {self.paystack_transfer.receiving_user}, "
             f"payment: {self.total_payment}, bill: ({self.bill.name})"
         )
+
+
+class BillArrear(AbstractTimeStampedUUIDModel, models.Model):
+    """Arrears record payments that have been missed due to a failed payment in a
+    recurring bill's billing cycle.
+
+    They are handled as one time payments similar to how actions handle them.
+    """
+
+    class StatusChoices(models.TextChoices):
+        OVERDUE = "overdue", "Overdue"
+        COMPLETED = "completed", "Completed"
+
+    bill = models.ForeignKey(
+        Bill,
+        on_delete=models.CASCADE,
+        related_name="arrears",
+    )
+    participant = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="arrears",
+    )
+    status = models.CharField(
+        max_length=50,
+        choices=StatusChoices.choices,
+        default=StatusChoices.OVERDUE,
+    )
+    contribution = models.DecimalField(
+        help_text="Bill contribution of participant (excludes fees)",
+        max_digits=19,
+        null=True,
+        decimal_places=4,
+    )
+    paystack_transaction_fee = models.DecimalField(
+        max_digits=19,
+        decimal_places=4,
+        null=True,
+    )
+    paystack_transfer_fee = models.DecimalField(
+        max_digits=19,
+        decimal_places=4,
+        null=True,
+    )
+    halver_fee = models.DecimalField(
+        max_digits=19,
+        decimal_places=4,
+        null=True,
+    )
+    total_fee = models.DecimalField(
+        max_digits=19,
+        decimal_places=4,
+        null=True,
+    )
+    total_payment_due = models.DecimalField(
+        help_text="Summation of contribution and total fees. Actual amount to be paid",
+        max_digits=19,
+        decimal_places=4,
+        null=True,
+    )
+
+    class Meta:
+        verbose_name = "Bill arrear"
+        verbose_name_plural = "Bill arrears"
+
+    def __str__(self) -> str:
+        return (
+            f"participant: {self.participant}, payment_due: {self.total_payment_due},"
+            f" bill: {self.bill.name}"
+        )
+
+    def clean(self):
+        super().clean()
+        self._validate_contribution()
+
+    def _validate_contribution(self) -> None:
+        if not self.contribution or self.contribution <= 0:
+            raise ValidationError("Arrears must have a positive, nonzero contribution.")

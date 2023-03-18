@@ -1,5 +1,6 @@
 import json
 
+from bills.tasks.arrears import record_bill_arrear
 from financials.models import PaystackTransaction, PaystackTransfer
 from financials.tasks.cards import (
     process_card_creation_and_refund,
@@ -30,7 +31,7 @@ def handle_paystack_webhook_response(request_data):
         * transfer.success
         * subscription.create
         * transfer.failed
-        * transfer.reversed
+        * transfer.reversed etc.
 
     Args:
         request_data (dict): The data received from the Paystack webhook.
@@ -82,7 +83,6 @@ def handle_paystack_webhook_response(request_data):
         print("TRANSFER SUCCESSFUL", json.dumps(request_data))
 
         reason = data.get("reason")
-
         is_card_addition_refund = reason == "Refund for card creation"
         is_one_time_contribution_transfer = reason.startswith(
             f"{one_time_contribution_label} transfer for action"
@@ -171,6 +171,7 @@ def handle_paystack_webhook_response(request_data):
 
     if event == "invoice.payment_failed":
         print("INVOICE FAILED", json.dumps(request_data))
+        record_bill_arrear(request_data)
 
     if event == "invoice.update":
         print("INVOICE UPDATED", json.dumps(request_data))

@@ -329,6 +329,7 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
     data = request_data.get("data")
 
     # Update next payment date on subscription object for recurring bills
+    # TODO Consider moving this to the invoice.create webhook response.
     if is_bill_recurring:
         subscription_object = action.paystack_subscription
         subscription_code = subscription_object.paystack_subscription_code
