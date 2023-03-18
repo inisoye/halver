@@ -28,7 +28,7 @@ from financials.tasks.plans import create_paystack_plans_for_recurring_bills
 from financials.utils.contributions import handle_bill_contribution
 
 
-class BillListCreateView(ListCreateAPIView):
+class BillListCreateAPIView(ListCreateAPIView):
     """View for listing Bills or creating new Bills.
 
     Accepts GET and POST requests.
@@ -57,7 +57,7 @@ class BillListCreateView(ListCreateAPIView):
             create_paystack_plans_for_recurring_bills.delay(new_bill.id)
 
 
-class BillRetrieveUpdateView(APIView):
+class BillRetrieveUpdateAPIView(APIView):
     """View for getting or updating a single Bill object.
 
     Accepts GET and PATCH requests.
@@ -150,7 +150,7 @@ class BillUnregisteredParticipantsListAPIView(ListAPIView):
         return bill.unregistered_participants.all()
 
 
-class BillUnregisteredParticipantsDataTransferView(APIView):
+class BillUnregisteredParticipantsDataTransferAPIView(APIView):
     """View for converting unregistered participants to registered users.
 
     Accepts POST requests.
@@ -185,7 +185,7 @@ class BillUnregisteredParticipantsDataTransferView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ActionResponseUpdateView(APIView):
+class ActionResponseUpdateAPIView(APIView):
     """View for updating the response of a participant to a bill action.
 
     Participants can agree or opt out of bill actions, and make contributions to

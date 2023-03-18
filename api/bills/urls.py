@@ -1,10 +1,10 @@
 from django.urls import path
 
 from bills.api.views import (
-    ActionResponseUpdateView,
-    BillListCreateView,
-    BillRetrieveUpdateView,
-    BillUnregisteredParticipantsDataTransferView,
+    ActionResponseUpdateAPIView,
+    BillListCreateAPIView,
+    BillRetrieveUpdateAPIView,
+    BillUnregisteredParticipantsDataTransferAPIView,
     BillUnregisteredParticipantsListAPIView,
 )
 
@@ -13,12 +13,12 @@ app_name = "bills"
 urlpatterns = [
     path(
         route="",
-        view=BillListCreateView.as_view(),
+        view=BillListCreateAPIView.as_view(),
         name="bills-list",
     ),
     path(
         route="<uuid:uuid>/",
-        view=BillRetrieveUpdateView.as_view(),
+        view=BillRetrieveUpdateAPIView.as_view(),
         name="bill-detail",
     ),
     path(
@@ -28,12 +28,12 @@ urlpatterns = [
     ),
     path(
         route="unregistered-participants/transfer/",
-        view=BillUnregisteredParticipantsDataTransferView.as_view(),
+        view=BillUnregisteredParticipantsDataTransferAPIView.as_view(),
         name="bill-unregistered-participants-data-transfer",
     ),
     path(
         route="actions/<uuid:uuid>/",
-        view=ActionResponseUpdateView.as_view(),
+        view=ActionResponseUpdateAPIView.as_view(),
         name="action-response",
     ),
 ]

@@ -54,7 +54,7 @@ class PaystackWebhookHandlerAPIView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class DefaultCardRetrieveView(RetrieveAPIView):
+class DefaultCardRetrieveAPIView(RetrieveAPIView):
     """View for retrieving the default card for a user.
 
     Accepts GET requests.
@@ -77,7 +77,7 @@ class DefaultCardRetrieveView(RetrieveAPIView):
 
 
 @extend_schema(request=None, responses={204: OpenApiResponse()})
-class DefaultCardUpdateView(UpdateAPIView):
+class DefaultCardUpdateAPIView(UpdateAPIView):
     """View for updating the default card for a user.
 
     Accepts PATCH requests.
@@ -136,7 +136,7 @@ class UserCardAdditionTransactionAPIView(APIView):
             )
 
 
-class UserCardListView(ListAPIView):
+class UserCardListAPIView(ListAPIView):
     """View for listing all cards for a user.
 
     Accepts GET requests.
@@ -152,7 +152,7 @@ class UserCardListView(ListAPIView):
         return self.queryset.filter(user=self.request.user)
 
 
-class UserCardRetrieveDestroyView(RetrieveDestroyAPIView):
+class UserCardRetrieveDestroyAPIView(RetrieveDestroyAPIView):
     """View for retrieving and deleting a specific card for a user.
 
     Accepts GET and DELETE requests.
@@ -252,7 +252,7 @@ class TransferRecipientListCreateAPIView(APIView):
         )
 
 
-class TransferRecipientsDestroyView(DestroyAPIView):
+class TransferRecipientsDestroyAPIView(DestroyAPIView):
     """View for deleting transfer recipients.
 
     Accepts DELETE requests.
@@ -278,7 +278,7 @@ class TransferRecipientsDestroyView(DestroyAPIView):
             )
 
 
-class DefaultTransferRecipientRetrieveView(RetrieveAPIView):
+class DefaultTransferRecipientRetrieveAPIView(RetrieveAPIView):
     """View for retrieving the default transfer recipient for a user.
 
     Accepts GET requests.
@@ -298,7 +298,7 @@ class DefaultTransferRecipientRetrieveView(RetrieveAPIView):
 
 
 @extend_schema(request=None, responses={204: OpenApiResponse()})
-class DefaultTransferRecipientUpdateView(UpdateAPIView):
+class DefaultTransferRecipientUpdateAPIView(UpdateAPIView):
     """View for updating the default transfer recipient for a user.
 
     Accepts PATCH requests.

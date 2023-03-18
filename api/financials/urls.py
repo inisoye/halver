@@ -1,17 +1,17 @@
 from django.urls import path
 
 from financials.api.views import (
-    DefaultCardRetrieveView,
-    DefaultCardUpdateView,
-    DefaultTransferRecipientRetrieveView,
-    DefaultTransferRecipientUpdateView,
+    DefaultCardRetrieveAPIView,
+    DefaultCardUpdateAPIView,
+    DefaultTransferRecipientRetrieveAPIView,
+    DefaultTransferRecipientUpdateAPIView,
     PaystackTransferRecipientListAPIView,
     PaystackWebhookHandlerAPIView,
     TransferRecipientListCreateAPIView,
-    TransferRecipientsDestroyView,
+    TransferRecipientsDestroyAPIView,
     UserCardAdditionTransactionAPIView,
-    UserCardListView,
-    UserCardRetrieveDestroyView,
+    UserCardListAPIView,
+    UserCardRetrieveDestroyAPIView,
 )
 
 app_name = "financials"
@@ -24,12 +24,12 @@ urlpatterns = [
     ),
     path(
         route="default-card/",
-        view=DefaultCardRetrieveView.as_view(),
+        view=DefaultCardRetrieveAPIView.as_view(),
         name="default-card-get",
     ),
     path(
         route="default-card/<uuid:uuid>/",
-        view=DefaultCardUpdateView.as_view(),
+        view=DefaultCardUpdateAPIView.as_view(),
         name="default-card-set-as",
     ),
     path(
@@ -39,12 +39,12 @@ urlpatterns = [
     ),
     path(
         route="user-cards/",
-        view=UserCardListView.as_view(),
+        view=UserCardListAPIView.as_view(),
         name="user-cards",
     ),
     path(
         route="user-cards/<uuid:uuid>/",
-        view=UserCardRetrieveDestroyView.as_view(),
+        view=UserCardRetrieveDestroyAPIView.as_view(),
         name="user-card-detail",
     ),
     path(
@@ -59,17 +59,17 @@ urlpatterns = [
     ),
     path(
         route="transfer-recipients/<str:recipient_code>/",
-        view=TransferRecipientsDestroyView.as_view(),
+        view=TransferRecipientsDestroyAPIView.as_view(),
         name="transfer-recipient-delete",
     ),
     path(
         route="default-transfer-recipient/",
-        view=DefaultTransferRecipientRetrieveView.as_view(),
+        view=DefaultTransferRecipientRetrieveAPIView.as_view(),
         name="default-transfer-recipient-get",
     ),
     path(
         route="default-transfer-recipient/<uuid:uuid>/",
-        view=DefaultTransferRecipientUpdateView.as_view(),
+        view=DefaultTransferRecipientUpdateAPIView.as_view(),
         name="default-transfer-recipient-set-as",
     ),
 ]
