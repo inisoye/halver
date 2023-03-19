@@ -339,6 +339,7 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
         COMPLETED = "completed", "Completed"
         # For recurring bills.
         ONGOING = "ongoing", "Ongoing"
+        LAST_PAYMENT_FAILED = "last_payment_failed", "Last payment failed"
 
     bill = models.ForeignKey(
         Bill,
@@ -431,6 +432,9 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
     def mark_as_ongoing(self):
         self._update_status(self.StatusChoices.ONGOING)
 
+    def mark_as_last_failed(self):
+        self._update_status(self.StatusChoices.LAST_PAYMENT_FAILED)
+
 
 class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
     """Stores a transaction particular completed by a user.
@@ -470,6 +474,12 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
         on_delete=models.PROTECT,
         related_name="halver_transactions",
     )
+    arrear = models.OneToOneField(
+        "BillArrear",
+        on_delete=models.PROTECT,
+        null=True,
+        related_name="halver_transaction",
+    )
     paystack_transaction = models.OneToOneField(
         "financials.PaystackTransaction",
         on_delete=models.PROTECT,
@@ -502,6 +512,8 @@ class BillArrear(AbstractTimeStampedUUIDModel, models.Model):
 
     class StatusChoices(models.TextChoices):
         OVERDUE = "overdue", "Overdue"
+        FORGIVEN = "forgiven", "Forgiven"
+        PENDING_TRANSFER = "pending_transfer", "Pending transfer"
         COMPLETED = "completed", "Completed"
 
     bill = models.ForeignKey(
@@ -513,6 +525,11 @@ class BillArrear(AbstractTimeStampedUUIDModel, models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
+        related_name="arrears",
+    )
+    action = models.ForeignKey(
+        BillAction,
+        on_delete=models.PROTECT,
         related_name="arrears",
     )
     status = models.CharField(
@@ -570,3 +587,16 @@ class BillArrear(AbstractTimeStampedUUIDModel, models.Model):
     def _validate_contribution(self) -> None:
         if not self.contribution or self.contribution <= 0:
             raise ValidationError("Arrears must have a positive, nonzero contribution.")
+
+    def _update_status(self, status):
+        self.status = status
+        self.save(update_fields=["status"])
+
+    def mark_as_forgiven(self):
+        self._update_status(self.StatusChoices.FORGIVEN)
+
+    def mark_as_pending_transfer(self):
+        self._update_status(self.StatusChoices.PENDING_TRANSFER)
+
+    def mark_as_completed(self):
+        self._update_status(self.StatusChoices.COMPLETED)

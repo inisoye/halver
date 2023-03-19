@@ -3,7 +3,7 @@ from financials.models import PaystackTransfer, TransferRecipient
 
 
 def create_paystack_transfer_object(
-    request_data, transfer_outcome, transfer_type, action=None
+    request_data, transfer_outcome, transfer_type, action=None, arrear=None
 ) -> PaystackTransfer:
     """Create or update a PaystackTransfer object with data from the
     request_data and the outcome of the transfer.
@@ -37,6 +37,7 @@ def create_paystack_transfer_object(
         "uuid": data.get("reference"),
         "recipient": recipient,
         "action": action,
+        "arrear": arrear,
         "receiving_user": recipient.user,
         "transfer_outcome": transfer_outcome,
         "transfer_type": transfer_type,

@@ -355,6 +355,9 @@ def generate_long_status_index(all_actions_are_one_type, most_common_status_coun
         BillAction.StatusChoices.UNREGISTERED: (
             f"{bill_status_message_prefix} participant{plural_suffix} unregistered"
         ),
+        BillAction.StatusChoices.LAST_PAYMENT_FAILED: (
+            f"{bill_status_message_prefix} payment{plural_suffix} failed"
+        ),
     }
 
     return status_message_index

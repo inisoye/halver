@@ -209,7 +209,12 @@ def handle_bill_contribution(action):
 
 
 def create_contribution_transaction_object(
-    data, action, participant, request_data, transaction_type
+    data,
+    action,
+    participant,
+    request_data,
+    transaction_type,
+    arrear=None,
 ):
     """Creates a new PaystackTransaction object for a participant payment.
 
@@ -236,6 +241,7 @@ def create_contribution_transaction_object(
         "amount_in_naira": amount_in_naira,
         "card": card,
         "action": action,
+        "arrear": arrear,
         "paying_user": participant,
         "transaction_outcome": PaystackTransaction.TransactionOutcomeChoices.SUCCESSFUL,
         "transaction_type": transaction_type,
@@ -381,7 +387,7 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
             transfer.
         transfer_outcome (str): A string indicating the outcome of the
             transfer, should be `PaystackTransfer.TransferOutcome.SUCCESS`.
-        action_status (str): A string indicating what status value the action
+        final_action_status (str): A string indicating what status value the action
             should be updated to. Could be `BillAction.StatusChoices.COMPLETED` or`
             BillAction.StatusChoices.ONGOING`, for example.
     """

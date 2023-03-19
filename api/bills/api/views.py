@@ -10,10 +10,12 @@ from bills.api.permissions import (
     IsCreditorOrCreator,
     IsParticipantOrCreditor,
     IsRegisteredParticipant,
+    IsRegisteredParticipantOrCreditor,
     ParticipantHasDefaultCard,
 )
 from bills.api.serializers import (
-    ActionResponseUpdateSerializer,
+    BillActionResponseUpdateSerializer,
+    BillArrearResponseUpdateSerializer,
     BillCreateSerializer,
     BillDetailSerializer,
     BillDetailsUpdateSerializer,
@@ -21,7 +23,8 @@ from bills.api.serializers import (
     BillUnregisteredParticipantListSerializer,
     BillUnregisteredParticipantsDataTransferSerializer,
 )
-from bills.models import Bill, BillAction
+from bills.models import Bill, BillAction, BillArrear
+from bills.utils.arrears import handle_arrear_contribution
 from bills.utils.participants import transfer_unregistered_participant_data
 from core.utils.responses import format_exception
 from financials.tasks.plans import create_paystack_plans_for_recurring_bills
@@ -164,8 +167,8 @@ class BillUnregisteredParticipantsDataTransferAPIView(APIView):
         unregistered participant: bills, bill actions, plans and plan
         failures.
 
-        If a number is provided, any unregistered participant with that number is used.
-        Otherwise, any unregistered participant that shares a phone number with the
+        If a phone number is provided, any unregistered participant with that number is
+        used. Otherwise, any unregistered participant that shares a phone number with the
         user making the request is used.
         """
 
@@ -185,7 +188,7 @@ class BillUnregisteredParticipantsDataTransferAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ActionResponseUpdateAPIView(APIView):
+class BillActionResponseUpdateAPIView(APIView):
     """View for updating the response of a participant to a bill action.
 
     Participants can agree or opt out of bill actions, and make contributions to
@@ -196,7 +199,7 @@ class ActionResponseUpdateAPIView(APIView):
     """
 
     permission_classes = (IsRegisteredParticipant, ParticipantHasDefaultCard)
-    serializer_class = ActionResponseUpdateSerializer
+    serializer_class = BillActionResponseUpdateSerializer
 
     def patch(self, request, uuid):
         """Handles PATCH requests for updating the response of a participant to
@@ -239,8 +242,66 @@ class ActionResponseUpdateAPIView(APIView):
         if response is None:
             return format_exception(
                 "Your subscription on this bill is already active.",
-                status=409,
+                status=status.HTTP_409_CONFLICT,
             )
+
+        if response["status"]:
+            return Response(response, status=status.HTTP_200_OK)
+
+        else:
+            return format_exception(
+                message=response["message"],
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class BillArrearResponseUpdateAPIView(APIView):
+    """View for updating the response of a participant to a bill arrear.
+
+    The view is called when a participant responds to an arrear they owe.
+    They will normally make a one-time payment to remove the arrear.
+
+    Arrears can be forgiven by the creditor of a bill. For this to happen, a new_status
+    must be passed with the request.
+
+    Accepts PATCH requests.
+    """
+
+    permission_classes = (IsRegisteredParticipantOrCreditor, ParticipantHasDefaultCard)
+    serializer_class = BillArrearResponseUpdateSerializer
+
+    def patch(self, request, uuid):
+        """Handles PATCH requests for updating the response of a participant or creditor
+        to a bill arrear. Will make a one-time payment if payload is well formatted.
+
+        Accepts the UUID of the bill arrear to update.
+        """
+
+        arrears_queryset = BillArrear.objects.filter(uuid=uuid).select_related(
+            "bill",
+            "bill__creditor",
+            "participant",
+        )
+        arrear = get_object_or_404(arrears_queryset)
+
+        self.check_object_permissions(request, arrear)
+
+        serializer = self.serializer_class(arrear, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        is_request_from_creditor = request.user == arrear.bill.creditor
+        is_forgiveness = request.data.get("is_forgiveness")
+
+        if is_forgiveness and not is_request_from_creditor:
+            return format_exception(
+                "Only creditors are allowed to forgive bill arrears.",
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        if is_forgiveness and is_request_from_creditor:
+            return arrear.mark_as_forgiven()
+
+        response = handle_arrear_contribution(arrear)
 
         if response["status"]:
             return Response(response, status=status.HTTP_200_OK)

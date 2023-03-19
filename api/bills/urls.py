@@ -1,7 +1,7 @@
 from django.urls import path
 
 from bills.api.views import (
-    ActionResponseUpdateAPIView,
+    BillActionResponseUpdateAPIView,
     BillListCreateAPIView,
     BillRetrieveUpdateAPIView,
     BillUnregisteredParticipantsDataTransferAPIView,
@@ -33,7 +33,7 @@ urlpatterns = [
     ),
     path(
         route="actions/<uuid:uuid>/",
-        view=ActionResponseUpdateAPIView.as_view(),
+        view=BillActionResponseUpdateAPIView.as_view(),
         name="action-response",
     ),
 ]

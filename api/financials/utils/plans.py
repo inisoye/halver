@@ -38,7 +38,7 @@ def format_paystack_plan_payloads(bill_actions):
             )
         )
 
-        # ! Be careful not to change desctiption without a good reason.
+        # ! Be careful not to change description without a good reason.
         # ! The subscription flow is heavily dependent on the uuids in it.
 
         name = f"Plan for {user_name} on the '{action.bill.name}' bill."

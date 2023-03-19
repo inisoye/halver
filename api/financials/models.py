@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from bills.models import BillAction, BillUnregisteredParticipant
+from bills.models import BillAction, BillArrear, BillUnregisteredParticipant
 from core.models import AbstractTimeStampedUUIDModel
 from financials.utils.common import delete_and_set_newest_as_default, set_as_default
 
@@ -379,6 +379,10 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
             "one_time_contribution",
             "One-time contribution",
         )
+        ARREAR_CONTRIBUTION = (
+            "arrear_contribution",
+            "Arrear contribution",
+        )
         SUBSCRIPTION_CONTRIBUTION = (
             "subscription_contribution",
             "Subscription contribution",
@@ -423,6 +427,12 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
         null=True,
         related_name="paystack_transactions",
     )
+    arrear = models.OneToOneField(
+        BillArrear,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="paystack_transaction",
+    )
     paying_user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -458,6 +468,7 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
 
     class TransferChoices(models.TextChoices):
         CREDITOR_SETTLEMENT = "creditor_settlement", "Creditor settlement"
+        ARREAR_SETTLEMENT = "arrear_settlement", "Arrear settlement"
         CARD_ADDITION_REFUND = "card_addition_refund", "Card addition refund"
 
     class TransferOutcomeChoices(models.TextChoices):
@@ -497,6 +508,12 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
         on_delete=models.SET_NULL,
         null=True,
         related_name="paystack_transfers",
+    )
+    arrear = models.OneToOneField(
+        BillArrear,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="paystack_transfer",
     )
     receiving_user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

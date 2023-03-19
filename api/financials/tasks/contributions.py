@@ -61,7 +61,6 @@ def record_contribution_transfer_object(request_data, transfer_outcome):
 
     reason = data.get("reason")
 
-    # The action is effectively complete as the transfer has been successful.
     action_id = extract_uuidv4s_from_string(reason, position=1)
     action = BillAction.objects.get(uuid=action_id)
 

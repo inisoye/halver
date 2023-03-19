@@ -1,6 +1,11 @@
 import json
 
-from bills.tasks.arrears import record_bill_arrear
+from bills.tasks.arrears import (
+    finalize_arrear_contribution,
+    process_arrear_updates_and_arrear_contribution_transfer,
+    record_arrear_contribution_transfer_object,
+    record_bill_arrear,
+)
 from financials.models import PaystackTransaction, PaystackTransfer
 from financials.tasks.cards import (
     process_card_creation_and_refund,
@@ -49,17 +54,20 @@ def handle_paystack_webhook_response(request_data):
     subscription_contribution_label = (
         PaystackTransaction.TransactionChoices.SUBSCRIPTION_CONTRIBUTION.label
     )
+    arrear_contribution_label = (
+        PaystackTransaction.TransactionChoices.ARREAR_CONTRIBUTION.label
+    )
 
     if event == "charge.success":
-        print("CHARGE SUCCESS", json.dumps(request_data))
-
         metadata = data.get("metadata")
         plan = data.get("plan")
+
         is_card_addition = metadata.get("is_card_addition") == "true"
         is_one_time_contribution = metadata.get("is_contribution") == "true"
         is_subscription_contribution = (
             plan.get("name").startswith("Plan for") if plan else False
         )
+        is_arrear_contribution = metadata.get("is_arrear_contribution") == "true"
 
         if is_card_addition:
             process_card_creation_and_refund.delay(request_data)
@@ -74,21 +82,24 @@ def handle_paystack_webhook_response(request_data):
                 request_data
             )
 
-    if event == "subscription.create":
-        print("SUBSCRIPTION CREATED", json.dumps(request_data))
+        if is_arrear_contribution:
+            process_arrear_updates_and_arrear_contribution_transfer.delay(request_data)
 
+    if event == "subscription.create":
         process_subscription_creation.delay(request_data)
 
     if event == "transfer.success":
-        print("TRANSFER SUCCESSFUL", json.dumps(request_data))
-
         reason = data.get("reason")
+
         is_card_addition_refund = reason == "Refund for card creation"
         is_one_time_contribution_transfer = reason.startswith(
             f"{one_time_contribution_label} transfer for action"
         )
         is_subscription_contribution_transfer = reason.startswith(
             f"{subscription_contribution_label} transfer for action"
+        )
+        is_arrear_contribution_transfer = reason.startswith(
+            f"{arrear_contribution_label} transfer for arrear"
         )
 
         if is_card_addition_refund:
@@ -103,14 +114,21 @@ def handle_paystack_webhook_response(request_data):
         if is_subscription_contribution_transfer:
             finalize_subscription_contribution.delay(request_data)
 
+        if is_arrear_contribution_transfer:
+            finalize_arrear_contribution.delay(request_data)
+
     if event == "transfer.failed":
         reason = data.get("reason")
+
         is_card_addition_refund = reason == "Refund for card creation"
         is_one_time_contribution_transfer = reason.startswith(
             f"{one_time_contribution_label} transfer for action"
         )
         is_subscription_contribution_transfer = reason.startswith(
             f"{subscription_contribution_label} transfer for action"
+        )
+        is_arrear_contribution_transfer = reason.startswith(
+            f"{arrear_contribution_label} transfer for arrear"
         )
 
         if is_card_addition_refund:
@@ -127,7 +145,6 @@ def handle_paystack_webhook_response(request_data):
                 request_data,
                 PaystackTransfer.TransferOutcomeChoices.FAILED,
             )
-
             # TODO Add retry here.
 
         if is_subscription_contribution_transfer:
@@ -135,17 +152,27 @@ def handle_paystack_webhook_response(request_data):
                 request_data,
                 PaystackTransfer.TransferOutcomeChoices.FAILED,
             )
+            # TODO Add retry here.
 
+        if is_arrear_contribution_transfer:
+            record_arrear_contribution_transfer_object.delay(
+                request_data,
+                PaystackTransfer.TransferOutcomeChoices.FAILED,
+            )
             # TODO Add retry here.
 
     if event == "transfer.reversed":
         reason = data.get("reason")
+
         is_card_addition_refund = reason == "Refund for card creation"
         is_one_time_contribution_transfer = reason.startswith(
             f"{one_time_contribution_label} transfer for action"
         )
         is_subscription_contribution_transfer = reason.startswith(
             f"{subscription_contribution_label} transfer for action"
+        )
+        is_arrear_contribution_transfer = reason.startswith(
+            f"{arrear_contribution_label} transfer for arrear"
         )
 
         if is_card_addition_refund:
@@ -162,6 +189,12 @@ def handle_paystack_webhook_response(request_data):
 
         if is_subscription_contribution_transfer:
             record_contribution_transfer_object.delay(
+                request_data,
+                PaystackTransfer.TransferOutcomeChoices.REVERSED,
+            )
+
+        if is_arrear_contribution_transfer:
+            record_arrear_contribution_transfer_object.delay(
                 request_data,
                 PaystackTransfer.TransferOutcomeChoices.REVERSED,
             )

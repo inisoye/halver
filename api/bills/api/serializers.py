@@ -3,7 +3,13 @@ from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
 
 from accounts.models import CustomUser
-from bills.models import Bill, BillAction, BillTransaction, BillUnregisteredParticipant
+from bills.models import (
+    Bill,
+    BillAction,
+    BillArrear,
+    BillTransaction,
+    BillUnregisteredParticipant,
+)
 from bills.utils.validation import (
     validate_contributions_and_total_amount_due,
     validate_create_bill_serializer_dates,
@@ -336,9 +342,16 @@ class BillDetailsUpdateSerializer(serializers.ModelSerializer):
         }
 
 
-class ActionResponseUpdateSerializer(serializers.ModelSerializer):
+class BillActionResponseUpdateSerializer(serializers.ModelSerializer):
     has_participant_agreed = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = BillAction
         fields = ("has_participant_agreed",)
+
+
+class BillArrearResponseUpdateSerializer(serializers.ModelSerializer):
+    is_forgiveness = serializers.BooleanField(read_only=True, default=False)
+
+    class Meta:
+        model = BillArrear
