@@ -352,6 +352,9 @@ class PaystackSubscription(AbstractTimeStampedUUIDModel, models.Model):
     paystack_subscription_code = models.CharField(
         max_length=100,
     )
+    paystack_email_token = models.CharField(
+        max_length=100,
+    )
     complete_paystack_response = models.JSONField(
         editable=False,
     )

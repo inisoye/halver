@@ -24,7 +24,7 @@ from financials.tasks.subscriptions import (
 )
 
 # TODO Ensure all Celery tasks are idempotent to prevent duplicate payouts.
-# TODO Stronglyt consider changing broker from Redis to RabbitMQ
+# TODO Strongly consider changing broker from Redis to RabbitMQ
 
 
 def handle_paystack_webhook_response(request_data):
@@ -78,6 +78,7 @@ def handle_paystack_webhook_response(request_data):
             )
 
         if is_subscription_contribution:
+            print("SUBSCRIPTION CHARGE", json.dumps(request_data))
             process_action_updates_and_subscription_contribution_transfer.delay(
                 request_data
             )
@@ -86,6 +87,7 @@ def handle_paystack_webhook_response(request_data):
             process_arrear_updates_and_arrear_contribution_transfer.delay(request_data)
 
     if event == "subscription.create":
+        print("SUBSCRIPTION CREATED", json.dumps(request_data))
         process_subscription_creation.delay(request_data)
 
     if event == "transfer.success":

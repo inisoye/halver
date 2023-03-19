@@ -32,6 +32,7 @@ def process_subscription_creation(request_data):
     next_payment_date = data.get("next_payment_date")
     status = data.get("status")
     subscription_code = data.get("subscription_code")
+    email_token = data.get("email_token")
     authorization_signature = data.get("authorization").get("signature")
 
     plan_description = plan.get("description")
@@ -56,6 +57,7 @@ def process_subscription_creation(request_data):
         start_date=start_date,
         next_payment_date=next_payment_date,
         paystack_subscription_code=subscription_code,
+        paystack_email_token=email_token,
         complete_paystack_response=request_data,
     )
 
