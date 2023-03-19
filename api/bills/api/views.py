@@ -1,3 +1,6 @@
+import asyncio
+
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
@@ -21,7 +24,6 @@ from bills.api.serializers import (
     BillDetailSerializer,
     BillDetailsUpdateSerializer,
     BillListSerializer,
-    BillSubscriptionCancellationSerializer,
     BillUnregisteredParticipantListSerializer,
     BillUnregisteredParticipantsDataTransferSerializer,
 )
@@ -31,6 +33,10 @@ from bills.utils.participants import transfer_unregistered_participant_data
 from core.utils.responses import format_exception
 from financials.tasks.plans import create_paystack_plans_for_recurring_bills
 from financials.utils.contributions import handle_bill_contribution
+from financials.utils.subscriptions import (
+    format_disable_subscriptions_payloads,
+    get_action_ids_to_be_ignored,
+)
 from libraries.paystack.subscription_requests import SubscriptionRequests
 
 
@@ -135,6 +141,70 @@ class BillRetrieveUpdateAPIView(APIView):
         bill.save(update_fields=request.data.keys())
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class BillCancellationAPIView(APIView):
+    """View for cancelling a bill.
+
+    Accepts PATCH requests.
+    """
+
+    permission_classes = (IsCreditorOrCreator,)
+
+    def patch(self, request, uuid):
+        """Cancels a bill by setting all its actions to cancelled and disabling any
+        Paystack subscriptions associated with it.
+        """
+
+        bill_queryset = Bill.objects.filter(uuid=uuid).prefetch_related(
+            "actions", "actions__paystack_subscription"
+        )
+        bill = get_object_or_404(bill_queryset)
+
+        self.check_object_permissions(request, bill)
+
+        if bill.status["long"] == "Bill cancelled":
+            return format_exception(
+                message="This bill has already been cancelled",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not bill.is_recurring:
+            bill.actions.update(status=BillAction.StatusChoices.CANCELLED)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        bill_actions = bill.actions.all()
+
+        disable_subscriptions_payloads = format_disable_subscriptions_payloads(
+            bill_actions
+        )
+
+        disable_subscriptions_responses = asyncio.run(
+            SubscriptionRequests.disable_multiple(disable_subscriptions_payloads)
+        )
+
+        # Detect subscriptions that were not successfully disabled.
+        action_ids_to_be_ignored = get_action_ids_to_be_ignored(
+            disable_subscriptions_responses, bill_actions
+        )
+
+        # Cancel only actions associated with subscriptions that have been disabled.
+        bill_actions.filter(~Q(id__in=action_ids_to_be_ignored)).update(
+            status=BillAction.StatusChoices.CANCELLED
+        )
+
+        if action_ids_to_be_ignored:
+            return format_exception(
+                message=(
+                    "Some subscriptions were not successfully cancelled. Try cancelling"
+                    " them individually or try again later."
+                ),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+        else:
+            return Response(
+                "All subscriptions successfully cancelled", status=status.HTTP_200_OK
+            )
 
 
 class BillUnregisteredParticipantsListAPIView(ListAPIView):
@@ -323,7 +393,6 @@ class BillSubscriptionCancellationAPIView(APIView):
     """
 
     permission_classes = (IsOwningParticipantOrCreditorOrCreator,)
-    serializer_class = BillSubscriptionCancellationSerializer
 
     def patch(self, request, uuid):
         """Disables the Paystack subscription associated with a particular

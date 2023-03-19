@@ -1,3 +1,5 @@
+import asyncio
+
 from libraries.paystack.base import PaystackBase
 
 
@@ -66,13 +68,59 @@ class SubscriptionRequests(PaystackBase):
             token: Email token.
 
         returns:
-            A JSON confirmation of disable request.
+            A JSON confirmation of disabled subscription.
         """
 
         return cls().requests.post(
             "subscription/disable",
             data=kwargs,
         )
+
+    @classmethod
+    async def disable_async(cls, **kwargs):
+        """Disable a subscription asynchronously. The request is sent asynchronously to
+        facilitate the disable_multiple method.
+
+        Args:
+            code: Subscription code.
+            token: Email token.
+
+
+        returns:
+            A JSON confirmation of disabled subscription.
+        """
+
+        response = await cls().requests.post_async(
+            "subscription/disable",
+            data=kwargs,
+        )
+
+        return response
+
+    @classmethod
+    async def disable_multiple(cls, disable_subscription_payloads):
+        """Disable multiple paystack subscriptions by running the disable method multiple
+        times, concurrently.
+
+        Args:
+            disable_subscription_payloads: A list of payloads to be used in disabling
+                each subscription. Each item should contain the params of disable_async.
+
+        Returns:
+            A list of confirmation messages confirming disabled subscription.
+        """
+
+        # Create a list of tasks that will be run concurrently
+        tasks = [
+            asyncio.ensure_future(cls().disable_async(**disable_subscription_payload))
+            for disable_subscription_payload in disable_subscription_payloads
+        ]
+
+        # Wait for all tasks to complete
+        disabled_subscriptions = await asyncio.gather(*tasks)
+
+        # Return the list of disabled confirmations.
+        return disabled_subscriptions
 
     @classmethod
     def enable(cls, **kwargs):
@@ -83,7 +131,7 @@ class SubscriptionRequests(PaystackBase):
             token: Email token.
 
         returns:
-            A JSON confirmation of enable request.
+            A JSON confirmation of enabled subscription.
         """
 
         return cls().requests.post(

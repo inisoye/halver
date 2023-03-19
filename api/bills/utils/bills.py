@@ -339,7 +339,7 @@ def generate_long_status_index(all_actions_are_one_type, most_common_status_coun
         ),
         BillAction.StatusChoices.CANCELLED: "Bill cancelled"
         if all_actions_are_one_type
-        else f"{bill_status_message_prefix} participant{plural_suffix} opted out",
+        else f"{bill_status_message_prefix} participant{plural_suffix} cancelled",
         BillAction.StatusChoices.COMPLETED: (
             f"{bill_status_message_prefix} payment{plural_suffix} completed"
         ),
