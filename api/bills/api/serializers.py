@@ -16,7 +16,6 @@ from bills.utils.validation import (
     validate_participants_and_unregistered_participants,
     validate_participants_contribution_index,
 )
-from financials.models import UserCard
 
 
 class BillUnregisteredParticipantListSerializer(serializers.ModelSerializer):
@@ -31,11 +30,7 @@ class BillUnregisteredParticipantListSerializer(serializers.ModelSerializer):
             "phone",
             "uuid",
         )
-        read_only_fields = (
-            "created",
-            "modified",
-            "uuid",
-        )
+        read_only_fields = fields
 
 
 class BillUnregisteredParticipantsDataTransferSerializer(serializers.Serializer):
@@ -165,28 +160,12 @@ class BillListSerializer(serializers.ModelSerializer):
             "total_participants",
             "uuid",
         )
-        read_only = fields
+        read_only_fields = fields
 
 
 # --------------------------------------------------------------
 # Serializers nested inside BillDetailSerializer start.
 # --------------------------------------------------------------
-
-
-class BillActionDefaultCardSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserCard
-        fields = (
-            "account_name",
-            "bank",
-            "card_type",
-            "created",
-            "exp_month",
-            "exp_year",
-            "first_6",
-            "last_4",
-            "uuid",
-        )
 
 
 class BillCreatorCreditorParticipantSerializer(serializers.ModelSerializer):
@@ -204,7 +183,7 @@ class BillCreatorCreditorParticipantSerializer(serializers.ModelSerializer):
             "username",
             "uuid",
         )
-        read_only = fields
+        read_only_fields = fields
 
 
 class BillDetailUnregisteredParticipantSerializer(serializers.ModelSerializer):
@@ -236,20 +215,7 @@ class BillDetailActionSerializer(serializers.ModelSerializer):
             "unregistered_participant",
             "uuid",
         )
-        read_only = fields
-
-
-class BillDetailTransactionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BillTransaction
-        fields = (
-            "contribution",
-            "created",
-            "modified",
-            "total_payment",
-            "uuid",
-        )
-        read_only = fields
+        read_only_fields = fields
 
 
 # --------------------------------------------------------------
@@ -273,7 +239,6 @@ class BillDetailSerializer(serializers.ModelSerializer):
         default=0,
     )
     total_participants = serializers.IntegerField()
-    transactions = BillDetailTransactionSerializer(many=True)
 
     # TODO The requester's action and the subscription tied to it should be returned
     # here as well.
@@ -323,10 +288,9 @@ class BillDetailSerializer(serializers.ModelSerializer):
             "total_amount_due",
             "total_amount_paid",
             "total_participants",
-            "transactions",
             "uuid",
         )
-        read_only = fields
+        read_only_fields = fields
 
 
 class BillDetailsUpdateSerializer(serializers.ModelSerializer):
@@ -355,3 +319,33 @@ class BillArrearResponseUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BillArrear
+        fields = ("is_forgiveness",)
+
+
+class BillArrearListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BillArrear
+        fields = (
+            "contribution",
+            "created",
+            "modified",
+            "participant",
+            "status",
+            "total_payment_due",
+            "uuid",
+        )
+        read_only_fields = fields
+
+
+class BillTransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BillTransaction
+        fields = (
+            "contribution",
+            "created",
+            "modified",
+            "total_payment",
+            "transaction_type",
+            "uuid",
+        )
+        read_only_fields = fields

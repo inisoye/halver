@@ -19,11 +19,13 @@ from bills.api.permissions import (
 )
 from bills.api.serializers import (
     BillActionResponseUpdateSerializer,
+    BillArrearListSerializer,
     BillArrearResponseUpdateSerializer,
     BillCreateSerializer,
     BillDetailSerializer,
     BillDetailsUpdateSerializer,
     BillListSerializer,
+    BillTransactionSerializer,
     BillUnregisteredParticipantListSerializer,
     BillUnregisteredParticipantsDataTransferSerializer,
 )
@@ -207,7 +209,7 @@ class BillCancellationAPIView(APIView):
             )
 
 
-class BillUnregisteredParticipantsListAPIView(ListAPIView):
+class BillUnregisteredParticipantListAPIView(ListAPIView):
     """View for listing all unregistered participants on a bill.
 
     Accepts GET requests.
@@ -226,7 +228,7 @@ class BillUnregisteredParticipantsListAPIView(ListAPIView):
         return bill.unregistered_participants.all()
 
 
-class BillUnregisteredParticipantsDataTransferAPIView(APIView):
+class BillUnregisteredParticipantDataTransferAPIView(APIView):
     """View for converting unregistered participants to registered users.
 
     Accepts POST requests.
@@ -438,3 +440,40 @@ class BillSubscriptionCancellationAPIView(APIView):
                 message=response["message"],
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class BillTransactionListAPIView(ListAPIView):
+    """View for listing complete (Halver) transactions on a bill.
+
+    Accepts GET requests.
+    """
+
+    permission_classes = (IsParticipantOrCreditor,)
+    serializer_class = BillTransactionSerializer
+
+    def get_queryset(self):
+        """Returns a queryset containing all complete transactions on a
+        particular bill."""
+
+        bill_id = self.kwargs.get("uuid")
+        bill = get_object_or_404(Bill, uuid=bill_id)
+
+        return bill.transactions.all()
+
+
+class BillArrearListAPIView(ListAPIView):
+    """View for listing arrears on a bill.
+
+    Accepts GET requests.
+    """
+
+    permission_classes = (IsParticipantOrCreditor,)
+    serializer_class = BillArrearListSerializer
+
+    def get_queryset(self):
+        """Returns a queryset containing all arrears on a particular bill."""
+
+        bill_id = self.kwargs.get("uuid")
+        bill = get_object_or_404(Bill, uuid=bill_id)
+
+        return bill.arrears.all().select_related("participant")
