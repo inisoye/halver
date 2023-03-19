@@ -8,9 +8,10 @@ from rest_framework.views import APIView
 
 from bills.api.permissions import (
     IsCreditorOrCreator,
+    IsOwningParticipant,
+    IsOwningParticipantOrCreditor,
+    IsOwningParticipantOrCreditorOrCreator,
     IsParticipantOrCreditor,
-    IsRegisteredParticipant,
-    IsRegisteredParticipantOrCreditor,
     ParticipantHasDefaultCard,
 )
 from bills.api.serializers import (
@@ -20,6 +21,7 @@ from bills.api.serializers import (
     BillDetailSerializer,
     BillDetailsUpdateSerializer,
     BillListSerializer,
+    BillSubscriptionCancellationSerializer,
     BillUnregisteredParticipantListSerializer,
     BillUnregisteredParticipantsDataTransferSerializer,
 )
@@ -29,6 +31,7 @@ from bills.utils.participants import transfer_unregistered_participant_data
 from core.utils.responses import format_exception
 from financials.tasks.plans import create_paystack_plans_for_recurring_bills
 from financials.utils.contributions import handle_bill_contribution
+from libraries.paystack.subscription_requests import SubscriptionRequests
 
 
 class BillListCreateAPIView(ListCreateAPIView):
@@ -164,12 +167,11 @@ class BillUnregisteredParticipantsDataTransferAPIView(APIView):
 
     def post(self, request):
         """Transfers the following data associated with a particular
-        unregistered participant: bills, bill actions, plans and plan
-        failures.
+        unregistered participant: bills, bill actions, plans and plan failures.
 
-        If a phone number is provided, any unregistered participant with that number is
-        used. Otherwise, any unregistered participant that shares a phone number with the
-        user making the request is used.
+        If a phone number is provided, any unregistered participant with that
+        number is used. Otherwise, any unregistered participant that shares a
+        phone number with the user making the request is used.
         """
 
         registered_user = request.user
@@ -198,7 +200,7 @@ class BillActionResponseUpdateAPIView(APIView):
     Accepts PATCH requests.
     """
 
-    permission_classes = (IsRegisteredParticipant, ParticipantHasDefaultCard)
+    permission_classes = (IsOwningParticipant, ParticipantHasDefaultCard)
     serializer_class = BillActionResponseUpdateSerializer
 
     def patch(self, request, uuid):
@@ -267,12 +269,13 @@ class BillArrearResponseUpdateAPIView(APIView):
     Accepts PATCH requests.
     """
 
-    permission_classes = (IsRegisteredParticipantOrCreditor, ParticipantHasDefaultCard)
+    permission_classes = (IsOwningParticipantOrCreditor, ParticipantHasDefaultCard)
     serializer_class = BillArrearResponseUpdateSerializer
 
     def patch(self, request, uuid):
-        """Handles PATCH requests for updating the response of a participant or creditor
-        to a bill arrear. Will make a one-time payment if payload is well formatted.
+        """Handles PATCH requests for updating the response of a participant or
+        creditor to a bill arrear. Will make a one-time payment if payload is
+        well formatted.
 
         Accepts the UUID of the bill arrear to update.
         """
@@ -305,6 +308,61 @@ class BillArrearResponseUpdateAPIView(APIView):
 
         if response["status"]:
             return Response(response, status=status.HTTP_200_OK)
+
+        else:
+            return format_exception(
+                message=response["message"],
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class BillSubscriptionCancellationAPIView(APIView):
+    """Used to opt a user out of a recurring bill.
+
+    Accepts PATCH requests.
+    """
+
+    permission_classes = (IsOwningParticipantOrCreditorOrCreator,)
+    serializer_class = BillSubscriptionCancellationSerializer
+
+    def patch(self, request, uuid):
+        """Disables the Paystack subscription associated with a particular
+        participant and sets the partcipants action as "opted out".
+
+        Accepts the UUID of the bill action to update.
+        """
+
+        actions_queryset = (
+            BillAction.objects.filter(uuid=uuid)
+            .select_related("bill")
+            .prefetch_related("paystack_subscription")
+        )
+        action = get_object_or_404(actions_queryset)
+
+        self.check_object_permissions(request, action)
+
+        bill = action.bill
+
+        if not bill.is_recurring:
+            return format_exception(
+                "This service is for cancelling recurring bills or bill subscriptions"
+                " only.",
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        paystack_subscription = action.paystack_subscription
+        paystack_subscription_code = paystack_subscription.paystack_subscription_code
+        paystack_email_token = paystack_subscription.paystack_email_token
+
+        # Make API call
+        response = SubscriptionRequests.disable(
+            code=paystack_subscription_code,
+            token=paystack_email_token,
+        )
+
+        if response["status"]:
+            action.opt_out_of_bill()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
         else:
             return format_exception(

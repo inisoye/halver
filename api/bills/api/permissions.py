@@ -14,6 +14,7 @@ class IsParticipant(BasePermission):
 
         if request.user.is_authenticated:
             return True
+
         return False
 
     def has_object_permission(self, request, view, obj) -> bool:
@@ -31,6 +32,7 @@ class IsCreditor(BasePermission):
 
         if request.user.is_authenticated:
             return True
+
         return False
 
     def has_object_permission(self, request, view, obj) -> bool:
@@ -48,6 +50,7 @@ class IsCreator(BasePermission):
 
         if request.user.is_authenticated:
             return True
+
         return False
 
     def has_object_permission(self, request, view, obj) -> bool:
@@ -62,10 +65,12 @@ class IsCreditorOrCreator(BasePermission):
 
     def has_permission(self, request, view):
         """Check if the user is authenticated."""
+
         return request.user.is_authenticated
 
     def has_object_permission(self, request, view, obj):
         """Check if the user is the creditor or creator of the bill."""
+
         return request.user == obj.creditor or request.user == obj.creator
 
 
@@ -78,6 +83,7 @@ class IsParticipantOrCreditor(BasePermission):
 
         if request.user.is_authenticated:
             return True
+
         return False
 
     def has_object_permission(self, request, view, obj) -> bool:
@@ -91,11 +97,12 @@ class IsParticipantOrCreditor(BasePermission):
 # -------------------------------------
 
 
-class IsRegisteredParticipant(BasePermission):
-    """Permission class that checks if the user is a registered participant.
+class IsOwningParticipant(BasePermission):
+    """Permission class that checks if the user is a the participant that owns
+    the object.
 
-    To be considered a registered participant, the user must be authenticated
-    and be included as the participant associated with the action instance to be
+    To be considered an owning participant, the user must be authenticated
+    and be included as the participant associated with the action/arrear instance to be
     updated.
     """
 
@@ -104,6 +111,7 @@ class IsRegisteredParticipant(BasePermission):
 
         if request.user.is_authenticated:
             return True
+
         return False
 
     def has_object_permission(self, request, view, obj):
@@ -132,6 +140,7 @@ class ParticipantHasDefaultCard(BasePermission):
 
         if request.user.is_authenticated:
             return True
+
         return False
 
     def has_object_permission(self, request, view, obj):
@@ -146,11 +155,12 @@ class ParticipantHasDefaultCard(BasePermission):
         return bool(participant.default_card)
 
 
-class IsRegisteredParticipantOrCreditor(BasePermission):
-    """Permission class that checks if the user is a registered participant.
+class IsOwningParticipantOrCreditor(BasePermission):
+    """Permission class that checks if the user is a the participant that owns
+    the object or is the creditor.
 
-    To be considered a registered participant, the user must be authenticated
-    and be included as the participant associated with the action instance to be
+    To be considered an owning participant, the user must be authenticated
+    and be included as the participant associated with the action/arrear instance to be
     updated.
     """
 
@@ -159,6 +169,7 @@ class IsRegisteredParticipantOrCreditor(BasePermission):
 
         if request.user.is_authenticated:
             return True
+
         return False
 
     def has_object_permission(self, request, view, obj):
@@ -174,3 +185,39 @@ class IsRegisteredParticipantOrCreditor(BasePermission):
             return False
 
         return (request.user == obj.participant) or (request.user == obj.bill.creditor)
+
+
+class IsOwningParticipantOrCreditorOrCreator(BasePermission):
+    """Permission class that checks if the user is a the participant that owns
+    the object, is the creditor or is the bill creator.
+
+    To be considered an owning participant, the user must be authenticated
+    and be included as the participant associated with the action/arrear instance to be
+    updated.
+    """
+
+    def has_permission(self, request, view) -> bool:
+        """Check if the user is authenticated."""
+
+        if request.user.is_authenticated:
+            return True
+
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        """Check if person making the request the participant either the
+        participant or creditor associated with the BillAction/BillArrear
+        instance.
+
+        The participant must be associated with the BillAction/BillArrear
+        instance via the 'participant' attribute.
+        """
+
+        if not obj.participant:
+            return False
+
+        return (
+            (request.user == obj.participant)
+            or (request.user == obj.bill.creditor)
+            or (request.user == obj.bill.creator)
+        )

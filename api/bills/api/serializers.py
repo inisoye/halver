@@ -355,3 +355,8 @@ class BillArrearResponseUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BillArrear
+
+
+class BillSubscriptionCancellationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BillAction
