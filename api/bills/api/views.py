@@ -222,8 +222,8 @@ class BillUnregisteredParticipantListAPIView(ListAPIView):
         """Returns a queryset containing all unregistered participants on a
         particular bill."""
 
-        bill_id = self.kwargs.get("uuid")
-        bill = get_object_or_404(Bill, uuid=bill_id)
+        bill_uuid = self.kwargs.get("uuid")
+        bill = get_object_or_404(Bill, uuid=bill_uuid)
 
         return bill.unregistered_participants.all()
 
@@ -455,8 +455,8 @@ class BillTransactionListAPIView(ListAPIView):
         """Returns a queryset containing all complete transactions on a
         particular bill."""
 
-        bill_id = self.kwargs.get("uuid")
-        bill = get_object_or_404(Bill, uuid=bill_id)
+        bill_uuid = self.kwargs.get("uuid")
+        bill = get_object_or_404(Bill, uuid=bill_uuid)
 
         return bill.transactions.all()
 
@@ -473,7 +473,7 @@ class BillArrearListAPIView(ListAPIView):
     def get_queryset(self):
         """Returns a queryset containing all arrears on a particular bill."""
 
-        bill_id = self.kwargs.get("uuid")
-        bill = get_object_or_404(Bill, uuid=bill_id)
+        bill_uuid = self.kwargs.get("uuid")
+        bill = get_object_or_404(Bill, uuid=bill_uuid)
 
         return bill.arrears.all().select_related("participant")
