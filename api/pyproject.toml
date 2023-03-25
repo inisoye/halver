@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-django = "^4.1.4"
+django = "^4.1.7"
 environs = { extras = ["django"], version = "^9.5.0" }
 pillow = "^9.3.0"
 djangorestframework = "^3.14.0"
