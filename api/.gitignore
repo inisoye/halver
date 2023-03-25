@@ -169,4 +169,5 @@ testpaystack.py
 testflutterwave.py
 testplayground.py
 
-
+# Exclude static files
+/staticfiles/

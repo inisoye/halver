@@ -7,10 +7,10 @@ import uuid
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager, PermissionsMixin
 from django.contrib.auth.validators import ASCIIUsernameValidator
-from django.contrib.postgres.fields import CICharField, CIEmailField
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.db import models
+from django.db.models.functions import Lower
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
@@ -59,7 +59,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     username_validator = ASCIIUsernameValidator()
 
-    username = CICharField(
+    username = models.CharField(
         _("username"),
         max_length=150,
         unique=True,
@@ -81,7 +81,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         max_length=150,
         blank=True,
     )
-    email = CIEmailField(
+    email = models.EmailField(
         _("email address"),
         unique=True,
         error_messages={
@@ -197,5 +197,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return list(recipient_codes)
 
     class Meta:
+        # Set a unique constraint on the lowercase version of the username and email
+        # https://docs.djangoproject.com/en/4.0/ref/models/constraints/#expressions
+        constraints = [
+            models.UniqueConstraint(
+                Lower("username"),
+                Lower("email"),
+                name="user_username_email_ci_uniqueness",
+            ),
+        ]
+        indexes = [models.Index(fields=["uuid"])]
         verbose_name = _("user")
         verbose_name_plural = _("users")

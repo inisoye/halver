@@ -89,6 +89,7 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
         delete_and_set_newest_as_default(self, "user_card")
 
     class Meta:
+        indexes = [models.Index(fields=["signature"])]
         verbose_name = "User card"
         verbose_name_plural = "User cards"
 
@@ -162,6 +163,7 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         )
 
     class Meta:
+        indexes = [models.Index(fields=["recipient_code"])]
         verbose_name = "User transfer recipient"
         verbose_name_plural = "User transfer recipients"
 
