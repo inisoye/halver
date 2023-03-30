@@ -9,5 +9,8 @@ env.read_env()
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
-    callback_url = env.str("GOOGLE_OAUTH_CALLBACK_URL")
+    callback_url = env.str(
+        "GOOGLE_OAUTH_CALLBACK_URL",
+        default="default_google_oauth_callback_url",
+    )
     client_class = OAuth2Client

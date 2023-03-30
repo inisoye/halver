@@ -14,7 +14,10 @@ from environs import Env
 env = Env()
 env.read_env()
 
-PAYSTACK_SECRET_KEY = env.str("PAYSTACK_SECRET_KEY")
+PAYSTACK_SECRET_KEY = env.str(
+    "PAYSTACK_SECRET_KEY",
+    default="default_paystack_secret_key",
+)
 PAYSTACK_API_BASE_URL = "https://api.paystack.co/"
 
 
