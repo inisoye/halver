@@ -17,7 +17,6 @@ aiohttp = "^3.8.3"
 celery = "^5.2.7"
 redis = "^4.4.0"
 drf-spectacular = "^0.25.1"
-dj-rest-auth = { extras = ["with-social"], version = "^2.2.7" }
 django-ipware = "^4.0.2"
 flower = "^1.2.0"
 django-import-export = "^3.0.2"
@@ -25,6 +24,8 @@ django-phonenumber-field = { extras = ["phonenumberslite"], version = "^7.0.2" }
 whitenoise = "^6.4.0"
 gunicorn = "^20.1.0"
 mysqlclient = "^2.1.1"
+django-allauth = "0.51.0"
+dj-rest-auth = "^3.0.0"
 
 [tool.poetry.group.dev.dependencies]
 django-stubs = { extras = ["compatible-mypy"], version = "^1.13.1" }
