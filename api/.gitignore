@@ -165,9 +165,7 @@ schema.yml
 *.rdb
 
 # Custom scripts for testing
-testpaystack.py
-testflutterwave.py
-testplayground.py
+playground/
 
 # Exclude static files
 /staticfiles/

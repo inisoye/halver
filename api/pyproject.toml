@@ -46,6 +46,7 @@ celery = "poetry run celery -A core worker -l info"
 celery-beat = "poetry run celery -A core beat -l info"
 flower = "poetry run celery -A core flower"
 celery-purge = "poetry run celery -A core purge"
+test = "poetry run python manage.py test"
 
 
 [build-system]
