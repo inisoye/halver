@@ -108,10 +108,22 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     "default": env.dj_db_url(
+#         "DATABASE_URL", default="mysql://user:password@localhost:3306/dbname"
+#     )
+# }
+
 DATABASES = {
-    "default": env.dj_db_url(
-        "DATABASE_URL", default="mysql://user:password@localhost:3306/dbname"
-    )
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": env.str("DB_NAME"),
+        "HOST": env.str("DB_HOST"),
+        "PORT": env.str("DB_PORT"),
+        "USER": env.str("DB_USER"),
+        "PASSWORD": env.str("DB_PASSWORD"),
+        "OPTIONS": {"ssl": {"ca": env.str("MYSQL_ATTR_SSL_CA")}},
+    }
 }
 
 
