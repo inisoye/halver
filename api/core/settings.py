@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     "drf_spectacular",
+    "debug_toolbar",
     "import_export",
     "phonenumber_field",
     # Local
@@ -69,6 +70,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -80,14 +82,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# Enable debug toolbar only if DEBUG=True
-if DEBUG:
-    INSTALLED_APPS = INSTALLED_APPS + [
-        "debug_toolbar",
-    ]
-    MIDDLEWARE = [
-        "debug_toolbar.middleware.DebugToolbarMiddleware",
-    ] + MIDDLEWARE
 
 ROOT_URLCONF = "core.urls"
 
