@@ -27,6 +27,8 @@ mysqlclient = "^2.1.1"
 django-allauth = "0.51.0"
 dj-rest-auth = "^3.0.0"
 gevent = "^22.10.2"
+blurhash-python = "^1.2.0"
+cloudinary = "^1.32.0"
 
 [tool.poetry.group.dev.dependencies]
 django-stubs = { extras = ["compatible-mypy"], version = "^1.13.1" }

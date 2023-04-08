@@ -164,8 +164,9 @@ schema.yml
 # Ignore redis binary dump (dump.rdb) files
 *.rdb
 
-# Custom scripts for testing
+# Custom files for testing
 playground/
+server-commands.txt
 
 # Exclude static files
 /staticfiles/

@@ -78,3 +78,7 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
             "last_name",
             "uuid",
         )
+
+
+class ProfileImageSerializer(serializers.Serializer):
+    profile_image = serializers.ImageField()

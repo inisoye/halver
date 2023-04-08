@@ -198,6 +198,30 @@ files = [
 ]
 
 [[package]]
+name = "blurhash-python"
+version = "1.2.0"
+description = "BlurHash encoder implementation for Python"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "blurhash-python-1.2.0.tar.gz", hash = "sha256:4caf57039c386ef53fb17598cd90a5c3eca1c76f529c35b4d67166070b9d2de2"},
+    {file = "blurhash_python-1.2.0-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:ecbdd7c4f67787e23ce906940024e64cacc872a21a5e9eb60bcd94bfdb2c5c13"},
+    {file = "blurhash_python-1.2.0-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:82210d27e744a1aab3fac59f95f34b9df50aaf300cf132d72588588ce137c746"},
+    {file = "blurhash_python-1.2.0-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:7631977ab489eb8d4338347e3d954aca80e2922f21a66c65b12cc1f4e130da71"},
+    {file = "blurhash_python-1.2.0-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:b154189c9eb34f72696d724ffd317c6d27f1f68d47e3752b88c3a89ccc44b13f"},
+    {file = "blurhash_python-1.2.0-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:c44df545af61fc8bb6a16723329a08a47f625278e17cfae6e81487c6d1903ffd"},
+]
+
+[package.dependencies]
+cffi = "*"
+Pillow = "*"
+six = "*"
+
+[package.extras]
+testing = ["pytest"]
+
+[[package]]
 name = "celery"
 version = "5.2.7"
 description = "Distributed Task Queue."
@@ -420,6 +444,22 @@ files = [
 click = "*"
 prompt-toolkit = "*"
 six = "*"
+
+[[package]]
+name = "cloudinary"
+version = "1.32.0"
+description = "Python and Django SDK for Cloudinary"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "cloudinary-1.32.0.tar.gz", hash = "sha256:26d664a58347908defc1b65584dcdf6cedc0c761a66972e7fddf6183353dfa96"},
+]
+
+[package.dependencies]
+certifi = "*"
+six = "*"
+urllib3 = ">=1.26.5,<2"
 
 [[package]]
 name = "colorama"
@@ -2234,4 +2274,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "c1f7d9ce301107af70b6c1b586f717947a0d6794b9ec6dee13dfc32033c0f48c"
+content-hash = "ffb727624d0629f71c97581a8ef487470ea1f6913c0520d265157da2f5282840"

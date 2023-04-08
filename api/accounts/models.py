@@ -2,8 +2,13 @@
 # https://simpleisbetterthancomplex.com/article/2021/07/08/what-you-should-know-about-the-django-user-model.html
 # https://github.com/fusionbox/django-authtools/blob/master/authtools/models.py
 
+import time
 import uuid
+from io import BytesIO
 
+import blurhash
+from cloudinary.uploader import upload
+from cloudinary.utils import cloudinary_url
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager, PermissionsMixin
 from django.contrib.auth.validators import ASCIIUsernameValidator
@@ -14,6 +19,7 @@ from django.db.models.functions import Lower
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
+from PIL import Image
 
 
 class CustomUserManager(BaseUserManager):
@@ -113,10 +119,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         _("date joined"),
         default=timezone.now,
     )
-    profile_image = models.ImageField(
-        upload_to="profile_images/",
-        blank=True,
-    )
+    profile_image_url = models.URLField(null=True, blank=True)
+    profile_image_hash = models.CharField(max_length=35, null=True, blank=True)
     uuid = models.UUIDField(
         unique=True,
         editable=False,
@@ -130,6 +134,20 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
+    class Meta:
+        # Set a unique constraint on the lowercase version of the username and email
+        # https://docs.djangoproject.com/en/4.0/ref/models/constraints/#expressions
+        constraints = [
+            models.UniqueConstraint(
+                Lower("username"),
+                Lower("email"),
+                name="user_username_email_ci_uniqueness",
+            ),
+        ]
+        indexes = [models.Index(fields=["uuid"])]
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
+
     def __str__(self) -> str:
         return f"name: {self.full_name}"
 
@@ -142,8 +160,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     @property
     def full_name(self) -> str:
-        """Return the first_name plus the last_name, with a
-        space in between."""
+        """Return the first_name plus the last_name, with a space in between."""
 
         return f"{self.first_name} {self.last_name}"
 
@@ -163,7 +180,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     @property
     def has_default_transfer_recipient(self):
-        """Return True if the user has a default transfer recipient, False otherwise."""
+        """Return True if the user has a default transfer recipient, False
+        otherwise."""
 
         return self.default_transfer_recipient is not None
 
@@ -196,16 +214,45 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         )
         return list(recipient_codes)
 
-    class Meta:
-        # Set a unique constraint on the lowercase version of the username and email
-        # https://docs.djangoproject.com/en/4.0/ref/models/constraints/#expressions
-        constraints = [
-            models.UniqueConstraint(
-                Lower("username"),
-                Lower("email"),
-                name="user_username_email_ci_uniqueness",
-            ),
-        ]
-        indexes = [models.Index(fields=["uuid"])]
-        verbose_name = _("user")
-        verbose_name_plural = _("users")
+    def update_profile_image(self, profile_image):
+        """Update the user's profile image, generate a blurhash, and store the
+        URL and hash.
+
+        Args:
+            profile_image: A file object containing the new profile image.
+        """
+
+        # Read the data from the file object into memory
+        image_data = profile_image.read()
+        image = Image.open(BytesIO(image_data))
+
+        # Generate blurhash
+        image.thumbnail((100, 100))
+        hash = blurhash.encode(image, x_components=4, y_components=3)
+
+        image_public_id = f"{self.last_name}_{self.uuid}_avatar"
+
+        # Prevent file loss: https://stackoverflow.com/a/44722982
+        profile_image.seek(0)
+
+        upload(
+            profile_image,
+            public_id=image_public_id,
+            unique_filename=False,
+            overwrite=True,
+        )
+
+        url, options = cloudinary_url(
+            image_public_id,
+            width=300,
+            height=300,
+            crop="fill",
+            version=int(time.time()),
+        )
+
+        self.profile_image_hash = hash
+        self.profile_image_url = url
+        self.save()
+
+        # Close the file object
+        profile_image.close()

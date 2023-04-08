@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from accounts.views import GoogleLogin
+from accounts.views import GoogleLogin, ProfileImageUploadAPIView
 
 urlpatterns = [
     path(
@@ -15,6 +15,11 @@ urlpatterns = [
         "dj-rest-auth/google/",
         GoogleLogin.as_view(),
         name="google_login",
+    ),
+    path(
+        "accounts/profile-image/",
+        ProfileImageUploadAPIView.as_view(),
+        name="profile-image-upload",
     ),
     path(
         "allauth/",

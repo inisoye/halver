@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 
+import cloudinary
 from django.core.management.utils import get_random_secret_key
 from environs import Env
 
@@ -63,6 +64,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "import_export",
     "phonenumber_field",
+    "cloudinary",
     # Local
     "accounts.apps.AccountsConfig",
     "financials.apps.FinancialsConfig",
@@ -110,7 +112,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     "default": env.dj_db_url(
-        "DATABASE_URL", default="mysql://user:password@localhost:3306/dbname"
+        "DATABASE_URL", default="mysql://root:@127.0.0.1:3306/halverlocal"
     )
 }
 
@@ -347,4 +349,27 @@ PAYSTACK_SECRET_KEY = env.str(
     "PAYSTACK_SECRET_KEY",
     default="default_paystack_secret_key",
 )
-PAYSTACK_IP_WHITELIST = ["52.31.139.75", "52.49.173.169", "52.214.14.220"]
+PAYSTACK_IP_WHITELIST = [
+    "52.31.139.75",
+    "52.49.173.169",
+    "52.214.14.220",
+]
+
+
+# Cloudinary configuration
+
+cloudinary.config(
+    cloud_name=env.str(
+        "CLOUDINARY_HOST_NAME",
+        default="default_cloudinary_cloud_name",
+    ),
+    api_key=env.str(
+        "CLOUDINARY_API_KEY",
+        default="default_cloudinary_api_key",
+    ),
+    api_secret=env.str(
+        "CLOUDINARY_API_SECRET",
+        default="default_cloudinary_api_secret",
+    ),
+    secure=True,
+)
