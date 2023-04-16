@@ -1,6 +1,17 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 import type { ComponentType } from 'react';
+import { Platform, useColorScheme } from 'react-native';
+
+import { Text } from '@/components';
+import {
+  Account as AccountIcon,
+  Bills as BillsIcon,
+  Home as HomeIcon,
+  Transactions as TransactionsIcon,
+} from '@/icons';
+import { colors } from '@/theme';
+import { cn } from '@/utils';
 
 import {
   AccountStackNavigator,
@@ -9,6 +20,25 @@ import {
   NewBillStackNavigator,
   TransactionsStackNavigator,
 } from './stacks';
+
+interface BottomTabTextProps {
+  label: string | undefined;
+  focused: boolean;
+}
+
+export const BottomTabText: React.FunctionComponent<BottomTabTextProps> = ({ label, focused }) => {
+  return (
+    <Text
+      variant="xxs"
+      className={cn(
+        'text-grey-light-950 dark:text-grey-dark-950',
+        focused && 'text-grey-light-1000 dark:text-grey-dark-1000',
+      )}
+    >
+      {label}
+    </Text>
+  );
+};
 
 export type TabParamList = {
   HomeStackNavigator: undefined;
@@ -22,6 +52,7 @@ type TabType = {
   name: keyof TabParamList;
   component: ComponentType;
   label?: string;
+  icon?: React.FunctionComponent;
 };
 
 const tabs: TabType[] = [
@@ -29,11 +60,13 @@ const tabs: TabType[] = [
     name: 'HomeStackNavigator',
     component: HomeStackNavigator,
     label: 'Home',
+    icon: HomeIcon,
   },
   {
     name: 'BillsStackNavigator',
     component: BillsStackNavigator,
     label: 'Bills',
+    icon: BillsIcon,
   },
   {
     name: 'NewBillStackNavigator',
@@ -44,24 +77,42 @@ const tabs: TabType[] = [
     name: 'TransactionsStackNavigator',
     component: TransactionsStackNavigator,
     label: 'Transactions',
+    icon: TransactionsIcon,
   },
   {
     name: 'AccountStackNavigator',
     component: AccountStackNavigator,
     label: 'Account',
+    icon: AccountIcon,
   },
 ];
 
 const Tabs = createBottomTabNavigator<TabParamList>();
 
 export const BottomTabNavigator = () => {
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+
   return (
     <Tabs.Navigator
       screenOptions={{
         headerShown: false,
+        tabBarStyle: {
+          flex: Platform.OS === 'ios' ? 0.08 : 0.09,
+          elevation: 0,
+          backgroundColor: isDarkMode ? colors['grey-dark'][50] : '#E4E2E4',
+          borderTopColor: isDarkMode ? colors['grey-dark'][600] : colors['grey-light'][700],
+        },
+        tabBarItemStyle: {
+          height: 46,
+          flexDirection: 'column',
+        },
+        tabBarLabelStyle: {
+          color: isDarkMode ? colors['grey-dark'][1000] : colors['grey-light'][1000],
+        },
       }}
     >
-      {tabs.map(({ name, component, label }) => {
+      {tabs.map(({ name, component, label, icon }) => {
         return (
           <Tabs.Screen
             key={name}
@@ -69,6 +120,8 @@ export const BottomTabNavigator = () => {
             component={component}
             options={{
               title: label,
+              tabBarIcon: ({ focused }) => (icon ? icon({ focused }) : undefined),
+              tabBarLabel: ({ focused }) => BottomTabText({ label, focused }),
             }}
           />
         );

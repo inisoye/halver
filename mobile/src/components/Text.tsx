@@ -13,6 +13,7 @@ export const textVariants = {
   lg: 'text-[18px] leading-[26px]',
   sm: 'text-[14px] leading-[21px]',
   xs: 'text-[12px] leading-[18px]',
+  xxs: 'text-[10px] leading-[12px] font-sans-bold font-semibold',
 };
 
 interface TextProps {
