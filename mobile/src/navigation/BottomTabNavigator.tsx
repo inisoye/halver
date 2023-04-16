@@ -1,17 +1,16 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Platform } from "react-native";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import * as React from 'react';
+import type { ComponentType } from 'react';
 
 import {
   AccountStackNavigator,
   BillsStackNavigator,
   HomeStackNavigator,
   NewBillStackNavigator,
-  TransactionsStackNavigator
-} from "./stacks";
+  TransactionsStackNavigator,
+} from './stacks';
 
-
-import type { ComponentType } from 'react';
-type TabParamList = {
+export type TabParamList = {
   HomeStackNavigator: undefined;
   BillsStackNavigator: undefined;
   NewBillStackNavigator: undefined;
@@ -21,7 +20,7 @@ type TabParamList = {
 
 type TabType = {
   name: keyof TabParamList;
-  component: ComponentType<any>;
+  component: ComponentType;
   label?: string;
 };
 
@@ -57,9 +56,11 @@ const Tabs = createBottomTabNavigator<TabParamList>();
 
 export const BottomTabNavigator = () => {
   return (
-    <Tabs.Navigator screenOptions={{
-      headerShown: false,
-    }}>
+    <Tabs.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       {tabs.map(({ name, component, label }) => {
         return (
           <Tabs.Screen

@@ -1,12 +1,9 @@
-import * as React from "react";
-import { Text } from "react-native";
+import * as React from 'react';
+import { Text } from 'react-native';
 
-import { SafeAreaView } from "@/components";
+import { SafeAreaView } from '@/components';
 
-
-interface LoginProps {}
-
-export const Login: React.FunctionComponent<LoginProps> = () => {
+export const Login: React.FunctionComponent = () => {
   return (
     <SafeAreaView>
       <Text>This is the login</Text>

@@ -1,12 +1,9 @@
-import * as React from "react";
-import { Text } from "react-native";
+import * as React from 'react';
+import { Text } from 'react-native';
 
-import { SafeAreaView } from "@/components";
+import { SafeAreaView } from '@/components';
 
-
-interface AccountProps {}
-
-export const Account: React.FunctionComponent<AccountProps> = () => {
+export const Account: React.FunctionComponent = () => {
   return (
     <SafeAreaView>
       <Text>This is the account</Text>

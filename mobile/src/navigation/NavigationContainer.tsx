@@ -1,15 +1,10 @@
-import { NavigationContainer as RNNavigationContainer } from "@react-navigation/native";
-import * as React from "react";
+import { NavigationContainer as RNNavigationContainer } from '@react-navigation/native';
+import * as React from 'react';
 
-import { BottomTabNavigator } from "./BottomTabNavigator";
-import { OnboardingStackNavigator } from "./stacks";
+import { BottomTabNavigator } from './BottomTabNavigator';
+import { OnboardingStackNavigator } from './stacks';
 
-
-interface NavigationContainerProps {}
-
-export const NavigationContainer: React.FunctionComponent<
-  NavigationContainerProps
-> = () => {
+export const NavigationContainer: React.FunctionComponent = () => {
   const [token] = React.useState(true);
 
   return (
