@@ -1,10 +1,7 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import * as React from "react";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as React from 'react';
 
-import { Transactions } from "@/screens";
-
-
-interface TransactionsStackNavigatorProps {}
+import { Transactions } from '@/screens';
 
 export type TransactionsStackParamList = {
   Transactions: undefined;
@@ -12,9 +9,7 @@ export type TransactionsStackParamList = {
 
 const TransactionsStack = createNativeStackNavigator<TransactionsStackParamList>();
 
-export const TransactionsStackNavigator: React.FunctionComponent<
-  TransactionsStackNavigatorProps
-> = () => {
+export const TransactionsStackNavigator: React.FunctionComponent = () => {
   return (
     <TransactionsStack.Navigator>
       <TransactionsStack.Screen

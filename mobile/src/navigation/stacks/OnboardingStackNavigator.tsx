@@ -1,10 +1,7 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import * as React from "react";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as React from 'react';
 
-import { BankAccountDetails, Login, MoreUserDetails } from "@/screens";
-
-
-interface OnboardingStackNavigatorProps {}
+import { BankAccountDetails, Login, MoreUserDetails } from '@/screens';
 
 export type OnboardingStackParamList = {
   Login: undefined;
@@ -14,9 +11,7 @@ export type OnboardingStackParamList = {
 
 const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
 
-export const OnboardingStackNavigator: React.FunctionComponent<
-  OnboardingStackNavigatorProps
-> = () => {
+export const OnboardingStackNavigator: React.FunctionComponent = () => {
   return (
     <OnboardingStack.Navigator>
       <OnboardingStack.Screen

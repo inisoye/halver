@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { Text } from 'react-native';
 
-import { SafeAreaView } from '@/components';
+import { SafeAreaView, Text } from '@/components';
 
 export const BillAmount: React.FunctionComponent = () => {
   return (

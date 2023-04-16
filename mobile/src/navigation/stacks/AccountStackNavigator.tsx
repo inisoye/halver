@@ -1,10 +1,7 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import * as React from "react";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as React from 'react';
 
-import { Account } from "@/screens";
-
-
-interface AccountStackNavigatorProps {}
+import { Account } from '@/screens';
 
 export type AccountStackParamList = {
   Account: undefined;
@@ -12,9 +9,7 @@ export type AccountStackParamList = {
 
 const AccountStack = createNativeStackNavigator<AccountStackParamList>();
 
-export const AccountStackNavigator: React.FunctionComponent<
-  AccountStackNavigatorProps
-> = () => {
+export const AccountStackNavigator: React.FunctionComponent = () => {
   return (
     <AccountStack.Navigator>
       <AccountStack.Screen
