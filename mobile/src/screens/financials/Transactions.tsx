@@ -5,7 +5,7 @@ import { SafeAreaView, Text } from '@/components';
 export const Transactions: React.FunctionComponent = () => {
   return (
     <SafeAreaView>
-      <Text>This is the transactions</Text>
+      <Text variant="2xl">This is the transactions</Text>
     </SafeAreaView>
   );
 };
