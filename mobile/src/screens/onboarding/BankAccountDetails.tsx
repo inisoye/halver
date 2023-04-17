@@ -1,11 +1,13 @@
 import * as React from 'react';
 
-import { SafeAreaView, Text } from '@/components';
+import { Screen, Text, View } from '@/components';
 
 export const BankAccountDetails: React.FunctionComponent = () => {
   return (
-    <SafeAreaView>
-      <Text>This is bank account details</Text>
-    </SafeAreaView>
+    <Screen>
+      <View className="p-2 px-6">
+        <Text>This is the bank account details</Text>
+      </View>
+    </Screen>
   );
 };

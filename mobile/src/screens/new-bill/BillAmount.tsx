@@ -1,11 +1,19 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
+import { Button } from 'react-native';
 
-import { SafeAreaView, Text } from '@/components';
+import { Screen, Text, View } from '@/components';
+import { AppRootStackParamList } from '@/navigation';
 
-export const BillAmount: React.FunctionComponent = () => {
+type BillAmountProps = NativeStackScreenProps<AppRootStackParamList, 'Home'>;
+
+export const BillAmount = ({ navigation }: BillAmountProps) => {
   return (
-    <SafeAreaView>
-      <Text>This is bill amount</Text>
-    </SafeAreaView>
+    <Screen>
+      <View className="p-2 px-6">
+        <Text>This is the bill amount</Text>
+      </View>
+      <Button title="Go to Details" onPress={() => navigation.navigate('Bill Details')} />
+    </Screen>
   );
 };

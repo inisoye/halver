@@ -6,16 +6,16 @@ import {
 import * as React from 'react';
 import { useColorScheme } from 'react-native';
 
-import { BottomTabNavigator } from './BottomTabNavigator';
+import { AppRootStackNavigator } from './AppRootStackNavigator';
 import { OnboardingStackNavigator } from './stacks';
 
 export const NavigationContainer: React.FunctionComponent = () => {
-  const [token] = React.useState(true);
+  const [token] = React.useState(false);
   const scheme = useColorScheme();
 
   return (
     <RNNavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-      {!token ? <OnboardingStackNavigator /> : <BottomTabNavigator />}
+      {!token ? <OnboardingStackNavigator /> : <AppRootStackNavigator />}
     </RNNavigationContainer>
   );
 };

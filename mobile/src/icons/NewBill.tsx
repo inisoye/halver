@@ -1,0 +1,34 @@
+import { styled } from 'nativewind';
+import * as React from 'react';
+import Svg, { Path, Rect } from 'react-native-svg';
+import { ISvgProps } from 'svg.types';
+
+type NewBillProps = ISvgProps;
+
+const StyledSvg = styled(Svg, { classProps: ['fill', 'stroke'] });
+const StyledPath = styled(Path, { classProps: ['fill', 'stroke'] });
+const StyledRect = styled(Rect, { classProps: ['fill', 'stroke'] });
+
+export const NewBill: React.FunctionComponent<NewBillProps> = ({ ...otherProps }) => {
+  return (
+    <StyledSvg
+      width={44}
+      height={44}
+      viewBox="0 0 44 44"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...otherProps}
+    >
+      <StyledRect
+        width={44}
+        height={44}
+        rx={8}
+        fill="fill-grey-a-light-700 dark:fill-grey-dark-500"
+      />
+      <StyledPath
+        d="M34 22a1 1 0 0 1-1 1H23v10a1 1 0 0 1-2 0V23H11a1 1 0 0 1 0-2h10V11a1 1 0 0 1 2 0v10h10a1 1 0 0 1 1 1Z"
+        fill="fill-grey-light-50 dark:fill-grey-dark-950"
+      />
+    </StyledSvg>
+  );
+};

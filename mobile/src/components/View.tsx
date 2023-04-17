@@ -10,6 +10,6 @@ interface ViewProps {
 
 export const View: React.FunctionComponent<ViewProps> = ({ children, className }) => {
   return (
-    <RNView className={cn('bg-grey-light-100 dark:bg-grey-dark-100', className)}>{children}</RNView>
+    <RNView className={cn('bg-grey-light-100 dark:bg-grey-dark-200', className)}>{children}</RNView>
   );
 };

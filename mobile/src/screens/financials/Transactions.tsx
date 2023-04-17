@@ -1,11 +1,13 @@
 import * as React from 'react';
 
-import { SafeAreaView, Text } from '@/components';
+import { Screen, Text, View } from '@/components';
 
 export const Transactions: React.FunctionComponent = () => {
   return (
-    <SafeAreaView>
-      <Text variant="2xl">This is the transactions</Text>
-    </SafeAreaView>
+    <Screen>
+      <View className="p-2 px-6">
+        <Text>This is the transactions</Text>
+      </View>
+    </Screen>
   );
 };
