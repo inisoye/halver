@@ -10,12 +10,19 @@ import { Text } from './Text';
 
 interface ScreenHeaderProps {
   name: string;
+  isHeaderTextShown?: boolean;
 }
 
-const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({ name }) => {
+const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
+  name,
+  isHeaderTextShown = true,
+}) => {
   const navigation = useNavigation();
 
-  const isHomePage = name === 'Home';
+  const peculiarScreenNames = { Home: 'Welcome' };
+  const isScreenNamePeculiar = Object.keys(peculiarScreenNames).includes(name);
+
+  const screenName = isScreenNamePeculiar ? peculiarScreenNames[name] : name;
 
   return (
     //  eslint-disable-next-line react-native/no-inline-styles
@@ -29,30 +36,36 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({ name }) => {
         <BackIcon />
       </TouchableOpacity>
 
-      <Text variant="2xl">{name}</Text>
+      {isHeaderTextShown && <Text variant="2xl">{screenName}</Text>}
     </View>
   );
 };
 
 interface ScreenProps {
   children: React.ReactNode;
+  isHeaderShown?: boolean;
+  isHeaderTextShown?: boolean;
 }
 
-export const Screen: React.FunctionComponent<ScreenProps> = ({ children }) => {
+export const Screen: React.FunctionComponent<ScreenProps> = ({
+  children,
+  isHeaderShown = true,
+  isHeaderTextShown = true,
+}) => {
   const insets = useSafeAreaInsets();
   const { name } = useRoute();
 
   return (
     <View
+      className="flex-1 bg-[#E4E2E4] dark:bg-grey-dark-50"
       style={{
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
         paddingLeft: insets.left,
         paddingRight: insets.right,
       }}
-      className="flex-1 bg-[#E4E2E4] dark:bg-grey-dark-50"
     >
-      <ScreenHeader name={name} />
+      {isHeaderShown && <ScreenHeader isHeaderTextShown={isHeaderTextShown} name={name} />}
 
       {children}
     </View>

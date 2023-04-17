@@ -17,10 +17,10 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
   if (focused) {
     return (
       <StyledSvg
-        width={25}
+        fill="none"
         height={19}
         viewBox="0 0 25 19"
-        fill="none"
+        width={25}
         xmlns="http://www.w3.org/2000/svg"
         {...otherProps}
       >
@@ -34,10 +34,10 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
 
   return (
     <StyledSvg
-      xmlns="http://www.w3.org/2000/svg"
-      width={25}
-      height={19}
       fill="none"
+      height={19}
+      width={25}
+      xmlns="http://www.w3.org/2000/svg"
       {...otherProps}
     >
       <StyledPath

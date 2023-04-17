@@ -14,10 +14,10 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ focused, ...otherPr
   if (focused) {
     return (
       <StyledSvg
-        width={20}
+        fill="none"
         height={18}
         viewBox="0 0 20 18"
-        fill="none"
+        width={20}
         xmlns="http://www.w3.org/2000/svg"
         {...otherProps}
       >
@@ -31,10 +31,10 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ focused, ...otherPr
 
   return (
     <StyledSvg
-      width={20}
+      fill="none"
       height={18}
       viewBox="0 0 20 18"
-      fill="none"
+      width={20}
       xmlns="http://www.w3.org/2000/svg"
       {...otherProps}
     >

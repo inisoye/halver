@@ -12,18 +12,18 @@ const StyledRect = styled(Rect, { classProps: ['fill', 'stroke'] });
 export const NewBill: React.FunctionComponent<NewBillProps> = ({ ...otherProps }) => {
   return (
     <StyledSvg
-      width={44}
+      fill="none"
       height={44}
       viewBox="0 0 44 44"
-      fill="none"
+      width={44}
       xmlns="http://www.w3.org/2000/svg"
       {...otherProps}
     >
       <StyledRect
-        width={44}
+        fill="fill-grey-a-light-700 dark:fill-grey-dark-500"
         height={44}
         rx={8}
-        fill="fill-grey-a-light-700 dark:fill-grey-dark-500"
+        width={44}
       />
       <StyledPath
         d="M34 22a1 1 0 0 1-1 1H23v10a1 1 0 0 1-2 0V23H11a1 1 0 0 1 0-2h10V11a1 1 0 0 1 2 0v10h10a1 1 0 0 1 1 1Z"

@@ -12,11 +12,21 @@
     ],
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
-      "error", // or "error"
+      "error",
       {
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_",
         "caughtErrorsIgnorePattern": "^_"
+      }
+    ],
+    "react/jsx-sort-props": [
+      2,
+      {
+        "callbacksLast": true,
+        "shorthandFirst": false,
+        "shorthandLast": true,
+        "ignoreCase": true,
+        "noSortAlphabetically": false
       }
     ]
   }

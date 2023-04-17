@@ -11,10 +11,10 @@ const StyledPath = styled(Path, { classProps: ['fill', 'stroke'] });
 export const Back: React.FunctionComponent<BackProps> = ({ ...props }) => {
   return (
     <StyledSvg
-      width={11}
+      fill="none"
       height={18}
       viewBox="0 0 11 18"
-      fill="none"
+      width={11}
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >

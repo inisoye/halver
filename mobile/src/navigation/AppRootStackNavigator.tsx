@@ -16,15 +16,15 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
   return (
     <AppRootStack.Navigator>
       <AppRootStack.Screen
-        name="Home"
         component={BottomTabNavigator}
+        name="Home"
         options={{
           headerShown: false,
         }}
       />
       <AppRootStack.Screen
-        name="Bill Details"
         component={BillDetails}
+        name="Bill Details"
         options={{
           headerShown: false,
         }}

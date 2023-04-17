@@ -14,10 +14,10 @@ export const Account: React.FunctionComponent<AccountProps> = ({ focused, ...oth
   if (focused) {
     return (
       <StyledSvg
-        width={20}
+        fill="none"
         height={19}
         viewBox="0 0 20 19"
-        fill="none"
+        width={20}
         xmlns="http://www.w3.org/2000/svg"
         {...otherProps}
       >
@@ -31,10 +31,10 @@ export const Account: React.FunctionComponent<AccountProps> = ({ focused, ...oth
 
   return (
     <StyledSvg
-      width={20}
+      fill="none"
       height={20}
       viewBox="0 0 20 20"
-      fill="none"
+      width={20}
       xmlns="http://www.w3.org/2000/svg"
       {...otherProps}
     >

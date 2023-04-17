@@ -34,12 +34,12 @@ export const BottomTabText: React.FunctionComponent<BottomTabTextProps> = ({
 }) => {
   return (
     <Text
-      variant="xxs"
       className={cn(
         'text-grey-light-950 dark:text-grey-dark-950',
         focused && 'text-grey-light-1000 dark:text-grey-dark-1000',
         isMiddleItem && 'hidden',
       )}
+      variant="xxs"
     >
       {label}
     </Text>
@@ -128,9 +128,9 @@ export const BottomTabNavigator = () => {
 
         return (
           <Tab.Screen
+            component={component}
             key={name}
             name={name}
-            component={component}
             options={{
               title: label,
               tabBarIconStyle: {
