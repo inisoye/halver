@@ -179,7 +179,8 @@ class BillCreatorCreditorParticipantSerializer(serializers.ModelSerializer):
             "first_name",
             "full_name",
             "last_name",
-            "profile_image",
+            "profile_image_url",
+            "profile_image_hash",
             "username",
             "uuid",
         )

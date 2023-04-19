@@ -68,7 +68,8 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "phone",
-            "profile_image",
+            "profile_image_url",
+            "profile_image_hash",
             "username",
             "uuid",
         )
