@@ -5,7 +5,7 @@ import { cn } from '@/utils';
 
 interface ViewProps {
   children: React.ReactNode;
-  className: string;
+  className?: string;
 }
 
 export const View: React.FunctionComponent<ViewProps> = ({ children, className }) => {
