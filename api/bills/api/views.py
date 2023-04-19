@@ -237,6 +237,7 @@ class BillUnregisteredParticipantDataTransferAPIView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = BillUnregisteredParticipantsDataTransferSerializer
 
+    @extend_schema(request=None, responses={204: OpenApiResponse()})
     def post(self, request):
         """Transfers the following data associated with a particular
         unregistered participant: bills, bill actions, plans and plan failures.
@@ -275,6 +276,14 @@ class BillActionResponseUpdateAPIView(APIView):
     permission_classes = (IsOwningParticipant, ParticipantHasDefaultCard)
     serializer_class = BillActionResponseUpdateSerializer
 
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(),
+            204: OpenApiResponse(),
+            400: OpenApiResponse(description="Bad request (Something invalid)"),
+            409: OpenApiResponse(description="Duplicate payments or subscription"),
+        },
+    )
     def patch(self, request, uuid):
         """Handles PATCH requests for updating the response of a participant to
         a bill action. Will make a payment or create a subscription if payload
@@ -344,6 +353,15 @@ class BillArrearResponseUpdateAPIView(APIView):
     permission_classes = (IsOwningParticipantOrCreditor, ParticipantHasDefaultCard)
     serializer_class = BillArrearResponseUpdateSerializer
 
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(),
+            400: OpenApiResponse(description="Bad request (Something invalid)"),
+            403: OpenApiResponse(
+                description="Only creditors are allowed to forgive bill arrears."
+            ),
+        },
+    )
     def patch(self, request, uuid):
         """Handles PATCH requests for updating the response of a participant or
         creditor to a bill arrear. Will make a one-time payment if payload is
@@ -396,6 +414,18 @@ class BillSubscriptionCancellationAPIView(APIView):
 
     permission_classes = (IsOwningParticipantOrCreditorOrCreator,)
 
+    @extend_schema(
+        responses={
+            204: OpenApiResponse(),
+            400: OpenApiResponse(description="Bad request (Something invalid)"),
+            403: OpenApiResponse(
+                description=(
+                    "This service is for cancelling recurring bills or bill"
+                    " subscriptions only."
+                )
+            ),
+        },
+    )
     def patch(self, request, uuid):
         """Disables the Paystack subscription associated with a particular
         participant and sets the partcipants action as "opted out".
@@ -416,8 +446,10 @@ class BillSubscriptionCancellationAPIView(APIView):
 
         if not bill.is_recurring:
             return format_exception(
-                "This service is for cancelling recurring bills or bill subscriptions"
-                " only.",
+                (
+                    "This service is for cancelling recurring bills or bill"
+                    " subscriptions only."
+                ),
                 status=status.HTTP_403_FORBIDDEN,
             )
 

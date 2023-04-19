@@ -1,13 +1,14 @@
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from environs import Env
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from accounts.serializers import ProfileImageSerializer
+from accounts.api.serializers import ProfileImageSerializer
 
 env = Env()
 env.read_env()
@@ -31,6 +32,7 @@ class ProfileImageUploadAPIView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ProfileImageSerializer
 
+    @extend_schema(request=None, responses={204: OpenApiResponse()})
     def patch(self, request):
         """Updates the requesting user's profile image if the request was
         valid."""

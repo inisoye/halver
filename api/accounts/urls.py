@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from accounts.views import GoogleLogin, ProfileImageUploadAPIView
+from accounts.api.views import GoogleLogin, ProfileImageUploadAPIView
 
 urlpatterns = [
     path(
