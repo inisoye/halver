@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { styled } from 'nativewind';
 import React from 'react';
-import { View as RNView, StyleSheet } from 'react-native';
+import { Platform, View as RNView, StyleSheet } from 'react-native';
 import Animated, {
   Easing,
   Extrapolate,
@@ -28,8 +28,6 @@ const styles = StyleSheet.create({
 });
 
 const StyledLinearGradient = styled(LinearGradient);
-
-const TRANSITION_OFFSET = -55;
 
 const SLIDER_CONTENT = [
   {
@@ -68,15 +66,11 @@ const SLIDER_CONTENT = [
 
 export const IntroMarquee: React.FunctionComponent = () => {
   const bar = useSharedValue(0);
-  const totalHeight = styles.bar.height * 4;
+  const totalHeight = styles.bar.height * SLIDER_CONTENT.length;
 
   const barStyle = useAnimatedStyle(() => {
-    const yValue = interpolate(
-      bar.value,
-      [0, 1],
-      [TRANSITION_OFFSET, -totalHeight + TRANSITION_OFFSET],
-      Extrapolate.IDENTITY,
-    );
+    // -55 is used here as an offset. It ensures the slider covers the screen at the animation start.
+    const yValue = interpolate(bar.value, [0, 1], [-55, -totalHeight - 55], Extrapolate.CLAMP);
 
     return {
       transform: [{ translateY: yValue }],
@@ -89,7 +83,7 @@ export const IntroMarquee: React.FunctionComponent = () => {
 
   return (
     <>
-      <View className="flex-1">
+      <View className={cn('flex-1', Platform.OS === 'web' && 'max-h-screen overflow-hidden')}>
         {SLIDER_CONTENT.map(
           ({ backgroundColor, mainHeading, subHeading, isDark, Icon, mainHeadingClassName }) => {
             return (
