@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.core.validators import MinValueValidator
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
@@ -39,7 +41,13 @@ class BillUnregisteredParticipantsDataTransferSerializer(serializers.Serializer)
 
 class BillUnregisteredParticipantCreateSerializer(serializers.ModelSerializer):
     contribution = serializers.DecimalField(
-        max_digits=19, decimal_places=4, coerce_to_string=False, allow_null=False
+        max_digits=19,
+        decimal_places=4,
+        coerce_to_string=False,
+        allow_null=False,
+        validators=[
+            MinValueValidator(settings.MINIMUM_CONTRIBUTION),
+        ],
     )
     phone = PhoneNumberField(required=True)
 
@@ -71,6 +79,15 @@ class BillCreateSerializer(serializers.ModelSerializer):
     )
     participants_contribution_index = serializers.DictField(
         required=False,
+        child=serializers.DecimalField(
+            max_digits=19,
+            decimal_places=4,
+            coerce_to_string=False,
+            allow_null=False,
+            validators=[
+                MinValueValidator(settings.MINIMUM_CONTRIBUTION),
+            ],
+        ),
     )
     unregistered_participants = BillUnregisteredParticipantCreateSerializer(
         many=True, required=False

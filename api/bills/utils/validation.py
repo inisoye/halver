@@ -2,6 +2,7 @@ from decimal import Decimal
 from decimal import InvalidOperation as InvalidDecimalOperation
 from uuid import UUID
 
+from django.conf import settings
 from rest_framework import serializers
 
 from core.utils.dates_and_time import validate_date_not_in_past
@@ -78,7 +79,7 @@ def validate_contribution_amounts(
     """
 
     # Currently set in NGN. Determined by Paystack's rules.
-    MINIMUM_CONTRIBUTION = 100
+    MINIMUM_CONTRIBUTION = settings.MINIMUM_CONTRIBUTION
 
     participants_contributions = []
     if participants_contribution_index:
@@ -151,7 +152,7 @@ def validate_contributions_and_total_amount_due(serializer_data):
         )
 
     # Currently set in NGN
-    MINIMUM_BILL_AMOUNT = 500
+    MINIMUM_BILL_AMOUNT = settings.MINIMUM_BILL_AMOUNT
 
     if total_contributions < MINIMUM_BILL_AMOUNT:
         raise serializers.ValidationError(

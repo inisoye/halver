@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Count, Exists, OuterRef, Prefetch, Q, Subquery
 from phonenumber_field.modelfields import PhoneNumberField
@@ -458,6 +459,9 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
         help_text="Bill contribution of participant (excludes fees)",
         max_digits=19,
         decimal_places=4,
+        validators=[
+            MinValueValidator(settings.MINIMUM_CONTRIBUTION),
+        ],
     )
     transaction_type = models.CharField(
         max_length=50,

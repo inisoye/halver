@@ -51,6 +51,7 @@ flower = "poetry run celery -A core flower"
 celery-purge = "poetry run celery -A core purge"
 test = "poetry run python manage.py test"
 prod-test = "poetry run gunicorn --bind :8000 core.wsgi:application"
+schema = "poetry run python manage.py spectacular --file schema.yml"
 
 
 [build-system]

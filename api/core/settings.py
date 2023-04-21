@@ -158,6 +158,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+
 # Media Files
 # https://docs.djangoproject.com/en/4.0/ref/settings/#media-root
 
@@ -229,7 +230,6 @@ REST_FRAMEWORK = {
     "JSON_UNDERSCOREIZE": {
         # Prevent the conversion of these as they have uuid keys nested.
         "ignore_fields": ("participants_contribution_index",),
-        "ignore_keys": ("participants_contribution_index",),
     },
 }
 
@@ -298,16 +298,13 @@ SOCIALACCOUNT_PROVIDERS = {
 
 
 # Rest-auth configuration
-# https://dj-rest-auth.readthedocs.io/en/2.1.12/configuration.html
+# https://dj-rest-auth.readthedocs.io/en/latest/configuration.html#user-details-serializer
 # Great guide:
 # https://www.rootstrap.com/blog/registration-and-authentication-in-django-apps-with-dj-rest-auth/
 
-REST_AUTH_SERIALIZERS = {
-    "USER_DETAILS_SERIALIZER": "accounts.serializers.CustomUserDetailsSerializer",
-}
-
-REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": "accounts.serializers.CustomRegisterSerializer",
+REST_AUTH = {
+    "USER_DETAILS_SERIALIZER": "accounts.api.serializers.CustomUserDetailsSerializer",
+    "REGISTER_SERIALIZER": "accounts.api.serializers.CustomRegisterSerializer",
 }
 
 
@@ -373,3 +370,10 @@ cloudinary.config(
     ),
     secure=True,
 )
+
+
+# Miscellaneous
+
+# Currently set in NGN. Determined by Paystack's rules.
+MINIMUM_CONTRIBUTION = 100
+MINIMUM_BILL_AMOUNT = 500
