@@ -78,7 +78,7 @@ export const IntroMarquee: React.FunctionComponent = () => {
   });
 
   React.useEffect(() => {
-    bar.value = withRepeat(withTiming(1, { duration: 30000, easing: Easing.linear }), -1, false);
+    bar.value = withRepeat(withTiming(1, { duration: 20000, easing: Easing.linear }), -1, false);
   }, [bar]);
 
   return (

@@ -10,7 +10,7 @@ import { AppRootStackNavigator } from './AppRootStackNavigator';
 import { OnboardingStackNavigator } from './stacks';
 
 export const NavigationContainer: React.FunctionComponent = () => {
-  const [token] = React.useState(false);
+  const [token] = React.useState(true);
   const scheme = useColorScheme();
 
   return (
