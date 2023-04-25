@@ -1,0 +1,346 @@
+import { z } from 'zod';
+
+export const BillList = z.object({
+  created: z.string().datetime(),
+  interval: z.string(),
+  isCreator: z.boolean(),
+  isCreditor: z.boolean(),
+  isRecurring: z.boolean(),
+  modified: z.string().datetime(),
+  name: z.string(),
+  statusInfo: z.string(),
+  totalParticipants: z.number().int(),
+  uuid: z.string().uuid(),
+});
+
+export const PaginatedBillListList = z
+  .object({
+    count: z.number().int(),
+    next: z.string().url().nullable(),
+    previous: z.string().url().nullable(),
+    results: z.array(BillList),
+  })
+  .partial();
+
+export const IntervalEnum = z.enum([
+  'hourly',
+  'daily',
+  'weekly',
+  'monthly',
+  'quarterly',
+  'biannually',
+  'annually',
+  'none',
+]);
+
+export const BillUnregisteredParticipantCreate = z.object({
+  contribution: z.number().gte(100).lt(1000000000000000),
+  created: z.string().datetime(),
+  modified: z.string().datetime(),
+  name: z.string().max(100),
+  phone: z.string(),
+  uuid: z.string().uuid(),
+});
+
+export const BillCreate = z.object({
+  created: z.string().datetime(),
+  creator: z.number().int(),
+  creditorId: z.string().uuid(),
+  currencyCode: z.string().max(3).optional(),
+  currencyName: z.string().max(100).optional(),
+  currencySymbol: z.string().max(10).optional(),
+  deadline: z.string().datetime().nullish(),
+  evidence: z.string().url().nullish(),
+  first_charge_date: z.string().datetime().nullish(),
+  interval: IntervalEnum.optional(),
+  modified: z.string().datetime(),
+  name: z.string().max(100),
+  notes: z.string().nullish(),
+  participantsContribution_index: z.record(z.number()).optional(),
+  totalAmountDue: z.string().regex(/^-?\d{0,15}(?:\.\d{0,4})?$/),
+  unregisteredParticipants: z.array(BillUnregisteredParticipantCreate).optional(),
+  uuid: z.string().uuid(),
+});
+
+export const BillCreatorCreditorParticipant = z.object({
+  dateJoined: z.string().datetime(),
+  email: z.string().email(),
+  firstName: z.string(),
+  fullName: z.string(),
+  lastName: z.string(),
+  profileImageUrl: z.string().url().nullable(),
+  profileImageHash: z.string().nullable(),
+  username: z.string(),
+  uuid: z.string().uuid(),
+});
+
+export const BillDetailActionStatusEnum = z.enum([
+  'unregistered',
+  'pending',
+  'overdue',
+  'opted_out',
+  'pending_transfer',
+  'cancelled',
+  'completed',
+  'ongoing',
+  'last_payment_failed',
+]);
+
+export const BillDetailUnregisteredParticipant = z.object({
+  created: z.string().datetime(),
+  modified: z.string().datetime(),
+  name: z.string(),
+  phone: z.string(),
+  uuid: z.string().uuid(),
+});
+
+export const BillDetailAction = z.object({
+  contribution: z
+    .string()
+    .regex(/^-?\d{0,15}(?:\.\d{0,4})?$/)
+    .nullable(),
+  created: z.string().datetime(),
+  modified: z.string().datetime(),
+  participant: BillCreatorCreditorParticipant,
+  status: BillDetailActionStatusEnum,
+  total_payment_due: z
+    .string()
+    .regex(/^-?\d{0,15}(?:\.\d{0,4})?$/)
+    .nullable(),
+  unregisteredParticipant: BillDetailUnregisteredParticipant,
+  uuid: z.string().uuid(),
+});
+
+export const BillDetail = z.object({
+  actions: z.array(BillDetailAction),
+  created: z.string().datetime(),
+  creator: BillCreatorCreditorParticipant,
+  creditor: BillCreatorCreditorParticipant,
+  currencyCode: z.string(),
+  currencyName: z.string(),
+  currencySymbol: z.string(),
+  deadline: z.string().datetime().nullable(),
+  evidence: z.string().url().nullable(),
+  firstChargeDate: z.string().datetime().nullable(),
+  interval: z.string(),
+  isCreator: z.boolean(),
+  isCreditor: z.boolean(),
+  isDiscreet: z.boolean(),
+  isRecurring: z.boolean(),
+  modified: z.string().datetime(),
+  name: z.string(),
+  notes: z.string().nullable(),
+  status: z.object({}).partial().passthrough(),
+  totalAmountDue: z.string().regex(/^-?\d{0,15}(?:\.\d{0,4})?$/),
+  totalAmountPaid: z
+    .string()
+    .regex(/^-?\d{0,15}(?:\.\d{0,4})?$/)
+    .optional()
+    .default('0.0000'),
+  totalParticipants: z.number().int(),
+  uuid: z.string().uuid(),
+});
+
+export const BillArrearListStatusEnum = z.enum([
+  'overdue',
+  'forgiven',
+  'pending_transfer',
+  'completed',
+]);
+
+export const BillArrearList = z.object({
+  contribution: z
+    .string()
+    .regex(/^-?\d{0,15}(?:\.\d{0,4})?$/)
+    .nullable(),
+  created: z.string().datetime(),
+  modified: z.string().datetime(),
+  participant: z.number().int().nullable(),
+  status: BillArrearListStatusEnum,
+  totalPaymentDue: z
+    .string()
+    .regex(/^-?\d{0,15}(?:\.\d{0,4})?$/)
+    .nullable(),
+  uuid: z.string().uuid(),
+});
+
+export const PaginatedBillArrearListList = z
+  .object({
+    count: z.number().int(),
+    next: z.string().url().nullable(),
+    previous: z.string().url().nullable(),
+    results: z.array(BillArrearList),
+  })
+  .partial();
+
+export const TransactionTypeEnum = z.enum(['regular', 'arrear']);
+
+export const BillTransaction = z.object({
+  contribution: z.string().regex(/^-?\d{0,15}(?:\.\d{0,4})?$/),
+  created: z.string().datetime(),
+  modified: z.string().datetime(),
+  totalPayment: z.string().regex(/^-?\d{0,15}(?:\.\d{0,4})?$/),
+  transactionType: TransactionTypeEnum,
+  uuid: z.string().uuid(),
+});
+
+export const PaginatedBillTransactionList = z
+  .object({
+    count: z.number().int(),
+    next: z.string().url().nullable(),
+    previous: z.string().url().nullable(),
+    results: z.array(BillTransaction),
+  })
+  .partial();
+
+export const BillUnregisteredParticipantList = z.object({
+  created: z.string().datetime(),
+  modified: z.string().datetime(),
+  name: z.string(),
+  phone: z.string(),
+  uuid: z.string().uuid(),
+});
+
+export const PaginatedBillUnregisteredParticipantListList = z
+  .object({
+    count: z.number().int(),
+    next: z.string().url().nullable(),
+    previous: z.string().url().nullable(),
+    results: z.array(BillUnregisteredParticipantList),
+  })
+  .partial();
+
+export const PatchedBillActionResponseUpdate = z
+  .object({ hasParticipantAgreed: z.boolean() })
+  .partial();
+
+export const PatchedBillArrearResponseUpdate = z.object({ isForgiveness: z.boolean() }).partial();
+
+export const SocialLogin = z
+  .object({ accessToken: z.string(), code: z.string(), idToken: z.string() })
+  .partial();
+
+export const Login = z.object({
+  username: z.string().optional(),
+  email: z.string().email().optional(),
+  password: z.string(),
+});
+
+export const Token = z.object({ key: z.string().max(40) });
+
+export const RestAuthDetail = z.object({ detail: z.string() });
+
+export const PasswordChange = z.object({
+  newPassword1: z.string().max(128),
+  newPassword2: z.string().max(128),
+});
+
+export const PasswordReset = z.object({ email: z.string().email() });
+
+export const PasswordResetConfirm = z.object({
+  newPassword1: z.string().max(128),
+  newPassword2: z.string().max(128),
+  uid: z.string(),
+  token: z.string(),
+});
+
+export const CustomRegister = z.object({
+  username: z.string().min(1).max(150).optional(),
+  email: z.string().email(),
+  password1: z.string(),
+  password2: z.string(),
+  phone: z.string().optional(),
+  firstName: z.string().max(30).optional(),
+  lastName: z.string().max(30).optional(),
+});
+
+export const ResendEmailVerification = z.object({ email: z.string().email() });
+
+export const VerifyEmail = z.object({ key: z.string() });
+
+export const CustomUserDefaultCard = z.object({
+  accountName: z.string().max(100).nullish(),
+  bank: z.string().max(100),
+  cardType: z.string().max(10),
+  created: z.string().datetime(),
+  expMonth: z.string().max(10),
+  expYear: z.string().max(10),
+  first6: z.string().max(10),
+  last4: z.string().max(4),
+  uuid: z.string().uuid(),
+});
+
+export const CustomUserDetails = z.object({
+  dateJoined: z.string().datetime(),
+  defaultCcard: CustomUserDefaultCard,
+  email: z.string().max(254).email(),
+  firstName: z.string(),
+  lastName: z.string(),
+  phone: z.string().max(128).nullish(),
+  profileImageUrl: z.string().max(200).url().nullish(),
+  profileImageHash: z.string().max(35).nullish(),
+  username: z
+    .string()
+    .max(150)
+    .regex(/^[\w.@+-]+$/),
+  uuid: z.string().uuid(),
+});
+
+export const PatchedCustomUserDetails = z
+  .object({
+    dateJoined: z.string().datetime(),
+    defaultCard: CustomUserDefaultCard,
+    email: z.string().max(254).email(),
+    firstName: z.string(),
+    lastName: z.string(),
+    phone: z.string().max(128).nullable(),
+    profileImageUrl: z.string().max(200).url().nullish(),
+    profileImageHash: z.string().max(35).nullish(),
+    username: z
+      .string()
+      .max(150)
+      .regex(/^[\w.@+-]+$/),
+    uuid: z.string().uuid(),
+  })
+  .partial();
+
+export const UserCard = z.object({
+  accountName: z.string().max(100).nullish(),
+  authorizationCode: z.string().max(100),
+  bank: z.string().max(100),
+  cardType: z.string().max(10),
+  created: z.string().datetime(),
+  email: z.string().max(100).nullish(),
+  expMonth: z.string().max(10),
+  expYear: z.string().max(10),
+  first6: z.string().max(10),
+  isDefault: z.boolean().optional(),
+  last4: z.string().max(4),
+  signature: z.string().max(100),
+  user: z.number().int(),
+  uuid: z.string().uuid(),
+});
+
+export const TransferRecipientList = z.object({
+  accountNumber: z.string().max(10).nullish(),
+  associatedCard: z.number().int().nullish(),
+  authorizationCode: z.string().max(100).nullish(),
+  bankCode: z.string().max(5).nullish(),
+  bankName: z.string().max(100).nullish(),
+  created: z.string().datetime(),
+  email: z.string().max(254).email().nullish(),
+  isDefault: z.boolean().optional(),
+  name: z.string().max(100),
+  recipientCode: z.string().max(100),
+  recipientType: z.string(),
+  uuid: z.string().uuid(),
+});
+
+export const PaginatedUserCardList = z
+  .object({
+    count: z.number().int(),
+    next: z.string().url().nullable(),
+    previous: z.string().url().nullable(),
+    results: z.array(UserCard),
+  })
+  .partial();

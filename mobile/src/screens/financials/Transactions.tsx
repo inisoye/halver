@@ -1,6 +1,7 @@
 import * as React from 'react';
+import { View } from 'react-native';
 
-import { Screen, Text, View } from '@/components';
+import { Screen, Text } from '@/components';
 
 export const Transactions: React.FunctionComponent = () => {
   return (

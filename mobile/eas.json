@@ -1,6 +1,6 @@
 {
   "cli": {
-    "version": ">= 3.9.1"
+    "version": ">= 3.10.0"
   },
   "build": {
     "development": {
@@ -21,6 +21,9 @@
     "production": {
       "ios": {
         "resourceClass": "m-medium"
+      },
+      "env": {
+        "API_URL": "https://api.halverapp.com"
       }
     }
   },

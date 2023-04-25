@@ -1,8 +1,8 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { Button } from 'react-native';
+import { Button, View } from 'react-native';
 
-import { Screen, Text, View } from '@/components';
+import { Screen, Text } from '@/components';
 import { AppRootStackParamList } from '@/navigation';
 
 type BillAmountProps = NativeStackScreenProps<AppRootStackParamList, 'Home'>;

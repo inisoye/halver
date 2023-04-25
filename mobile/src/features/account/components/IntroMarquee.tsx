@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { styled } from 'nativewind';
 import React from 'react';
-import { Platform, View as RNView, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import Animated, {
   Easing,
   Extrapolate,
@@ -12,14 +12,13 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import { Text } from '@/components';
 import { Donation, MultipleContributions, SplitPayments, Subscriptions } from '@/icons';
 import { colors } from '@/theme';
 import { cn } from '@/utils';
 
-import { Text, View } from '../core';
-
 const styles = StyleSheet.create({
-  bar: {
+  card: {
     width: '100%',
     height: 242,
     paddingHorizontal: 24,
@@ -36,7 +35,7 @@ const SLIDER_CONTENT = [
     subHeading: 'Put an end to the awkwardness of paying group bills at restaurants',
     Icon: SplitPayments,
     isDark: true,
-    mainHeadingClassName: 'max-w-[132px]',
+    mainHeadingClassName: 'max-w-[200px]',
   },
   {
     backgroundColor: colors.apricot.DEFAULT,
@@ -44,15 +43,15 @@ const SLIDER_CONTENT = [
     subHeading: 'Collect contributions for Netflix, Spotify Family, and more, with ease',
     Icon: Subscriptions,
     isDark: false,
-    mainHeadingClassName: 'max-w-[189px]',
+    mainHeadingClassName: 'max-w-[250px]',
   },
   {
     backgroundColor: colors.casal.DEFAULT,
     mainHeading: 'Split your bills with as many people as you want',
-    subHeading: 'Drive costs down by adding more people to a bill. The more, the merrier',
+    subHeading: 'Drive costs down by adding more people to a bill. The more the merrier',
     Icon: MultipleContributions,
     isDark: true,
-    mainHeadingClassName: 'max-w-[219px]',
+    mainHeadingClassName: 'max-w-[270px]',
   },
   {
     backgroundColor: colors.pharlap.DEFAULT,
@@ -65,12 +64,12 @@ const SLIDER_CONTENT = [
 ];
 
 export const IntroMarquee: React.FunctionComponent = () => {
-  const bar = useSharedValue(0);
-  const totalHeight = styles.bar.height * SLIDER_CONTENT.length;
+  const card = useSharedValue(0);
+  const totalHeight = styles.card.height * SLIDER_CONTENT.length;
 
-  const barStyle = useAnimatedStyle(() => {
+  const cardStyle = useAnimatedStyle(() => {
     // -55 is used here as an offset. It ensures the slider covers the screen at the animation start.
-    const yValue = interpolate(bar.value, [0, 1], [-55, -totalHeight - 55], Extrapolate.CLAMP);
+    const yValue = interpolate(card.value, [0, 1], [-55, -totalHeight - 55], Extrapolate.CLAMP);
 
     return {
       transform: [{ translateY: yValue }],
@@ -78,16 +77,28 @@ export const IntroMarquee: React.FunctionComponent = () => {
   });
 
   React.useEffect(() => {
-    bar.value = withRepeat(withTiming(1, { duration: 20000, easing: Easing.linear }), -1, false);
-  }, [bar]);
+    card.value = withRepeat(withTiming(1, { duration: 20000, easing: Easing.linear }), -1, false);
+  }, [card]);
 
   return (
     <>
-      <View className={cn('flex-1', Platform.OS === 'web' && 'max-h-screen overflow-hidden')}>
+      <View
+        className={cn(
+          'flex-1 bg-grey-light-100 dark:bg-grey-dark-200',
+          Platform.OS === 'web' && 'max-h-screen overflow-hidden',
+        )}
+      >
         {SLIDER_CONTENT.map(
           ({ backgroundColor, mainHeading, subHeading, isDark, Icon, mainHeadingClassName }) => {
             return (
-              <Animated.View key={mainHeading} style={[styles.bar, barStyle, { backgroundColor }]}>
+              <Animated.View
+                key={mainHeading}
+                style={[
+                  styles.card,
+                  // cardStyle,
+                  { backgroundColor },
+                ]}
+              >
                 <Text
                   className={cn(
                     'mb-6 max-w-[70%] leading-[24px] text-grey-dark-1000',
@@ -117,7 +128,14 @@ export const IntroMarquee: React.FunctionComponent = () => {
         {SLIDER_CONTENT.map(
           ({ backgroundColor, mainHeading, subHeading, isDark, Icon, mainHeadingClassName }) => {
             return (
-              <Animated.View key={mainHeading} style={[styles.bar, barStyle, { backgroundColor }]}>
+              <Animated.View
+                key={mainHeading}
+                style={[
+                  styles.card,
+                  // cardStyle,
+                  { backgroundColor },
+                ]}
+              >
                 <Text
                   className={cn(
                     'mb-6 max-w-[70%] leading-[24px] text-grey-dark-1000',
@@ -144,12 +162,12 @@ export const IntroMarquee: React.FunctionComponent = () => {
           },
         )}
 
-        <RNView className="absolute inset-0 h-screen w-screen flex-1">
+        <View className="absolute  inset-0 h-screen w-screen flex-1">
           <StyledLinearGradient
             className="inset-0 left-0 right-0 top-0 h-full"
-            colors={['transparent', 'rgba(0,0,0,0.9)']}
+            colors={['transparent', 'rgba(0,0,0,1)']}
           />
-        </RNView>
+        </View>
       </View>
     </>
   );

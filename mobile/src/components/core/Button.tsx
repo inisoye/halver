@@ -1,10 +1,12 @@
+import * as Haptics from 'expo-haptics';
 import * as React from 'react';
-import { Pressable, PressableProps, Text } from 'react-native';
+import { Pressable, StyleSheet, Text, type PressableProps } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { cn } from '@/utils';
 
 const buttonSizes = {
-  default: 'py-3 px-6 flex-row items-center rounded justify-center w-full',
+  default: 'w-full flex-row items-center justify-center rounded-md px-6 py-3 disabled:opacity-50',
   sm: 'py-2 px-4',
   xs: 'py-1.5 px-3',
 };
@@ -31,44 +33,101 @@ const buttonTextColors = {
   neutral: 'text-grey-light-1000 dark:text-grey-dark-1000',
 };
 
+const styles = StyleSheet.create({
+  buttonDisabled: {
+    opacity: 0.5,
+  },
+});
+
+const springConfig = {
+  damping: 7,
+  mass: 1,
+  stiffness: 600,
+  overshootClamping: false,
+};
+
 interface ButtonProps extends PressableProps {
   children: React.ReactNode;
-  size?: keyof typeof buttonSizes;
-  color?: keyof typeof buttonColors;
   className?: string;
-  textClassName?: string;
+  color?: keyof typeof buttonColors;
+  isHapticsEnabled?: boolean;
   isTextContentOnly: boolean;
+  onPress: () => void;
+  size?: keyof typeof buttonSizes;
+  textClassName?: string;
 }
 
 export const Button: React.FunctionComponent<ButtonProps> = ({
   children,
+  className,
+  color = 'default',
+  disabled = false,
+  isHapticsEnabled = false,
+  isTextContentOnly = true,
+  onPress,
   size = 'default',
   textClassName = 'default',
-  color = 'default',
-  className,
-  isTextContentOnly = true,
-  ...otherPressableProps
+  ...otherProps
 }) => {
+  const scale = useSharedValue(1);
+  const offset = useSharedValue(0);
+  const opacity = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateY: withSpring(offset.value, springConfig) },
+      { scale: withSpring(scale.value, springConfig) },
+    ],
+    opacity: withSpring(opacity.value),
+  }));
+
+  const handlePressIn = () => {
+    scale.value = 0.98;
+    offset.value = 3;
+    opacity.value = 0.6;
+  };
+
+  const handlePressOut = () => {
+    scale.value = 1;
+    offset.value = 0;
+    opacity.value = 1;
+  };
+
+  const handlePress = () => {
+    onPress();
+
+    if (isHapticsEnabled) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  };
+
   return (
     <>
       <Pressable
-        className={cn(buttonSizes.default, buttonSizes[size], buttonColors[color], className)}
-        {...otherPressableProps}
+        onPress={handlePress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        {...otherProps}
       >
-        {isTextContentOnly ? (
-          <Text
-            className={cn(
-              buttonTextSizes.default,
-              buttonTextSizes[size],
-              buttonTextColors[color],
-              textClassName,
-            )}
-          >
-            {children}
-          </Text>
-        ) : (
-          children
-        )}
+        <Animated.View
+          className={cn(buttonSizes.default, buttonSizes[size], buttonColors[color], className)}
+          style={[animatedStyle, disabled && styles.buttonDisabled]}
+        >
+          {isTextContentOnly ? (
+            <Text
+              className={cn(
+                buttonTextSizes.default,
+                buttonTextSizes[size],
+                buttonTextColors[color],
+                textClassName,
+              )}
+            >
+              {children}
+            </Text>
+          ) : (
+            children
+          )}
+        </Animated.View>
       </Pressable>
     </>
   );

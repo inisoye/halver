@@ -2,7 +2,8 @@ import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import { NativeWindStyleSheet } from 'nativewind';
 import * as React from 'react';
-import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context';
+
+import { Providers } from '@/providers';
 
 import { NavigationContainer } from './src/navigation';
 
@@ -22,9 +23,10 @@ export default function App() {
   }
 
   return (
-    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+    <Providers>
       <StatusBar style="auto" />
+
       <NavigationContainer />
-    </SafeAreaProvider>
+    </Providers>
   );
 }
