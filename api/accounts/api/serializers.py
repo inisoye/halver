@@ -9,7 +9,7 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from financials.models import UserCard
+from financials.models import TransferRecipient, UserCard
 
 CustomUser = get_user_model()
 
@@ -56,16 +56,38 @@ class CustomUserDefaultCardSerializer(serializers.ModelSerializer):
         )
 
 
+class CustomUserDefaultTransferRecipientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransferRecipient
+        fields = (
+            "account_number",
+            "authorization_code",
+            "bank_code",
+            "bank_name",
+            "created",
+            "email",
+            "name",
+            "recipient_code",
+            "recipient_type",
+            "uuid",
+        )
+
+
 class CustomUserDetailsSerializer(serializers.ModelSerializer):
-    default_card = CustomUserDefaultCardSerializer()
+    default_card = CustomUserDefaultCardSerializer(required=False, allow_null=True)
+    default_transfer_recipient = CustomUserDefaultTransferRecipientSerializer(
+        required=False, allow_null=True
+    )
 
     class Meta:
         model = CustomUser
         fields = (
             "date_joined",
             "default_card",
+            "default_transfer_recipient",
             "email",
             "first_name",
+            "full_name",
             "last_name",
             "phone",
             "profile_image_url",
@@ -76,6 +98,7 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "date_joined",
             "first_name",
+            "full_name",
             "last_name",
             "uuid",
         )

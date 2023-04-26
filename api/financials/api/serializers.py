@@ -46,6 +46,7 @@ class TransferRecipientListSerializer(serializers.ModelSerializer):
 
         return obj.get_recipient_type_display()
 
+    # TODO: It appears that fetching the cards here cause an N+1 issue.
     class Meta:
         model = TransferRecipient
         fields = (
