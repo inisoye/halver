@@ -2,12 +2,19 @@ import { AxiosError } from 'axios';
 import * as Google from 'expo-auth-session/providers/google';
 import Constants from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
+import { useAtom } from 'jotai';
 import * as React from 'react';
 import { Alert, Text } from 'react-native';
 
 import { Button, buttonTextSizes, FullScreenLoader, Screen } from '@/components';
-import { IntroMarquee, usePostSocialLogin, type SocialLoginPayload } from '@/features/account';
+import {
+  IntroMarquee,
+  tokenAtom,
+  usePostSocialLogin,
+  type SocialLoginPayload,
+} from '@/features/account';
 import { Google as GoogleIcon } from '@/icons';
+import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 import { cn, formatAxiosErrorMessage } from '@/utils';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -15,6 +22,7 @@ WebBrowser.maybeCompleteAuthSession();
 export const Login: React.FunctionComponent = () => {
   const [accessToken, setAccessToken] = React.useState<string | undefined>(undefined);
   const { mutate: postSocialLogin, isLoading: isSocialLoginLoading } = usePostSocialLogin();
+  const [_, setToken] = useAtom(tokenAtom);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: Constants.expoConfig?.extra?.androidClientId,
@@ -30,6 +38,11 @@ export const Login: React.FunctionComponent = () => {
 
   const handleLogin = async () => {
     postSocialLogin(socialLoginPayload, {
+      onSuccess: ({ key }) => {
+        setToken(key);
+        setAxiosDefaultToken(key, apiClient);
+      },
+
       onError: error => {
         const errorMessage = formatAxiosErrorMessage(error as AxiosError);
 

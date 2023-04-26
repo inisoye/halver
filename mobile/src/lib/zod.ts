@@ -270,11 +270,28 @@ export const CustomUserDefaultCard = z.object({
   uuid: z.string().uuid(),
 });
 
+export const RecipientTypeEnum = z.enum(['authorization', 'nuban']);
+
+export const CustomUserDefaultTransferRecipient = z.object({
+  accountNumber: z.string().max(10).nullish(),
+  authorizationCode: z.string().max(100).nullish(),
+  bankCode: z.string().max(5).nullish(),
+  bankName: z.string().max(100).nullish(),
+  created: z.string().datetime(),
+  email: z.string().max(254).email().nullish(),
+  name: z.string().max(100),
+  recipientCode: z.string().max(100),
+  recipientType: RecipientTypeEnum,
+  uuid: z.string().uuid(),
+});
+
 export const CustomUserDetails = z.object({
   dateJoined: z.string().datetime(),
-  defaultCcard: CustomUserDefaultCard,
+  defaultCard: CustomUserDefaultCard.nullish(),
+  defaultTransferRecipient: CustomUserDefaultTransferRecipient.nullish(),
   email: z.string().max(254).email(),
   firstName: z.string(),
+  fullName: z.string(),
   lastName: z.string(),
   phone: z.string().max(128).nullish(),
   profileImageUrl: z.string().max(200).url().nullish(),

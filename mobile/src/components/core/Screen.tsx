@@ -21,14 +21,17 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
 
   const peculiarScreenNames = { Home: 'Welcome' };
   const isScreenNamePeculiar = Object.keys(peculiarScreenNames).includes(name);
-
   const screenName = isScreenNamePeculiar ? peculiarScreenNames[name] : name;
+
+  const screensWithNoBackButton = ['Home'];
+  const hasNoBackButton = screensWithNoBackButton.includes(name);
 
   return (
     //  eslint-disable-next-line react-native/no-inline-styles
     <View className="flex-row items-center px-6 py-4" style={{ gap: 16 }}>
       <TouchableOpacity
-        className={cn(!navigation.canGoBack() && 'hidden')}
+        className={cn(hasNoBackButton && 'hidden')}
+        hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}
         onPress={() => {
           navigation.goBack();
         }}

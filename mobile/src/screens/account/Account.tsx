@@ -7,7 +7,7 @@ export const Account: React.FunctionComponent = () => {
   return (
     <Screen>
       <View className="p-2 px-6">
-        <Text>This is the account</Text>
+        <Text className="mb-4">This is the account</Text>
       </View>
     </Screen>
   );

@@ -15,22 +15,22 @@ export const OnboardingStackNavigator: React.FunctionComponent = () => {
   return (
     <OnboardingStack.Navigator>
       <OnboardingStack.Screen
-        name="Login"
         component={Login}
+        name="Login"
         options={{
           headerShown: false,
         }}
       />
       <OnboardingStack.Screen
-        name="MoreUserDetails"
         component={MoreUserDetails}
+        name="MoreUserDetails"
         options={{
           headerShown: false,
         }}
       />
       <OnboardingStack.Screen
-        name="BankAccountDetails"
         component={BankAccountDetails}
+        name="BankAccountDetails"
         options={{
           headerShown: false,
         }}
