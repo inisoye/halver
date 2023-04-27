@@ -6,13 +6,13 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 import { cn } from '@/utils';
 
 const buttonSizes = {
-  default: 'w-full flex-row items-center justify-center rounded-md px-6 py-3 disabled:opacity-50',
+  default: 'w-full flex-row items-center justify-center rounded px-6 py-3 disabled:opacity-50',
   sm: 'py-2 px-4',
   xs: 'py-1.5 px-3',
 };
 
 export const buttonTextSizes = {
-  default: 'text-base font-sans-bold tracking-[-0.1px]',
+  default: 'text-[16px] font-sans-bold tracking-[-0.1px]',
   sm: 'text-[14px]',
   xs: 'text-[12px]',
 };
@@ -27,9 +27,9 @@ const buttonColors = {
 
 const buttonTextColors = {
   default: '',
-  apricot: 'text-grey-dark-50',
+  apricot: 'text-grey-light-50 dark:text-grey-dark-50',
   casal: 'text-grey-dark-1000',
-  pharlap: 'text-grey-dark-50',
+  pharlap: 'text-grey-light-50 dark:text-grey-dark-50',
   neutral: 'text-grey-light-1000 dark:text-grey-dark-1000',
 };
 

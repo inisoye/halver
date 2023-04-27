@@ -36,6 +36,8 @@ export const Login: React.FunctionComponent = () => {
     idToken: undefined,
   };
 
+  console.log(accessToken);
+
   const handleLogin = async () => {
     postSocialLogin(socialLoginPayload, {
       onSuccess: ({ key }) => {
