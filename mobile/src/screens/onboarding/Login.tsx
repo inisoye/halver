@@ -2,17 +2,12 @@ import { AxiosError } from 'axios';
 import * as Google from 'expo-auth-session/providers/google';
 import Constants from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
-import { useAtom } from 'jotai';
 import * as React from 'react';
 import { Alert, Text } from 'react-native';
+import { useMMKVString } from 'react-native-mmkv';
 
 import { Button, buttonTextSizes, FullScreenLoader, Screen } from '@/components';
-import {
-  IntroMarquee,
-  tokenAtom,
-  usePostSocialLogin,
-  type SocialLoginPayload,
-} from '@/features/account';
+import { IntroMarquee, usePostSocialLogin, type SocialLoginPayload } from '@/features/account';
 import { Google as GoogleIcon } from '@/icons';
 import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 import { cn, formatAxiosErrorMessage } from '@/utils';
@@ -22,7 +17,7 @@ WebBrowser.maybeCompleteAuthSession();
 export const Login: React.FunctionComponent = () => {
   const [accessToken, setAccessToken] = React.useState<string | undefined>(undefined);
   const { mutate: postSocialLogin, isLoading: isSocialLoginLoading } = usePostSocialLogin();
-  const [_, setToken] = useAtom(tokenAtom);
+  const [_, setToken] = useMMKVString('user.token');
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: Constants.expoConfig?.extra?.androidClientId,
@@ -35,8 +30,6 @@ export const Login: React.FunctionComponent = () => {
     code: undefined,
     idToken: undefined,
   };
-
-  console.log(accessToken);
 
   const handleLogin = async () => {
     postSocialLogin(socialLoginPayload, {
@@ -74,17 +67,18 @@ export const Login: React.FunctionComponent = () => {
 
   return (
     <>
-      {isSocialLoginLoading && <FullScreenLoader />}
+      <FullScreenLoader isVisible={isSocialLoginLoading} message="Logging you in..." />
 
-      <Screen isHeaderShown={false}>
+      <Screen isHeaderShown={false} className="md:flex-row md:items-center">
         <IntroMarquee />
 
         <Button
-          className="mx-auto mb-8 max-w-[88%] bg-white"
+          className="mx-auto mb-8 w-full max-w-[88%] bg-white md:max-w-full"
           disabled={!request || isSocialLoginLoading}
-          isTextContentOnly={false}
           isHapticsEnabled
+          isTextContentOnly={false}
           onPress={handleClick}
+          pressableClassName="md:flex-1 md:h-max md:max-w-sm md:mx-auto md:px-4"
         >
           <GoogleIcon className="absolute left-6" />
 

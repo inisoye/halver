@@ -4,9 +4,11 @@ export const getUserDetailsStatus = (
   token: string | undefined,
   userDetails: UserDetails | undefined,
 ) => {
-  if (!token) {
+  if (!token || !userDetails) {
     return 'No token';
-  } else if (!userDetails?.phone) {
+  }
+
+  if (!userDetails?.phone) {
     return 'No phone';
   } else if (!userDetails?.defaultCard) {
     return 'No card';

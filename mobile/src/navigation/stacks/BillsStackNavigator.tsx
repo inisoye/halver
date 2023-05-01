@@ -13,8 +13,8 @@ export const BillsStackNavigator: React.FunctionComponent = () => {
   return (
     <BillsStack.Navigator>
       <BillsStack.Screen
-        name="Bills"
         component={Bills}
+        name="Bills"
         options={{
           headerShown: false,
         }}

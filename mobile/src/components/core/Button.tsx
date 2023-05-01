@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
 });
 
 const springConfig = {
-  damping: 7,
+  damping: 5,
   mass: 1,
   stiffness: 600,
   overshootClamping: false,
@@ -53,6 +53,7 @@ interface ButtonProps extends PressableProps {
   isHapticsEnabled?: boolean;
   isTextContentOnly: boolean;
   onPress: () => void;
+  pressableClassName?: string;
   size?: keyof typeof buttonSizes;
   textClassName?: string;
 }
@@ -65,6 +66,7 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   isHapticsEnabled = false,
   isTextContentOnly = true,
   onPress,
+  pressableClassName,
   size = 'default',
   textClassName = 'default',
   ...otherProps
@@ -82,7 +84,7 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   }));
 
   const handlePressIn = () => {
-    scale.value = 0.98;
+    scale.value = 0.97;
     offset.value = 3;
     opacity.value = 0.6;
   };
@@ -104,6 +106,7 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   return (
     <>
       <Pressable
+        className={pressableClassName}
         onPress={handlePress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}

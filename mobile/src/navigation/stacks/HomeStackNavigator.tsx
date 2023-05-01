@@ -13,8 +13,8 @@ export const HomeStackNavigator: React.FunctionComponent = () => {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
-        name="Home"
         component={Home}
+        name="Home"
         options={{
           headerShown: false,
         }}

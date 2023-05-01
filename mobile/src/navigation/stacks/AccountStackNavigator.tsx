@@ -13,8 +13,8 @@ export const AccountStackNavigator: React.FunctionComponent = () => {
   return (
     <AccountStack.Navigator>
       <AccountStack.Screen
-        name="Account"
         component={Account}
+        name="Account"
         options={{
           headerShown: false,
         }}

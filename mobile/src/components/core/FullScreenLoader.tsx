@@ -1,28 +1,34 @@
 import * as React from 'react';
-import { Modal, View } from 'react-native';
-import { Plane } from 'react-native-animated-spinkit';
+import { ActivityIndicator, Modal, View } from 'react-native';
 
 import { colors } from '@/theme';
+import { cn } from '@/utils';
 
 import { Text } from './Text';
 
-export const FullScreenLoader: React.FunctionComponent = () => {
+interface FullScreenLoaderProps {
+  isVisible: boolean;
+  message?: string;
+}
+
+export const FullScreenLoader: React.FunctionComponent<FullScreenLoaderProps> = ({
+  isVisible = false,
+  message = 'Loading...',
+}) => {
   return (
-    <Modal animationType="fade" transparent={true} visible={true}>
+    <Modal animationType="fade" transparent={true} visible={isVisible} key={message}>
       <View
-        className="flex-1 items-center justify-center "
+        className={cn('flex-1 items-center justify-center', !isVisible && 'hidden')}
         style={{
           backgroundColor: colors['grey-a-light'][900],
         }}
       >
         <View
-          className="w-full max-w-[60%] items-center justify-center rounded-md bg-grey-light-100 py-6 dark:bg-grey-dark-200"
+          className="max-w-[80%] items-center justify-center rounded-md bg-grey-light-100 px-12 py-6 dark:bg-grey-dark-200"
           style={{ gap: 12 }} //  eslint-disable-line react-native/no-inline-styles
         >
-          {/* <ActivityIndicator color={colors.apricot.DEFAULT} size="large" /> */}
-          <Plane color={colors.apricot.DEFAULT} size={48} />
-
-          <Text>Loading...</Text>
+          <ActivityIndicator color={colors.apricot.DEFAULT} size="large" />
+          <Text className="text-center">{message}</Text>
         </View>
       </View>
     </Modal>

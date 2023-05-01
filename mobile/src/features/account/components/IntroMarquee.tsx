@@ -84,7 +84,7 @@ export const IntroMarquee: React.FunctionComponent = () => {
     <>
       <View
         className={cn(
-          'flex-1 bg-grey-light-100 dark:bg-grey-dark-200',
+          'flex-1 bg-grey-light-100 dark:bg-grey-dark-200 md:max-w-xl',
           Platform.OS === 'web' && 'max-h-screen overflow-hidden',
         )}
       >
@@ -162,9 +162,9 @@ export const IntroMarquee: React.FunctionComponent = () => {
           },
         )}
 
-        <View className="absolute  inset-0 h-screen w-screen flex-1">
+        <View pointerEvents="none" className="absolute inset-0 h-screen w-screen flex-1">
           <StyledLinearGradient
-            className="inset-0 left-0 right-0 top-0 h-full"
+            className="inset-0 left-0 right-0 top-0 h-full w-screen"
             colors={['transparent', 'rgba(0,0,0,1)']}
           />
         </View>

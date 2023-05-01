@@ -1,41 +1,56 @@
+import { useFlipper } from '@react-navigation/devtools';
 import {
   DarkTheme,
   DefaultTheme,
   NavigationContainer as RNNavigationContainer,
+  useNavigationContainerRef,
 } from '@react-navigation/native';
-import { useAtom } from 'jotai';
-import { RESET } from 'jotai/utils';
 import * as React from 'react';
 import { useColorScheme } from 'react-native';
+import { useMMKVString } from 'react-native-mmkv';
 
-import { getUserDetailsStatus, tokenAtom, useUserDetails } from '@/features/account';
+import { getUserDetailsStatus, useUserDetails } from '@/features/account';
+import { useFullScreenLoader } from '@/hooks';
+import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 
 import { AppRootStackNavigator } from './AppRootStackNavigator';
 import { LoginStackNavigator, OnboardingStackNavigator } from './stacks';
 
 export const NavigationContainer: React.FunctionComponent = () => {
-  const [token, setToken] = useAtom(tokenAtom);
+  const [token] = useMMKVString('user.token');
   const scheme = useColorScheme();
-  const { data: userDetails } = useUserDetails();
+  const { data: userDetails, isLoading, isFetching } = useUserDetails();
+
+  const navigationRef = useNavigationContainerRef();
+  useFlipper(navigationRef);
 
   const userDetailsStatus = getUserDetailsStatus(token, userDetails);
   const areUserDetailsIncomplete = userDetailsStatus !== 'Details complete';
 
-  console.log(userDetailsStatus);
+  React.useEffect(() => {
+    if (token) {
+      setAxiosDefaultToken(token, apiClient);
+    }
+  }, [token]);
 
-  // React.useEffect(() => {
-  //   setToken(RESET);
-  // }, []);
+  const areUserDetailsLoading = isLoading && isFetching;
+
+  useFullScreenLoader({ isLoading: areUserDetailsLoading, message: 'Gathering your details...' });
 
   return (
-    <RNNavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-      {!token ? (
-        <LoginStackNavigator />
-      ) : areUserDetailsIncomplete ? (
-        <OnboardingStackNavigator userDetailsStatus={userDetailsStatus} />
-      ) : (
-        <AppRootStackNavigator />
-      )}
-    </RNNavigationContainer>
+    <>
+      <RNNavigationContainer
+        ref={navigationRef}
+        theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
+      >
+        {!token ? (
+          <LoginStackNavigator />
+        ) : areUserDetailsIncomplete ? (
+          <OnboardingStackNavigator userDetailsStatus={userDetailsStatus} />
+        ) : (
+          <AppRootStackNavigator />
+        )}
+      </RNNavigationContainer>
+    </>
   );
 };

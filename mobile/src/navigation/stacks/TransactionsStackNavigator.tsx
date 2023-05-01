@@ -13,8 +13,8 @@ export const TransactionsStackNavigator: React.FunctionComponent = () => {
   return (
     <TransactionsStack.Navigator>
       <TransactionsStack.Screen
-        name="Transactions"
         component={Transactions}
+        name="Transactions"
         options={{
           headerShown: false,
         }}

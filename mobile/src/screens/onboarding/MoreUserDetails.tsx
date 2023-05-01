@@ -29,7 +29,7 @@ export const MoreUserDetails: React.FunctionComponent = () => {
 
           <TextInput
             className="flex-1 rounded bg-grey-light-200 p-3 font-sans-medium text-[16px] text-grey-light-1000 dark:bg-grey-dark-200 dark:text-grey-dark-1000"
-            keyboardType="numeric"
+            keyboardType="phone-pad"
             value={number}
             onChangeText={onChangeNumber}
           />

@@ -3,6 +3,7 @@ import * as React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useUserDetails } from '@/features/account/api';
 import { Back as BackIcon, HalverFooter } from '@/icons';
 import { cn } from '@/utils';
 
@@ -18,8 +19,9 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
   isHeaderTextShown = true,
 }) => {
   const navigation = useNavigation();
+  const { data: userDetails } = useUserDetails();
 
-  const peculiarScreenNames = { Home: 'Welcome' };
+  const peculiarScreenNames = { Home: `Welcome ${userDetails?.firstName}` };
   const isScreenNamePeculiar = Object.keys(peculiarScreenNames).includes(name);
   const screenName = isScreenNamePeculiar ? peculiarScreenNames[name] : name;
 
@@ -49,6 +51,7 @@ interface ScreenProps {
   isHeaderShown?: boolean;
   isHeaderTextShown?: boolean;
   hasLogoFooter?: boolean;
+  className?: string;
 }
 
 export const Screen: React.FunctionComponent<ScreenProps> = ({
@@ -56,13 +59,14 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
   isHeaderShown = true,
   isHeaderTextShown = true,
   hasLogoFooter = false,
+  className,
 }) => {
   const insets = useSafeAreaInsets();
   const { name } = useRoute();
 
   return (
     <View
-      className="flex-1 bg-[#E4E2E4] dark:bg-grey-dark-50"
+      className={cn('flex-1 bg-[#E4E2E4] dark:bg-grey-dark-50', className)}
       style={{
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
