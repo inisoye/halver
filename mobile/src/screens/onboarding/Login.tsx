@@ -69,16 +69,16 @@ export const Login: React.FunctionComponent = () => {
     <>
       <FullScreenLoader isVisible={isSocialLoginLoading} message="Logging you in..." />
 
-      <Screen isHeaderShown={false} className="md:flex-row md:items-center">
+      <Screen className="md:flex-row md:items-center" isHeaderShown={false}>
         <IntroMarquee />
 
         <Button
           className="mx-auto mb-8 w-full max-w-[88%] bg-white md:max-w-full"
           disabled={!request || isSocialLoginLoading}
-          isHapticsEnabled
           isTextContentOnly={false}
-          onPress={handleClick}
           pressableClassName="md:flex-1 md:h-max md:max-w-sm md:mx-auto md:px-4"
+          isHapticsEnabled
+          onPress={handleClick}
         >
           <GoogleIcon className="absolute left-6" />
 

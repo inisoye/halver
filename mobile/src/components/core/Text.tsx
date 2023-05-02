@@ -21,6 +21,7 @@ interface TextProps extends RNTextProps {
   variant?: keyof typeof textVariants;
   className?: string;
   isLight?: boolean;
+  isCentered?: boolean;
 }
 
 export const Text: React.FunctionComponent<TextProps> = ({
@@ -28,6 +29,7 @@ export const Text: React.FunctionComponent<TextProps> = ({
   variant = 'default',
   className,
   isLight = false,
+  isCentered = false,
 }) => {
   return (
     <RNText
@@ -35,6 +37,7 @@ export const Text: React.FunctionComponent<TextProps> = ({
         textVariants.default,
         textVariants[variant],
         isLight && 'text-grey-light-950 dark:text-grey-dark-950',
+        isCentered && 'text-center',
         className,
       )}
     >

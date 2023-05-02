@@ -16,7 +16,7 @@ export const FullScreenLoader: React.FunctionComponent<FullScreenLoaderProps> = 
   message = 'Loading...',
 }) => {
   return (
-    <Modal animationType="fade" transparent={true} visible={isVisible} key={message}>
+    <Modal animationType="fade" key={message} transparent={true} visible={isVisible}>
       <View
         className={cn('flex-1 items-center justify-center', !isVisible && 'hidden')}
         style={{
@@ -24,11 +24,11 @@ export const FullScreenLoader: React.FunctionComponent<FullScreenLoaderProps> = 
         }}
       >
         <View
-          className="max-w-[80%] items-center justify-center rounded-md bg-grey-light-100 px-12 py-6 dark:bg-grey-dark-200"
+          className="mx-auto w-full max-w-[300px] items-center justify-center rounded-md bg-grey-light-100 px-12 py-8 dark:bg-grey-dark-200"
           style={{ gap: 12 }} //  eslint-disable-line react-native/no-inline-styles
         >
           <ActivityIndicator color={colors.apricot.DEFAULT} size="large" />
-          <Text className="text-center">{message}</Text>
+          <Text isCentered>{message}</Text>
         </View>
       </View>
     </Modal>

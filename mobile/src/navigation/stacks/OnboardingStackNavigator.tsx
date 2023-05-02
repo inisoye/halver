@@ -29,6 +29,7 @@ export const OnboardingStackNavigator: React.FunctionComponent<OnboardingStackPr
           }}
         />
       )}
+
       {userDetailsStatus === 'No phone' && (
         <OnboardingStack.Screen
           component={MoreUserDetails}
@@ -38,10 +39,31 @@ export const OnboardingStackNavigator: React.FunctionComponent<OnboardingStackPr
           }}
         />
       )}
+
       {userDetailsStatus === 'No transfer recipient' && (
         <OnboardingStack.Screen
           component={BankAccountDetails}
           name="BankAccountDetails"
+          options={{
+            headerShown: false,
+          }}
+        />
+      )}
+
+      {userDetailsStatus === 'No card' && (
+        <OnboardingStack.Screen
+          component={MoreUserDetails}
+          name="MoreUserDetails"
+          options={{
+            headerShown: false,
+          }}
+        />
+      )}
+
+      {userDetailsStatus === 'No transfer recipient' && (
+        <OnboardingStack.Screen
+          component={MoreUserDetails}
+          name="MoreUserDetails"
           options={{
             headerShown: false,
           }}

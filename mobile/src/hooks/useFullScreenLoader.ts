@@ -10,5 +10,5 @@ export const useFullScreenLoader = ({ isLoading = false, message = 'Loading...' 
     } else {
       closeModal();
     }
-  }, [isLoading]);
+  }, [isLoading]); // eslint-disable-line react-hooks/exhaustive-deps
 };

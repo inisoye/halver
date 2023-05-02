@@ -1,9 +1,68 @@
 import { type AxiosError } from 'axios';
 
-import { capitalizeFirstLetter } from './strings';
+import { isStringOrArrayOfStrings } from './strings';
 
 /**
- * @param error An axios error instance. Usually returned by React Query.
+ * Formats an object containing errors into a string.
+ * The errors/exceptions are usually formatted by Django Rest Framework.
+ * https://www.django-rest-framework.org/api-guide/exceptions/#exception-handling-in-rest-framework-views
+ *
+ * @param errors - An object containing errors, where the keys are (often) field names and the values are error messages.
+ * @returns A single string representing the formatted error message that includes all the messages in the initial object.
+ */
+const formatErrorObject = (errors: { [key: string]: string | string[] }): string => {
+  const namedErrors: string[] = [];
+  const otherErrors: string[] = [];
+
+  // List out error keys that are usually not associated with input fields.
+  const otherErrorKeys = ['non-field-errors', 'nonFieldErrors', 'detail'];
+
+  // Process named errors.
+  for (const [key, value] of Object.entries(errors)) {
+    if (!value && !isStringOrArrayOfStrings(value)) {
+      continue;
+    }
+
+    if (!otherErrorKeys.includes(key) && value?.length) {
+      const formattedKey = key.charAt(0).toUpperCase() + key.slice(1);
+
+      if (Array.isArray(value) && value.length) {
+        namedErrors.push(`${formattedKey}: ${value.join(', ')}`);
+      }
+    }
+  }
+
+  // Process non-named errors.
+  for (const key of otherErrorKeys) {
+    const value = errors[key];
+
+    if (!value && !isStringOrArrayOfStrings(value)) {
+      continue;
+    }
+
+    if (typeof value === 'string') {
+      otherErrors.push(value);
+    } else if (Array.isArray(value) && value.length) {
+      otherErrors.push(value.join('. '));
+    }
+  }
+
+  // Combine named and non-named errors.
+  const result: string[] = [...namedErrors];
+  if (otherErrors.length) {
+    result.push(`${namedErrors.length > 1 ? 'Other errors: ' : ''}${otherErrors.join('. ')}`);
+  }
+
+  // Remove trailing full stops except the last item.
+  for (let i = 0; i < result.length - 1; i++) {
+    result[i] = result[i].replace(/\.$/, '');
+  }
+
+  return result.join('. ');
+};
+
+/**
+ * @param error An axios error instance. Usually returned by React Query and a Django backend.
  * @returns The error message formatted for the UI. Contents of an array are merged into a single string.
  */
 export const formatAxiosErrorMessage = (
@@ -22,14 +81,5 @@ export const formatAxiosErrorMessage = (
     return `${error.message}. Please check your internet connection.`;
   }
 
-  const errorMessage = Object.values(error.response?.data).flat();
-
-  if (Array.isArray(errorMessage)) {
-    const allMessages = errorMessage
-      .filter(message => isNaN(Number(message)) && typeof message === 'string')
-      .map(message => capitalizeFirstLetter(message as string))
-      .join('. ');
-
-    return `${allMessages}`;
-  }
+  return formatErrorObject(error.response?.data);
 };
