@@ -1,8 +1,8 @@
 import asyncio
 
 from django.shortcuts import get_object_or_404
-from drf_spectacular.utils import OpenApiResponse, extend_schema
-from rest_framework import status
+from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from rest_framework import serializers, status
 from rest_framework.generics import (
     DestroyAPIView,
     ListAPIView,
@@ -99,17 +99,24 @@ class DefaultCardUpdateAPIView(UpdateAPIView):
 
 
 class UserCardAdditionTransactionAPIView(APIView):
-    """View for handling the Paystack transaction for card addition.
+    """View for obtaining the Paystack transaction URL for a card addition.
 
-    Accepts POST requests.
+    Accepts GET requests.
     """
 
     @extend_schema(
         responses={
-            200: OpenApiResponse(description="Transaction initialized successfully."),
+            200: inline_serializer(
+                name="UserCardAdditionResponse",
+                fields={
+                    "status": serializers.BooleanField(),
+                    "message": serializers.CharField(),
+                    "data": serializers.DictField(child=serializers.CharField()),
+                },
+            ),
         },
     )
-    def post(self, request) -> Response:
+    def get(self, request) -> Response:
         """Initializes a Paystack transaction strictly for card addition.
 
         Returns:
