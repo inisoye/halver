@@ -16,7 +16,7 @@ export const LoaderModal: ModalComponentWithOptions<
 > = ({ modal: { params } }) => {
   return (
     <View
-      className="mx-auto w-full max-w-[300px] items-center justify-center rounded-md bg-grey-light-100 px-12 py-8 dark:bg-grey-dark-200"
+      className="mx-auto w-full max-w-[250px] items-center justify-center rounded-md bg-grey-light-100 px-12 py-8 dark:bg-grey-dark-200"
       style={{ gap: 12 }} //  eslint-disable-line react-native/no-inline-styles
     >
       <ActivityIndicator color={colors.apricot.DEFAULT} size="large" />
