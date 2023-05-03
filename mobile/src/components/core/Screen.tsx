@@ -41,7 +41,11 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
         <BackIcon />
       </TouchableOpacity>
 
-      {isHeaderTextShown && <Text variant="2xl">{screenName}</Text>}
+      {isHeaderTextShown && (
+        <Text variant="2xl" weight="bold">
+          {screenName}
+        </Text>
+      )}
     </View>
   );
 };

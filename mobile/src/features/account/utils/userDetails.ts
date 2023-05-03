@@ -1,22 +1,10 @@
 import { UserDetails } from '../api';
 
-export const getUserDetailsStatus = (
-  token: string | undefined,
-  userDetails: UserDetails | undefined,
-) => {
-  if (!token || !userDetails) {
-    return 'No token';
-  }
+export const checkIfUserDetailsAreIncomplete = (userDetails: UserDetails | undefined) => {
+  const { phone, defaultCard, defaultTransferRecipient, profileImageHash, profileImageUrl } =
+    userDetails || {};
 
-  if (!userDetails?.phone) {
-    return 'No phone';
-  } else if (!userDetails?.defaultCard) {
-    return 'No card';
-  } else if (!userDetails?.defaultTransferRecipient) {
-    return 'No transfer recipient';
-  } else if (!userDetails?.profileImageHash || !userDetails?.profileImageUrl) {
-    return 'No photo';
-  }
-
-  return 'Details complete';
+  return (
+    !phone || !defaultCard || !defaultTransferRecipient || !profileImageHash || !profileImageUrl
+  );
 };

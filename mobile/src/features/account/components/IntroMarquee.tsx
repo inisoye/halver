@@ -101,17 +101,18 @@ export const IntroMarquee: React.FunctionComponent = () => {
               >
                 <Text
                   className={cn(
-                    'mb-6 max-w-[70%] leading-[24px] text-grey-dark-1000',
+                    'mb-6 max-w-[70%] leading-[24px]',
                     isDark ? 'text-grey-dark-1000' : 'text-grey-dark-200',
                     mainHeadingClassName,
                   )}
                   variant="xl"
+                  weight="bold"
                 >
                   {mainHeading}
                 </Text>
                 <Text
                   className={cn(
-                    'max-w-[273px] leading-[17px] text-grey-dark-1000 opacity-70',
+                    'max-w-[273px] leading-[17px] opacity-70',
                     isDark ? 'text-grey-dark-1000' : 'text-grey-dark-200',
                   )}
                   variant="sm"
@@ -143,6 +144,7 @@ export const IntroMarquee: React.FunctionComponent = () => {
                     mainHeadingClassName,
                   )}
                   variant="xl"
+                  weight="bold"
                 >
                   {mainHeading}
                 </Text>
@@ -162,7 +164,7 @@ export const IntroMarquee: React.FunctionComponent = () => {
           },
         )}
 
-        <View pointerEvents="none" className="absolute inset-0 h-screen w-screen flex-1">
+        <View className="absolute inset-0 h-screen w-screen flex-1" pointerEvents="none">
           <StyledLinearGradient
             className="inset-0 left-0 right-0 top-0 h-full w-screen"
             colors={['transparent', 'rgba(0,0,0,1)']}

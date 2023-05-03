@@ -10,6 +10,7 @@ import { Button, buttonTextSizes, FullScreenLoader, Screen } from '@/components'
 import { IntroMarquee, usePostSocialLogin, type SocialLoginPayload } from '@/features/account';
 import { Google as GoogleIcon } from '@/icons';
 import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
+import { allMMKVKeys } from '@/lib/mmkv';
 import { cn, formatAxiosErrorMessage } from '@/utils';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -17,7 +18,7 @@ WebBrowser.maybeCompleteAuthSession();
 export const Login: React.FunctionComponent = () => {
   const [accessToken, setAccessToken] = React.useState<string | undefined>(undefined);
   const { mutate: postSocialLogin, isLoading: isSocialLoginLoading } = usePostSocialLogin();
-  const [_, setToken] = useMMKVString('user.token');
+  const [_, setToken] = useMMKVString(allMMKVKeys.token);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: Constants.expoConfig?.extra?.androidClientId,

@@ -5,7 +5,7 @@ import { useMMKVString } from 'react-native-mmkv';
 import { z } from 'zod';
 
 import { apiClient } from '@/lib/axios';
-import { storage } from '@/lib/mmkv';
+import { allMMKVKeys, storage } from '@/lib/mmkv';
 import { allQueryKeys } from '@/lib/react-query';
 import { CustomUserDetails as UserDetailsSchema } from '@/lib/zod';
 import { formatAxiosErrorMessage } from '@/utils';
@@ -18,14 +18,13 @@ export const getUserDetails = async () => {
 };
 
 export const useUserDetails = () => {
-  const [token, setToken] = useMMKVString('user.token');
+  const [token, setToken] = useMMKVString(allMMKVKeys.token);
 
   return useQuery({
     queryKey: allQueryKeys.getUserDetails,
     queryFn: getUserDetails,
     enabled: !!token,
     onError: error => {
-      // setToken(RESET);
       setToken(undefined);
       storage.clearAll();
 

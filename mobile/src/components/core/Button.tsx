@@ -107,6 +107,7 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
     <>
       <Pressable
         className={pressableClassName}
+        style={disabled && styles.buttonDisabled}
         onPress={handlePress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
@@ -114,7 +115,7 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
       >
         <Animated.View
           className={cn(buttonSizes.default, buttonSizes[size], buttonColors[color], className)}
-          style={[animatedStyle, disabled && styles.buttonDisabled]}
+          style={animatedStyle}
         >
           {isTextContentOnly ? (
             <Text

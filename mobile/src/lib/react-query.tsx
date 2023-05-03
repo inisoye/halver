@@ -56,7 +56,9 @@ onlineManager.setEventListener(setOnline => {
 /**
  * Centralize all query keys here.
  */
-export const allQueryKeys = { getUserDetails: ['user-details'] };
+export const allQueryKeys = {
+  getUserDetails: ['user-details'],
+};
 
 /**
  * Specify the queries that should be stored in MMKV, by their keys.

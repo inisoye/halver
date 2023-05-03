@@ -1,3 +1,5 @@
 export * from './BankAccountDetails';
 export * from './Login';
-export * from './MoreUserDetails';
+export * from './Phone';
+export * from './CardDetails';
+export * from './ProfileImage';

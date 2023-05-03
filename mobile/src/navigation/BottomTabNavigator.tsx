@@ -10,16 +10,15 @@ import {
   NewBill as NewBillIcon,
   Transactions as TransactionsIcon,
 } from '@/icons';
-import { BillAmount } from '@/screens';
-import { colors } from '@/theme';
-import { cn } from '@/utils';
-
 import {
   AccountStackNavigator,
   BillsStackNavigator,
   HomeStackNavigator,
   TransactionsStackNavigator,
-} from './stacks';
+} from '@/navigation/stacks';
+import { BillAmount } from '@/screens';
+import { colors } from '@/theme';
+import { cn } from '@/utils';
 
 interface BottomTabTextProps {
   label: string | undefined;
@@ -40,6 +39,7 @@ export const BottomTabText: React.FunctionComponent<BottomTabTextProps> = ({
         isMiddleItem && 'hidden',
       )}
       variant="xxs"
+      weight="bold"
     >
       {label}
     </Text>

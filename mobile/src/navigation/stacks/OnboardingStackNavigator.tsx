@@ -1,46 +1,47 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
-import { BankAccountDetails, Login, MoreUserDetails } from '@/screens';
+import { useUserDetails } from '@/features/account';
+import { BankAccountDetails, CardDetails, Phone, ProfileImage } from '@/screens';
 
 export type OnboardingStackParamList = {
   Login: undefined;
-  MoreUserDetails: undefined;
+  Phone: undefined;
   BankAccountDetails: undefined;
+  CardDetails: undefined;
+  ProfileImage: undefined;
 };
-
-interface OnboardingStackProps {
-  userDetailsStatus: 'No token' | 'No phone' | 'No card' | 'No transfer recipient' | 'No photo';
-}
 
 const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
 
-export const OnboardingStackNavigator: React.FunctionComponent<OnboardingStackProps> = ({
-  userDetailsStatus,
-}) => {
+export const OnboardingStackNavigator: React.FunctionComponent = () => {
+  const { data: userDetails } = useUserDetails();
+  const { phone, defaultCard, defaultTransferRecipient, profileImageHash, profileImageUrl } =
+    userDetails || {};
+
   return (
     <OnboardingStack.Navigator>
-      {userDetailsStatus === 'No token' && (
+      {!phone && (
         <OnboardingStack.Screen
-          component={Login}
-          name="Login"
+          component={Phone}
+          name="Phone"
           options={{
             headerShown: false,
           }}
         />
       )}
 
-      {userDetailsStatus === 'No phone' && (
+      {!defaultCard && (
         <OnboardingStack.Screen
-          component={MoreUserDetails}
-          name="MoreUserDetails"
+          component={CardDetails}
+          name="CardDetails"
           options={{
             headerShown: false,
           }}
         />
       )}
 
-      {userDetailsStatus === 'No transfer recipient' && (
+      {!defaultTransferRecipient && (
         <OnboardingStack.Screen
           component={BankAccountDetails}
           name="BankAccountDetails"
@@ -50,20 +51,10 @@ export const OnboardingStackNavigator: React.FunctionComponent<OnboardingStackPr
         />
       )}
 
-      {userDetailsStatus === 'No card' && (
+      {(!profileImageHash || !profileImageUrl) && (
         <OnboardingStack.Screen
-          component={MoreUserDetails}
-          name="MoreUserDetails"
-          options={{
-            headerShown: false,
-          }}
-        />
-      )}
-
-      {userDetailsStatus === 'No transfer recipient' && (
-        <OnboardingStack.Screen
-          component={MoreUserDetails}
-          name="MoreUserDetails"
+          component={ProfileImage}
+          name="ProfileImage"
           options={{
             headerShown: false,
           }}
