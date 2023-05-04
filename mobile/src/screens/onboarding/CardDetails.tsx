@@ -1,14 +1,21 @@
 import * as React from 'react';
-import { View } from 'react-native';
 
-import { Screen, Text } from '@/components';
+import { PaddedScreenHeader, Screen } from '@/components';
+import { useGetCardAdditionURL } from '@/features/financials';
 
 export const CardDetails: React.FunctionComponent = () => {
+  const { data } = useGetCardAdditionURL();
+  console.log(data);
+
   return (
-    <Screen>
-      <View className="p-2 px-6">
-        <Text>This is the card details</Text>
-      </View>
-    </Screen>
+    <>
+      <Screen isHeaderShown={false} hasLogoFooter>
+        <PaddedScreenHeader
+          heading="We also need your card"
+          subHeading="You'll use this to make contributions on Halver. All your details are securely handled by Paystack. You are in full control."
+          hasExtraPadding
+        />
+      </Screen>
+    </>
   );
 };
