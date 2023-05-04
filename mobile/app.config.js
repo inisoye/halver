@@ -40,7 +40,15 @@ module.exports = {
       webClientId: process.env.GOOGLE_OAUTH_WEB_CLIENT_ID,
     },
     plugins: [
-      ['expo-build-properties', { ios: { flipper: true } }],
+      [
+        'expo-build-properties',
+        {
+          ios: { flipper: true },
+          android: {
+            kotlinVersion: '1.6.10',
+          },
+        },
+      ],
       ['expo-contacts', { contactsPermission: 'Allow $(PRODUCT_NAME) to access your contacts.' }],
       ['expo-image-picker', { photosPermission: 'Allow $(PRODUCT_NAME) to access your photos.' }],
     ],

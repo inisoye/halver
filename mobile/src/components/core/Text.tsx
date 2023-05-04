@@ -5,9 +5,9 @@ import { cn } from '@/utils';
 
 export const textVariants = {
   default: 'text-base text-grey-light-1000 dark:text-grey-dark-1000 tracking-[-0.1px]',
-  '4xl': 'text-[32px] leading-[48px] tracking-[-1px]',
-  '3xl': 'text-[28px] leading-[42px] tracking-[-1px]',
-  '2xl': 'text-[24px] leading-[36px] tracking-[-1px]',
+  '4xl': 'text-[32px] leading-[48px] tracking-[-0.7px]',
+  '3xl': 'text-[28px] leading-[42px] tracking-[-0.7px]',
+  '2xl': 'text-[24px] leading-[36px] tracking-[-0.7px]',
   xl: 'text-[20px] leading-[30px] tracking-[-0.65px]',
   lg: 'text-[18px] leading-[26px]',
   sm: 'text-[14px] leading-[18px]',

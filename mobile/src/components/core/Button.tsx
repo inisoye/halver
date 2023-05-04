@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
 });
 
 const springConfig = {
-  damping: 5,
+  damping: 4,
   mass: 1,
   stiffness: 600,
   overshootClamping: false,
@@ -84,13 +84,11 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   }));
 
   const handlePressIn = () => {
-    scale.value = 0.97;
     offset.value = 3;
     opacity.value = 0.6;
   };
 
   const handlePressOut = () => {
-    scale.value = 1;
     offset.value = 0;
     opacity.value = 1;
   };
@@ -107,6 +105,7 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
     <>
       <Pressable
         className={pressableClassName}
+        disabled={disabled}
         style={disabled && styles.buttonDisabled}
         onPress={handlePress}
         onPressIn={handlePressIn}

@@ -58,6 +58,7 @@ onlineManager.setEventListener(setOnline => {
  */
 export const allQueryKeys = {
   getUserDetails: ['user-details'],
+  getCardAdditionURL: ['card-addition-url'],
 };
 
 /**

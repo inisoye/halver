@@ -361,3 +361,13 @@ export const PaginatedUserCardList = z
     results: z.array(UserCard),
   })
   .partial();
+
+export const UserCardAdditionResponse = z.object({
+  status: z.boolean(),
+  message: z.string(),
+  data: z.object({
+    authorizationUrl: z.string().url(),
+    accessCode: z.string(),
+    reference: z.string(),
+  }),
+});

@@ -20,6 +20,7 @@ interface TextFieldProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<any>;
   keyboardType?: KeyboardTypeOptions;
+  inputAccessoryViewID?: string;
   name: string;
   prefixText?: string;
   rules?:
@@ -33,6 +34,7 @@ interface TextFieldProps {
 export const TextField: React.FunctionComponent<TextFieldProps> = ({
   control,
   keyboardType,
+  inputAccessoryViewID,
   name,
   prefixText,
   rules,
@@ -54,6 +56,7 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             className="flex-1 rounded bg-grey-light-200 p-3 font-sans-medium text-[16px] text-grey-light-1000 dark:bg-grey-dark-200 dark:text-grey-dark-1000"
+            inputAccessoryViewID={inputAccessoryViewID}
             keyboardType={keyboardType}
             value={value}
             onBlur={onBlur}

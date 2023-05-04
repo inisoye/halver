@@ -109,7 +109,7 @@ export const BottomTabNavigator = () => {
           tabBarStyle: {
             flex: Platform.OS === 'ios' ? 0.08 : 0.09,
             elevation: 0,
-            backgroundColor: isDarkMode ? colors['grey-dark'][50] : '#E4E2E4',
+            backgroundColor: isDarkMode ? colors['grey-dark'][50] : colors['main-bg-light'],
             borderTopColor: isDarkMode ? colors['grey-dark'][600] : colors['grey-light'][700],
             display: route.name === 'Bill Amount' ? 'none' : 'flex',
           },

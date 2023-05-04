@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import * as Google from 'expo-auth-session/providers/google';
 import Constants from 'expo-constants';
+import * as Haptics from 'expo-haptics';
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import { Alert, Text } from 'react-native';
@@ -43,6 +44,8 @@ export const Login: React.FunctionComponent = () => {
         const errorMessage = formatAxiosErrorMessage(error as AxiosError);
 
         if (errorMessage) {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
           Alert.alert('Sign-in Error', errorMessage, [
             {
               text: 'OK',

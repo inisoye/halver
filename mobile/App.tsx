@@ -4,6 +4,7 @@ import { NativeWindStyleSheet } from 'nativewind';
 import * as React from 'react';
 import { initializeMMKVFlipper } from 'react-native-mmkv-flipper-plugin';
 
+import { useAndroidNavigationBackground } from '@/hooks';
 import { storage } from '@/lib/mmkv';
 import { NavigationContainer } from '@/navigation';
 import { Providers } from '@/providers';
@@ -22,6 +23,8 @@ export default function App() {
     'Halver-Medium': require('./assets/fonts/HalverSansMedium.otf'),
     'Halver-Semibold': require('./assets/fonts/HalverSansSemibold.otf'),
   });
+
+  useAndroidNavigationBackground();
 
   if (!fontsLoaded) {
     return null;

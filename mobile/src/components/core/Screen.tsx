@@ -70,7 +70,7 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
 
   return (
     <View
-      className={cn('flex-1 bg-[#E4E2E4] dark:bg-grey-dark-50', className)}
+      className={cn('flex-1 bg-main-bg-light dark:bg-grey-dark-50', className)}
       style={{
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
@@ -82,7 +82,7 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
 
       {children}
 
-      {hasLogoFooter && <HalverFooter className="absolute bottom-20 self-center" />}
+      {hasLogoFooter && <HalverFooter className="absolute bottom-20 -z-10 self-center" />}
     </View>
   );
 };
