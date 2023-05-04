@@ -1,17 +1,19 @@
 import * as React from 'react';
-import { Keyboard, Platform } from 'react-native';
+import { Keyboard } from 'react-native';
 import { useSoftInputState } from 'react-native-avoid-softinput';
+
+import { isAndroid } from '@/utils';
 
 export const useKeyboardVisibility = () => {
   const [isKeyboardOpenGeneral, setIsKeyboardOpenGeneral] = React.useState(false);
 
   React.useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-      setIsKeyboardOpenGeneral(true);
+      if (isAndroid()) setIsKeyboardOpenGeneral(true); // Prevent double rerender on IOS
     });
 
     const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-      setIsKeyboardOpenGeneral(false);
+      if (isAndroid()) setIsKeyboardOpenGeneral(false);
     });
 
     return () => {
@@ -23,5 +25,5 @@ export const useKeyboardVisibility = () => {
   const { isSoftInputShown } = useSoftInputState();
 
   // Use better optimised state values for each platform.
-  return Platform.OS === 'ios' ? isSoftInputShown : isKeyboardOpenGeneral;
+  return isAndroid() ? isKeyboardOpenGeneral : isSoftInputShown;
 };
