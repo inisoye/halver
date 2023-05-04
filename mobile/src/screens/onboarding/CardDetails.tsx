@@ -12,7 +12,7 @@ export const CardDetails: React.FunctionComponent = () => {
       <Screen isHeaderShown={false} hasLogoFooter>
         <PaddedScreenHeader
           heading="We also need your card"
-          subHeading="You'll use this to make contributions on Halver. All your details are securely handled by Paystack. You are in full control."
+          subHeading="You'll use this to make contributions on Halver. All your details are securely handled by Paystack and you are in full control."
           hasExtraPadding
         />
       </Screen>
