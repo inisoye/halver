@@ -25,7 +25,7 @@ from financials.api.serializers import (
     TransferRecipientUpdateDeleteSerializer,
     UserCardSerializer,
 )
-from financials.data import banks
+from financials.data.banks import all_banks
 from financials.models import TransferRecipient, UserCard
 from financials.utils.cards import generate_add_card_paystack_payload
 from financials.utils.paystack_webhook import handle_paystack_webhook_response
@@ -72,10 +72,8 @@ class PaystackBanksListAPIView(APIView):
             A list of bank objects.
         """
 
-        serializer = self.serializer_class(data=banks.banks, many=True)
-        serializer.is_valid(raise_exception=True)
-
-        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        # Serializer validation not added as data is static.
+        return Response(all_banks, status=status.HTTP_200_OK)
 
 
 class DefaultCardRetrieveAPIView(RetrieveAPIView):

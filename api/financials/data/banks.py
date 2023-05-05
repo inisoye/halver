@@ -1,6 +1,6 @@
 # flake8: noqa E501
 
-banks = [
+all_banks = [
     {
         "id": 302,
         "name": "9mobile 9Payment Service Bank",
