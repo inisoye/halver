@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 import { useMMKVString } from 'react-native-mmkv';
 import { z } from 'zod';
 
-import { apiClient } from '@/lib/axios';
+import { apiClient, deleteAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys, storage } from '@/lib/mmkv';
 import { allQueryKeys } from '@/lib/react-query';
 import { CustomUserDetails as UserDetailsSchema } from '@/lib/zod';
@@ -27,6 +27,7 @@ export const useUserDetails = () => {
     onError: error => {
       setToken(undefined);
       storage.clearAll();
+      deleteAxiosDefaultToken();
 
       const errorMessage = formatAxiosErrorMessage(error as AxiosError);
       Alert.alert('Error', `Your account details could not be obtained. ${errorMessage}`, [

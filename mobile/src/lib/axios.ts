@@ -1,8 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import Constants from 'expo-constants';
 
-const SESSION_EXPIRED_STATUS_CODE = 401;
-
 export const apiClient = axios.create({
   baseURL: Constants.expoConfig?.extra?.apiUrl,
 });

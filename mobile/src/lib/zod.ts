@@ -303,6 +303,26 @@ export const CustomUserDetails = z.object({
   uuid: z.string().uuid(),
 });
 
+export const PaystackBankList = z
+  .object({
+    id: z.number().int().nullable(),
+    name: z.string().nullable(),
+    slug: z.string().nullable(),
+    code: z.string().nullable(),
+    longcode: z.string().nullable(),
+    gateway: z.string().nullable(),
+    pay_with_bank: z.boolean().nullable(),
+    active: z.boolean().nullable(),
+    country: z.string().nullable(),
+    currency: z.string().nullable(),
+    type: z.string().nullable(),
+    is_deleted: z.boolean().nullable(),
+    createdAt: z.string().datetime().nullable(),
+    updatedAt: z.string().datetime().nullable(),
+    logo: z.string().url().nullable(),
+  })
+  .partial();
+
 export const PatchedCustomUserDetails = z
   .object({
     dateJoined: z.string().datetime(),

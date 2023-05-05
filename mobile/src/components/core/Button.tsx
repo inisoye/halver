@@ -63,7 +63,7 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   className,
   color = 'default',
   disabled = false,
-  isHapticsEnabled = false,
+  isHapticsEnabled = true,
   isTextContentOnly = true,
   onPress,
   pressableClassName,

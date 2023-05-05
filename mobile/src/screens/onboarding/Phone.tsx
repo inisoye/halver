@@ -6,7 +6,6 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { Alert, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { z } from 'zod';
 
 import {
@@ -19,9 +18,8 @@ import {
   TextFieldLabel,
 } from '@/components';
 import { useUpdateSingleUserDetail } from '@/features/account';
-import { useKeyboardVisibility } from '@/hooks';
 import { OnboardingStackParamList } from '@/navigation';
-import { cn, formatAxiosErrorMessage, isMobilePhone } from '@/utils';
+import { formatAxiosErrorMessage, isMobilePhone } from '@/utils';
 
 type PhoneProps = NativeStackScreenProps<OnboardingStackParamList, 'Phone'>;
 
@@ -68,8 +66,6 @@ export const Phone: React.FunctionComponent<PhoneProps> = ({ navigation }) => {
     });
   };
 
-  const isKeyboardOpen = useKeyboardVisibility();
-
   return (
     <>
       <Screen isHeaderShown={false} hasLogoFooter>
@@ -94,38 +90,20 @@ export const Phone: React.FunctionComponent<PhoneProps> = ({ navigation }) => {
             {errors.phone && (
               <TextFieldError errorMessage={errors.phone?.message} fieldName="your phone number" />
             )}
-
-            {!isKeyboardOpen && (
-              <Animated.View entering={FadeInDown.duration(200)}>
-                <Button
-                  className="mt-12"
-                  color="casal"
-                  disabled={isUserDetailsUpdateLoading || isKeyboardOpen}
-                  isTextContentOnly
-                  onPress={handleSubmit(onSubmit)}
-                >
-                  {isUserDetailsUpdateLoading ? 'Loading...' : 'Continue'}
-                </Button>
-              </Animated.View>
-            )}
           </View>
         </KeyboardAwareScrollView>
 
-        {isKeyboardOpen && (
-          <KeyboardStickyView className={cn(isKeyboardOpen ? 'opacity-100' : 'opacity-0')}>
-            <Animated.View entering={FadeInUp.duration(200)}>
-              <Button
-                className="rounded-none"
-                color="casal"
-                disabled={isUserDetailsUpdateLoading || !isKeyboardOpen}
-                isTextContentOnly
-                onPress={handleSubmit(onSubmit)}
-              >
-                {isUserDetailsUpdateLoading ? 'Loading...' : 'Continue'}
-              </Button>
-            </Animated.View>
-          </KeyboardStickyView>
-        )}
+        <KeyboardStickyView className="px-6">
+          <Button
+            className="mt-12"
+            color="casal"
+            disabled={isUserDetailsUpdateLoading}
+            isTextContentOnly
+            onPress={handleSubmit(onSubmit)}
+          >
+            {isUserDetailsUpdateLoading ? 'Loading...' : 'Continue'}
+          </Button>
+        </KeyboardStickyView>
       </Screen>
     </>
   );

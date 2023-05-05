@@ -1,4 +1,4 @@
 export * from './useFullScreenLoader';
 export * from './useKeyboardVisibility';
 export * from './useIsFirstTime';
-export * from './useAndroidNavigationBackground';
+export * from './useModalControl';

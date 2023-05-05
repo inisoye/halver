@@ -13,5 +13,7 @@ export const useGetCardAdditionURL = () => {
   return useQuery({
     queryKey: allQueryKeys.getCardAdditionURL,
     queryFn: getCardAdditionURL,
+    staleTime: 10 * (60 * 1000), // 10 mins
+    cacheTime: 15 * (60 * 1000), // 15 mins
   });
 };

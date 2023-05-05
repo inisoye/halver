@@ -9,7 +9,7 @@ import { KeyboardAvoidingView, Platform, StyleSheet, ViewStyle } from 'react-nat
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 40,
     width: '100%',
   },
 });
@@ -29,7 +29,7 @@ export const KeyboardStickyView: React.FunctionComponent<KeyboardStickyViewProps
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       className={className}
-      keyboardVerticalOffset={0}
+      keyboardVerticalOffset={40}
       style={[styles.container, style]}
     >
       {children}

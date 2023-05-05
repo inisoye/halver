@@ -4,7 +4,7 @@ import { TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useUserDetails } from '@/features/account/api';
-import { Back as BackIcon, HalverFooter } from '@/icons';
+import { Back as BackIcon } from '@/icons';
 import { cn } from '@/utils';
 
 import { Text } from './Text';
@@ -62,7 +62,6 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
   children,
   isHeaderShown = true,
   isHeaderTextShown = true,
-  hasLogoFooter = false,
   className,
 }) => {
   const insets = useSafeAreaInsets();
@@ -82,7 +81,7 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
 
       {children}
 
-      {hasLogoFooter && <HalverFooter className="absolute bottom-20 -z-10 self-center" />}
+      {/* {hasLogoFooter && <HalverFooter className="absolute bottom-20 -z-10 self-center" />} */}
     </View>
   );
 };
