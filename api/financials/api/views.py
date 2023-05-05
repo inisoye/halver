@@ -18,12 +18,14 @@ from core.utils.responses import format_exception
 from core.utils.users import get_user_by_id_drf
 from financials.api.permissions import IsOwner, IsPaystack
 from financials.api.serializers import (
+    PaystackBankListSerializer,
     PaystackTransferRecipientListSerializer,
     TransferRecipientCreateSerializer,
     TransferRecipientListSerializer,
     TransferRecipientUpdateDeleteSerializer,
     UserCardSerializer,
 )
+from financials.data import banks
 from financials.models import TransferRecipient, UserCard
 from financials.utils.cards import generate_add_card_paystack_payload
 from financials.utils.paystack_webhook import handle_paystack_webhook_response
@@ -52,6 +54,28 @@ class PaystackWebhookHandlerAPIView(APIView):
         handle_paystack_webhook_response(request_data)
 
         return Response(status=status.HTTP_200_OK)
+
+
+class PaystackBanksListAPIView(APIView):
+    """View for obtaining a list of all banks supported by Paystack and their logos.
+    The data returned is static and should be updated periodically with helper functions.
+
+    Accepts GET requests.
+    """
+
+    serializer_class = PaystackBankListSerializer
+
+    def get(self, request) -> Response:
+        """Handles GET requests to retrieve a list of banks.
+
+        Returns:
+            A list of bank objects.
+        """
+
+        serializer = self.serializer_class(data=banks.banks, many=True)
+        serializer.is_valid(raise_exception=True)
+
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 
 class DefaultCardRetrieveAPIView(RetrieveAPIView):

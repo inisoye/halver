@@ -25,6 +25,78 @@ class UserCardSerializer(serializers.ModelSerializer):
         )
 
 
+class PaystackBankListSerializer(serializers.Serializer):
+    id = serializers.IntegerField(
+        required=False,
+        allow_null=True,
+    )
+    name = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+    )
+    slug = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+    )
+    code = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+    )
+    longcode = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+    )
+    gateway = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+    )
+    pay_with_bank = serializers.BooleanField(
+        required=False,
+        allow_null=True,
+    )
+    active = serializers.BooleanField(
+        required=False,
+        allow_null=True,
+    )
+    country = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+    )
+    currency = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+    )
+    type = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+    )
+    is_deleted = serializers.BooleanField(
+        required=False,
+        allow_null=True,
+    )
+    createdAt = serializers.DateTimeField(
+        required=False,
+        allow_null=True,
+    )
+    updatedAt = serializers.DateTimeField(
+        required=False,
+        allow_null=True,
+    )
+    logo = serializers.URLField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+    )
+
+
 class PaystackTransferRecipientListSerializer(serializers.Serializer):
     user_id = serializers.UUIDField(required=True)
 
