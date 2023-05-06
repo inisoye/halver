@@ -1,8 +1,9 @@
 import * as Haptics from 'expo-haptics';
 import * as React from 'react';
 import { Pressable, StyleSheet, Text, type PressableProps } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
+import { useButtonAnimation } from '@/hooks';
 import { cn } from '@/utils';
 
 const buttonSizes = {
@@ -39,13 +40,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const springConfig = {
-  damping: 4,
-  mass: 1,
-  stiffness: 600,
-  overshootClamping: false,
-};
-
 interface ButtonProps extends PressableProps {
   children: React.ReactNode;
   className?: string;
@@ -71,27 +65,7 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   textClassName = 'default',
   ...otherProps
 }) => {
-  const scale = useSharedValue(1);
-  const offset = useSharedValue(0);
-  const opacity = useSharedValue(1);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateY: withSpring(offset.value, springConfig) },
-      { scale: withSpring(scale.value, springConfig) },
-    ],
-    opacity: withSpring(opacity.value),
-  }));
-
-  const handlePressIn = () => {
-    offset.value = 3;
-    opacity.value = 0.6;
-  };
-
-  const handlePressOut = () => {
-    offset.value = 0;
-    opacity.value = 1;
-  };
+  const { animatedStyle, handlePressIn, handlePressOut } = useButtonAnimation();
 
   const handlePress = () => {
     onPress();
