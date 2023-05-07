@@ -647,7 +647,7 @@ all_banks = [
     },
     {
         "id": 7,
-        "name": "First Bank of Nigeria",
+        "name": "First Bank of Nigeria (FCMB)",
         "slug": "first-bank-of-nigeria",
         "code": "011",
         "longcode": "011151003",
@@ -816,7 +816,7 @@ all_banks = [
     },
     {
         "id": 9,
-        "name": "Guaranty Trust Bank",
+        "name": "Guaranty Trust Bank (GTB)",
         "slug": "guaranty-trust-bank",
         "code": "058",
         "longcode": "058152036",
