@@ -57,6 +57,7 @@ onlineManager.setEventListener(setOnline => {
  * Centralize all query keys here.
  */
 export const allQueryKeys = {
+  getBanks: ['banks'],
   getUserDetails: ['user-details'],
   getCardAdditionURL: ['card-addition-url'],
 };
@@ -64,7 +65,8 @@ export const allQueryKeys = {
 /**
  * Specify the queries that should be stored in MMKV, by their keys.
  */
-const persistedQueriesList: QueryKey[] = [allQueryKeys.getUserDetails];
+
+const persistedQueriesList: QueryKey[] = [allQueryKeys.getUserDetails, allQueryKeys.getBanks];
 
 export const ReactQueryProvider: React.FunctionComponent<ReactQueryProviderProps> = ({
   children,

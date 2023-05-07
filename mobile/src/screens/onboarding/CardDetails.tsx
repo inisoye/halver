@@ -28,7 +28,7 @@ export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({ navigat
     if (url.startsWith(callbackUrl)) {
       closeModal();
       queryClient.invalidateQueries({ queryKey: allQueryKeys.getUserDetails });
-      navigation.navigate('BankAccountDetails');
+      navigation.navigate('ProfileImage');
     }
   };
 
@@ -47,7 +47,7 @@ export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({ navigat
           refund most of it right after your card is successfully added.
         </Text>
 
-        <Text className="mt-1 max-w-xs p-2 px-6 opacity-60" color="light" variant="xs">
+        <Text className="mt-10 max-w-xs p-2 px-6 opacity-60" color="light" variant="xs">
           *The refund excludes transaction charges and totals to about 38 Naira. All financial
           details are handled and stored by Paystack.
         </Text>

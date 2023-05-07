@@ -55,3 +55,34 @@ export const capitalizeFirstLetter = (string: string) => {
     (stringWithSpaces && stringWithSpaces.charAt(0).toUpperCase() + stringWithSpaces.slice(1)) || ''
   );
 };
+
+/**
+ * @param string A string in lower or upper case to be converted to title case.
+ * @returns The input string formatted to title case.
+ * KPONGETTE becomes Kpongette
+ * https://stackoverflow.com/a/196991/15063835
+ */
+export const convertToTitleCase = (string: string) => {
+  return string.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+};
+
+/**
+ * @param string A string (in kebab or snake case) to be converted to title case.
+ * @returns The input string formatted to title case.
+ * transactions__today-tomorrow becomes Transactions Today Tomorrow
+ * https://stackoverflow.com/a/64489760/15063835
+ */
+export const convertKebabAndSnakeToTitleCase = (string: string | undefined) => {
+  if (!string) {
+    return '';
+  }
+
+  // Remove hyphens and underscores
+  const formattedString = string
+    .replace(/^[-_]*(.)/, (_, c) => c.toUpperCase())
+    .replace(/[-_]+(.)/g, (_, c) => ' ' + c.toUpperCase());
+
+  return convertToTitleCase(formattedString);
+};

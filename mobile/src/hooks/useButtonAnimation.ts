@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 const springConfig = {
@@ -7,7 +8,11 @@ const springConfig = {
   overshootClamping: false,
 };
 
-export const useButtonAnimation = ({ animateScale = false, animateTranslate = true } = {}) => {
+export const useButtonAnimation = ({
+  animateScale = false,
+  animateTranslate = true,
+  disabled = false,
+} = {}) => {
   const scale = useSharedValue(1);
   const offset = useSharedValue(0);
   const opacity = useSharedValue(1);
@@ -31,6 +36,15 @@ export const useButtonAnimation = ({ animateScale = false, animateTranslate = tr
     if (animateTranslate) offset.value = 0;
     opacity.value = 1;
   };
+
+  React.useEffect(() => {
+    if (disabled) {
+      opacity.value = 0.5;
+    } else {
+      opacity.value = 1;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [disabled]);
 
   return {
     animatedStyle,

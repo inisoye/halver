@@ -1,5 +1,7 @@
 import React from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, ViewStyle } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, ViewStyle } from 'react-native';
+
+import { isIOS } from '@/utils';
 
 /**
  * Custom barebones keyboard sticky component.
@@ -27,7 +29,7 @@ export const KeyboardStickyView: React.FunctionComponent<KeyboardStickyViewProps
 }) => {
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={isIOS() ? 'padding' : 'height'}
       className={className}
       keyboardVerticalOffset={40}
       style={[styles.container, style]}

@@ -303,25 +303,25 @@ export const CustomUserDetails = z.object({
   uuid: z.string().uuid(),
 });
 
-export const PaystackBankList = z
-  .object({
-    id: z.number().int().nullable(),
-    name: z.string().nullable(),
-    slug: z.string().nullable(),
-    code: z.string().nullable(),
-    longcode: z.string().nullable(),
-    gateway: z.string().nullable(),
-    pay_with_bank: z.boolean().nullable(),
-    active: z.boolean().nullable(),
-    country: z.string().nullable(),
-    currency: z.string().nullable(),
-    type: z.string().nullable(),
-    is_deleted: z.boolean().nullable(),
-    createdAt: z.string().datetime().nullable(),
-    updatedAt: z.string().datetime().nullable(),
-    logo: z.string().url().nullable(),
-  })
-  .partial();
+export const PaystackBank = z.object({
+  id: z.number().int(),
+  name: z.string(),
+  slug: z.string(),
+  code: z.string().nullable().optional(),
+  longcode: z.string().nullable().optional(),
+  gateway: z.string().nullable().optional(),
+  pay_with_bank: z.boolean().nullable().optional(),
+  active: z.boolean().nullable().optional(),
+  country: z.string().nullable().optional(),
+  currency: z.string().nullable().optional(),
+  type: z.string().nullable().optional(),
+  is_deleted: z.boolean().nullable().optional(),
+  createdAt: z.string().datetime().nullable().optional(),
+  updatedAt: z.string().datetime().nullable().optional(),
+  logo: z.string().url().nullable().optional(),
+});
+
+export const PaystackBanksList = z.array(PaystackBank);
 
 export const PatchedCustomUserDetails = z
   .object({
@@ -371,6 +371,16 @@ export const TransferRecipientList = z.object({
   recipientCode: z.string().max(100),
   recipientType: z.string(),
   uuid: z.string().uuid(),
+});
+
+export const TransferRecipientCreate = z.object({
+  accountNumber: z.string().min(10).max(10).optional(),
+  authorizationCode: z.string().optional(),
+  bankCode: z.string().min(3).max(3).optional(),
+  email: z.string().email().optional(),
+  isDefault: z.boolean().optional(),
+  name: z.string().min(1),
+  recipientType: z.enum(['nuban', 'authorization']),
 });
 
 export const PaginatedUserCardList = z

@@ -31,20 +31,20 @@ export const OnboardingStackNavigator: React.FunctionComponent = () => {
         />
       )}
 
-      {!defaultCard && (
+      {!defaultTransferRecipient && (
         <OnboardingStack.Screen
-          component={CardDetails}
-          name="CardDetails"
+          component={BankAccountDetails}
+          name="BankAccountDetails"
           options={{
             headerShown: false,
           }}
         />
       )}
 
-      {!defaultTransferRecipient && (
+      {!defaultCard && (
         <OnboardingStack.Screen
-          component={BankAccountDetails}
-          name="BankAccountDetails"
+          component={CardDetails}
+          name="CardDetails"
           options={{
             headerShown: false,
           }}

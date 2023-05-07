@@ -11,7 +11,7 @@ export const textVariants = {
   xl: 'text-[20px] leading-[30px] tracking-[-0.65px]',
   lg: 'text-[18px] leading-[26px]',
   sm: 'text-[14px] leading-[18px]',
-  xs: 'text-[12px] leading-[14px]',
+  xs: 'text-[12px] leading-[15px]',
   xxs: 'text-[10px] leading-[12px]',
 };
 

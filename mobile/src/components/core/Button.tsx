@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import * as React from 'react';
-import { Pressable, StyleSheet, Text, type PressableProps } from 'react-native';
+import { Pressable, Text, type PressableProps } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { useButtonAnimation } from '@/hooks';
@@ -23,7 +23,7 @@ const buttonColors = {
   apricot: 'bg-apricot',
   casal: 'bg-casal',
   pharlap: 'bg-pharlap',
-  neutral: 'bg-grey-light-300 dark:bg-grey-dark-300',
+  neutral: 'bg-grey-light-200 dark:bg-grey-dark-200',
 };
 
 const buttonTextColors = {
@@ -34,16 +34,11 @@ const buttonTextColors = {
   neutral: 'text-grey-light-1000 dark:text-grey-dark-1000',
 };
 
-const styles = StyleSheet.create({
-  buttonDisabled: {
-    opacity: 0.5,
-  },
-});
-
 interface ButtonProps extends PressableProps {
   children: React.ReactNode;
   className?: string;
   color?: keyof typeof buttonColors;
+  disabled?: boolean;
   isHapticsEnabled?: boolean;
   isTextContentOnly: boolean;
   onPress: () => void;
@@ -51,6 +46,8 @@ interface ButtonProps extends PressableProps {
   size?: keyof typeof buttonSizes;
   textClassName?: string;
 }
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const Button: React.FunctionComponent<ButtonProps> = ({
   children,
@@ -65,7 +62,7 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   textClassName = 'default',
   ...otherProps
 }) => {
-  const { animatedStyle, handlePressIn, handlePressOut } = useButtonAnimation();
+  const { animatedStyle, handlePressIn, handlePressOut } = useButtonAnimation({ disabled });
 
   const handlePress = () => {
     onPress();
@@ -77,35 +74,36 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
 
   return (
     <>
-      <Pressable
-        className={pressableClassName}
+      <AnimatedPressable
+        className={cn(
+          pressableClassName,
+          buttonSizes.default,
+          buttonSizes[size],
+          buttonColors[color],
+          className,
+        )}
         disabled={disabled}
-        style={disabled && styles.buttonDisabled}
+        style={[animatedStyle]}
         onPress={handlePress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         {...otherProps}
       >
-        <Animated.View
-          className={cn(buttonSizes.default, buttonSizes[size], buttonColors[color], className)}
-          style={animatedStyle}
-        >
-          {isTextContentOnly ? (
-            <Text
-              className={cn(
-                buttonTextSizes.default,
-                buttonTextSizes[size],
-                buttonTextColors[color],
-                textClassName,
-              )}
-            >
-              {children}
-            </Text>
-          ) : (
-            children
-          )}
-        </Animated.View>
-      </Pressable>
+        {isTextContentOnly ? (
+          <Text
+            className={cn(
+              buttonTextSizes.default,
+              buttonTextSizes[size],
+              buttonTextColors[color],
+              textClassName,
+            )}
+          >
+            {children}
+          </Text>
+        ) : (
+          children
+        )}
+      </AnimatedPressable>
     </>
   );
 };

@@ -1,6 +1,7 @@
 module.exports = {
   white: '#ffffff',
   black: '#000000',
+  blackish: '#0D0D0D',
   'main-bg-light': '#E4E2E4',
   apricot: {
     DEFAULT: '#EC7D6A',

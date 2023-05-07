@@ -1,27 +1,36 @@
 import * as React from 'react';
 import { Control, Controller, FieldValues, RegisterOptions } from 'react-hook-form';
-import { KeyboardTypeOptions, TextInput, View } from 'react-native';
+import { KeyboardTypeOptions, TextInput, useColorScheme, View } from 'react-native';
+
+import { colors } from '@/theme';
+import { cn } from '@/utils';
 
 import { Text } from './Text';
 
 interface TextFieldLabelProps {
   label: string;
+  className?: string;
 }
 
-export const TextFieldLabel: React.FunctionComponent<TextFieldLabelProps> = ({ label }) => {
+export const TextFieldLabel: React.FunctionComponent<TextFieldLabelProps> = ({
+  className,
+  label,
+}) => {
   return (
-    <Text color="light" variant="sm">
+    <Text className={className} color="light" variant="sm">
       {label}
     </Text>
   );
 };
 
 interface TextFieldProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<any>;
-  keyboardType?: KeyboardTypeOptions;
+  className?: string;
+  control: Control<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   inputAccessoryViewID?: string;
+  keyboardType?: KeyboardTypeOptions;
   name: string;
+  placeholder?: string;
+  prefixComponent?: React.ReactNode;
   prefixText?: string;
   rules?:
     | Omit<
@@ -32,21 +41,27 @@ interface TextFieldProps {
 }
 
 export const TextField: React.FunctionComponent<TextFieldProps> = ({
+  className,
   control,
-  keyboardType,
   inputAccessoryViewID,
+  keyboardType,
   name,
+  placeholder,
+  prefixComponent,
   prefixText,
   rules,
 }) => {
+  const scheme = useColorScheme();
+
   return (
     <View
       className="mt-1.5 flex-row"
       style={{ gap: 4 }} // eslint-disable-line react-native/no-inline-styles
     >
-      {!!prefixText && (
+      {(!!prefixText || !!prefixComponent) && (
         <View className="justify-center rounded bg-grey-light-200 px-3 dark:bg-grey-dark-200">
-          <Text color="light">{prefixText}</Text>
+          {!!prefixText && <Text color="light">{prefixText}</Text>}
+          {!!prefixComponent && prefixComponent}
         </View>
       )}
 
@@ -55,9 +70,16 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
         name={name}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-            className="flex-1 rounded bg-grey-light-200 p-3 font-sans-medium text-[16px] text-grey-light-1000 dark:bg-grey-dark-200 dark:text-grey-dark-1000"
+            className={cn(
+              'flex-1 rounded bg-grey-light-200 p-3 px-4 font-sans-medium text-[16px] text-grey-light-1000 dark:bg-grey-dark-200 dark:text-grey-dark-1000',
+              className,
+            )}
             inputAccessoryViewID={inputAccessoryViewID}
             keyboardType={keyboardType}
+            placeholder={placeholder}
+            placeholderTextColor={
+              scheme === 'light' ? colors['grey-a-light'][800] : colors['grey-a-dark'][800]
+            }
             value={value}
             onBlur={onBlur}
             onChangeText={onChange}

@@ -18,7 +18,7 @@ export const PaddedScreenHeader: React.FunctionComponent<PaddedScreenHeaderProps
 }) => {
   return (
     // eslint-disable-next-line react-native/no-inline-styles
-    <View className={cn('mt-5 p-2 px-6', hasExtraPadding && 'pt-12')} style={{ gap: 8 }}>
+    <View className={cn('mt-5 p-2 px-6', hasExtraPadding && 'pt-8')} style={{ gap: 8 }}>
       <Text variant="2xl" weight="bold">
         {heading}
       </Text>

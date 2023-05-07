@@ -24,9 +24,14 @@ export const PaystackCardAdditionModal: React.FunctionComponent<PaystackCardAddi
   } = useBooleanStateControl(true);
 
   return (
-    <Modal closeModal={closeModal} isLoaderOpen={isLoaderOpen} isModalOpen={isModalOpen}>
+    <Modal
+      closeModal={closeModal}
+      headingText="Card addition payment"
+      isLoaderOpen={isLoaderOpen}
+      isModalOpen={isModalOpen}
+    >
       <WebView
-        className="flex-1 bg-grey-dark-50 dark:bg-main-bg-light"
+        className="flex-1 bg-white dark:bg-grey-dark-200"
         source={{ uri: authorizationUrl }}
         onLoadEnd={closeLoader}
         onLoadStart={startLoader}

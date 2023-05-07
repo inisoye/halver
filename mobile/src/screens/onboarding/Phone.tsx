@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { AxiosError } from 'axios';
 import * as Haptics from 'expo-haptics';
 import * as React from 'react';
@@ -18,7 +18,7 @@ import {
   TextFieldLabel,
 } from '@/components';
 import { useUpdateSingleUserDetail } from '@/features/account';
-import { OnboardingStackParamList } from '@/navigation';
+import type { OnboardingStackParamList } from '@/navigation';
 import { formatAxiosErrorMessage, isMobilePhone } from '@/utils';
 
 type PhoneProps = NativeStackScreenProps<OnboardingStackParamList, 'Phone'>;
@@ -46,7 +46,7 @@ export const Phone: React.FunctionComponent<PhoneProps> = ({ navigation }) => {
   const onSubmit = (data: PhoneFormValues) => {
     updateSingleUserDetail(data, {
       onSuccess: () => {
-        navigation.navigate('CardDetails');
+        navigation.navigate('BankAccountDetails');
       },
 
       onError: error => {
