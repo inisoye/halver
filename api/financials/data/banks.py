@@ -1884,7 +1884,7 @@ all_banks = [
     },
     {
         "id": 18,
-        "name": "United Bank For Africa",
+        "name": "United Bank For Africa (UBA)",
         "slug": "united-bank-for-africa",
         "code": "033",
         "longcode": "033153513",
