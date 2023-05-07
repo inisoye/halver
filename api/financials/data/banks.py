@@ -647,7 +647,7 @@ all_banks = [
     },
     {
         "id": 7,
-        "name": "First Bank of Nigeria (FCMB)",
+        "name": "First Bank of Nigeria",
         "slug": "first-bank-of-nigeria",
         "code": "011",
         "longcode": "011151003",
@@ -664,7 +664,7 @@ all_banks = [
     },
     {
         "id": 8,
-        "name": "First City Monument Bank",
+        "name": "First City Monument Bank (FCMB)",
         "slug": "first-city-monument-bank",
         "code": "214",
         "longcode": "214150018",
