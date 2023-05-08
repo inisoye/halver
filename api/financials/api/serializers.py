@@ -97,6 +97,11 @@ class PaystackBankListSerializer(serializers.Serializer):
     )
 
 
+class PaystackAccountNumberCheckSerializer(serializers.Serializer):
+    account_number = serializers.CharField()
+    bank_code = serializers.CharField()
+
+
 class PaystackTransferRecipientListSerializer(serializers.Serializer):
     user_id = serializers.UUIDField(required=True)
 

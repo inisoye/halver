@@ -5,6 +5,7 @@ from financials.api.views import (
     DefaultCardUpdateAPIView,
     DefaultTransferRecipientRetrieveAPIView,
     DefaultTransferRecipientUpdateAPIView,
+    PaystackAccountNumberCheckAPIView,
     PaystackBanksListAPIView,
     PaystackTransferRecipientListAPIView,
     PaystackWebhookHandlerAPIView,
@@ -27,6 +28,11 @@ urlpatterns = [
         route="banks/",
         view=PaystackBanksListAPIView.as_view(),
         name="banks-list",
+    ),
+    path(
+        route="bank-details/",
+        view=PaystackAccountNumberCheckAPIView.as_view(),
+        name="bank-details",
     ),
     path(
         route="default-card/",

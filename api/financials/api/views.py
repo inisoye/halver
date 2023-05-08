@@ -18,6 +18,7 @@ from core.utils.responses import format_exception
 from core.utils.users import get_user_by_id_drf
 from financials.api.permissions import IsOwner, IsPaystack
 from financials.api.serializers import (
+    PaystackAccountNumberCheckSerializer,
     PaystackBankListSerializer,
     PaystackTransferRecipientListSerializer,
     TransferRecipientCreateSerializer,
@@ -33,6 +34,7 @@ from financials.utils.transfer_recipients import (
     create_local_and_remote_transfer_recipient,
     generate_paystack_transfer_recipient_payload,
 )
+from libraries.paystack.bank_requests import BankRequests
 from libraries.paystack.transaction_requests import TransactionRequests
 from libraries.paystack.transfer_recipient_requests import TransferRecipientRequests
 
@@ -54,6 +56,39 @@ class PaystackWebhookHandlerAPIView(APIView):
         handle_paystack_webhook_response(request_data)
 
         return Response(status=status.HTTP_200_OK)
+
+
+class PaystackAccountNumberCheckAPIView(APIView):
+    """View for resolving a person's account number.
+
+    Accepts GET requests.
+    """
+
+    serializer_class = PaystackAccountNumberCheckSerializer
+
+    def get(self, request) -> Response:
+        """Obtain a person's full account details.
+
+        Returns:
+            The customer's account details.
+        """
+
+        serializer = self.serializer_class(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+
+        response = BankRequests.resolve_account_number(
+            account_number=serializer.validated_data.get("account_number"),
+            bank_code=serializer.validated_data.get("bank_code"),
+        )
+
+        if response["status"]:
+            return Response(response, status=status.HTTP_200_OK)
+
+        else:
+            return format_exception(
+                message=response["message"],
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class PaystackBanksListAPIView(APIView):
