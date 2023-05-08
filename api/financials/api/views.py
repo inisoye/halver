@@ -66,14 +66,14 @@ class PaystackAccountNumberCheckAPIView(APIView):
 
     serializer_class = PaystackAccountNumberCheckSerializer
 
-    def get(self, request) -> Response:
-        """Obtain a person's full account details.
+    def post(self, request) -> Response:
+        """Validate a person's full account details.
 
         Returns:
             The customer's account details.
         """
 
-        serializer = self.serializer_class(data=request.query_params)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         response = BankRequests.resolve_account_number(
