@@ -1,16 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { AxiosError } from 'axios';
-import * as Haptics from 'expo-haptics';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { ScrollView, View } from 'react-native';
 import { z } from 'zod';
 
 import {
-  Button,
-  KeyboardStickyView,
+  FullScreenLoader,
+  KeyboardStickyButton,
   PaddedScreenHeader,
   Screen,
   TextField,
@@ -19,7 +17,7 @@ import {
 } from '@/components';
 import { useUpdateSingleUserDetail } from '@/features/account';
 import type { OnboardingStackParamList } from '@/navigation';
-import { formatAxiosErrorMessage, isMobilePhone } from '@/utils';
+import { handleErrorAlertAndHaptics, isMobilePhone } from '@/utils';
 
 type PhoneProps = NativeStackScreenProps<OnboardingStackParamList, 'Phone'>;
 
@@ -50,26 +48,20 @@ export const Phone: React.FunctionComponent<PhoneProps> = ({ navigation }) => {
       },
 
       onError: error => {
-        const errorMessage = formatAxiosErrorMessage(error as AxiosError);
-
-        if (errorMessage) {
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-
-          Alert.alert('Error Adding Phone Number', errorMessage, [
-            {
-              text: 'OK',
-              style: 'default',
-            },
-          ]);
-        }
+        handleErrorAlertAndHaptics('Error Adding Phone Number', error as AxiosError);
       },
     });
   };
 
   return (
     <>
-      <Screen isHeaderShown={false} hasLogoFooter>
-        <KeyboardAwareScrollView keyboardDismissMode="interactive">
+      <FullScreenLoader
+        isVisible={isUserDetailsUpdateLoading}
+        message="Saving your phone number..."
+      />
+
+      <Screen isHeaderShown={false} hasNoIOSBottomInset>
+        <ScrollView keyboardDismissMode="interactive">
           <PaddedScreenHeader
             heading="What's your phone number?"
             subHeading="Use a number your friends have. It'll help them find you easily on Halver."
@@ -91,19 +83,15 @@ export const Phone: React.FunctionComponent<PhoneProps> = ({ navigation }) => {
               <TextFieldError errorMessage={errors.phone?.message} fieldName="your phone number" />
             )}
           </View>
-        </KeyboardAwareScrollView>
+        </ScrollView>
 
-        <KeyboardStickyView className="px-6">
-          <Button
-            className="mt-12"
-            color="casal"
-            disabled={isUserDetailsUpdateLoading}
-            isTextContentOnly
-            onPress={handleSubmit(onSubmit)}
-          >
-            {isUserDetailsUpdateLoading ? 'Loading...' : 'Continue'}
-          </Button>
-        </KeyboardStickyView>
+        <KeyboardStickyButton
+          disabled={isUserDetailsUpdateLoading}
+          isTextContentOnly
+          onPress={handleSubmit(onSubmit)}
+        >
+          {isUserDetailsUpdateLoading ? 'Loading...' : 'Continue'}
+        </KeyboardStickyButton>
       </Screen>
     </>
   );

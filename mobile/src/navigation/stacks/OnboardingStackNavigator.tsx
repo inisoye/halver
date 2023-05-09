@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
+import { FullScreenLoader } from '@/components';
 import { useUserDetails } from '@/features/account';
 import { BankAccountDetails, CardDetails, Phone, ProfileImage } from '@/screens';
 
@@ -15,9 +16,13 @@ export type OnboardingStackParamList = {
 const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
 
 export const OnboardingStackNavigator: React.FunctionComponent = () => {
-  const { data: userDetails } = useUserDetails();
+  const { data: userDetails, isLoading } = useUserDetails();
   const { phone, defaultCard, defaultTransferRecipient, profileImageHash, profileImageUrl } =
     userDetails || {};
+
+  if (isLoading) {
+    return <FullScreenLoader isVisible={isLoading} message="Obtaining your details..." />;
+  }
 
   return (
     <OnboardingStack.Navigator>

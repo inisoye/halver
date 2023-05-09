@@ -1,10 +1,9 @@
 import { AxiosError } from 'axios';
 import * as Google from 'expo-auth-session/providers/google';
 import Constants from 'expo-constants';
-import * as Haptics from 'expo-haptics';
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { Alert, Text } from 'react-native';
+import { Text } from 'react-native';
 import { useMMKVString } from 'react-native-mmkv';
 
 import { Button, buttonTextSizes, FullScreenLoader, Screen } from '@/components';
@@ -12,7 +11,7 @@ import { IntroMarquee, usePostSocialLogin, type SocialLoginPayload } from '@/fea
 import { Google as GoogleIcon } from '@/icons';
 import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys } from '@/lib/mmkv';
-import { cn, formatAxiosErrorMessage } from '@/utils';
+import { cn, handleErrorAlertAndHaptics } from '@/utils';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -41,18 +40,7 @@ export const Login: React.FunctionComponent = () => {
       },
 
       onError: error => {
-        const errorMessage = formatAxiosErrorMessage(error as AxiosError);
-
-        if (errorMessage) {
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-
-          Alert.alert('Sign-in Error', errorMessage, [
-            {
-              text: 'OK',
-              style: 'default',
-            },
-          ]);
-        }
+        handleErrorAlertAndHaptics('Sign-in Error', error as AxiosError);
       },
     });
   };

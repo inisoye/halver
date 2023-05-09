@@ -1,4 +1,6 @@
 import { type AxiosError } from 'axios';
+import * as Haptics from 'expo-haptics';
+import { Alert } from 'react-native';
 
 import { isStringOrArrayOfStrings } from './strings';
 
@@ -82,4 +84,24 @@ export const formatAxiosErrorMessage = (
   }
 
   return formatErrorObject(error.response?.data);
+};
+
+/**
+ * Handles an AxiosError by displaying an error message using Alert and triggering a haptic feedback.
+ *
+ * @param error The AxiosError to handle.
+ */
+export const handleErrorAlertAndHaptics = (heading = 'Error', error: AxiosError): void => {
+  const errorMessage = formatAxiosErrorMessage(error);
+
+  if (errorMessage) {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
+    Alert.alert(heading, errorMessage, [
+      {
+        text: 'OK',
+        style: 'default',
+      },
+    ]);
+  }
 };

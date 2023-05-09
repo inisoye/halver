@@ -6,7 +6,9 @@ import Animated from 'react-native-reanimated';
 import { useButtonAnimation } from '@/hooks';
 import { cn } from '@/utils';
 
-const buttonSizes = {
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+export const buttonSizes = {
   default: 'w-full flex-row items-center justify-center rounded px-6 py-3 disabled:opacity-50',
   sm: 'py-2 px-4',
   xs: 'py-1.5 px-3',
@@ -18,15 +20,15 @@ export const buttonTextSizes = {
   xs: 'text-[12px]',
 };
 
-const buttonColors = {
+export const buttonColors = {
   default: '',
-  apricot: 'bg-apricot',
+  apricot: 'bg-apricot-600 dark:bg-apricot',
   casal: 'bg-casal',
-  pharlap: 'bg-pharlap',
+  pharlap: 'bg-pharlap-700 dark:bg-pharlap',
   neutral: 'bg-grey-light-200 dark:bg-grey-dark-200',
 };
 
-const buttonTextColors = {
+export const buttonTextColors = {
   default: '',
   apricot: 'text-grey-light-50 dark:text-grey-dark-50',
   casal: 'text-grey-dark-1000',
@@ -34,7 +36,7 @@ const buttonTextColors = {
   neutral: 'text-grey-light-1000 dark:text-grey-dark-1000',
 };
 
-interface ButtonProps extends PressableProps {
+export interface ButtonProps extends PressableProps {
   children: React.ReactNode;
   className?: string;
   color?: keyof typeof buttonColors;
@@ -47,12 +49,10 @@ interface ButtonProps extends PressableProps {
   textClassName?: string;
 }
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
 export const Button: React.FunctionComponent<ButtonProps> = ({
   children,
   className,
-  color = 'default',
+  color = 'casal',
   disabled = false,
   isHapticsEnabled = true,
   isTextContentOnly = true,
@@ -73,37 +73,35 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   };
 
   return (
-    <>
-      <AnimatedPressable
-        className={cn(
-          pressableClassName,
-          buttonSizes.default,
-          buttonSizes[size],
-          buttonColors[color],
-          className,
-        )}
-        disabled={disabled}
-        style={[animatedStyle]}
-        onPress={handlePress}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        {...otherProps}
-      >
-        {isTextContentOnly ? (
-          <Text
-            className={cn(
-              buttonTextSizes.default,
-              buttonTextSizes[size],
-              buttonTextColors[color],
-              textClassName,
-            )}
-          >
-            {children}
-          </Text>
-        ) : (
-          children
-        )}
-      </AnimatedPressable>
-    </>
+    <AnimatedPressable
+      className={cn(
+        pressableClassName,
+        buttonSizes.default,
+        buttonSizes[size],
+        buttonColors[color],
+        className,
+      )}
+      disabled={disabled}
+      style={animatedStyle}
+      onPress={handlePress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      {...otherProps}
+    >
+      {isTextContentOnly ? (
+        <Text
+          className={cn(
+            buttonTextSizes.default,
+            buttonTextSizes[size],
+            buttonTextColors[color],
+            textClassName,
+          )}
+        >
+          {children}
+        </Text>
+      ) : (
+        children
+      )}
+    </AnimatedPressable>
   );
 };

@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Control, Controller, FieldValues, RegisterOptions } from 'react-hook-form';
 import { KeyboardTypeOptions, TextInput, useColorScheme, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { colors } from '@/theme';
+import { colors, gapStyles } from '@/theme';
 import { cn } from '@/utils';
 
 import { Text } from './Text';
@@ -24,6 +25,7 @@ export const TextFieldLabel: React.FunctionComponent<TextFieldLabelProps> = ({
 };
 
 interface TextFieldProps {
+  autoFocus?: boolean;
   className?: string;
   control: Control<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   inputAccessoryViewID?: string;
@@ -41,6 +43,7 @@ interface TextFieldProps {
 }
 
 export const TextField: React.FunctionComponent<TextFieldProps> = ({
+  autoFocus = false,
   className,
   control,
   inputAccessoryViewID,
@@ -54,10 +57,7 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
   const scheme = useColorScheme();
 
   return (
-    <View
-      className="mt-1.5 flex-row"
-      style={{ gap: 4 }} // eslint-disable-line react-native/no-inline-styles
-    >
+    <View className="mt-1.5 flex-row" style={gapStyles[4]}>
       {(!!prefixText || !!prefixComponent) && (
         <View className="justify-center rounded bg-grey-light-200 px-3 dark:bg-grey-dark-200">
           {!!prefixText && <Text color="light">{prefixText}</Text>}
@@ -70,6 +70,7 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
         name={name}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
+            autoFocus={autoFocus}
             className={cn(
               'flex-1 rounded bg-grey-light-200 p-3 px-4 font-sans-medium text-[16px] text-grey-light-1000 dark:bg-grey-dark-200 dark:text-grey-dark-1000',
               className,
@@ -101,12 +102,16 @@ export const TextFieldError: React.FunctionComponent<TextFieldErrorProps> = ({
   fieldName,
 }) => {
   return (
-    <View className="mt-1.5 overflow-hidden rounded-sm bg-red-dark-700 px-2 py-1 dark:bg-red-dark-500">
+    <Animated.View
+      className="mt-1.5 overflow-hidden rounded-sm bg-red-dark-700 px-2 py-1 dark:bg-red-dark-700"
+      entering={FadeIn}
+      exiting={FadeOut}
+    >
       <Text className="leading-[14px]" color="white" variant="xs" weight="bold">
         {!errorMessage || errorMessage === 'Required'
           ? `Please enter ${fieldName.toLowerCase()}.`
           : errorMessage}
       </Text>
-    </View>
+    </Animated.View>
   );
 };

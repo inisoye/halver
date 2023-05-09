@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
 
 import { apiClient } from '@/lib/axios';
-import { allQueryKeys } from '@/lib/react-query';
+import { allStaticQueryKeys } from '@/lib/react-query';
 import {
   PatchedCustomUserDetails as PatchedUserDetailsSchema,
   CustomUserDetails as UserDetailsSchema,
@@ -21,7 +21,7 @@ export const useUpdateSingleUserDetail = () => {
   return useMutation({
     mutationFn: updateSingleUserDetail,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: allQueryKeys.getUserDetails });
+      queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getUserDetails });
     },
   });
 };

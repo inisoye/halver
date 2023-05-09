@@ -6,6 +6,8 @@ import Animated, {
   withRepeat,
   withSpring,
   withTiming,
+  ZoomInLeft,
+  ZoomOutRight,
 } from 'react-native-reanimated';
 
 import { cn } from '@/utils';
@@ -52,7 +54,11 @@ export const LogoLoader: React.FunctionComponent<LogoLoaderProps> = ({ className
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Animated.View className={cn('h-4 flex-row', className)}>
+    <Animated.View
+      className={cn('z-10 h-4 flex-row', className)}
+      entering={ZoomInLeft.duration(600)}
+      exiting={ZoomOutRight.duration(600)}
+    >
       <Animated.View
         className="-mr-2 h-2 bg-apricot-700 dark:bg-apricot"
         style={[animatedStyleLeft]}

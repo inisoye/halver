@@ -1,20 +1,13 @@
 import React from 'react';
-import { KeyboardAvoidingView, StyleSheet, ViewStyle } from 'react-native';
+import { KeyboardAvoidingView, View, ViewStyle } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import { isIOS } from '@/utils';
+import { cn } from '@/utils';
 
 /**
  * Custom barebones keyboard sticky component.
  * Largely inspired by: https://github.com/jinsoo601/rn-keyboard-sticky-view.
  */
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    bottom: 40,
-    width: '100%',
-  },
-});
 
 interface KeyboardStickyViewProps {
   children: React.ReactNode;
@@ -28,13 +21,16 @@ export const KeyboardStickyView: React.FunctionComponent<KeyboardStickyViewProps
   style,
 }) => {
   return (
-    <KeyboardAvoidingView
-      behavior={isIOS() ? 'padding' : 'height'}
-      className={className}
-      keyboardVerticalOffset={40}
-      style={[styles.container, style]}
-    >
-      {children}
-    </KeyboardAvoidingView>
+    <>
+      <KeyboardAvoidingView
+        behavior="padding"
+        className={cn('absolute bottom-10 w-full bg-main-bg-light dark:bg-grey-dark-50', className)}
+        style={style}
+      >
+        {children}
+      </KeyboardAvoidingView>
+
+      <View className="absolute bottom-0 h-10 w-full bg-main-bg-light dark:bg-grey-dark-50" />
+    </>
   );
 };

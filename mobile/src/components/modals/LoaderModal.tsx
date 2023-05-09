@@ -3,7 +3,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { ModalComponentProp, ModalComponentWithOptions } from 'react-native-modalfy';
 
 import { ModalStackParams } from '@/lib/modalfy';
-import { colors } from '@/theme';
+import { colors, gapStyles } from '@/theme';
 
 import { Text } from '../core';
 
@@ -16,8 +16,8 @@ export const LoaderModal: ModalComponentWithOptions<
 > = ({ modal: { params } }) => {
   return (
     <View
-      className="mx-auto w-full max-w-[250px] items-center justify-center rounded-md bg-grey-light-100 px-12 py-8 dark:bg-grey-dark-200"
-      style={{ gap: 12 }} //  eslint-disable-line react-native/no-inline-styles
+      className="z-10 mx-auto w-full max-w-[250px] items-center justify-center rounded-md bg-grey-light-100 px-12 py-8 dark:bg-grey-dark-200"
+      style={gapStyles[12]}
     >
       <ActivityIndicator color={colors.apricot.DEFAULT} size="large" />
       <Text isCentered>{params?.message || 'Loading...'}</Text>

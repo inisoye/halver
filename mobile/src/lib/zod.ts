@@ -303,11 +303,26 @@ export const CustomUserDetails = z.object({
   uuid: z.string().uuid(),
 });
 
+export const PaystackAccountNumberCheck = z.object({
+  accountNumber: z.string().optional(),
+  bankCode: z.string().nullish().optional(),
+});
+
+export const PaystackAccountNumberDetails = z.object({
+  status: z.boolean(),
+  message: z.string(),
+  data: z.object({
+    accountNumber: z.string(),
+    accountName: z.string(),
+    bankId: z.number(),
+  }),
+});
+
 export const PaystackBank = z.object({
   id: z.number().int(),
   name: z.string(),
   slug: z.string(),
-  code: z.string().nullable().optional(),
+  code: z.string().optional(),
   longcode: z.string().nullable().optional(),
   gateway: z.string().nullable().optional(),
   pay_with_bank: z.boolean().nullable().optional(),

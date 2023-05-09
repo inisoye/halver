@@ -17,13 +17,15 @@ export const useButtonAnimation = ({
   const offset = useSharedValue(0);
   const opacity = useSharedValue(1);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateY: withSpring(offset.value, springConfig) },
-      { scale: withSpring(scale.value, springConfig) },
-    ],
-    opacity: withSpring(opacity.value),
-  }));
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateY: withSpring(offset.value, springConfig) },
+        { scale: withSpring(scale.value, springConfig) },
+      ],
+      opacity: withSpring(opacity.value),
+    };
+  });
 
   const handlePressIn = () => {
     if (animateScale) scale.value = 0.97;
@@ -34,7 +36,9 @@ export const useButtonAnimation = ({
   const handlePressOut = () => {
     if (animateScale) scale.value = 1;
     if (animateTranslate) offset.value = 0;
-    opacity.value = 1;
+    if (!disabled) {
+      opacity.value = 1;
+    }
   };
 
   React.useEffect(() => {

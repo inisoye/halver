@@ -4,6 +4,7 @@ import { Animated, Pressable, Modal as RNModal, View } from 'react-native';
 
 import { useButtonAnimation } from '@/hooks';
 import { CloseModal } from '@/icons';
+import { gapStyles } from '@/theme';
 import { cn, isIOS } from '@/utils';
 
 import { LogoLoader } from './LogoLoader';
@@ -17,6 +18,7 @@ interface ModalProps {
   isModalOpen: boolean;
   headingText?: string;
   hasLargeHeading?: boolean;
+  hasCloseButton?: boolean;
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -29,6 +31,7 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
   isModalOpen,
   headingText,
   hasLargeHeading,
+  hasCloseButton = true,
 }) => {
   const { animatedStyle, handlePressIn, handlePressOut } = useButtonAnimation();
 
@@ -36,25 +39,26 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
     <RNModal animationType="slide" transparent={true} visible={isModalOpen}>
       <View className={cn('flex-1 justify-end bg-main-bg-light dark:bg-[#0D0D0D]', className)}>
         <View
-          className="mt-auto flex-row items-center justify-between px-6 py-4"
-          // eslint-disable-next-line react-native/no-inline-styles
-          style={{
-            marginTop: isIOS() ? Constants.statusBarHeight : 0,
-            gap: 16,
-          }}
+          className="mt-auto flex-row items-center justify-between  py-4"
+          style={[{ marginTop: isIOS() ? Constants.statusBarHeight : undefined }, gapStyles[16]]}
         >
-          <Text variant={hasLargeHeading ? '2xl' : 'xl'} weight="bold">
-            {headingText}
-          </Text>
+          <View className="ml-6 w-full max-w-[70%]">
+            <Text variant={hasLargeHeading ? '2xl' : 'xl'} weight="bold">
+              {headingText}
+            </Text>
+          </View>
 
-          <AnimatedPressable
-            style={animatedStyle}
-            onPress={closeModal}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-          >
-            <CloseModal />
-          </AnimatedPressable>
+          {hasCloseButton && (
+            <AnimatedPressable
+              className="mr-6"
+              style={animatedStyle}
+              onPress={closeModal}
+              onPressIn={handlePressIn}
+              onPressOut={handlePressOut}
+            >
+              <CloseModal />
+            </AnimatedPressable>
+          )}
         </View>
 
         {isLoaderOpen && <LogoLoader />}

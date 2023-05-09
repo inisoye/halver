@@ -1,11 +1,14 @@
+import NetInfo from '@react-native-community/netinfo';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as React from 'react';
 import { TouchableOpacity, View } from 'react-native';
+import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useUserDetails } from '@/features/account/api';
 import { Back as BackIcon } from '@/icons';
-import { cn } from '@/utils';
+import { gapStyles } from '@/theme';
+import { cn, isIOS } from '@/utils';
 
 import { Text } from './Text';
 
@@ -29,8 +32,7 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
   const hasNoBackButton = screensWithNoBackButton.includes(name);
 
   return (
-    //  eslint-disable-next-line react-native/no-inline-styles
-    <View className="flex-row items-center px-6 py-4" style={{ gap: 16 }}>
+    <View className="flex-row items-center px-6 py-4" style={gapStyles[16]}>
       <TouchableOpacity
         className={cn(hasNoBackButton && 'hidden')}
         hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}
@@ -54,7 +56,8 @@ interface ScreenProps {
   children: React.ReactNode;
   isHeaderShown?: boolean;
   isHeaderTextShown?: boolean;
-  hasLogoFooter?: boolean;
+  hasVerticalStack?: boolean;
+  hasNoIOSBottomInset?: boolean;
   className?: string;
 }
 
@@ -63,16 +66,28 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
   isHeaderShown = true,
   isHeaderTextShown = true,
   className,
+  hasNoIOSBottomInset = false, // Added to make sticky buttons sit properly on IOS
 }) => {
   const insets = useSafeAreaInsets();
   const { name } = useRoute();
+  const [isConnected, setIsConnected] = React.useState(false);
+
+  React.useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(!!state.isConnected);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   return (
     <View
       className={cn('flex-1 bg-main-bg-light dark:bg-grey-dark-50', className)}
       style={{
         paddingTop: insets.top,
-        paddingBottom: insets.bottom,
+        paddingBottom: hasNoIOSBottomInset && isIOS() ? undefined : insets.bottom,
         paddingLeft: insets.left,
         paddingRight: insets.right,
       }}
@@ -81,7 +96,17 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
 
       {children}
 
-      {/* {hasLogoFooter && <HalverFooter className="absolute bottom-20 -z-10 self-center" />} */}
+      {!isConnected && (
+        <Animated.View
+          className="absolute bottom-0 w-full items-center bg-red-700 pb-12 pt-3 dark:bg-red-dark-700"
+          entering={FadeInDown.duration(500)}
+          exiting={FadeOutDown.duration(500)}
+        >
+          <Text color="white" weight="bold">
+            You are offline
+          </Text>
+        </Animated.View>
+      )}
     </View>
   );
 };

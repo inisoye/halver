@@ -1,18 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { FlashList } from '@shopify/flash-list';
-import type { AxiosError } from 'axios';
-import { Image } from 'expo-image';
+import { AxiosError } from 'axios';
 import * as React from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { Keyboard, Pressable, TextInput, View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import Animated from 'react-native-reanimated';
+import { useForm, useWatch } from 'react-hook-form';
+import { ScrollView, View } from 'react-native';
 import { z } from 'zod';
 
 import {
   Button,
-  KeyboardStickyView,
+  FullScreenLoader,
+  KeyboardStickyButton,
   Modal,
   PaddedScreenHeader,
   Screen,
@@ -21,12 +18,18 @@ import {
   TextFieldError,
   TextFieldLabel,
 } from '@/components';
-import { useBanks, useCreateTransferRecipient } from '@/features/financials';
-import { useBooleanStateControl, useButtonAnimation } from '@/hooks';
-import { Search, SelectCaret } from '@/icons';
+import {
+  BankSelector,
+  TransferRecipientCreatePayload,
+  useBanks,
+  useCreateTransferRecipient,
+  useValidateAccountDetails,
+} from '@/features/financials';
+import { useBooleanStateControl } from '@/hooks';
 import { PaystackBank } from '@/lib/zod';
 import type { OnboardingStackParamList } from '@/navigation';
-import { cn, formatAxiosErrorMessage, isIOS } from '@/utils';
+import { gapStyles } from '@/theme';
+import { convertKebabAndSnakeToTitleCase, handleErrorAlertAndHaptics } from '@/utils';
 
 type BankAcountDetailsProps = NativeStackScreenProps<
   OnboardingStackParamList,
@@ -34,168 +37,186 @@ type BankAcountDetailsProps = NativeStackScreenProps<
 >;
 
 const BankDetailsFormSchema = z.object({
-  accountNumber: z.string(),
+  accountNumber: z
+    .string()
+    .regex(/^\d+$/, { message: 'Your account number must be a number.' })
+    .min(10, { message: 'Your account number should be 10 characters.' })
+    .max(10, { message: 'Your account number should be 10 characters.' }),
   bank: PaystackBank,
 });
 
-type BankDetailsFormValues = z.infer<typeof BankDetailsFormSchema>;
+export type BankDetailsFormValues = z.infer<typeof BankDetailsFormSchema>;
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-// const KeyboardAwareFlashList = ScrollableComponent(FlashList);
-
-export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps> = (
-  {
-    // navigation,
-  },
-) => {
+export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps> = ({
+  navigation,
+}) => {
   const {
     control,
-    // handleSubmit,
+    handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<BankDetailsFormValues>({
     defaultValues: { accountNumber: undefined, bank: undefined },
     resolver: zodResolver(BankDetailsFormSchema),
   });
-  const { control: controlForSelectFilter } = useForm();
-  const { data: banks, isLoading: areBanksLoading } = useBanks();
 
+  const {
+    state: isConfirmationModalOpen,
+    setTrue: openConfirmationModal,
+    setFalse: closeConfirmationModal,
+  } = useBooleanStateControl();
+
+  const { data: banks, isLoading: areBanksLoading } = useBanks();
+  const { mutate: validateAccountDetails, isLoading: isValidateAccountDetailsLoading } =
+    useValidateAccountDetails();
   const { mutate: createTransferRecipient, isLoading: isCreateTransferRecipientLoading } =
     useCreateTransferRecipient();
 
-  const {
-    state: isModalOpen,
-    setTrue: openModal,
-    setFalse: closeModal,
-  } = useBooleanStateControl(true);
+  const selectedBank = useWatch({ control, name: 'bank' });
 
-  // const onSubmit = (data: BankDetailsFormValues) => {
-  //   createTransferRecipient(data, {
-  //     onSuccess: () => {
-  //       navigation.navigate('CardDetails');
-  //     },
+  const [transferRecipientPayload, setTransferRecipientPayload] =
+    React.useState<TransferRecipientCreatePayload>({
+      name: '',
+      recipientType: 'nuban',
+      accountNumber: '',
+      bankCode: '',
+    });
 
-  //     onError: error => {
-  //       const errorMessage = formatAxiosErrorMessage(error as AxiosError);
+  const onAccountValidationSubmit = (submittedData: BankDetailsFormValues) => {
+    validateAccountDetails(
+      {
+        accountNumber: submittedData.accountNumber,
+        bankCode: submittedData.bank.code,
+      },
+      {
+        onSuccess: data => {
+          const { accountName, accountNumber } = data.data;
+          setTransferRecipientPayload({
+            ...transferRecipientPayload,
+            name: accountName,
+            accountNumber,
+            bankCode: submittedData.bank.code,
+          });
+          openConfirmationModal();
+        },
 
-  //       if (errorMessage) {
-  //         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        onError: error => {
+          handleErrorAlertAndHaptics('Error Validating Account Details', error as AxiosError);
+        },
+      },
+    );
+  };
 
-  //         Alert.alert('Error Adding Phone Number', errorMessage, [
-  //           {
-  //             text: 'OK',
-  //             style: 'default',
-  //           },
-  //         ]);
-  //       }
-  //     },
-  //   });
-  // };
+  const onCreateTransferRecipientSubmit = () => {
+    createTransferRecipient(transferRecipientPayload, {
+      onSuccess: () => {
+        closeConfirmationModal();
+        navigation.navigate('CardDetails');
+      },
 
-  // const BankRenderItem: ListRenderItem<Breed> = ({ item }) => {
-  //   return <Cat id={item.id} name={item.name} uri={item.image?.url} />;
-  // };
+      onError: error => {
+        handleErrorAlertAndHaptics('Error Adding New Recipient', error as AxiosError);
+      },
+    });
+  };
 
   return (
-    <Screen isHeaderShown={false}>
-      <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
-        <PaddedScreenHeader
-          heading="Your bank account details"
-          subHeading="This will be where you'll get paid on Halver. You can always change it or add more later."
-          hasExtraPadding
-        />
-        {/* eslint-disable-next-line react-native/no-inline-styles */}
-        <View className="mt-10 p-2 px-6 pb-20" style={{ gap: 28 }}>
-          <View>
-            <TextFieldLabel label="Your account number" />
-            <TextField
-              control={control}
-              name="accountNumber"
-              rules={{
-                required: true,
-              }}
-            />
-            {errors.accountNumber && (
-              <TextFieldError
-                errorMessage={errors.accountNumber?.message}
-                fieldName="your account number"
+    <>
+      <FullScreenLoader
+        isVisible={isValidateAccountDetailsLoading}
+        message="Validating your account details..."
+      />
+
+      <Screen isHeaderShown={false} hasNoIOSBottomInset hasVerticalStack>
+        <ScrollView keyboardShouldPersistTaps="handled">
+          <PaddedScreenHeader
+            heading="Your bank account details"
+            subHeading="This will be where you'll get paid on Halver. We call them recipients. You can always change it or add more later."
+            hasExtraPadding
+          />
+
+          <View className="mt-10 flex-1 p-2 px-6 pb-20" style={gapStyles[28]}>
+            <View>
+              <TextFieldLabel label="Your account number" />
+              <TextField
+                control={control}
+                keyboardType="number-pad"
+                name="accountNumber"
+                rules={{
+                  required: true,
+                }}
               />
-            )}
-          </View>
-
-          <View>
-            <TextFieldLabel label="Your bank" />
-            <Button
-              className={cn('mt-1.5 px-4 ', isIOS() ? 'py-[9.6px]' : 'py-3.5')}
-              color="neutral"
-              isTextContentOnly={false}
-              onPress={openModal}
-            >
-              <Text className="opacity-0">Select a bank</Text>
-              <SelectCaret className="ml-auto" />
-            </Button>
-
-            <Modal
-              closeModal={closeModal}
-              headingText="Select a bank"
-              isLoaderOpen={areBanksLoading}
-              isModalOpen={isModalOpen}
-              hasLargeHeading
-            >
-              <View className="flex-1 bg-grey-light-50 px-6 py-3 dark:bg-grey-dark-50">
-                <View
-                  className={cn(
-                    'border-b border-b-grey-light-300 pb-5 dark:border-b-grey-dark-400',
-                    areBanksLoading && 'opacity-0',
-                  )}
-                >
-                  <TextField
-                    className="bg-grey-light-300 p-2 px-3 dark:bg-grey-dark-200"
-                    control={controlForSelectFilter}
-                    name="bankFilter"
-                    placeholder="Search"
-                    prefixComponent={<Search />}
-                  />
-                </View>
-
-                <FlashList
-                  data={banks}
-                  estimatedItemSize={108}
-                  keyboardShouldPersistTaps="handled"
-                  renderItem={({ item }) => {
-                    return (
-                      <AnimatedPressable
-                        className="flex-row items-center py-4"
-                        style={[{ gap: 12 }]} // eslint-disable-line react-native/no-inline-styles
-                        onPress={() => console.log(item)}
-                      >
-                        <Image
-                          className="h-10 w-10 rounded-lg bg-white"
-                          contentFit="contain"
-                          source={item.logo}
-                        />
-
-                        <Text className="flex-shrink leading-[20px]">{item.name}</Text>
-                      </AnimatedPressable>
-                    );
-                  }}
-                  onScrollBeginDrag={() => Keyboard.dismiss()}
+              {errors.accountNumber && (
+                <TextFieldError
+                  errorMessage={errors.accountNumber?.message}
+                  fieldName="your account number"
                 />
-              </View>
-            </Modal>
-          </View>
-        </View>
-      </KeyboardAwareScrollView>
+              )}
+            </View>
 
-      <KeyboardStickyView className="mt-12 px-6">
-        <Button
-          color="casal"
-          disabled={areBanksLoading || isCreateTransferRecipientLoading}
+            <View>
+              <BankSelector
+                areBanksLoading={areBanksLoading}
+                banks={banks}
+                selectedBank={selectedBank}
+                setValue={setValue}
+              />
+              {errors.bank && (
+                <TextFieldError errorMessage={errors.bank?.message} fieldName="your bank" />
+              )}
+            </View>
+          </View>
+        </ScrollView>
+
+        <KeyboardStickyButton
+          disabled={areBanksLoading || isValidateAccountDetailsLoading}
           isTextContentOnly
-          onPress={() => console.log('pressed')}
+          onPress={handleSubmit(onAccountValidationSubmit)}
         >
-          {areBanksLoading || isCreateTransferRecipientLoading ? 'Loading...' : 'Continue'}
-        </Button>
-      </KeyboardStickyView>
-    </Screen>
+          {areBanksLoading || isValidateAccountDetailsLoading ? 'Loading...' : 'Continue'}
+        </KeyboardStickyButton>
+
+        <Modal
+          closeModal={closeConfirmationModal}
+          hasCloseButton={false}
+          headingText={
+            transferRecipientPayload.name
+              ? convertKebabAndSnakeToTitleCase(transferRecipientPayload.name)
+              : undefined
+          }
+          isLoaderOpen={isValidateAccountDetailsLoading || isCreateTransferRecipientLoading}
+          isModalOpen={isConfirmationModalOpen}
+          hasLargeHeading
+        >
+          <View className="bg-grey-light-50 p-6 pb-10 dark:bg-grey-dark-50">
+            <Text className="mb-3">Is this you?</Text>
+            <Text className="mb-6" color="light" variant="sm">
+              To continue, confirm that the above name is the name associated with the account
+              details you have entered.
+            </Text>
+
+            <View className="flex-row" style={gapStyles[12]}>
+              <Button
+                className="flex-1"
+                color="neutral"
+                isTextContentOnly
+                onPress={closeConfirmationModal}
+              >
+                No
+              </Button>
+              <Button
+                className="flex-1"
+                color="casal"
+                disabled={isCreateTransferRecipientLoading}
+                isTextContentOnly
+                onPress={onCreateTransferRecipientSubmit}
+              >
+                {isCreateTransferRecipientLoading ? 'Loading...' : 'Yes'}
+              </Button>
+            </View>
+          </View>
+        </Modal>
+      </Screen>
+    </>
   );
 };

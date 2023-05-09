@@ -1,6 +1,7 @@
 export * from './Button';
 export * from './Card';
 export * from './FullScreenLoader';
+export * from './KeyboardStickyButton';
 export * from './KeyboardStickyView';
 export * from './LogoLoader';
 export * from './Modal';
