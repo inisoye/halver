@@ -13,8 +13,10 @@ from datetime import timedelta
 from pathlib import Path
 
 import cloudinary
+import sentry_sdk
 from django.core.management.utils import get_random_secret_key
 from environs import Env
+from sentry_sdk.integrations.django import DjangoIntegration
 
 env = Env()
 env.read_env()
@@ -37,6 +39,7 @@ SECRET_KEY = env.str("SECRET_KEY", default=get_random_secret_key())
 DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS: list[str] = env.list("ALLOWED_HOSTS", default=[])
+print(ALLOWED_HOSTS, "ALLOWED_HOSTS")
 
 
 # Application definition
@@ -369,6 +372,23 @@ cloudinary.config(
         default="default_cloudinary_api_secret",
     ),
     secure=True,
+)
+
+
+# Sentry configuration
+
+sentry_sdk.init(
+    dsn=env.str("SENTRY_DSN"),
+    integrations=[
+        DjangoIntegration(),
+    ],
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=0.2,
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True,
 )
 
 
