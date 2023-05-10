@@ -91,16 +91,16 @@ def format_paystack_transfer_recipient_response(paystack_response):
 
     # Recipient code separated from rest of data as it would be used in lookup.
     # It has a uniqueness constraint and is used in get part of get_or_create.
-    recipient_code = response_data_object["recipient_code"]
+    recipient_code = response_data_object.get("recipient_code")
 
     defaults = {
-        "recipient_type": response_data_object["type"],
-        "name": response_data_object["name"],
-        "account_number": response_data_details_object["account_number"],
-        "bank_code": response_data_details_object["bank_code"],
-        "bank_name": response_data_details_object["bank_name"],
-        "email": response_data_object["email"],
-        "authorization_code": response_data_details_object["authorization_code"],
+        "recipient_type": response_data_object.get("type"),
+        "name": response_data_object.get("name"),
+        "account_number": response_data_details_object.get("account_number"),
+        "bank_code": response_data_details_object.get("bank_code"),
+        "bank_name": response_data_details_object.get("bank_name"),
+        "email": response_data_object.get("email"),
+        "authorization_code": response_data_details_object.get("authorization_code"),
         "complete_paystack_response": paystack_response,
     }
 
