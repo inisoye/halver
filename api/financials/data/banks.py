@@ -1258,7 +1258,7 @@ all_banks = [
     },
     {
         "id": 171,
-        "name": "Paycom",
+        "name": "Paycom (OPay)",
         "slug": "paycom",
         "code": "999992",
         "longcode": "",
@@ -1271,6 +1271,7 @@ all_banks = [
         "is_deleted": False,
         "createdAt": "2020-11-24T10:20:45.000Z",
         "updatedAt": "2020-11-24T10:20:54.000Z",
+        "logo": "https://res.cloudinary.com/duvwrrksq/image/upload/v1684055763/paystack/opay_wkjo4g.jpg",
     },
     {
         "id": 693,
