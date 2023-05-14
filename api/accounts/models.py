@@ -235,17 +235,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         # Prevent file loss: https://stackoverflow.com/a/44722982
         profile_image.seek(0)
 
+        FOLDER_NAME = "profile_images"
+
         upload(
             profile_image,
             public_id=image_public_id,
             use_filename=True,
             unique_filename=False,
-            folder="profile_images",
+            folder=FOLDER_NAME,
             overwrite=True,
         )
 
         url, options = cloudinary_url(
-            image_public_id,
+            FOLDER_NAME + "/" + image_public_id,
             width=300,
             height=300,
             crop="fill",
