@@ -105,4 +105,4 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
 
 
 class ProfileImageSerializer(serializers.Serializer):
-    profile_image = serializers.ImageField()
+    profile_image = serializers.ImageField(required=True)

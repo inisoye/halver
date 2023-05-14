@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.api.serializers import ProfileImageSerializer
+from core.utils.responses import format_exception
 
 env = Env()
 env.read_env()
@@ -41,6 +42,12 @@ class ProfileImageUploadAPIView(APIView):
         serializer.is_valid(raise_exception=True)
 
         profile_image = serializer.validated_data.get("profile_image")
+
+        if not profile_image:
+            return format_exception(
+                message="Please upload an image.",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         user = request.user
 
