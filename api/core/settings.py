@@ -39,7 +39,6 @@ SECRET_KEY = env.str("SECRET_KEY", default=get_random_secret_key())
 DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS: list[str] = env.list("ALLOWED_HOSTS", default=[])
-print(ALLOWED_HOSTS, "ALLOWED_HOSTS")
 
 
 # Application definition

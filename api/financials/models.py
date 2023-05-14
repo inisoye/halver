@@ -127,7 +127,7 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         null=True,
     )
     bank_code = models.CharField(
-        max_length=5,
+        max_length=10,
         blank=True,
         null=True,
     )

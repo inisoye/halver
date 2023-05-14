@@ -86,6 +86,8 @@ def format_paystack_transfer_recipient_response(paystack_response):
             creating a transfer recipient.
     """
 
+    # TODO Add tests to ensure that manipulation of Paystack responses don't throw errors
+
     response_data_object = paystack_response["data"]
     response_data_details_object = paystack_response["data"]["details"]
 
