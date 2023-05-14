@@ -238,7 +238,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         upload(
             profile_image,
             public_id=image_public_id,
+            use_filename=True,
             unique_filename=False,
+            folder="profile_images",
             overwrite=True,
         )
 
