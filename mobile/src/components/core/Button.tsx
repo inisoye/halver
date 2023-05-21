@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import * as React from 'react';
-import { Pressable, Text, type PressableProps } from 'react-native';
+import { Pressable, Text, ViewStyle, type PressableProps } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { useButtonAnimation } from '@/hooks';
@@ -9,7 +9,8 @@ import { cn } from '@/utils';
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const buttonSizes = {
-  default: 'w-full flex-row items-center justify-center rounded px-6 py-3 disabled:opacity-50',
+  default:
+    'w-full flex-row items-center justify-center rounded px-6 py-3 disabled:opacity-50',
   sm: 'py-2 px-4',
   xs: 'py-1.5 px-3',
 };
@@ -47,6 +48,7 @@ export interface ButtonProps extends PressableProps {
   pressableClassName?: string;
   size?: keyof typeof buttonSizes;
   textClassName?: string;
+  style?: ViewStyle;
 }
 
 export const Button: React.FunctionComponent<ButtonProps> = ({
@@ -60,9 +62,12 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   pressableClassName,
   size = 'default',
   textClassName = 'default',
+  style,
   ...otherProps
 }) => {
-  const { animatedStyle, handlePressIn, handlePressOut } = useButtonAnimation({ disabled });
+  const { animatedStyle, handlePressIn, handlePressOut } = useButtonAnimation({
+    disabled,
+  });
 
   const handlePress = () => {
     onPress();
@@ -82,7 +87,7 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
         className,
       )}
       disabled={disabled}
-      style={animatedStyle}
+      style={[style, animatedStyle]}
       onPress={handlePress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}

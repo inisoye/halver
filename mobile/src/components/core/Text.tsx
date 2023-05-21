@@ -18,7 +18,8 @@ export const textVariants = {
 const colorVariants = {
   default: 'text-grey-light-1000 dark:text-grey-dark-1000',
   inverse: 'text-grey-light-50 dark:text-grey-dark-50',
-  white: 'text-grey-light-50 dark:text-grey-light-50',
+  white: 'text-grey-light-50 dark:text-grey-dark-1000',
+  black: 'text-grey-light-1000 dark:text-grey-dark-50',
   light: 'text-grey-light-950 dark:text-grey-dark-950',
 };
 

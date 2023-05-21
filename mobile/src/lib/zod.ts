@@ -214,7 +214,9 @@ export const PatchedBillActionResponseUpdate = z
   .object({ hasParticipantAgreed: z.boolean() })
   .partial();
 
-export const PatchedBillArrearResponseUpdate = z.object({ isForgiveness: z.boolean() }).partial();
+export const PatchedBillArrearResponseUpdate = z
+  .object({ isForgiveness: z.boolean() })
+  .partial();
 
 export const SocialLogin = z
   .object({ accessToken: z.string(), code: z.string(), idToken: z.string() })
@@ -275,7 +277,7 @@ export const RecipientTypeEnum = z.enum(['authorization', 'nuban']);
 export const CustomUserDefaultTransferRecipient = z.object({
   accountNumber: z.string().max(10).nullish(),
   authorizationCode: z.string().max(100).nullish(),
-  bankCode: z.string().max(5).nullish(),
+  bankCode: z.string().max(10).nullish(),
   bankName: z.string().max(100).nullish(),
   created: z.string().datetime(),
   email: z.string().max(254).email().nullish(),
@@ -377,7 +379,7 @@ export const TransferRecipientList = z.object({
   accountNumber: z.string().max(10).nullish(),
   associatedCard: z.number().int().nullish(),
   authorizationCode: z.string().max(100).nullish(),
-  bankCode: z.string().max(5).nullish(),
+  bankCode: z.string().max(10).nullish(),
   bankName: z.string().max(100).nullish(),
   created: z.string().datetime(),
   email: z.string().max(254).email().nullish(),
@@ -391,7 +393,7 @@ export const TransferRecipientList = z.object({
 export const TransferRecipientCreate = z.object({
   accountNumber: z.string().min(10).max(10).optional(),
   authorizationCode: z.string().optional(),
-  bankCode: z.string().min(3).max(3).optional(),
+  bankCode: z.string().max(10).optional(),
   email: z.string().email().optional(),
   isDefault: z.boolean().optional(),
   name: z.string().min(1),

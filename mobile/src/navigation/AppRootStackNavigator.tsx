@@ -1,12 +1,13 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
-import { BillDetails } from '@/screens';
+import { BillAmount, BillDetails } from '@/screens';
 
 import { BottomTabNavigator } from './BottomTabNavigator';
 
 export type AppRootStackParamList = {
   Home: undefined;
+  'Bill Amount': undefined;
   'Bill Details': undefined;
 };
 
@@ -18,6 +19,13 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
       <AppRootStack.Screen
         component={BottomTabNavigator}
         name="Home"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <AppRootStack.Screen
+        component={BillAmount}
+        name="Bill Amount"
         options={{
           headerShown: false,
         }}

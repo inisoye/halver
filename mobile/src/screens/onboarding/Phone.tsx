@@ -16,8 +16,9 @@ import {
   TextFieldLabel,
 } from '@/components';
 import { useUpdateSingleUserDetail } from '@/features/account';
+import { showToast } from '@/lib/root-toast';
 import type { OnboardingStackParamList } from '@/navigation';
-import { handleErrorAlertAndHaptics, isMobilePhone } from '@/utils';
+import { handleAxiosErrorAlertAndHaptics, isMobilePhone } from '@/utils';
 
 type PhoneProps = NativeStackScreenProps<OnboardingStackParamList, 'Phone'>;
 
@@ -44,11 +45,15 @@ export const Phone: React.FunctionComponent<PhoneProps> = ({ navigation }) => {
   const onSubmit = (data: PhoneFormValues) => {
     updateSingleUserDetail(data, {
       onSuccess: () => {
+        showToast('Phone number added successfully.');
         navigation.navigate('BankAccountDetails');
       },
 
       onError: error => {
-        handleErrorAlertAndHaptics('Error Adding Phone Number', error as AxiosError);
+        handleAxiosErrorAlertAndHaptics(
+          'Error Adding Phone Number',
+          error as AxiosError,
+        );
       },
     });
   };
@@ -80,7 +85,10 @@ export const Phone: React.FunctionComponent<PhoneProps> = ({ navigation }) => {
               }}
             />
             {errors.phone && (
-              <TextFieldError errorMessage={errors.phone?.message} fieldName="your phone number" />
+              <TextFieldError
+                errorMessage={errors.phone?.message}
+                fieldName="your phone number"
+              />
             )}
           </View>
         </ScrollView>

@@ -26,10 +26,14 @@ import {
   useValidateAccountDetails,
 } from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
+import { showToast } from '@/lib/root-toast';
 import { PaystackBank } from '@/lib/zod';
 import type { OnboardingStackParamList } from '@/navigation';
 import { gapStyles } from '@/theme';
-import { convertKebabAndSnakeToTitleCase, handleErrorAlertAndHaptics } from '@/utils';
+import {
+  convertKebabAndSnakeToTitleCase,
+  handleAxiosErrorAlertAndHaptics,
+} from '@/utils';
 
 type BankAcountDetailsProps = NativeStackScreenProps<
   OnboardingStackParamList,
@@ -69,8 +73,10 @@ export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps>
   const { data: banks, isLoading: areBanksLoading } = useBanks();
   const { mutate: validateAccountDetails, isLoading: isValidateAccountDetailsLoading } =
     useValidateAccountDetails();
-  const { mutate: createTransferRecipient, isLoading: isCreateTransferRecipientLoading } =
-    useCreateTransferRecipient();
+  const {
+    mutate: createTransferRecipient,
+    isLoading: isCreateTransferRecipientLoading,
+  } = useCreateTransferRecipient();
 
   const selectedBank = useWatch({ control, name: 'bank' });
 
@@ -101,7 +107,10 @@ export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps>
         },
 
         onError: error => {
-          handleErrorAlertAndHaptics('Error Validating Account Details', error as AxiosError);
+          handleAxiosErrorAlertAndHaptics(
+            'Error Validating Account Details',
+            error as AxiosError,
+          );
         },
       },
     );
@@ -111,11 +120,15 @@ export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps>
     createTransferRecipient(transferRecipientPayload, {
       onSuccess: () => {
         closeConfirmationModal();
+        showToast('Bank account added successfully.');
         navigation.navigate('CardDetails');
       },
 
       onError: error => {
-        handleErrorAlertAndHaptics('Error Adding New Recipient', error as AxiosError);
+        handleAxiosErrorAlertAndHaptics(
+          'Error Adding New Recipient',
+          error as AxiosError,
+        );
       },
     });
   };
@@ -127,7 +140,7 @@ export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps>
         message="Validating your account details..."
       />
 
-      <Screen isHeaderShown={false} hasNoIOSBottomInset hasVerticalStack>
+      <Screen isHeaderShown={false} hasNoIOSBottomInset>
         <ScrollView keyboardShouldPersistTaps="handled">
           <PaddedScreenHeader
             heading="Your bank account details"
@@ -136,6 +149,21 @@ export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps>
           />
 
           <View className="mt-10 flex-1 p-2 px-6 pb-20" style={gapStyles[28]}>
+            <View>
+              <BankSelector
+                areBanksLoading={areBanksLoading}
+                banks={banks}
+                selectedBank={selectedBank}
+                setValue={setValue}
+              />
+              {errors.bank && (
+                <TextFieldError
+                  errorMessage={errors.bank?.message}
+                  fieldName="your bank"
+                />
+              )}
+            </View>
+
             <View>
               <TextFieldLabel label="Your account number" />
               <TextField
@@ -153,18 +181,6 @@ export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps>
                 />
               )}
             </View>
-
-            <View>
-              <BankSelector
-                areBanksLoading={areBanksLoading}
-                banks={banks}
-                selectedBank={selectedBank}
-                setValue={setValue}
-              />
-              {errors.bank && (
-                <TextFieldError errorMessage={errors.bank?.message} fieldName="your bank" />
-              )}
-            </View>
           </View>
         </ScrollView>
 
@@ -173,7 +189,9 @@ export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps>
           isTextContentOnly
           onPress={handleSubmit(onAccountValidationSubmit)}
         >
-          {areBanksLoading || isValidateAccountDetailsLoading ? 'Loading...' : 'Continue'}
+          {areBanksLoading || isValidateAccountDetailsLoading
+            ? 'Loading...'
+            : 'Continue'}
         </KeyboardStickyButton>
 
         <Modal
@@ -184,15 +202,17 @@ export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps>
               ? convertKebabAndSnakeToTitleCase(transferRecipientPayload.name)
               : undefined
           }
-          isLoaderOpen={isValidateAccountDetailsLoading || isCreateTransferRecipientLoading}
+          isLoaderOpen={
+            isValidateAccountDetailsLoading || isCreateTransferRecipientLoading
+          }
           isModalOpen={isConfirmationModalOpen}
           hasLargeHeading
         >
           <View className="bg-grey-light-50 p-6 pb-10 dark:bg-grey-dark-50">
             <Text className="mb-3">Is this you?</Text>
             <Text className="mb-6" color="light" variant="sm">
-              To continue, confirm that the above name is the name associated with the account
-              details you have entered.
+              To continue, confirm that the above name is the name associated with the
+              account details you have entered.
             </Text>
 
             <View className="flex-row" style={gapStyles[12]}>

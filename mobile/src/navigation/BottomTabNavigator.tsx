@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
-import { Platform, useColorScheme } from 'react-native';
+import { useColorScheme } from 'react-native';
 
 import { Text } from '@/components';
 import {
@@ -16,9 +16,9 @@ import {
   HomeStackNavigator,
   TransactionsStackNavigator,
 } from '@/navigation/stacks';
-import { BillAmount } from '@/screens';
+import { BillAmountPlaceholder } from '@/screens';
 import { colors } from '@/theme';
-import { cn } from '@/utils';
+import { cn, isIOS } from '@/utils';
 
 interface BottomTabTextProps {
   label: string | undefined;
@@ -34,7 +34,7 @@ export const BottomTabText: React.FunctionComponent<BottomTabTextProps> = ({
   return (
     <Text
       className={cn(
-        'text-grey-light-950 dark:text-grey-dark-950',
+        'text-grey-light-800 dark:text-grey-dark-800',
         focused && 'text-grey-light-1000 dark:text-grey-dark-1000',
         isMiddleItem && 'hidden',
       )}
@@ -49,7 +49,7 @@ export const BottomTabText: React.FunctionComponent<BottomTabTextProps> = ({
 export type TabParamList = {
   HomeStackNavigator: undefined;
   BillsStackNavigator: undefined;
-  'Bill Amount': undefined;
+  'Bill Amount Placeholder': undefined;
   TransactionsStackNavigator: undefined;
   AccountStackNavigator: undefined;
 };
@@ -75,9 +75,9 @@ const tabs: TabType[] = [
     icon: BillsIcon,
   },
   {
-    name: 'Bill Amount',
-    component: BillAmount as React.FunctionComponent,
-    label: 'BillAmount',
+    name: 'Bill Amount Placeholder',
+    component: BillAmountPlaceholder as React.FunctionComponent,
+    label: 'BillAmountPlaceholder',
     icon: NewBillIcon,
   },
   {
@@ -103,15 +103,18 @@ export const BottomTabNavigator = () => {
 
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => {
+      screenOptions={() => {
         return {
           headerShown: false,
           tabBarStyle: {
-            flex: Platform.OS === 'ios' ? 0.08 : 0.09,
+            flex: isIOS() ? 0.07 : 0.08,
             elevation: 0,
-            backgroundColor: isDarkMode ? colors['grey-dark'][50] : colors['main-bg-light'],
-            borderTopColor: isDarkMode ? colors['grey-dark'][600] : colors['grey-light'][700],
-            display: route.name === 'Bill Amount' ? 'none' : 'flex',
+            backgroundColor: isDarkMode
+              ? colors['grey-dark'][50]
+              : colors['main-bg-light'],
+            borderTopColor: isDarkMode
+              ? colors['grey-dark'][600]
+              : colors['grey-light'][700],
           },
           tabBarItemStyle: {
             height: 46,
@@ -130,6 +133,14 @@ export const BottomTabNavigator = () => {
           <Tab.Screen
             component={component}
             key={name}
+            listeners={({ navigation }) => ({
+              tabPress: event => {
+                if (isMiddleItem) {
+                  event.preventDefault();
+                  navigation.navigate('Bill Amount');
+                }
+              },
+            })}
             name={name}
             options={{
               title: label,
@@ -137,7 +148,8 @@ export const BottomTabNavigator = () => {
                 marginTop: isMiddleItem ? 6 : 0,
               },
               tabBarIcon: ({ focused }) => (icon ? icon({ focused }) : undefined),
-              tabBarLabel: ({ focused }) => BottomTabText({ label, focused, isMiddleItem }),
+              tabBarLabel: ({ focused }) =>
+                BottomTabText({ label, focused, isMiddleItem }),
             }}
           />
         );

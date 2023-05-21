@@ -34,7 +34,10 @@ export const NavigationContainer: React.FunctionComponent = () => {
   const areUserDetailsLoading = isLoading && isFetching;
   const areUserDetailsIncomplete = checkIfUserDetailsAreIncomplete(userDetails);
 
-  useFullScreenLoader({ isLoading: areUserDetailsLoading, message: 'Gathering your details...' });
+  useFullScreenLoader({
+    isLoading: areUserDetailsLoading,
+    message: 'Gathering your details...',
+  });
 
   return (
     <>
@@ -42,7 +45,7 @@ export const NavigationContainer: React.FunctionComponent = () => {
         ref={navigationRef}
         theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
       >
-        {!token ? (
+        {!token || isLoading ? (
           <LoginStackNavigator />
         ) : areUserDetailsIncomplete ? (
           <OnboardingStackNavigator />

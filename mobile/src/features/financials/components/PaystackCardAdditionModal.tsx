@@ -11,12 +11,9 @@ interface PaystackCardAdditionModalProps {
   onNavigationStateChange: (navState: WebViewNavigation) => void;
 }
 
-export const PaystackCardAdditionModal: React.FunctionComponent<PaystackCardAdditionModalProps> = ({
-  isModalOpen,
-  closeModal,
-  authorizationUrl,
-  onNavigationStateChange,
-}) => {
+export const PaystackCardAdditionModal: React.FunctionComponent<
+  PaystackCardAdditionModalProps
+> = ({ isModalOpen, closeModal, authorizationUrl, onNavigationStateChange }) => {
   const {
     state: isLoaderOpen,
     setTrue: startLoader,
@@ -26,9 +23,10 @@ export const PaystackCardAdditionModal: React.FunctionComponent<PaystackCardAddi
   return (
     <Modal
       closeModal={closeModal}
-      headingText="Card addition payment"
+      headingText="Card addition"
       isLoaderOpen={isLoaderOpen}
       isModalOpen={isModalOpen}
+      hasLargeHeading
     >
       <WebView
         className="flex-1 bg-white dark:bg-grey-dark-200"

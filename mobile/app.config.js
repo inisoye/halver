@@ -49,8 +49,17 @@ module.exports = {
           },
         },
       ],
-      ['expo-contacts', { contactsPermission: 'Allow $(PRODUCT_NAME) to access your contacts.' }],
-      ['expo-image-picker', { photosPermission: 'Allow $(PRODUCT_NAME) to access your photos.' }],
+      [
+        'expo-contacts',
+        { contactsPermission: 'Allow $(PRODUCT_NAME) to access your contacts.' },
+      ],
+      [
+        'expo-image-picker',
+        {
+          photosPermission: 'Allow $(PRODUCT_NAME) to access your photos.',
+          cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera',
+        },
+      ],
     ],
   },
 };

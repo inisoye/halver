@@ -1,8 +1,6 @@
-import NetInfo from '@react-native-community/netinfo';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as React from 'react';
 import { TouchableOpacity, View } from 'react-native';
-import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useUserDetails } from '@/features/account/api';
@@ -70,17 +68,6 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
 }) => {
   const insets = useSafeAreaInsets();
   const { name } = useRoute();
-  const [isConnected, setIsConnected] = React.useState(false);
-
-  React.useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
-      setIsConnected(!!state.isConnected);
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
 
   return (
     <View
@@ -92,21 +79,11 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
         paddingRight: insets.right,
       }}
     >
-      {isHeaderShown && <ScreenHeader isHeaderTextShown={isHeaderTextShown} name={name} />}
+      {isHeaderShown && (
+        <ScreenHeader isHeaderTextShown={isHeaderTextShown} name={name} />
+      )}
 
       {children}
-
-      {!isConnected && (
-        <Animated.View
-          className="absolute bottom-0 w-full items-center bg-red-700 pb-12 pt-3 dark:bg-red-dark-700"
-          entering={FadeInDown.duration(500)}
-          exiting={FadeOutDown.duration(500)}
-        >
-          <Text color="white" weight="bold">
-            You are offline
-          </Text>
-        </Animated.View>
-      )}
     </View>
   );
 };

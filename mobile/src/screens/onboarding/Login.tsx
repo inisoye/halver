@@ -7,17 +7,22 @@ import { Text } from 'react-native';
 import { useMMKVString } from 'react-native-mmkv';
 
 import { Button, buttonTextSizes, FullScreenLoader, Screen } from '@/components';
-import { IntroMarquee, usePostSocialLogin, type SocialLoginPayload } from '@/features/account';
+import {
+  IntroMarquee,
+  usePostSocialLogin,
+  type SocialLoginPayload,
+} from '@/features/account';
 import { Google as GoogleIcon } from '@/icons';
 import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys } from '@/lib/mmkv';
-import { cn, handleErrorAlertAndHaptics } from '@/utils';
+import { cn, handleAxiosErrorAlertAndHaptics } from '@/utils';
 
 WebBrowser.maybeCompleteAuthSession();
 
 export const Login: React.FunctionComponent = () => {
   const [accessToken, setAccessToken] = React.useState<string | undefined>(undefined);
-  const { mutate: postSocialLogin, isLoading: isSocialLoginLoading } = usePostSocialLogin();
+  const { mutate: postSocialLogin, isLoading: isSocialLoginLoading } =
+    usePostSocialLogin();
   const [_, setToken] = useMMKVString(allMMKVKeys.token);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -40,7 +45,7 @@ export const Login: React.FunctionComponent = () => {
       },
 
       onError: error => {
-        handleErrorAlertAndHaptics('Sign-in Error', error as AxiosError);
+        handleAxiosErrorAlertAndHaptics('Sign-in Error', error as AxiosError);
       },
     });
   };

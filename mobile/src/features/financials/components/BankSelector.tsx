@@ -80,7 +80,11 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
   selectedBank,
   className,
 }) => {
-  const { state: isModalOpen, setTrue: openModal, setFalse: closeModal } = useBooleanStateControl();
+  const {
+    state: isModalOpen,
+    setTrue: openModal,
+    setFalse: closeModal,
+  } = useBooleanStateControl();
   const { control: controlForSelectFilter, resetField } = useForm();
   const selectFilterValue = useWatch({ control: controlForSelectFilter });
   // const flashListRef = React.useRef(null);
@@ -105,7 +109,11 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
 
   const renderItem = React.useCallback(
     ({ item }: { item: SelectedBank }) => (
-      <SelectorOption handleItemClick={handleItemClick} item={item} selectedBank={selectedBank} />
+      <SelectorOption
+        handleItemClick={handleItemClick}
+        item={item}
+        selectedBank={selectedBank}
+      />
     ),
     [selectedBank?.id], // eslint-disable-line react-hooks/exhaustive-deps
   );

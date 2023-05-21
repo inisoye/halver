@@ -67,7 +67,6 @@ export const IntroMarquee: React.FunctionComponent = () => {
   const card = useSharedValue(0);
   const totalHeight = styles.card.height * SLIDER_CONTENT.length;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const cardStyle = useAnimatedStyle(() => {
     // -55 is used here as an offset. It ensures the slider covers the screen at the animation start.
     const yValue = interpolate(card.value, [0, 1], [-55, -totalHeight - 55], Extrapolate.CLAMP);
@@ -94,11 +93,7 @@ export const IntroMarquee: React.FunctionComponent = () => {
             return (
               <Animated.View
                 key={mainHeading}
-                style={[
-                  styles.card,
-                  // cardStyle,
-                  { backgroundColor },
-                ]}
+                style={[styles.card, cardStyle, { backgroundColor }]}
               >
                 <Text
                   className={cn(
@@ -132,11 +127,7 @@ export const IntroMarquee: React.FunctionComponent = () => {
             return (
               <Animated.View
                 key={mainHeading}
-                style={[
-                  styles.card,
-                  // cardStyle,
-                  { backgroundColor },
-                ]}
+                style={[styles.card, cardStyle, { backgroundColor }]}
               >
                 <Text
                   className={cn(

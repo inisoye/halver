@@ -52,7 +52,9 @@ const formatErrorObject = (errors: { [key: string]: string | string[] }): string
   // Combine named and non-named errors.
   const result: string[] = [...namedErrors];
   if (otherErrors.length) {
-    result.push(`${namedErrors.length > 1 ? 'Other errors: ' : ''}${otherErrors.join('. ')}`);
+    result.push(
+      `${namedErrors.length > 1 ? 'Other errors: ' : ''}${otherErrors.join('. ')}`,
+    );
   }
 
   // Remove trailing full stops except the last item.
@@ -75,7 +77,7 @@ export const formatAxiosErrorMessage = (
   const firstDigitInResponseStatus = String(error.response?.status).charAt(0);
 
   if (firstDigitInResponseStatus === '5') {
-    return 'Server Error';
+    return 'There was an error processing that. Please contact support.'; // Generic errors for server errors.
   }
 
   // Return default error message string if user is not connected to the internet.
@@ -89,15 +91,40 @@ export const formatAxiosErrorMessage = (
 /**
  * Handles an AxiosError by displaying an error message using Alert and triggering a haptic feedback.
  *
- * @param error The AxiosError to handle.
+ * @param error The AxiosError to be reported.
  */
-export const handleErrorAlertAndHaptics = (heading = 'Error', error: AxiosError): void => {
+export const handleAxiosErrorAlertAndHaptics = (
+  heading = 'Error',
+  error: AxiosError,
+): void => {
   const errorMessage = formatAxiosErrorMessage(error);
 
   if (errorMessage) {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 
     Alert.alert(heading, errorMessage, [
+      {
+        text: 'OK',
+        style: 'default',
+      },
+    ]);
+  }
+};
+
+/**
+ * Handles an error by displaying an error message using Alert and triggering a haptic feedback.
+ *
+ * @param heading The error heading that should be displayed in the alert box.
+ * @param error The error message to be displayd..
+ */
+export const handleGenericErrorAlertAndHaptics = (
+  heading = 'Error',
+  error = 'An error occured.',
+): void => {
+  if (error) {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
+    Alert.alert(heading, error, [
       {
         text: 'OK',
         style: 'default',

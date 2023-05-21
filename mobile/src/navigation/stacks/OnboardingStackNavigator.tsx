@@ -17,11 +17,18 @@ const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
 
 export const OnboardingStackNavigator: React.FunctionComponent = () => {
   const { data: userDetails, isLoading } = useUserDetails();
-  const { phone, defaultCard, defaultTransferRecipient, profileImageHash, profileImageUrl } =
-    userDetails || {};
+  const {
+    phone,
+    defaultCard,
+    defaultTransferRecipient,
+    profileImageHash,
+    profileImageUrl,
+  } = userDetails || {};
 
   if (isLoading) {
-    return <FullScreenLoader isVisible={isLoading} message="Obtaining your details..." />;
+    return (
+      <FullScreenLoader isVisible={isLoading} message="Obtaining your details..." />
+    );
   }
 
   return (

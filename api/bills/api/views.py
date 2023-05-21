@@ -103,6 +103,7 @@ class BillRetrieveUpdateAPIView(APIView):
         self.check_object_permissions(request, bill)
 
         serializer = self.serializer_class(bill, context={"request": request})
+        serializer.is_valid(raise_exception=True)
 
         are_discreet_fields_hidden = (
             bill.is_discreet

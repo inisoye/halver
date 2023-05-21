@@ -7,7 +7,11 @@ import {
   useSoftInputHidden,
   useSoftInputShown,
 } from 'react-native-avoid-softinput';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { useButtonAnimation } from '@/hooks';
 import { cn, isIOS } from '@/utils';
@@ -26,7 +30,9 @@ type KeyboardStickyButtonProps = ButtonProps;
 
 const absoluteBottomValue = isIOS() ? 40 : 28;
 
-export const KeyboardStickyButton: React.FunctionComponent<KeyboardStickyButtonProps> = ({
+export const KeyboardStickyButton: React.FunctionComponent<
+  KeyboardStickyButtonProps
+> = ({
   children,
   color = 'casal',
   disabled = false,
@@ -47,7 +53,9 @@ export const KeyboardStickyButton: React.FunctionComponent<KeyboardStickyButtonP
     };
   }, [isFocused]);
 
-  const { animatedStyle, handlePressIn, handlePressOut } = useButtonAnimation({ disabled });
+  const { animatedStyle, handlePressIn, handlePressOut } = useButtonAnimation({
+    disabled,
+  });
 
   const buttonContainerPaddingHorizontalValue = useSharedValue(12);
   const buttonContainerPaddingValue = useSharedValue(0);

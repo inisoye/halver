@@ -10,7 +10,10 @@ interface HomeProps extends ISvgProps {
 const StyledSvg = styled(Svg, { classProps: ['fill', 'stroke'] });
 const StyledPath = styled(Path, { classProps: ['fill', 'stroke'] });
 
-export const Home: React.FunctionComponent<HomeProps> = ({ focused, ...otherProps }) => {
+export const Home: React.FunctionComponent<HomeProps> = ({
+  focused,
+  ...otherProps
+}) => {
   if (focused) {
     return (
       <StyledSvg
@@ -40,7 +43,7 @@ export const Home: React.FunctionComponent<HomeProps> = ({ focused, ...otherProp
     >
       <StyledPath
         d="M16.5 19H12a1.5 1.5 0 0 1-1.5-1.5V13h-3v4.5A1.5 1.5 0 0 1 6 19H1.5A1.5 1.5 0 0 1 0 17.5V8.828a1.5 1.5 0 0 1 .487-1.106l7.5-6.816a1.5 1.5 0 0 1 2.025 0l7.5 6.816A1.499 1.499 0 0 1 18 8.828V17.5a1.5 1.5 0 0 1-1.5 1.5Zm-9-7.5h3A1.5 1.5 0 0 1 12 13v4.5h4.5V8.828L9 2.012 1.5 8.828V17.5H6V13a1.5 1.5 0 0 1 1.5-1.5Z"
-        fill="fill-grey-light-950 dark:fill-grey-dark-950"
+        fill="fill-grey-light-800 dark:fill-grey-dark-800"
       />
     </StyledSvg>
   );

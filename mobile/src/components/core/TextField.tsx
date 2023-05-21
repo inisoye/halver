@@ -79,7 +79,9 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
             keyboardType={keyboardType}
             placeholder={placeholder}
             placeholderTextColor={
-              scheme === 'light' ? colors['grey-a-light'][800] : colors['grey-a-dark'][800]
+              scheme === 'light'
+                ? colors['grey-a-light'][800]
+                : colors['grey-a-dark'][800]
             }
             value={value}
             onBlur={onBlur}
@@ -103,7 +105,7 @@ export const TextFieldError: React.FunctionComponent<TextFieldErrorProps> = ({
 }) => {
   return (
     <Animated.View
-      className="mt-1.5 overflow-hidden rounded-sm bg-red-dark-700 px-2 py-1 dark:bg-red-dark-700"
+      className="mt-1.5 overflow-hidden rounded-sm bg-red-700 px-2 py-1 dark:bg-red-dark-700"
       entering={FadeIn}
       exiting={FadeOut}
     >

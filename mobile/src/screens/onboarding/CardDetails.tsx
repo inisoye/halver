@@ -5,17 +5,27 @@ import { View } from 'react-native';
 import { WebViewNavigation } from 'react-native-webview';
 
 import { KeyboardStickyButton, PaddedScreenHeader, Screen, Text } from '@/components';
-import { PaystackCardAdditionModal, useGetCardAdditionURL } from '@/features/financials';
+import {
+  PaystackCardAdditionModal,
+  useGetCardAdditionURL,
+} from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
 import { allStaticQueryKeys } from '@/lib/react-query';
+import { showToast } from '@/lib/root-toast';
 import { OnboardingStackParamList } from '@/navigation';
 
 type CardDetailsProps = NativeStackScreenProps<OnboardingStackParamList, 'CardDetails'>;
 
-export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({ navigation }) => {
+export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({
+  navigation,
+}) => {
   const { data: cardAdditionURLResponse, isLoading: isCardAdditionUrlLoading } =
     useGetCardAdditionURL();
-  const { state: isModalOpen, setTrue: openModal, setFalse: closeModal } = useBooleanStateControl();
+  const {
+    state: isModalOpen,
+    setTrue: openModal,
+    setFalse: closeModal,
+  } = useBooleanStateControl();
   const queryClient = useQueryClient();
 
   const { authorizationUrl } = cardAdditionURLResponse?.data || {};
@@ -29,6 +39,11 @@ export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({ navigat
     if (url.startsWith(callbackUrl)) {
       closeModal();
       queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getUserDetails });
+      queryClient.invalidateQueries({
+        queryKey: allStaticQueryKeys.getCardAdditionURL,
+      });
+
+      showToast('Card added successfully.');
       navigation.navigate('ProfileImage');
     }
   };
@@ -44,14 +59,19 @@ export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({ navigat
           />
 
           <Text className="mt-1 p-2 px-6" color="light" variant="sm">
-            Adding your card is easy. Click the button below and follow Paystack's instructions.
-            We'll need to charge you 60 Naira (NGN) to get it done, but don't worry - we'll attempt
-            to refund most of it right after your card is successfully added.
+            Adding your card is easy. Click the button below and follow Paystack's
+            instructions. We'll need to charge you 60 Naira (NGN) to get it done, but
+            don't worry - we'll attempt to refund most of it right after your card is
+            successfully added.
           </Text>
 
-          <Text className="mt-10 max-w-xs p-2 px-6 opacity-60" color="light" variant="xs">
-            *The refund excludes transaction charges and totals to about 38 Naira. All financial
-            details are handled and stored by Paystack.
+          <Text
+            className="mt-10 max-w-xs p-2 px-6 opacity-60"
+            color="light"
+            variant="xs"
+          >
+            *The refund excludes transaction charges and totals to about 38 Naira. All
+            financial details are handled and stored by Paystack.
           </Text>
 
           {!!authorizationUrl && (

@@ -27,7 +27,9 @@ export const assertString = (input: unknown): void => {
  * @param value - The value to check.
  * @returns True if the value is a string or an array of strings, false otherwise.
  */
-export const isStringOrArrayOfStrings = (value: unknown): value is string | string[] => {
+export const isStringOrArrayOfStrings = (
+  value: unknown,
+): value is string | string[] => {
   return (
     typeof value === 'string' ||
     (Array.isArray(value) && value.every(item => typeof item === 'string'))
@@ -52,7 +54,9 @@ export const capitalizeFirstLetter = (string: string) => {
   const stringWithSpaces = insertSpacesBeforeCapitalLetters(string.toLowerCase());
 
   return (
-    (stringWithSpaces && stringWithSpaces.charAt(0).toUpperCase() + stringWithSpaces.slice(1)) || ''
+    (stringWithSpaces &&
+      stringWithSpaces.charAt(0).toUpperCase() + stringWithSpaces.slice(1)) ||
+    ''
   );
 };
 
