@@ -48,7 +48,6 @@ def create_bill(bill_model, validated_data, creator):
     )
 
     # Add participants to the bill
-
     participants_contribution_index = validated_data.get(
         "participants_contribution_index"
     )
@@ -58,7 +57,7 @@ def create_bill(bill_model, validated_data, creator):
         else []
     )
     if participants:
-        new_bill.participants.set(participants)
+        new_bill.participants.add(*participants)
 
     unregistered_participants_data = validated_data.get("unregistered_participants")
 
@@ -114,6 +113,7 @@ def create_unregistered_participants_for_bill(bill, unregistered_participants_da
         existing_unregistered_participants = BillUnregisteredParticipant.objects.filter(
             phone__in=phone_numbers
         )
+
         # Add existing unregistered participants to the bill
         bill.unregistered_participants.add(*existing_unregistered_participants)
 
@@ -137,11 +137,26 @@ def create_unregistered_participants_for_bill(bill, unregistered_participants_da
             )
             for new_unregistered_participant in new_unregistered_participants_data
         ]
+
+        new_unregistered_participants_uuids = [
+            participant.uuid for participant in new_unregistered_participants_objects
+        ]
+
         # Add them to the db with one query.
-        new_unregistered_participants = BillUnregisteredParticipant.objects.bulk_create(
+        BillUnregisteredParticipant.objects.bulk_create(
             new_unregistered_participants_objects
         )
-        bill.unregistered_participants.add(*new_unregistered_participants)
+
+        # Obtain unregistered participants from DB directly as pks are not returned
+        # by the bulk_create above. Caveat 3 here in the docs:
+        # https://docs.djangoproject.com/en/4.2/ref/models/querysets/#bulk-create.
+        new_unregistered_participants_with_pks = (
+            BillUnregisteredParticipant.objects.filter(
+                uuid__in=new_unregistered_participants_uuids
+            )
+        )
+
+        bill.unregistered_participants.add(*new_unregistered_participants_with_pks)
 
         return unregistered_participants_contribution_index
 
