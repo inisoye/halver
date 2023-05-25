@@ -224,6 +224,8 @@ def validate_participants_and_unregistered_participants(
     for participant in unregistered_participants:
         if participant.get("phone") in [creditor.phone, creator.phone]:
             raise serializers.ValidationError(
-                "Neither the creator nor creditor should be listed as a bill's ",
-                "unregistered participant.",
+                (
+                    "Neither the creator nor creditor should be listed as a bill's"
+                    " unregistered participant."
+                ),
             )
