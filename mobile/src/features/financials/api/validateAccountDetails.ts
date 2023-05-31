@@ -9,7 +9,9 @@ import {
 
 export type AccountDetailsPayload = z.infer<typeof PaystackAccountNumberCheckSchema>;
 
-export const validateAccountDetails = async (validateAccountDetailsDto: AccountDetailsPayload) => {
+export const validateAccountDetails = async (
+  validateAccountDetailsDto: AccountDetailsPayload,
+) => {
   const response = await apiClient.post(
     '/api/v1/financials/bank-details/',
     validateAccountDetailsDto,

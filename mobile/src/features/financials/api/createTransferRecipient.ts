@@ -4,7 +4,9 @@ import { z } from 'zod';
 import { apiClient } from '@/lib/axios';
 import { TransferRecipientCreate as TransferRecipientCreateSchema } from '@/lib/zod';
 
-export type TransferRecipientCreatePayload = z.infer<typeof TransferRecipientCreateSchema>;
+export type TransferRecipientCreatePayload = z.infer<
+  typeof TransferRecipientCreateSchema
+>;
 
 export const createTransferRecipient = async (
   transferRecipientCreateDto: TransferRecipientCreatePayload,

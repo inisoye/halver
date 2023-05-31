@@ -40,7 +40,8 @@ const SLIDER_CONTENT = [
   {
     backgroundColor: colors.apricot.DEFAULT,
     mainHeading: 'Automatically share subscription costs',
-    subHeading: 'Collect contributions for Netflix, Spotify Family, and more, with ease',
+    subHeading:
+      'Collect contributions for Netflix, Spotify Family, and more, with ease',
     Icon: Subscriptions,
     isDark: false,
     mainHeadingClassName: 'max-w-[250px]',
@@ -48,7 +49,8 @@ const SLIDER_CONTENT = [
   {
     backgroundColor: colors.casal.DEFAULT,
     mainHeading: 'Split your bills with as many people as you want',
-    subHeading: 'Drive costs down by adding more people to a bill. The more the merrier',
+    subHeading:
+      'Drive costs down by adding more people to a bill. The more the merrier',
     Icon: MultipleContributions,
     isDark: true,
     mainHeadingClassName: 'max-w-[270px]',
@@ -56,7 +58,8 @@ const SLIDER_CONTENT = [
   {
     backgroundColor: colors.pharlap.DEFAULT,
     mainHeading: 'Track crowdfunded money without any foreign affiliations',
-    subHeading: 'Forget GoFundMe. Raise money from Nigerians with your Nigerian bank account.',
+    subHeading:
+      'Forget GoFundMe. Raise money from Nigerians with your Nigerian bank account.',
     Icon: Donation,
     isDark: false,
     mainHeadingClassName: 'max-w-[257px]',
@@ -69,7 +72,12 @@ export const IntroMarquee: React.FunctionComponent = () => {
 
   const cardStyle = useAnimatedStyle(() => {
     // -55 is used here as an offset. It ensures the slider covers the screen at the animation start.
-    const yValue = interpolate(card.value, [0, 1], [-55, -totalHeight - 55], Extrapolate.CLAMP);
+    const yValue = interpolate(
+      card.value,
+      [0, 1],
+      [-55, -totalHeight - 55],
+      Extrapolate.CLAMP,
+    );
 
     return {
       transform: [{ translateY: yValue }],
@@ -77,7 +85,11 @@ export const IntroMarquee: React.FunctionComponent = () => {
   });
 
   React.useEffect(() => {
-    card.value = withRepeat(withTiming(1, { duration: 20000, easing: Easing.linear }), -1, false);
+    card.value = withRepeat(
+      withTiming(1, { duration: 20000, easing: Easing.linear }),
+      -1,
+      false,
+    );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -89,7 +101,14 @@ export const IntroMarquee: React.FunctionComponent = () => {
         )}
       >
         {SLIDER_CONTENT.map(
-          ({ backgroundColor, mainHeading, subHeading, isDark, Icon, mainHeadingClassName }) => {
+          ({
+            backgroundColor,
+            mainHeading,
+            subHeading,
+            isDark,
+            Icon,
+            mainHeadingClassName,
+          }) => {
             return (
               <Animated.View
                 key={mainHeading}
@@ -123,7 +142,14 @@ export const IntroMarquee: React.FunctionComponent = () => {
         )}
 
         {SLIDER_CONTENT.map(
-          ({ backgroundColor, mainHeading, subHeading, isDark, Icon, mainHeadingClassName }) => {
+          ({
+            backgroundColor,
+            mainHeading,
+            subHeading,
+            isDark,
+            Icon,
+            mainHeadingClassName,
+          }) => {
             return (
               <Animated.View
                 key={mainHeading}
@@ -156,7 +182,10 @@ export const IntroMarquee: React.FunctionComponent = () => {
           },
         )}
 
-        <View className="absolute inset-0 h-screen w-screen flex-1" pointerEvents="none">
+        <View
+          className="absolute inset-0 h-screen w-screen flex-1"
+          pointerEvents="none"
+        >
           <StyledLinearGradient
             className="inset-0 left-0 right-0 top-0 h-full w-screen"
             colors={['transparent', 'rgba(0,0,0,1)']}

@@ -4,11 +4,15 @@ import { apiClient } from '@/lib/axios';
 import { allStaticQueryKeys } from '@/lib/react-query';
 
 export const updateProfileImage = async (updateProfileImageDto: FormData) => {
-  const response = await apiClient.patch('/api/v1/accounts/profile-image/', updateProfileImageDto, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
+  const response = await apiClient.patch(
+    '/api/v1/accounts/profile-image/',
+    updateProfileImageDto,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     },
-  });
+  );
   return response.data;
 };
 

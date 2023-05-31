@@ -1,6 +1,12 @@
 import NetInfo from '@react-native-community/netinfo';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
-import { focusManager, onlineManager, Query, QueryClient, QueryKey } from '@tanstack/react-query';
+import {
+  focusManager,
+  onlineManager,
+  Query,
+  QueryClient,
+  QueryKey,
+} from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
 import { AppState, Platform, type AppStateStatus } from 'react-native';
@@ -88,7 +94,8 @@ export const ReactQueryProvider: React.FunctionComponent<ReactQueryProviderProps
         dehydrateOptions: {
           shouldDehydrateQuery: (query: Query) => {
             return (
-              query.state.status === 'success' && persistedQueriesList.includes(query.queryKey)
+              query.state.status === 'success' &&
+              persistedQueriesList.includes(query.queryKey)
             );
           },
         },

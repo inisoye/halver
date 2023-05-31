@@ -5,7 +5,9 @@ import { allStaticQueryKeys } from '@/lib/react-query';
 import { UserCardAdditionResponse as UserCardAdditionResponseSchema } from '@/lib/zod';
 
 export const getCardAdditionURL = async () => {
-  const response = await apiClient.get('/api/v1/financials/user-cards/initialize-card-addition/');
+  const response = await apiClient.get(
+    '/api/v1/financials/user-cards/initialize-card-addition/',
+  );
   return UserCardAdditionResponseSchema.parse(response.data);
 };
 
