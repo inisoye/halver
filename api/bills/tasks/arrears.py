@@ -9,6 +9,7 @@ from financials.models import (
     PaystackSubscription,
     PaystackTransaction,
     PaystackTransfer,
+    TransferRecipient,
 )
 from financials.utils.transfers import (
     create_paystack_transfer_object,
@@ -133,7 +134,6 @@ def finalize_arrear_contribution(
     amount = data.get("amount")
 
     arrear_id = extract_uuidv4s_from_string(reason, position=1)
-    # TODO this should maybe be a select_for_update to prevent race conditions.
     arrear = BillArrear.objects.get(uuid=arrear_id).select_related("action")
 
     action = arrear.action
@@ -141,8 +141,16 @@ def finalize_arrear_contribution(
     arrear.mark_as_completed()
     action.mark_as_ongoing()
 
+    recipient_code = data.get("recipient").get("recipient_code")
+    recipient = TransferRecipient.objects.select_related("user").get(
+        recipient_code=recipient_code
+    )
+    receiving_user = recipient.user
+
     paystack_transfer_object = create_paystack_transfer_object(
         request_data=request_data,
+        recipient=recipient,
+        receiving_user=receiving_user,
         transfer_outcome=transfer_outcome,
         transfer_type=PaystackTransfer.TransferChoices.ARREAR_SETTLEMENT,
         action=action,
@@ -155,13 +163,16 @@ def finalize_arrear_contribution(
     )
 
     # Used to obtain the amount paid in transaction
-    paystack_transaction_object = PaystackTransaction.objects.get(
-        paystack_transaction_id=paystack_transaction_id
-    )
+    paystack_transaction_object = PaystackTransaction.objects.select_related(
+        "paying_user"
+    ).get(paystack_transaction_id=paystack_transaction_id)
+    paying_user = paystack_transaction_object.paying_user
 
     bill_transaction_object = {
         "bill": action.bill,
         "contribution": convert_to_naira(amount),
+        "paying_user": paying_user,
+        "receiving_user": receiving_user,
         "transaction_type": BillTransaction.TypeChoices.ARREAR,
         "total_payment": paystack_transaction_object.amount_in_naira,
         "action": action,

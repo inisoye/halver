@@ -263,9 +263,9 @@ def add_participant_contributions_and_fees_to_bill_actions(
 
     from bills.models import BillAction
 
-    formatted_participants_contribution_index: dict[
-        UUID, Decimal
-    ] = format_participants_contribution_index(participants_contribution_index)
+    formatted_participants_contribution_index = format_participants_contribution_index(
+        participants_contribution_index
+    )
 
     # Get all actions for the bill
     actions = bill.actions.all()
@@ -341,7 +341,7 @@ def generate_long_status_index(all_actions_are_one_type, most_common_status_coun
     )
 
     # Check if the status count is plural
-    status_count_is_plural: bool = most_common_status_count > 1
+    status_count_is_plural = most_common_status_count > 1
     plural_suffix = "s" if status_count_is_plural else ""
 
     # Map status codes to messages

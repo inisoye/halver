@@ -1,9 +1,15 @@
 from core.utils.currency import convert_to_naira
-from financials.models import PaystackTransfer, TransferRecipient
+from financials.models import PaystackTransfer
 
 
 def create_paystack_transfer_object(
-    request_data, transfer_outcome, transfer_type, action=None, arrear=None
+    request_data,
+    transfer_outcome,
+    transfer_type,
+    recipient,
+    receiving_user,
+    action=None,
+    arrear=None,
 ) -> PaystackTransfer:
     """Create or update a PaystackTransfer object with data from the
     request_data and the outcome of the transfer.
@@ -24,21 +30,20 @@ def create_paystack_transfer_object(
 
     data = request_data.get("data")
 
-    recipient_code = data.get("recipient").get("recipient_code")
-    recipient = TransferRecipient.objects.get(recipient_code=recipient_code)
-
     amount = data.get("amount")
     amount_in_naira = convert_to_naira(amount)
+
+    paystack_transfer_reference = data.get("reference")
 
     paystack_transfer_object = {
         "amount": amount,
         "amount_in_naira": amount_in_naira,
-        "paystack_transfer_reference": data.get("reference"),
-        "uuid": data.get("reference"),
+        "paystack_transfer_reference": paystack_transfer_reference,
+        "uuid": paystack_transfer_reference,
         "recipient": recipient,
         "action": action,
         "arrear": arrear,
-        "receiving_user": recipient.user,
+        "receiving_user": receiving_user,
         "transfer_outcome": transfer_outcome,
         "transfer_type": transfer_type,
         "complete_paystack_response": request_data,
@@ -69,7 +74,6 @@ def extract_paystack_transaction_id_from_transfer_reason(reason: str):
 
     # Check if the string contains the "Paystack transaction id:" substring
     if "Paystack transaction id:" in reason:
-
         # Split the string at the "Paystack transaction id:" substring
         split_string = reason.split("Paystack transaction id:")
 

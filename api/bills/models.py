@@ -286,9 +286,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
         most_common_status = max(action_counts_index, key=action_counts_index.get)
         most_common_status_count = action_counts_index[most_common_status]
 
-        all_actions_are_one_type: bool = (
-            most_common_status_count == total_statuses_count
-        )
+        all_actions_are_one_type = most_common_status_count == total_statuses_count
 
         return (
             most_common_status,
@@ -313,6 +311,7 @@ class BillUnregisteredParticipant(AbstractTimeStampedUUIDModel, models.Model):
     )
 
     class Meta:
+        indexes = [models.Index(fields=["phone"])]
         verbose_name = "Bill unregistered participant"
         verbose_name_plural = "Bill unregistered participants"
 
@@ -323,7 +322,7 @@ class BillUnregisteredParticipant(AbstractTimeStampedUUIDModel, models.Model):
 class BillAction(AbstractTimeStampedUUIDModel, models.Model):
     """Actions broadly represent a snapshot of a user's standing in a bill.
     It connects a participant (or unregistered participant) with the amount they
-    are to pay (the contribution). It's summary denotes a participant's status as well.
+    are to pay (the contribution). Its summary denotes a participant's status as well.
 
     The model is also joined with the Plan and Subscription for recurring bills.
     """
@@ -398,6 +397,7 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
     )
 
     class Meta:
+        indexes = [models.Index(fields=["status"])]
         verbose_name = "Bill action"
         verbose_name_plural = "Bill actions"
 
@@ -427,6 +427,9 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
     def mark_as_pending_transfer(self):
         self._update_status(self.StatusChoices.PENDING_TRANSFER)
 
+    def mark_as_failed_transfer(self):
+        self._update_status(self.StatusChoices.FAILED_TRANSFER)
+
     def mark_as_completed(self):
         self._update_status(self.StatusChoices.COMPLETED)
 
@@ -435,6 +438,23 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
 
     def mark_as_last_failed(self):
         self._update_status(self.StatusChoices.LAST_PAYMENT_FAILED)
+
+    @classmethod
+    def get_action_status_counts_for_user(cls, user_id):
+        relevant_statuses = (
+            cls.StatusChoices.PENDING,
+            cls.StatusChoices.OVERDUE,
+            cls.StatusChoices.ONGOING,
+            cls.StatusChoices.PENDING_TRANSFER,
+            cls.StatusChoices.LAST_PAYMENT_FAILED,
+        )
+
+        return (
+            cls.objects.only("participant", "status")
+            .filter(participant_id=user_id, status__in=relevant_statuses)
+            .values("status")
+            .annotate(count=Count("status"))
+        )
 
 
 class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
@@ -456,22 +476,36 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
         related_name="transactions",
     )
     contribution = models.DecimalField(
-        help_text="Bill contribution of participant (excludes fees)",
         max_digits=19,
         decimal_places=4,
         validators=[
             MinValueValidator(settings.MINIMUM_CONTRIBUTION),
         ],
+        help_text="Bill contribution of the participant (excludes fees).",
+    )
+    paying_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="halver_transactions",
+        help_text="The participant who paid.",
+    )
+    receiving_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="halver_transactions_recieved",
+        help_text="The participant who was paid (the bill's creditor).",
     )
     transaction_type = models.CharField(
-        max_length=50,
+        max_length=10,
         choices=TypeChoices.choices,
         default=TypeChoices.REGULAR,
     )
     total_payment = models.DecimalField(
-        help_text="Total amount paid (includes fees)",
         max_digits=19,
         decimal_places=4,
+        help_text="Total amount paid (includes fees)",
     )
     action = models.ForeignKey(
         BillAction,
@@ -504,6 +538,37 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
             f"payer: {self.paystack_transaction.paying_user}, "
             f"receiver: {self.paystack_transfer.receiving_user}, "
             f"payment: {self.total_payment}, bill: ({self.bill.name})"
+        )
+
+    @classmethod
+    def get_bill_transactions_for_user(cls, user):
+        """Returns a queryset containing all complete transactions by a user."""
+
+        return (
+            cls.objects.select_related(
+                "bill",
+                "paying_user",
+                "receiving_user",
+            )
+            .filter(Q(paying_user=user) | Q(receiving_user=user))
+            .order_by("-created")
+        )
+
+    @classmethod
+    def get_bill_transactions(cls, bill_uuid):
+        """Returns a queryset containing all complete transactions on a
+        particular bill."""
+
+        return (
+            cls.objects.select_related(
+                "bill",
+                "paying_user",
+                "receiving_user",
+            )
+            .filter(
+                bill__uuid=bill_uuid,
+            )
+            .order_by("-created")
         )
 
 
@@ -575,6 +640,7 @@ class BillArrear(AbstractTimeStampedUUIDModel, models.Model):
     )
 
     class Meta:
+        indexes = [models.Index(fields=["status"])]
         verbose_name = "Bill arrear"
         verbose_name_plural = "Bill arrears"
 
@@ -602,5 +668,21 @@ class BillArrear(AbstractTimeStampedUUIDModel, models.Model):
     def mark_as_pending_transfer(self):
         self._update_status(self.StatusChoices.PENDING_TRANSFER)
 
+    def mark_as_failed_transfer(self):
+        self._update_status(self.StatusChoices.FAILED_TRANSFER)
+
     def mark_as_completed(self):
         self._update_status(self.StatusChoices.COMPLETED)
+
+    @classmethod
+    def get_unsettled_arrears_on_bill(cls, bill_uuid):
+        unsettled_arrear_statuses = ("overdue", "pending_transfer", "failed_transfer")
+
+        return (
+            cls.objects.select_related("participant")
+            .filter(
+                bill__uuid=bill_uuid,
+                status__in=unsettled_arrear_statuses,
+            )
+            .order_by("-created")
+        )

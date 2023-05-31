@@ -10,6 +10,8 @@ class IsOwner(BasePermission):
     """Custom permission class to check if the user making the request is the
     owner of the object."""
 
+    message = "You must be the owner to continue."
+
     def has_permission(self, request, view) -> bool:
         """Check if the user is authenticated."""
 

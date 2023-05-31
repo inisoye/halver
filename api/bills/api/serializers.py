@@ -341,6 +341,8 @@ class BillArrearResponseUpdateSerializer(serializers.ModelSerializer):
 
 
 class BillArrearListSerializer(serializers.ModelSerializer):
+    participant = BillCreatorCreditorParticipantSerializer()
+
     class Meta:
         model = BillArrear
         fields = (
@@ -355,13 +357,46 @@ class BillArrearListSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
+# --------------------------------------------------------------
+# Serializers nested inside BillTransactionSerializer start.
+# --------------------------------------------------------------
+
+
+class BillTransactionBillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bill
+        fields = (
+            "name",
+            "uuid",
+        )
+        read_only_fields = fields
+
+
+# --------------------------------------------------------------
+# Serializers nested inside BillTransactionSerializer end.
+# --------------------------------------------------------------
+
+
 class BillTransactionSerializer(serializers.ModelSerializer):
+    bill = BillTransactionBillSerializer()
+    is_credit = serializers.SerializerMethodField()
+    paying_user = BillCreatorCreditorParticipantSerializer()
+    receiving_user = BillCreatorCreditorParticipantSerializer()
+
+    def get_is_credit(self, obj) -> bool:
+        return obj.receiving_user == self.context["request"].user
+
     class Meta:
         model = BillTransaction
         fields = (
+            "bill",
             "contribution",
             "created",
+            "is_credit",
             "modified",
+            "paying_user",
+            "receiving_user",
+            "transaction_type",
             "total_payment",
             "transaction_type",
             "uuid",

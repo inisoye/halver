@@ -9,6 +9,8 @@ class IsParticipant(BasePermission):
     """Custom permission class to check if the user making the request is a
     participant of the bill."""
 
+    message = "You must be a participant in this bill to continue."
+
     def has_permission(self, request, view) -> bool:
         """Check if the user is authenticated."""
 
@@ -26,6 +28,8 @@ class IsParticipant(BasePermission):
 class IsCreditor(BasePermission):
     """Custom permission class to check if the user making the request is the
     creditor of the bill."""
+
+    message = "You must be the creditor of the bill to continue."
 
     def has_permission(self, request, view) -> bool:
         """Check if the user is authenticated."""
@@ -45,6 +49,8 @@ class IsCreator(BasePermission):
     """Custom permission class to check if the user making the request is the
     creator of the bill."""
 
+    message = "You must be the creator of the bill to continue."
+
     def has_permission(self, request, view) -> bool:
         """Check if the user is authenticated."""
 
@@ -63,6 +69,8 @@ class IsCreditorOrCreator(BasePermission):
     """Custom permission class to check if the user making the request is either
     the creditor or creator of the bill."""
 
+    message = "Only the creditor and creators of a bill can perform this action."
+
     def has_permission(self, request, view):
         """Check if the user is authenticated."""
 
@@ -77,6 +85,8 @@ class IsCreditorOrCreator(BasePermission):
 class IsParticipantOrCreditor(BasePermission):
     """Custom permission class to check if the user making the request is a
     participant of the bill."""
+
+    message = "You need to be a participant or the creditor of this bill to continue."
 
     def has_permission(self, request, view) -> bool:
         """Check if the user is authenticated."""
@@ -105,6 +115,8 @@ class IsOwningParticipant(BasePermission):
     and be included as the participant associated with the action/arrear instance to be
     updated.
     """
+
+    message = "You need to be the owning participant to continue."
 
     def has_permission(self, request, view) -> bool:
         """Check if the user is authenticated."""
@@ -135,6 +147,8 @@ class ParticipantHasDefaultCard(BasePermission):
     'default_card' attribute that is not None.
     """
 
+    message = "You need to add a default card to continue."
+
     def has_permission(self, request, view) -> bool:
         """Check if the user is authenticated."""
 
@@ -163,6 +177,11 @@ class IsOwningParticipantOrCreditor(BasePermission):
     and be included as the participant associated with the action/arrear instance to be
     updated.
     """
+
+    message = (
+        "You need to be the owning participant or the creditor of this bill to"
+        " continue."
+    )
 
     def has_permission(self, request, view) -> bool:
         """Check if the user is authenticated."""
@@ -195,6 +214,11 @@ class IsOwningParticipantOrCreditorOrCreator(BasePermission):
     and be included as the participant associated with the action/arrear instance to be
     updated.
     """
+
+    message = (
+        "You need to be either the owning participant, the creditor or the creator of"
+        " this bill to continue."
+    )
 
     def has_permission(self, request, view) -> bool:
         """Check if the user is authenticated."""

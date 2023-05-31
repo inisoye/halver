@@ -1,6 +1,8 @@
+import uuid
+
 from bills.models import BillArrear
 from core.utils.currency import convert_to_kobo_integer
-from financials.models import PaystackTransaction
+from financials.models import PaystackTransaction, PaystackTransfer
 from financials.utils.contributions import (
     create_contribution_transaction_object,
     initiate_contribution_transfer,
@@ -105,6 +107,7 @@ def process_arrear_contribution_transfer(arrear_id, request_data):
 
     creditor = bill.creditor
     creditor_name = creditor.full_name
+    creditor_default_recipient = creditor.default_transfer_recipient
     creditor_default_recipient_code = creditor.default_transfer_recipient.recipient_code
 
     action = arrear.action
@@ -135,9 +138,27 @@ def process_arrear_contribution_transfer(arrear_id, request_data):
         f" transaction id: {paystack_transaction_id}."
     )
 
+    transfer_reference = str(uuid.uuid4())
+
+    # Create interim transfer object used to record failures if they occur.
+    paystack_transfer_failure_object = {
+        "amount": contribution_amount_in_kobo,
+        "amount_in_naira": contribution_amount,
+        "paystack_transfer_reference": transfer_reference,
+        "uuid": transfer_reference,
+        "recipient": creditor_default_recipient,
+        "action": action,
+        "arrear": arrear,
+        "receiving_user": creditor,
+        "transfer_outcome": PaystackTransfer.TransferOutcomeChoices.FAILED,
+        "transfer_type": PaystackTransfer.TransferChoices.CREDITOR_SETTLEMENT,
+    }
+
     # Idempotency should be ensured within this function.
     initiate_contribution_transfer(
         contribution_amount=contribution_amount_in_kobo,
         creditor_default_recipient_code=creditor_default_recipient_code,
         reason=transfer_reason,
+        reference=transfer_reference,
+        paystack_transfer_failure_object=paystack_transfer_failure_object,
     )

@@ -2,6 +2,7 @@ from django.urls import path
 
 from bills.api.views import (
     BillActionResponseUpdateAPIView,
+    BillActionStatusCountAPIView,
     BillArrearListAPIView,
     BillArrearResponseUpdateAPIView,
     BillCancellationAPIView,
@@ -11,6 +12,7 @@ from bills.api.views import (
     BillTransactionListAPIView,
     BillUnregisteredParticipantDataTransferAPIView,
     BillUnregisteredParticipantListAPIView,
+    UserBillTransactionListAPIView,
 )
 
 app_name = "bills"
@@ -30,6 +32,11 @@ urlpatterns = [
         route="<uuid:uuid>/cancel/",
         view=BillCancellationAPIView.as_view(),
         name="bill-cancel",
+    ),
+    path(
+        route="transactions/",
+        view=UserBillTransactionListAPIView.as_view(),
+        name="user-transactions",
     ),
     path(
         route="<uuid:uuid>/transactions/",
@@ -55,6 +62,11 @@ urlpatterns = [
         route="actions/<uuid:uuid>/",
         view=BillActionResponseUpdateAPIView.as_view(),
         name="action-response",
+    ),
+    path(
+        route="actions/status-counts/",
+        view=BillActionStatusCountAPIView.as_view(),
+        name="action-status-counts",
     ),
     path(
         route="arrears/<uuid:uuid>/",

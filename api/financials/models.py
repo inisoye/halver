@@ -461,11 +461,15 @@ class PaystackTransaction(AbstractTimeStampedUUIDModel, models.Model):
     )
 
     class Meta:
+        indexes = [models.Index(fields=["paystack_transaction_id"])]
         verbose_name = "Paystack transaction"
         verbose_name_plural = "Paystack transactions"
 
     def __str__(self) -> str:
-        return f"amount: {self.amount}, type: {self.transaction_outcome}"
+        return (
+            f"amount in kobo (or other subunit): {self.amount}, type:"
+            f" {self.transaction_outcome}"
+        )
 
 
 class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
@@ -544,6 +548,6 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
 
     def __str__(self) -> str:
         return (
-            f"amount: {self.amount}, outcome: {self.transfer_outcome}"
-            f" type: {self.transfer_type}"
+            f"amount in kobo (or other subunit): {self.amount}, outcome:"
+            f" {self.transfer_outcome} type: {self.transfer_type}"
         )

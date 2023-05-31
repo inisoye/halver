@@ -29,7 +29,7 @@ from bills.api.serializers import (
     BillUnregisteredParticipantListSerializer,
     BillUnregisteredParticipantsDataTransferSerializer,
 )
-from bills.models import Bill, BillAction, BillArrear
+from bills.models import Bill, BillAction, BillArrear, BillTransaction
 from bills.utils.arrears import handle_arrear_contribution
 from bills.utils.participants import transfer_unregistered_participant_data
 from core.utils.responses import format_exception
@@ -103,7 +103,6 @@ class BillRetrieveUpdateAPIView(APIView):
         self.check_object_permissions(request, bill)
 
         serializer = self.serializer_class(bill, context={"request": request})
-        serializer.is_valid(raise_exception=True)
 
         are_discreet_fields_hidden = (
             bill.is_discreet
@@ -262,6 +261,19 @@ class BillUnregisteredParticipantDataTransferAPIView(APIView):
         )
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class BillActionStatusCountAPIView(APIView):
+    """Obtain the count of every status type associated with a user.
+
+    Accepts GET requests.
+    """
+
+    def get(self, request):
+        action_status_counts = BillAction.get_action_status_counts_for_user(
+            user_id=request.user.id
+        )
+        return Response(action_status_counts, status=status.HTTP_200_OK)
 
 
 class BillActionResponseUpdateAPIView(APIView):
@@ -489,9 +501,23 @@ class BillTransactionListAPIView(ListAPIView):
         particular bill."""
 
         bill_uuid = self.kwargs.get("uuid")
-        bill = get_object_or_404(Bill, uuid=bill_uuid)
 
-        return bill.transactions.all()
+        return BillTransaction.get_bill_transactions(bill_uuid)
+
+
+class UserBillTransactionListAPIView(ListAPIView):
+    """View for listing (Halver) transactions completed (or received) by a user.
+
+    Accepts GET requests.
+    """
+
+    serializer_class = BillTransactionSerializer
+
+    def get_queryset(self):
+        """Returns a queryset containing all transactions completed (or received) by
+        a user"""
+
+        return BillTransaction.get_bill_transactions_for_user(self.request.user)
 
 
 class BillArrearListAPIView(ListAPIView):
@@ -507,6 +533,4 @@ class BillArrearListAPIView(ListAPIView):
         """Returns a queryset containing all arrears on a particular bill."""
 
         bill_uuid = self.kwargs.get("uuid")
-        bill = get_object_or_404(Bill, uuid=bill_uuid)
-
-        return bill.arrears.all().select_related("participant")
+        return BillArrear.get_unsettled_arrears_on_bill(bill_uuid)

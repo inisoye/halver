@@ -143,6 +143,3 @@ for bank in banks["data"]:
         banks_with_images.append({**bank, "logo": image_url})
     else:
         banks_with_images.append(bank)
-
-
-print((banks_with_images))

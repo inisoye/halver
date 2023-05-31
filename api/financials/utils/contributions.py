@@ -6,7 +6,12 @@ from bills.models import BillAction, BillTransaction
 from core.utils.currency import convert_to_kobo_integer, convert_to_naira
 from core.utils.dates_and_time import check_date_is_in_past, get_one_day_from_now
 from core.utils.strings import extract_uuidv4s_from_string
-from financials.models import PaystackTransaction, PaystackTransfer, UserCard
+from financials.models import (
+    PaystackTransaction,
+    PaystackTransfer,
+    TransferRecipient,
+    UserCard,
+)
 from financials.utils.transfers import (
     create_paystack_transfer_object,
     extract_paystack_transaction_id_from_transfer_reason,
@@ -261,6 +266,8 @@ def initiate_contribution_transfer(
     contribution_amount,
     creditor_default_recipient_code,
     reason,
+    reference,
+    paystack_transfer_failure_object,
 ) -> None:
     """Initiates a transfer of a contribution to a creditor's default recipient
     account/card.
@@ -272,12 +279,13 @@ def initiate_contribution_transfer(
         creditor_default_recipient_code (str): The code for the creditor's default
             recipient account/card.
         reason (str): The reason for the transfer.
+        reason (uuid): A generated paystack transfer reference.
+        paystack_transfer_failure_object: Interim transfer object used to record
+            failures if they occur.
 
     Returns:
         None
     """
-
-    # TODO Verify the reference is enough for the idempotence of this function.
 
     # The custom reference passed here would help with idempotence.
     # If Paystack receives the same reference for two transfers,
@@ -288,7 +296,7 @@ def initiate_contribution_transfer(
         "amount": contribution_amount,
         "recipient": creditor_default_recipient_code,
         "reason": reason,
-        "reference": str(uuid.uuid4()),
+        "reference": reference,
     }
 
     response = TransferRequests.initiate(**paystack_transfer_payload)
@@ -296,6 +304,11 @@ def initiate_contribution_transfer(
     if not response["status"]:
         paystack_error = response["message"]
         logger.error(f"Error intiating Paystack transfer: {paystack_error}")
+
+        PaystackTransfer.objects.create(
+            **paystack_transfer_failure_object,
+            complete_paystack_response=response,
+        )
 
 
 def process_contribution_transfer(action_id, request_data, transaction_type):
@@ -330,6 +343,7 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
 
     creditor = bill.creditor
     creditor_name = creditor.full_name
+    creditor_default_recipient = creditor.default_transfer_recipient
     creditor_default_recipient_code = creditor.default_transfer_recipient.recipient_code
 
     data = request_data.get("data")
@@ -367,11 +381,28 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
         f" transaction id: {paystack_transaction_id}."
     )
 
+    transfer_reference = str(uuid.uuid4())
+
+    # Create interim transfer object used to record failures if they occur.
+    paystack_transfer_failure_object = {
+        "amount": contribution_amount_in_kobo,
+        "amount_in_naira": contribution_amount,
+        "paystack_transfer_reference": transfer_reference,
+        "uuid": transfer_reference,
+        "recipient": creditor_default_recipient,
+        "action": action,
+        "receiving_user": creditor,
+        "transfer_outcome": PaystackTransfer.TransferOutcomeChoices.FAILED,
+        "transfer_type": PaystackTransfer.TransferChoices.CREDITOR_SETTLEMENT,
+    }
+
     # Idempotency should be ensured within this function.
     initiate_contribution_transfer(
         contribution_amount=contribution_amount_in_kobo,
         creditor_default_recipient_code=creditor_default_recipient_code,
         reason=transfer_reason,
+        reference=transfer_reference,
+        paystack_transfer_failure_object=paystack_transfer_failure_object,
     )
 
 
@@ -400,7 +431,6 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
     amount = data.get("amount")
 
     action_id = extract_uuidv4s_from_string(reason, position=1)
-    # TODO this should maybe be a select_for_update to prevent race conditions.
     action = BillAction.objects.get(uuid=action_id)
 
     # The action is effectively complete or ongoing as the transfer has been successful.
@@ -410,8 +440,16 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
     elif final_action_status == BillAction.StatusChoices.ONGOING:
         action.mark_as_ongoing()
 
+    recipient_code = data.get("recipient").get("recipient_code")
+    recipient = TransferRecipient.objects.select_related("user").get(
+        recipient_code=recipient_code
+    )
+    receiving_user = recipient.user
+
     paystack_transfer_object = create_paystack_transfer_object(
         request_data=request_data,
+        recipient=recipient,
+        receiving_user=receiving_user,
         transfer_outcome=transfer_outcome,
         transfer_type=PaystackTransfer.TransferChoices.CREDITOR_SETTLEMENT,
         action=action,
@@ -423,13 +461,16 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
     )
 
     # Used to obtain the amount paid in transaction
-    paystack_transaction_object = PaystackTransaction.objects.get(
-        paystack_transaction_id=paystack_transaction_id
-    )
+    paystack_transaction_object = PaystackTransaction.objects.select_related(
+        "paying_user"
+    ).get(paystack_transaction_id=paystack_transaction_id)
+    paying_user = paystack_transaction_object.paying_user
 
     bill_transaction_object = {
         "bill": action.bill,
         "contribution": convert_to_naira(amount),
+        "paying_user": paying_user,
+        "receiving_user": receiving_user,
         "total_payment": paystack_transaction_object.amount_in_naira,
         "action": action,
         "paystack_transaction": paystack_transaction_object,
