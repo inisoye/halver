@@ -99,8 +99,16 @@ def record_arrear_contribution_transfer_object(request_data, transfer_outcome):
 
     action = arrear.action
 
+    recipient_code = data.get("recipient").get("recipient_code")
+    recipient = TransferRecipient.objects.select_related("user").get(
+        recipient_code=recipient_code
+    )
+    receiving_user = recipient.user
+
     create_paystack_transfer_object(
         request_data=request_data,
+        recipient=recipient,
+        receiving_user=receiving_user,
         transfer_outcome=transfer_outcome,
         transfer_type=PaystackTransfer.TransferChoices.ARREAR_SETTLEMENT,
         action=action,

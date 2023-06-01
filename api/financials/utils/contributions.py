@@ -267,7 +267,6 @@ def initiate_contribution_transfer(
     creditor_default_recipient_code,
     reason,
     reference,
-    paystack_transfer_failure_object,
 ) -> None:
     """Initiates a transfer of a contribution to a creditor's default recipient
     account/card.
@@ -280,8 +279,6 @@ def initiate_contribution_transfer(
             recipient account/card.
         reason (str): The reason for the transfer.
         reason (uuid): A generated paystack transfer reference.
-        paystack_transfer_failure_object: Interim transfer object used to record
-            failures if they occur.
 
     Returns:
         None
@@ -304,11 +301,6 @@ def initiate_contribution_transfer(
     if not response["status"]:
         paystack_error = response["message"]
         logger.error(f"Error intiating Paystack transfer: {paystack_error}")
-
-        PaystackTransfer.objects.create(
-            **paystack_transfer_failure_object,
-            complete_paystack_response=response,
-        )
 
 
 def process_contribution_transfer(action_id, request_data, transaction_type):
@@ -343,7 +335,6 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
 
     creditor = bill.creditor
     creditor_name = creditor.full_name
-    creditor_default_recipient = creditor.default_transfer_recipient
     creditor_default_recipient_code = creditor.default_transfer_recipient.recipient_code
 
     data = request_data.get("data")
@@ -383,26 +374,12 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
 
     transfer_reference = str(uuid.uuid4())
 
-    # Create interim transfer object used to record failures if they occur.
-    paystack_transfer_failure_object = {
-        "amount": contribution_amount_in_kobo,
-        "amount_in_naira": contribution_amount,
-        "paystack_transfer_reference": transfer_reference,
-        "uuid": transfer_reference,
-        "recipient": creditor_default_recipient,
-        "action": action,
-        "receiving_user": creditor,
-        "transfer_outcome": PaystackTransfer.TransferOutcomeChoices.FAILED,
-        "transfer_type": PaystackTransfer.TransferChoices.CREDITOR_SETTLEMENT,
-    }
-
     # Idempotency should be ensured within this function.
     initiate_contribution_transfer(
         contribution_amount=contribution_amount_in_kobo,
         creditor_default_recipient_code=creditor_default_recipient_code,
         reason=transfer_reason,
         reference=transfer_reference,
-        paystack_transfer_failure_object=paystack_transfer_failure_object,
     )
 
 

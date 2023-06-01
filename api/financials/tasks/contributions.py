@@ -2,12 +2,12 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 
 from bills.models import BillAction
+from core.utils.strings import extract_uuidv4s_from_string
+from financials.models import PaystackTransaction, PaystackTransfer, TransferRecipient
 from financials.utils.contributions import (
     finalize_contribution,
     process_contribution_transfer,
 )
-from core.utils.strings import extract_uuidv4s_from_string
-from financials.models import PaystackTransaction, PaystackTransfer
 from financials.utils.transfers import create_paystack_transfer_object
 
 logger = get_task_logger(__name__)
@@ -64,8 +64,16 @@ def record_contribution_transfer_object(request_data, transfer_outcome):
     action_id = extract_uuidv4s_from_string(reason, position=1)
     action = BillAction.objects.get(uuid=action_id)
 
+    recipient_code = data.get("recipient").get("recipient_code")
+    recipient = TransferRecipient.objects.select_related("user").get(
+        recipient_code=recipient_code
+    )
+    receiving_user = recipient.user
+
     create_paystack_transfer_object(
         request_data=request_data,
+        recipient=recipient,
+        receiving_user=receiving_user,
         transfer_outcome=transfer_outcome,
         transfer_type=PaystackTransfer.TransferChoices.CREDITOR_SETTLEMENT,
         action=action,

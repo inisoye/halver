@@ -10,7 +10,6 @@ from financials.models import PaystackTransaction, PaystackTransfer
 from financials.tasks.cards import (
     process_card_creation_and_refund,
     record_card_addition_transfer_object,
-    retry_failed_card_addition_charge_refund,
 )
 from financials.tasks.contributions import (
     finalize_one_time_contribution,
@@ -78,7 +77,6 @@ def handle_paystack_webhook_response(request_data):
             )
 
         if is_subscription_contribution:
-            print("SUBSCRIPTION CHARGE", json.dumps(request_data))
             process_action_updates_and_subscription_contribution_transfer.delay(
                 request_data
             )
@@ -87,7 +85,6 @@ def handle_paystack_webhook_response(request_data):
             process_arrear_updates_and_arrear_contribution_transfer.delay(request_data)
 
     if event == "subscription.create":
-        print("SUBSCRIPTION CREATED", json.dumps(request_data))
         process_subscription_creation.delay(request_data)
 
     if event == "transfer.success":
@@ -138,30 +135,24 @@ def handle_paystack_webhook_response(request_data):
                 request_data,
                 PaystackTransfer.TransferOutcomeChoices.FAILED,
             )
-            # Retry failed transaction with same reference.
-            # TODO Find a way to ensure retries are performed ONLY every 6 hours.
-            retry_failed_card_addition_charge_refund.delay(request_data)
 
         if is_one_time_contribution_transfer:
             record_contribution_transfer_object.delay(
                 request_data,
                 PaystackTransfer.TransferOutcomeChoices.FAILED,
             )
-            # TODO Add retry here.
 
         if is_subscription_contribution_transfer:
             record_contribution_transfer_object.delay(
                 request_data,
                 PaystackTransfer.TransferOutcomeChoices.FAILED,
             )
-            # TODO Add retry here.
 
         if is_arrear_contribution_transfer:
             record_arrear_contribution_transfer_object.delay(
                 request_data,
                 PaystackTransfer.TransferOutcomeChoices.FAILED,
             )
-            # TODO Add retry here.
 
     if event == "transfer.reversed":
         reason = data.get("reason")
@@ -205,7 +196,6 @@ def handle_paystack_webhook_response(request_data):
         print("INVOICE CREATED", json.dumps(request_data))
 
     if event == "invoice.payment_failed":
-        print("INVOICE FAILED", json.dumps(request_data))
         record_bill_arrear(request_data)
 
     if event == "invoice.update":
