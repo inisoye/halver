@@ -3,6 +3,7 @@ import asyncio
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import serializers, status
+from rest_framework.filters import OrderingFilter
 from rest_framework.generics import (
     DestroyAPIView,
     ListAPIView,
@@ -18,6 +19,7 @@ from core.utils.responses import format_exception
 from core.utils.users import get_user_by_id_drf
 from financials.api.permissions import IsOwner, IsPaystack
 from financials.api.serializers import (
+    FailedAndReversedPaystackTransfersSerializer,
     PaystackAccountNumberCheckSerializer,
     PaystackBankListSerializer,
     PaystackTransferRecipientListSerializer,
@@ -27,7 +29,7 @@ from financials.api.serializers import (
     UserCardSerializer,
 )
 from financials.data.banks import all_banks
-from financials.models import TransferRecipient, UserCard
+from financials.models import PaystackTransfer, TransferRecipient, UserCard
 from financials.utils.cards import generate_add_card_paystack_payload
 from financials.utils.paystack_webhook import handle_paystack_webhook_response
 from financials.utils.transfer_recipients import (
@@ -274,7 +276,9 @@ class TransferRecipientListCreateAPIView(APIView):
     serializer_class = TransferRecipientListSerializer
     list_serializer_class = TransferRecipientListSerializer
     create_serializer_class = TransferRecipientCreateSerializer
-    queryset = TransferRecipient.objects.all().defer("complete_paystack_response")
+    queryset = TransferRecipient.objects.select_related("associated_card").defer(
+        "complete_paystack_response"
+    )
 
     def get(self, request) -> Response:
         """Retrieves a list of all transfer recipients for the current user.
@@ -382,3 +386,18 @@ class DefaultTransferRecipientUpdateAPIView(UpdateAPIView):
         transfer_recipient.set_as_default_recipient()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class FailedAndReversedPaystackTransfersListAPIView(ListAPIView):
+    """View for listing failed and reversed transfers made by a user.
+
+    Accepts GET requests.
+    """
+
+    serializer_class = FailedAndReversedPaystackTransfersSerializer
+    filter_backends = (OrderingFilter,)
+    ordering_fields = ("created",)
+    ordering = ("-created",)
+
+    def get_queryset(self):
+        return PaystackTransfer.get_failed_and_reversed_transfers(self.request.user)

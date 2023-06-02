@@ -383,6 +383,7 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
     )
 
 
+# TODO This should be carried out in a transaction. With select_for_updates
 def finalize_contribution(request_data, transfer_outcome, final_action_status):
     """Finalizes a contribution by creating a BillTransaction object, a
     PaystackTransfer object, and marking the corresponding BillAction as
@@ -408,7 +409,7 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
     amount = data.get("amount")
 
     action_id = extract_uuidv4s_from_string(reason, position=1)
-    action = BillAction.objects.get(uuid=action_id)
+    action = BillAction.objects.select_related("participant").get(uuid=action_id)
 
     # The action is effectively complete or ongoing as the transfer has been successful.
     if final_action_status == BillAction.StatusChoices.COMPLETED:
@@ -426,6 +427,7 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
     paystack_transfer_object = create_paystack_transfer_object(
         request_data=request_data,
         recipient=recipient,
+        paying_user=action.participant,
         receiving_user=receiving_user,
         transfer_outcome=transfer_outcome,
         transfer_type=PaystackTransfer.TransferChoices.CREDITOR_SETTLEMENT,

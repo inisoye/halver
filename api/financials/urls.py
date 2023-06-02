@@ -5,6 +5,7 @@ from financials.api.views import (
     DefaultCardUpdateAPIView,
     DefaultTransferRecipientRetrieveAPIView,
     DefaultTransferRecipientUpdateAPIView,
+    FailedAndReversedPaystackTransfersListAPIView,
     PaystackAccountNumberCheckAPIView,
     PaystackBanksListAPIView,
     PaystackTransferRecipientListAPIView,
@@ -83,5 +84,10 @@ urlpatterns = [
         route="default-transfer-recipient/<uuid:uuid>/",
         view=DefaultTransferRecipientUpdateAPIView.as_view(),
         name="default-transfer-recipient-set-as",
+    ),
+    path(
+        route="failed-reversed-transfers/",
+        view=FailedAndReversedPaystackTransfersListAPIView.as_view(),
+        name="failed-reversed-transfers",
     ),
 ]

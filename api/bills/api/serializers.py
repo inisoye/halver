@@ -185,7 +185,7 @@ class BillListSerializer(serializers.ModelSerializer):
 # --------------------------------------------------------------
 
 
-class BillCreatorCreditorParticipantSerializer(serializers.ModelSerializer):
+class NestedCustomUserSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField()
 
     class Meta:
@@ -218,7 +218,7 @@ class BillDetailUnregisteredParticipantSerializer(serializers.ModelSerializer):
 
 
 class BillDetailActionSerializer(serializers.ModelSerializer):
-    participant = BillCreatorCreditorParticipantSerializer()
+    participant = NestedCustomUserSerializer()
     unregistered_participant = BillDetailUnregisteredParticipantSerializer()
 
     class Meta:
@@ -243,8 +243,8 @@ class BillDetailActionSerializer(serializers.ModelSerializer):
 
 class BillDetailSerializer(serializers.ModelSerializer):
     actions = BillDetailActionSerializer(many=True)
-    creator = BillCreatorCreditorParticipantSerializer()
-    creditor = BillCreatorCreditorParticipantSerializer()
+    creator = NestedCustomUserSerializer()
+    creditor = NestedCustomUserSerializer()
     interval = serializers.SerializerMethodField()
     is_creator = serializers.SerializerMethodField()
     is_creditor = serializers.SerializerMethodField()
@@ -341,7 +341,7 @@ class BillArrearResponseUpdateSerializer(serializers.ModelSerializer):
 
 
 class BillArrearListSerializer(serializers.ModelSerializer):
-    participant = BillCreatorCreditorParticipantSerializer()
+    participant = NestedCustomUserSerializer()
 
     class Meta:
         model = BillArrear
@@ -380,8 +380,8 @@ class BillTransactionBillSerializer(serializers.ModelSerializer):
 class BillTransactionSerializer(serializers.ModelSerializer):
     bill = BillTransactionBillSerializer()
     is_credit = serializers.SerializerMethodField()
-    paying_user = BillCreatorCreditorParticipantSerializer()
-    receiving_user = BillCreatorCreditorParticipantSerializer()
+    paying_user = NestedCustomUserSerializer()
+    receiving_user = NestedCustomUserSerializer()
 
     def get_is_credit(self, obj) -> bool:
         return obj.receiving_user == self.context["request"].user
@@ -396,7 +396,6 @@ class BillTransactionSerializer(serializers.ModelSerializer):
             "modified",
             "paying_user",
             "receiving_user",
-            "transaction_type",
             "total_payment",
             "transaction_type",
             "uuid",

@@ -8,6 +8,7 @@ def create_paystack_transfer_object(
     transfer_type,
     recipient,
     receiving_user,
+    paying_user=None,
     action=None,
     arrear=None,
 ) -> PaystackTransfer:
@@ -43,6 +44,7 @@ def create_paystack_transfer_object(
         "recipient": recipient,
         "action": action,
         "arrear": arrear,
+        "paying_user": paying_user,
         "receiving_user": receiving_user,
         "transfer_outcome": transfer_outcome,
         "transfer_type": transfer_type,

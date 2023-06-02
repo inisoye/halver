@@ -3,7 +3,7 @@ from celery.utils.log import get_task_logger
 
 from core.utils.currency import convert_to_kobo_integer
 from core.utils.users import get_user_by_id
-from financials.models import PaystackTransfer
+from financials.models import PaystackTransfer, TransferRecipient
 from financials.utils.cards import (
     create_card_addition_paystack_transaction_object,
     create_card_object_from_webhook,
@@ -118,8 +118,18 @@ def record_card_addition_transfer_object(request_data, transfer_outcome):
         None
     """
 
+    data = request_data.get("data")
+
+    recipient_code = data.get("recipient").get("recipient_code")
+    recipient = TransferRecipient.objects.select_related("user").get(
+        recipient_code=recipient_code
+    )
+    receiving_user = recipient.user
+
     create_paystack_transfer_object(
         request_data=request_data,
+        recipient=recipient,
+        receiving_user=receiving_user,
         transfer_outcome=transfer_outcome,
         transfer_type=PaystackTransfer.TransferChoices.CARD_ADDITION_REFUND,
     )

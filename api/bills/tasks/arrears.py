@@ -95,9 +95,12 @@ def record_arrear_contribution_transfer_object(request_data, transfer_outcome):
     reason = data.get("reason")
 
     arrear_id = extract_uuidv4s_from_string(reason, position=1)
-    arrear = BillArrear.objects.get(uuid=arrear_id).select_related("action")
+    arrear = BillArrear.objects.get(uuid=arrear_id).select_related(
+        "action", "participant"
+    )
 
     action = arrear.action
+    paying_user = arrear.participant
 
     recipient_code = data.get("recipient").get("recipient_code")
     recipient = TransferRecipient.objects.select_related("user").get(
@@ -108,6 +111,7 @@ def record_arrear_contribution_transfer_object(request_data, transfer_outcome):
     create_paystack_transfer_object(
         request_data=request_data,
         recipient=recipient,
+        paying_user=paying_user,
         receiving_user=receiving_user,
         transfer_outcome=transfer_outcome,
         transfer_type=PaystackTransfer.TransferChoices.ARREAR_SETTLEMENT,
@@ -116,6 +120,7 @@ def record_arrear_contribution_transfer_object(request_data, transfer_outcome):
     )
 
 
+# TODO This should be carried out in a transaction. With select_for_updates
 @shared_task
 def finalize_arrear_contribution(
     request_data,
@@ -142,7 +147,9 @@ def finalize_arrear_contribution(
     amount = data.get("amount")
 
     arrear_id = extract_uuidv4s_from_string(reason, position=1)
-    arrear = BillArrear.objects.get(uuid=arrear_id).select_related("action")
+    arrear = BillArrear.objects.get(uuid=arrear_id).select_related(
+        "action", "participant"
+    )
 
     action = arrear.action
 
@@ -158,6 +165,7 @@ def finalize_arrear_contribution(
     paystack_transfer_object = create_paystack_transfer_object(
         request_data=request_data,
         recipient=recipient,
+        paying_user=arrear.participant,
         receiving_user=receiving_user,
         transfer_outcome=transfer_outcome,
         transfer_type=PaystackTransfer.TransferChoices.ARREAR_SETTLEMENT,

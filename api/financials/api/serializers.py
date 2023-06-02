@@ -1,6 +1,8 @@
 from rest_framework import serializers
 
-from financials.models import TransferRecipient, UserCard
+from bills.api.serializers import NestedCustomUserSerializer
+from bills.models import BillAction
+from financials.models import PaystackTransfer, TransferRecipient, UserCard
 from financials.utils.validation import validate_new_recipient_data
 
 
@@ -170,3 +172,41 @@ class TransferRecipientUpdateDeleteSerializer(serializers.ModelSerializer):
             "uuid",
         )
         read_only = ("recipient_code", "uuid")
+
+
+class FailedAndReversedPaystackTransfersActionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BillAction
+        fields = (
+            "contribution",
+            "created",
+            "modified",
+            "status",
+            "total_payment_due",
+            "uuid",
+        )
+        read_only_fields = fields
+
+
+class FailedAndReversedPaystackTransfersSerializer(serializers.ModelSerializer):
+    paying_user = NestedCustomUserSerializer()
+    recipient = TransferRecipientListSerializer()
+    action = FailedAndReversedPaystackTransfersActionSerializer()
+
+    class Meta:
+        model = PaystackTransfer
+        fields = (
+            "action",
+            "amount_in_naira",
+            "amount",
+            "created",
+            "modified",
+            "paying_user",
+            "paystack_transfer_reference",
+            "recipient",
+            "total_payment",
+            "transfer_outcome",
+            "transfer_type",
+            "uuid",
+        )
+        read_only_fields = fields

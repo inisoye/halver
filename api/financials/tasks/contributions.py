@@ -62,7 +62,8 @@ def record_contribution_transfer_object(request_data, transfer_outcome):
     reason = data.get("reason")
 
     action_id = extract_uuidv4s_from_string(reason, position=1)
-    action = BillAction.objects.get(uuid=action_id)
+    action = BillAction.objects.select_related("participant").get(uuid=action_id)
+    paying_user = action.participant
 
     recipient_code = data.get("recipient").get("recipient_code")
     recipient = TransferRecipient.objects.select_related("user").get(
@@ -73,6 +74,7 @@ def record_contribution_transfer_object(request_data, transfer_outcome):
     create_paystack_transfer_object(
         request_data=request_data,
         recipient=recipient,
+        paying_user=paying_user,
         receiving_user=receiving_user,
         transfer_outcome=transfer_outcome,
         transfer_type=PaystackTransfer.TransferChoices.CREDITOR_SETTLEMENT,

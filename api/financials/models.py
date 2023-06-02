@@ -524,6 +524,12 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
         null=True,
         related_name="paystack_transfer",
     )
+    paying_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="paystack_transfers_made",
+    )
     receiving_user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -550,4 +556,24 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
         return (
             f"amount in kobo (or other subunit): {self.amount}, outcome:"
             f" {self.transfer_outcome} type: {self.transfer_type}"
+        )
+
+    @classmethod
+    def get_failed_and_reversed_transfers(cls, user):
+        relevant_outcomes = (
+            cls.TransferOutcomeChoices.FAILED,
+            cls.TransferOutcomeChoices.REVERSED,
+        )
+
+        return (
+            cls.objects.select_related(
+                "action",
+                "paying_user",
+                "recipient",
+            )
+            .filter(
+                paying_user=user,
+                transfer_outcome__in=relevant_outcomes,
+            )
+            .defer("complete_paystack_response")
         )
