@@ -10,7 +10,10 @@ class AbstractTimeStampedUUIDModel(models.Model):
     self-updating "created", "modified" and "uuid" fields.
     """
 
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+    )
     modified = models.DateTimeField(auto_now=True)
     uuid = models.UUIDField(
         unique=True,

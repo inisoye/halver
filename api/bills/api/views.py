@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import ListAPIView, ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -51,6 +52,10 @@ class BillListCreateAPIView(ListCreateAPIView):
     permission_classes = (IsParticipantOrCreditor,)
     serializer_class = BillCreateSerializer
     list_serializer_class = BillListSerializer
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ("name",)
+    ordering_fields = ("created", "name")
+    ordering = ("-created",)
 
     def get_queryset(self):
         return Bill.get_users_bills_with_status_info(user=self.request.user)
@@ -495,6 +500,16 @@ class BillTransactionListAPIView(ListAPIView):
 
     permission_classes = (IsParticipantOrCreditor,)
     serializer_class = BillTransactionSerializer
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = (
+        "bill__name",
+        "paying_user__first_name",
+        "paying_user__last_name",
+        "receiving_user__first_name",
+        "receiving_user__last_name",
+    )
+    ordering_fields = ("created",)
+    ordering = ("-created",)
 
     def get_queryset(self):
         """Returns a queryset containing all complete transactions on a
@@ -512,6 +527,18 @@ class UserBillTransactionListAPIView(ListAPIView):
     """
 
     serializer_class = BillTransactionSerializer
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = (
+        "bill__name",
+        "paying_user__first_name",
+        "paying_user__last_name",
+        "paying_user__username",
+        "receiving_user__first_name",
+        "receiving_user__last_name",
+        "receiving_user__username",
+    )
+    ordering_fields = ("created",)
+    ordering = ("-created",)
 
     def get_queryset(self):
         """Returns a queryset containing all transactions completed (or received) by
@@ -528,6 +555,15 @@ class BillArrearListAPIView(ListAPIView):
 
     permission_classes = (IsParticipantOrCreditor,)
     serializer_class = BillArrearListSerializer
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = (
+        "bill__name",
+        "participant__first_name",
+        "participant__last_name",
+        "participant__username",
+    )
+    ordering_fields = ("created",)
+    ordering = ("-created",)
 
     def get_queryset(self):
         """Returns a queryset containing all arrears on a particular bill."""

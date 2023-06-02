@@ -67,10 +67,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     username = models.CharField(
         _("username"),
-        max_length=150,
+        max_length=50,
         unique=True,
         help_text=_(
-            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+            "Required. 50 characters or fewer. Letters, digits and @/./+/-/_ only."
         ),
         validators=[username_validator],
         error_messages={
@@ -79,22 +79,24 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
     first_name = models.CharField(
         _("first name"),
-        max_length=150,
+        max_length=50,
         blank=True,
     )
     last_name = models.CharField(
         _("last name"),
-        max_length=150,
+        max_length=50,
         blank=True,
     )
     email = models.EmailField(
         _("email address"),
+        max_length=50,
         unique=True,
         error_messages={
             "unique": _("A user with that email address already exists."),
         },
     )
     phone = PhoneNumberField(
+        max_length=30,
         null=True,
         blank=True,
         unique=True,
@@ -144,7 +146,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                 name="user_username_email_ci_uniqueness",
             ),
         ]
-        indexes = [models.Index(fields=["uuid"])]
+        indexes = [
+            models.Index(fields=["uuid"]),
+            models.Index(
+                fields=["phone", "email", "first_name", "last_name", "username"]
+            ),
+        ]
         verbose_name = _("user")
         verbose_name_plural = _("users")
 

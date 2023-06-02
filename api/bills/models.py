@@ -87,6 +87,10 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
     )
 
     class Meta:
+        indexes = [
+            models.Index(fields=["uuid"]),
+            models.Index(fields=["name"]),
+        ]
         verbose_name = "Bill"
         verbose_name_plural = "Bills"
 
@@ -254,7 +258,7 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
                 status_count_subquery.values("count")[:1]
             ),
             are_all_statuses_same=~Exists(status_count_subquery[1:]),
-        ).order_by("-created")
+        )
 
         return bills_with_status_info
 
@@ -544,14 +548,12 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
     def get_bill_transactions_for_user(cls, user):
         """Returns a queryset containing all complete transactions by a user."""
 
-        return (
-            cls.objects.select_related(
-                "bill",
-                "paying_user",
-                "receiving_user",
-            )
-            .filter(Q(paying_user=user) | Q(receiving_user=user))
-            .order_by("-created")
+        return cls.objects.select_related(
+            "bill",
+            "paying_user",
+            "receiving_user",
+        ).filter(
+            Q(paying_user=user) | Q(receiving_user=user),
         )
 
     @classmethod
@@ -559,16 +561,12 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
         """Returns a queryset containing all complete transactions on a
         particular bill."""
 
-        return (
-            cls.objects.select_related(
-                "bill",
-                "paying_user",
-                "receiving_user",
-            )
-            .filter(
-                bill__uuid=bill_uuid,
-            )
-            .order_by("-created")
+        return cls.objects.select_related(
+            "bill",
+            "paying_user",
+            "receiving_user",
+        ).filter(
+            bill__uuid=bill_uuid,
         )
 
 
@@ -678,11 +676,7 @@ class BillArrear(AbstractTimeStampedUUIDModel, models.Model):
     def get_unsettled_arrears_on_bill(cls, bill_uuid):
         unsettled_arrear_statuses = ("overdue", "pending_transfer", "failed_transfer")
 
-        return (
-            cls.objects.select_related("participant")
-            .filter(
-                bill__uuid=bill_uuid,
-                status__in=unsettled_arrear_statuses,
-            )
-            .order_by("-created")
+        return cls.objects.select_related("participant").filter(
+            bill__uuid=bill_uuid,
+            status__in=unsettled_arrear_statuses,
         )
