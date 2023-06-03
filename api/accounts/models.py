@@ -4,7 +4,6 @@
 
 import time
 import uuid
-from io import BytesIO
 
 import blurhash
 from cloudinary.uploader import upload
@@ -20,6 +19,8 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 from PIL import Image
+
+from core.utils.images import convert_image_to_byte_array
 
 
 class CustomUserManager(BaseUserManager):
@@ -229,23 +230,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             profile_image: A file object containing the new profile image.
         """
 
-        # Read the data from the file object into memory
-        image_data = profile_image.read()
-        image = Image.open(BytesIO(image_data))
+        image = Image.open(profile_image)
 
-        # Generate blurhash
-        image.thumbnail((100, 100))
+        image.thumbnail((500, 500))
+        image_bytes = convert_image_to_byte_array(image)
+
         hash = blurhash.encode(image, x_components=4, y_components=3)
 
         image_public_id = f"{self.last_name}_{self.uuid}_avatar"
-
-        # Prevent file loss: https://stackoverflow.com/a/44722982
-        profile_image.seek(0)
-
         FOLDER_NAME = "profile_images"
 
         upload(
-            profile_image,
+            image_bytes,
             public_id=image_public_id,
             use_filename=True,
             unique_filename=False,
@@ -254,7 +250,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         )
 
         url, options = cloudinary_url(
-            FOLDER_NAME + "/" + image_public_id,
+            f"{FOLDER_NAME}/{image_public_id}",
             width=300,
             height=300,
             crop="fill",
