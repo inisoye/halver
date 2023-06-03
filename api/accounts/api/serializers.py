@@ -106,3 +106,19 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
 
 class ProfileImageSerializer(serializers.Serializer):
     profile_image = serializers.ImageField(allow_empty_file=False)
+
+
+class RegisteredContactsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = (
+            "first_name",
+            "full_name",
+            "last_name",
+            "phone",
+            "profile_image_url",
+            "profile_image_hash",
+            "username",
+            "uuid",
+        )
+        read_only_fields = fields

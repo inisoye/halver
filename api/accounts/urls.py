@@ -1,6 +1,10 @@
 from django.urls import include, path
 
-from accounts.api.views import GoogleLogin, ProfileImageUploadAPIView
+from accounts.api.views import (
+    GoogleLogin,
+    ProfileImageUploadAPIView,
+    RegisteredContactsListAPIView,
+)
 
 urlpatterns = [
     path(
@@ -20,6 +24,11 @@ urlpatterns = [
         "accounts/profile-image/",
         ProfileImageUploadAPIView.as_view(),
         name="profile-image-upload",
+    ),
+    path(
+        "accounts/registered-contacts/",
+        RegisteredContactsListAPIView.as_view(),
+        name="registered-contacts-list",
     ),
     path(
         "allauth/",

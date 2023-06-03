@@ -4,11 +4,16 @@ from dj_rest_auth.registration.views import SocialLoginView
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from environs import Env
 from rest_framework import status
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from accounts.api.serializers import ProfileImageSerializer
+from accounts.api.serializers import (
+    ProfileImageSerializer,
+    RegisteredContactsSerializer,
+)
+from accounts.models import CustomUser
 from core.utils.responses import format_exception
 
 env = Env()
@@ -54,3 +59,26 @@ class ProfileImageUploadAPIView(APIView):
         user.update_profile_image(profile_image)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class RegisteredContactsListAPIView(ListAPIView):
+    """Filter out a list of a person's contacts that have previously
+    registered on Halver.
+
+    Accepts GET requests.
+    """
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = RegisteredContactsSerializer
+
+    def get_queryset(self):
+        phone_numbers = self.request.query_params.getlist("phone_numbers[]", [])
+        return CustomUser.objects.only(
+            "first_name",
+            "last_name",
+            "phone",
+            "profile_image_url",
+            "profile_image_hash",
+            "username",
+            "uuid",
+        ).filter(phone__in=phone_numbers)
