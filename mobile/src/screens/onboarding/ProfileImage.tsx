@@ -131,7 +131,7 @@ export const ProfileImage: React.FunctionComponent = () => {
         <View className="mt-10 flex-1 p-2 px-6 py-8 " style={gapStyles[28]}>
           {!!imageUri && (
             <AnimatedImage
-              className="mx-auto h-40 w-40 rounded-full"
+              className="mx-auto h-40 w-40 rounded-2xl"
               entering={FadeInDown}
               source={{ uri: imageUri }}
             />
