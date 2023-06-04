@@ -30,7 +30,13 @@ from bills.api.serializers import (
     BillUnregisteredParticipantListSerializer,
     BillUnregisteredParticipantsDataTransferSerializer,
 )
-from bills.models import Bill, BillAction, BillArrear, BillTransaction
+from bills.models import (
+    Bill,
+    BillAction,
+    BillArrear,
+    BillTransaction,
+    BillUnregisteredParticipant,
+)
 from bills.utils.arrears import handle_arrear_contribution
 from bills.utils.participants import transfer_unregistered_participant_data
 from core.utils.responses import format_exception
@@ -228,9 +234,10 @@ class BillUnregisteredParticipantListAPIView(ListAPIView):
         particular bill."""
 
         bill_uuid = self.kwargs.get("uuid")
-        bill = get_object_or_404(Bill, uuid=bill_uuid)
 
-        return bill.unregistered_participants.all()
+        return BillUnregisteredParticipant.objects.filter(
+            bills__uuid=bill_uuid,
+        )
 
 
 class BillUnregisteredParticipantDataTransferAPIView(APIView):
