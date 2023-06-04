@@ -484,6 +484,7 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
         SUCCESSFUL = "successful", "Successful"
         FAILED = "failed", "Failed"
         REVERSED = "reversed", "Reversed"
+        RETRIED = "retried", "Retried"
 
     amount = models.DecimalField(
         verbose_name="Amount in Kobo or other subunit",
@@ -566,11 +567,19 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
             f" {self.transfer_outcome} type: {self.transfer_type}"
         )
 
+    def _update_outcome(self, transfer_outcome):
+        self.transfer_outcome = transfer_outcome
+        self.save(update_fields=["transfer_outcome"])
+
+    def mark_as_retried(self):
+        self._update_status(self.TransferOutcomeChoices.RETRIED)
+
     @classmethod
     def get_failed_and_reversed_transfers(cls, user):
         relevant_outcomes = (
             cls.TransferOutcomeChoices.FAILED,
             cls.TransferOutcomeChoices.REVERSED,
+            cls.TransferOutcomeChoices.RETRIED,
         )
 
         return (

@@ -22,8 +22,8 @@ from financials.api.serializers import (
     FailedAndReversedPaystackTransfersSerializer,
     PaystackAccountNumberCheckSerializer,
     PaystackBankListSerializer,
-    PaystackTranferRetrySerializer,
     PaystackTransferRecipientListSerializer,
+    PaystackTransferRetrySerializer,
     TransferRecipientCreateSerializer,
     TransferRecipientListSerializer,
     TransferRecipientUpdateDeleteSerializer,
@@ -405,35 +405,44 @@ class FailedAndReversedPaystackTransfersListAPIView(ListAPIView):
         return PaystackTransfer.get_failed_and_reversed_transfers(self.request.user)
 
 
-class PaystackTranferRetryAPIView(APIView):
+class PaystackTransferRetryAPIView(APIView):
     """View for retrying failed and reversed transfers.
 
     Accepts GET and POST requests.
     """
 
-    serializer_class = PaystackTranferRetrySerializer
+    serializer_class = PaystackTransferRetrySerializer
 
     def post(self, request) -> Response:
-        """Creates a new transfer recipient.
+        """Retries a failed or reversed transfer.
 
         Returns:
-            An empty response.
+            A response indicating the status of the retry.
         """
 
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        paystack_transfer_reference = serializer.validated_data.get(
+            "paystack_transfer_reference"
+        )
 
         paystack_transfer_payload = {
             "source": "balance",
             "amount": serializer.validated_data.get("amount"),
             "recipient": serializer.validated_data.get("recipient_code"),
             "reason": serializer.validated_data.get("reason"),
-            "reference": serializer.validated_data.get("paystack_transfer_reference"),
+            "reference": paystack_transfer_reference,
         }
 
         response = TransferRequests.initiate(**paystack_transfer_payload)
 
         if response["status"]:
+            retried_transfer = PaystackTransfer.objects.get(
+                paystack_transfer_reference=paystack_transfer_reference
+            )
+            retried_transfer.mark_as_retried()
+
             return Response(response, status=status.HTTP_200_OK)
 
         else:

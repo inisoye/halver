@@ -213,7 +213,7 @@ class FailedAndReversedPaystackTransfersSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
-class PaystackTranferRetrySerializer(serializers.ModelSerializer):
+class PaystackTransferRetrySerializer(serializers.ModelSerializer):
     class Meta:
         model = PaystackTransfer
         fields = (
