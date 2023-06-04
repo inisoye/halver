@@ -382,7 +382,6 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
     )
 
 
-# TODO This should be carried out in a transaction. With select_for_updates
 def finalize_contribution(request_data, transfer_outcome, final_action_status):
     """Finalizes a contribution by creating a BillTransaction object, a
     PaystackTransfer object, and marking the corresponding BillAction as
