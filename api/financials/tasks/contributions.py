@@ -71,6 +71,12 @@ def record_contribution_transfer_object(request_data, transfer_outcome):
     )
     receiving_user = recipient.user
 
+    if transfer_outcome == PaystackTransfer.TransferOutcomeChoices.FAILED:
+        action.mark_as_failed_transfer()
+
+    if transfer_outcome == PaystackTransfer.TransferOutcomeChoices.REVERSED:
+        action.mark_as_reversed_transfer()
+
     create_paystack_transfer_object(
         request_data=request_data,
         recipient=recipient,
@@ -79,6 +85,7 @@ def record_contribution_transfer_object(request_data, transfer_outcome):
         transfer_outcome=transfer_outcome,
         transfer_type=PaystackTransfer.TransferChoices.CREDITOR_SETTLEMENT,
         action=action,
+        reason=reason,
     )
 
 

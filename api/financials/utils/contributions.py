@@ -255,8 +255,7 @@ def create_contribution_transaction_object(
         "complete_paystack_response": request_data,
     }
 
-    # TODO this should be get or create for idempotency.
-    # Prevent drawbacks of duplicate messages. Get by paystack transaction ref, maybe?
+    # If duplicate transactions are made, they should be recorded.
     new_transaction = PaystackTransaction.objects.create(**paystack_transaction_object)
 
     return new_transaction
@@ -432,6 +431,7 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
         transfer_outcome=transfer_outcome,
         transfer_type=PaystackTransfer.TransferChoices.CREDITOR_SETTLEMENT,
         action=action,
+        reason=reason,
     )
 
     # Obtain Paystack ID of transaction that triggered this contribution
@@ -456,6 +456,4 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
         "paystack_transfer": paystack_transfer_object,
     }
 
-    # TODO this should be get or create for idempotency.
-    # Prevent drawbacks of duplicate messages. Get by paystack transaction ref, maybe?
     BillTransaction.objects.create(**bill_transaction_object)

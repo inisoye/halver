@@ -139,7 +139,6 @@ def process_arrear_contribution_transfer(arrear_id, request_data):
 
     transfer_reference = str(uuid.uuid4())
 
-    # Idempotency should be ensured within this function.
     initiate_contribution_transfer(
         contribution_amount=contribution_amount_in_kobo,
         creditor_default_recipient_code=creditor_default_recipient_code,

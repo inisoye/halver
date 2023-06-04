@@ -22,6 +22,7 @@ from financials.api.serializers import (
     FailedAndReversedPaystackTransfersSerializer,
     PaystackAccountNumberCheckSerializer,
     PaystackBankListSerializer,
+    PaystackTranferRetrySerializer,
     PaystackTransferRecipientListSerializer,
     TransferRecipientCreateSerializer,
     TransferRecipientListSerializer,
@@ -39,6 +40,7 @@ from financials.utils.transfer_recipients import (
 from libraries.paystack.bank_requests import BankRequests
 from libraries.paystack.transaction_requests import TransactionRequests
 from libraries.paystack.transfer_recipient_requests import TransferRecipientRequests
+from libraries.paystack.transfer_requests import TransferRequests
 
 
 class PaystackWebhookHandlerAPIView(APIView):
@@ -401,3 +403,41 @@ class FailedAndReversedPaystackTransfersListAPIView(ListAPIView):
 
     def get_queryset(self):
         return PaystackTransfer.get_failed_and_reversed_transfers(self.request.user)
+
+
+class PaystackTranferRetryAPIView(APIView):
+    """View for retrying failed and reversed transfers.
+
+    Accepts GET and POST requests.
+    """
+
+    serializer_class = PaystackTranferRetrySerializer
+
+    def post(self, request) -> Response:
+        """Creates a new transfer recipient.
+
+        Returns:
+            An empty response.
+        """
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        paystack_transfer_payload = {
+            "source": "balance",
+            "amount": serializer.validated_data.get("amount"),
+            "recipient": serializer.validated_data.get("recipient_code"),
+            "reason": serializer.validated_data.get("reason"),
+            "reference": serializer.validated_data.get("paystack_transfer_reference"),
+        }
+
+        response = TransferRequests.initiate(**paystack_transfer_payload)
+
+        if response["status"]:
+            return Response(response, status=status.HTTP_200_OK)
+
+        else:
+            return format_exception(
+                message=response["message"],
+                status=status.HTTP_400_BAD_REQUEST,
+            )

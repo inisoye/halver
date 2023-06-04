@@ -8,6 +8,7 @@ def create_paystack_transfer_object(
     transfer_type,
     recipient,
     receiving_user,
+    reason=None,
     paying_user=None,
     action=None,
     arrear=None,
@@ -36,10 +37,9 @@ def create_paystack_transfer_object(
 
     paystack_transfer_reference = data.get("reference")
 
-    paystack_transfer_object = {
+    defaults = {
         "amount": amount,
         "amount_in_naira": amount_in_naira,
-        "paystack_transfer_reference": paystack_transfer_reference,
         "uuid": paystack_transfer_reference,
         "recipient": recipient,
         "action": action,
@@ -48,12 +48,18 @@ def create_paystack_transfer_object(
         "receiving_user": receiving_user,
         "transfer_outcome": transfer_outcome,
         "transfer_type": transfer_type,
+        "reason": reason,
         "complete_paystack_response": request_data,
     }
 
-    # TODO this should be get or create for idempotency.
-    # Prevent drawbacks of duplicate messages. Get by paystack transfer ref, maybe?
-    return PaystackTransfer.objects.create(**paystack_transfer_object)
+    transfer, created = PaystackTransfer.objects.update_or_create(
+        paystack_transfer_reference=paystack_transfer_reference,
+        defaults={
+            **defaults,
+        },
+    )
+
+    return transfer
 
 
 def extract_paystack_transaction_id_from_transfer_reason(reason: str):

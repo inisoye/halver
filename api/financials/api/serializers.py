@@ -203,6 +203,7 @@ class FailedAndReversedPaystackTransfersSerializer(serializers.ModelSerializer):
             "modified",
             "paying_user",
             "paystack_transfer_reference",
+            "reason",
             "recipient",
             "total_payment",
             "transfer_outcome",
@@ -210,3 +211,14 @@ class FailedAndReversedPaystackTransfersSerializer(serializers.ModelSerializer):
             "uuid",
         )
         read_only_fields = fields
+
+
+class PaystackTranferRetrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaystackTransfer
+        fields = (
+            "amount",
+            "recipient_code",
+            "reason",
+            "paystack_transfer_reference",
+        )

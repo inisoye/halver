@@ -349,6 +349,9 @@ def generate_long_status_index(all_actions_are_one_type, most_common_status_coun
         BillAction.StatusChoices.PENDING_TRANSFER: (
             f"{bill_status_message_prefix} transfer{plural_suffix} pending"
         ),
+        BillAction.StatusChoices.FAILED_TRANSFER: (
+            f"{bill_status_message_prefix} transfer{plural_suffix} failed"
+        ),
         BillAction.StatusChoices.OVERDUE: (
             f"{bill_status_message_prefix} payment{plural_suffix} overdue"
         ),

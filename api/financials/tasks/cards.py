@@ -126,10 +126,13 @@ def record_card_addition_transfer_object(request_data, transfer_outcome):
     )
     receiving_user = recipient.user
 
+    reason = data.get("reason")
+
     create_paystack_transfer_object(
         request_data=request_data,
         recipient=recipient,
         receiving_user=receiving_user,
         transfer_outcome=transfer_outcome,
         transfer_type=PaystackTransfer.TransferChoices.CARD_ADDITION_REFUND,
+        reason=reason,
     )

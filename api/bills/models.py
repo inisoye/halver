@@ -338,6 +338,8 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
         OVERDUE = "overdue", "Overdue"
         OPTED_OUT = "opted_out", "Opted out"
         PENDING_TRANSFER = "pending_transfer", "Pending transfer"
+        FAILED_TRANSFER = "failed_transfer", "Failed transfer"
+        REVERSED_TRANSFER = "reversed_transfer", "Reversed transfer"
         CANCELLED = "cancelled", "Cancelled"
         # For one-time bills.
         COMPLETED = "completed", "Completed"
@@ -433,6 +435,9 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
 
     def mark_as_failed_transfer(self):
         self._update_status(self.StatusChoices.FAILED_TRANSFER)
+
+    def mark_as_reversed_transfer(self):
+        self._update_status(self.StatusChoices.REVERSED_TRANSFER)
 
     def mark_as_completed(self):
         self._update_status(self.StatusChoices.COMPLETED)

@@ -68,6 +68,11 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
         editable=False,
     )
 
+    class Meta:
+        indexes = [models.Index(fields=["signature"])]
+        verbose_name = "User card"
+        verbose_name_plural = "User cards"
+
     def __str__(self) -> str:
         return (
             f"user: {self.user.full_name}, card: {self.last_4}, "
@@ -87,11 +92,6 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
         """
 
         delete_and_set_newest_as_default(self, "user_card")
-
-    class Meta:
-        indexes = [models.Index(fields=["signature"])]
-        verbose_name = "User card"
-        verbose_name_plural = "User cards"
 
 
 class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
@@ -157,15 +157,15 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         editable=False,
     )
 
-    def __str__(self) -> str:
-        return f"user: {self.user.full_name}, type: {self.recipient_type}, " + (
-            f"bank name: {self.bank_name}" if self.bank_name else ""
-        )
-
     class Meta:
         indexes = [models.Index(fields=["recipient_code"])]
         verbose_name = "User transfer recipient"
         verbose_name_plural = "User transfer recipients"
+
+    def __str__(self) -> str:
+        return f"user: {self.user.full_name}, type: {self.recipient_type}, " + (
+            f"bank name: {self.bank_name}" if self.bank_name else ""
+        )
 
     def set_as_default_recipient(self) -> None:
         """Sets current transfer recipient instance as the default."""
@@ -544,11 +544,19 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
         max_length=50,
         choices=TransferChoices.choices,
     )
+    reason = models.CharField(
+        max_length=200,
+        null=True,
+    )
     complete_paystack_response = models.JSONField(
         editable=False,
     )
 
     class Meta:
+        indexes = [
+            models.Index(fields=["paystack_transfer_reference"]),
+            models.Index(fields=["transfer_outcome"]),
+        ]
         verbose_name = "Paystack transfer"
         verbose_name_plural = "Paystack transfers"
 

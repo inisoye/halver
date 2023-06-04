@@ -171,6 +171,7 @@ def finalize_arrear_contribution(
         transfer_type=PaystackTransfer.TransferChoices.ARREAR_SETTLEMENT,
         action=action,
         arrear=arrear,
+        reason=reason,
     )
 
     # Obtain Paystack ID of transaction that triggered this contribution
