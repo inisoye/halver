@@ -3,7 +3,7 @@ import asyncio
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
-from rest_framework import status
+from rest_framework import serializers, status
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import ListAPIView, ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -20,6 +20,7 @@ from bills.api.permissions import (
 )
 from bills.api.serializers import (
     BillActionResponseUpdateSerializer,
+    BillActionStatusListSerializer,
     BillArrearListSerializer,
     BillArrearResponseUpdateSerializer,
     BillCreateSerializer,
@@ -286,6 +287,31 @@ class BillActionStatusCountAPIView(APIView):
             user_id=request.user.id
         )
         return Response(action_status_counts, status=status.HTTP_200_OK)
+
+
+class BillActionStatusListAPIView(ListAPIView):
+    """View for listing a users actions with a particular status
+    These statuses would be used to show users their standing on each bill.
+
+    Accepts GET requests.
+    """
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = BillActionStatusListSerializer
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ("bill__name",)
+    ordering_fields = ("created",)
+    ordering = ("-created",)
+
+    def get_queryset(self):
+        status = self.request.query_params.get("status")
+
+        if status not in [status.value for status in BillAction.StatusChoices]:
+            raise serializers.ValidationError("Invalid status value")
+
+        return BillAction.get_action_with_bills_by_status(
+            user=self.request.user, status=status
+        )
 
 
 class BillActionResponseUpdateAPIView(APIView):

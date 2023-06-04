@@ -465,6 +465,26 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
             .annotate(count=Count("status"))
         )
 
+    @classmethod
+    def get_action_with_bills_by_status(cls, user, status):
+        return (
+            cls.objects.filter(
+                participant=user,
+                status=status,
+            )
+            .select_related("bill")
+            .only(
+                "contribution",
+                "created",
+                "modified",
+                "status",
+                "total_payment_due",
+                "uuid",
+                "bill__name",
+                "bill__uuid",
+            )
+        )
+
 
 class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
     """Stores a transaction particular completed by a user.

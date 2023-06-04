@@ -332,6 +332,33 @@ class BillActionResponseUpdateSerializer(serializers.ModelSerializer):
         fields = ("has_participant_agreed",)
 
 
+class NestedBillInActionStatusListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bill
+        fields = (
+            "name",
+            "uuid",
+        )
+        read_only_fields = fields
+
+
+class BillActionStatusListSerializer(serializers.ModelSerializer):
+    bill = NestedBillInActionStatusListSerializer()
+
+    class Meta:
+        model = BillAction
+        fields = (
+            "contribution",
+            "created",
+            "modified",
+            "status",
+            "total_payment_due",
+            "uuid",
+            "bill",
+        )
+        read_only_fields = fields
+
+
 class BillArrearResponseUpdateSerializer(serializers.ModelSerializer):
     is_forgiveness = serializers.BooleanField(read_only=True, default=False)
 

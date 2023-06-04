@@ -1,8 +1,8 @@
 from decimal import Decimal
 from uuid import UUID
 
-from django.core.exceptions import ValidationError
 from django.db import transaction
+from rest_framework import serializers
 
 from bills.utils.fees import calculate_all_transaction_fees
 from core.utils.users import get_user_by_id_drf, get_users_by_ids_drf
@@ -37,7 +37,7 @@ def create_bill(bill_model, validated_data, creator):
     creditor = get_user_by_id_drf(creditor_id)
 
     if not creditor.has_default_transfer_recipient:
-        raise ValidationError(
+        raise serializers.ValidationError(
             "A bill's creditor must have a default transfer recipient on their account."
         )
 
@@ -221,11 +221,11 @@ def format_participants_contribution_index(
             contribution,
         ) in participants_contribution_index.items():
             if isinstance(contribution, str) and not contribution.isnumeric():
-                raise ValidationError(
+                raise serializers.ValidationError(
                     "All contribution amounts must be positive numbers"
                 )
             elif isinstance(contribution, (int, float)) and contribution <= 0:
-                raise ValidationError(
+                raise serializers.ValidationError(
                     "All contribution amounts must be positive numbers"
                 )
 
