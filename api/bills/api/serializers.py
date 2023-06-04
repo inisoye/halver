@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from phonenumber_field.serializerfields import PhoneNumberField
@@ -156,7 +158,7 @@ class BillListSerializer(serializers.ModelSerializer):
     def get_is_creditor(self, obj) -> bool:
         return obj.creditor == self.context["request"].user
 
-    def get_status_info(self, obj):
+    def get_status_info(self, obj) -> dict[str, Any]:
         return {
             "most_common_status": obj.most_common_status,
             "most_common_status_count": obj.most_common_status_count,

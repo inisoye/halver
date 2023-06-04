@@ -205,7 +205,6 @@ class FailedAndReversedPaystackTransfersSerializer(serializers.ModelSerializer):
             "paystack_transfer_reference",
             "reason",
             "recipient",
-            "total_payment",
             "transfer_outcome",
             "transfer_type",
             "uuid",

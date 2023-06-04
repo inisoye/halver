@@ -35,7 +35,7 @@ urlpatterns = [
         name="bill-cancel",
     ),
     path(
-        route="transactions/",
+        route="user-transactions/",
         view=UserBillTransactionListAPIView.as_view(),
         name="user-transactions",
     ),
