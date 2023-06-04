@@ -15,6 +15,9 @@ interface ScreenHeaderProps {
   isHeaderTextShown?: boolean;
 }
 
+const screensWithNoBackButton = ['Home'];
+const screensWithLightHeading = ['Home'];
+
 const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
   name,
   isHeaderTextShown = true,
@@ -22,12 +25,12 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
   const navigation = useNavigation();
   const { data: userDetails } = useUserDetails();
 
-  const peculiarScreenNames = { Home: `Welcome ${userDetails?.firstName}` };
+  const peculiarScreenNames = { Home: `Hello ${userDetails?.firstName}` };
   const isScreenNamePeculiar = Object.keys(peculiarScreenNames).includes(name);
   const screenName = isScreenNamePeculiar ? peculiarScreenNames[name] : name;
 
-  const screensWithNoBackButton = ['Home'];
   const hasNoBackButton = screensWithNoBackButton.includes(name);
+  const hasLightHeading = screensWithLightHeading.includes(name);
 
   return (
     <View className="flex-row items-center px-6 py-4" style={gapStyles[16]}>
@@ -42,7 +45,7 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
       </TouchableOpacity>
 
       {isHeaderTextShown && (
-        <Text variant="2xl" weight="bold">
+        <Text color={hasLightHeading ? 'light' : 'default'} variant="2xl" weight="bold">
           {screenName}
         </Text>
       )}

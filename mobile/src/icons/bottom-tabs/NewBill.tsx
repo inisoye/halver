@@ -19,15 +19,10 @@ export const NewBill: React.FunctionComponent<NewBillProps> = ({ ...otherProps }
       xmlns="http://www.w3.org/2000/svg"
       {...otherProps}
     >
-      <StyledRect
-        fill="fill-grey-a-light-700 dark:fill-grey-dark-500"
-        height={44}
-        rx={8}
-        width={44}
-      />
+      <StyledRect fill="fill-apricot-500" height={44} rx={8} width={44} />
       <StyledPath
         d="M34 22a1 1 0 0 1-1 1H23v10a1 1 0 0 1-2 0V23H11a1 1 0 0 1 0-2h10V11a1 1 0 0 1 2 0v10h10a1 1 0 0 1 1 1Z"
-        fill="fill-grey-light-50 dark:fill-grey-dark-950"
+        fill="fill-grey-light-100 dark:fill-grey-light-1000"
       />
     </StyledSvg>
   );
