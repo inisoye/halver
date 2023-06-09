@@ -9,8 +9,7 @@ export type BanksList = z.infer<typeof BanksListSchema>;
 
 export const getBanks = async () => {
   const response = await apiClient.get<BanksList>('/api/v1/financials/banks/');
-  // Not parsed as it is a large dataset.
-  return response.data;
+  return response.data; // Not parsed as it is a large dataset.
 };
 
 export const useBanks = () => {

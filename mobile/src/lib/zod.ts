@@ -74,12 +74,14 @@ export const BillCreatorCreditorParticipant = z.object({
   uuid: z.string().uuid(),
 });
 
-export const BillDetailActionStatusEnum = z.enum([
+export const BillActionStatusEnum = z.enum([
   'unregistered',
   'pending',
   'overdue',
   'opted_out',
   'pending_transfer',
+  'failed_transfer',
+  'reversed_transfer',
   'cancelled',
   'completed',
   'ongoing',
@@ -102,7 +104,7 @@ export const BillDetailAction = z.object({
   created: z.string().datetime(),
   modified: z.string().datetime(),
   participant: BillCreatorCreditorParticipant,
-  status: BillDetailActionStatusEnum,
+  status: BillActionStatusEnum,
   total_payment_due: z
     .string()
     .regex(/^-?\d{0,15}(?:\.\d{0,4})?$/)
@@ -418,3 +420,10 @@ export const UserCardAdditionResponse = z.object({
     reference: z.string(),
   }),
 });
+
+export const BillActionStatusCount = z.object({
+  status: BillActionStatusEnum,
+  count: z.number().int(),
+});
+
+export const BillActionStatusCountList = z.array(BillActionStatusCount);

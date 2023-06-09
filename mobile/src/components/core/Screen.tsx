@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useUserDetails } from '@/features/account/api';
@@ -11,17 +11,18 @@ import { cn, isIOS } from '@/utils';
 import { Text } from './Text';
 
 interface ScreenHeaderProps {
-  name: string;
+  customScreenName?: string;
   isHeaderTextShown?: boolean;
 }
 
 const screensWithNoBackButton = ['Home'];
-const screensWithLightHeading = ['Home'];
+const screensWithLightHeading = ['Homee'];
 
 const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
-  name,
+  customScreenName,
   isHeaderTextShown = true,
 }) => {
+  const { name } = useRoute();
   const navigation = useNavigation();
   const { data: userDetails } = useUserDetails();
 
@@ -46,7 +47,7 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
 
       {isHeaderTextShown && (
         <Text color={hasLightHeading ? 'light' : 'default'} variant="2xl" weight="bold">
-          {screenName}
+          {customScreenName || screenName}
         </Text>
       )}
     </View>
@@ -55,35 +56,47 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
 
 interface ScreenProps {
   children: React.ReactNode;
+  className?: string;
+  customScreenName?: string;
+  hasNoIOSBottomInset?: boolean;
+  hasVerticalStack?: boolean;
   isHeaderShown?: boolean;
   isHeaderTextShown?: boolean;
-  hasVerticalStack?: boolean;
-  hasNoIOSBottomInset?: boolean;
-  className?: string;
+  isModal?: boolean;
+  style?: StyleProp<ViewStyle>;
 }
 
 export const Screen: React.FunctionComponent<ScreenProps> = ({
   children,
+  className,
+  customScreenName,
+  hasNoIOSBottomInset = false, // Added to make sticky buttons sit properly on IOS
   isHeaderShown = true,
   isHeaderTextShown = true,
-  className,
-  hasNoIOSBottomInset = false, // Added to make sticky buttons sit properly on IOS
+  isModal = false,
+  style,
 }) => {
   const insets = useSafeAreaInsets();
-  const { name } = useRoute();
 
   return (
     <View
       className={cn('flex-1 bg-main-bg-light dark:bg-grey-dark-50', className)}
-      style={{
-        paddingTop: insets.top,
-        paddingBottom: hasNoIOSBottomInset && isIOS() ? undefined : insets.bottom,
-        paddingLeft: insets.left,
-        paddingRight: insets.right,
-      }}
+      style={[
+        // eslint-disable-next-line react-native/no-inline-styles
+        {
+          paddingTop: isModal && isIOS() ? 20 : insets.top,
+          paddingBottom: hasNoIOSBottomInset && isIOS() ? undefined : insets.bottom,
+          paddingLeft: insets.left,
+          paddingRight: insets.right,
+        },
+        style,
+      ]}
     >
       {isHeaderShown && (
-        <ScreenHeader isHeaderTextShown={isHeaderTextShown} name={name} />
+        <ScreenHeader
+          customScreenName={customScreenName}
+          isHeaderTextShown={isHeaderTextShown}
+        />
       )}
 
       {children}

@@ -18,7 +18,10 @@ export const FullScreenLoader: React.FunctionComponent<FullScreenLoaderProps> = 
   return (
     <Modal animationType="fade" key={message} transparent={true} visible={isVisible}>
       <View
-        className={cn('z-10 flex-1 items-center justify-center', !isVisible && 'hidden')}
+        className={cn(
+          'z-10 flex-1 items-center justify-center',
+          !isVisible && 'hidden',
+        )}
         style={{
           backgroundColor: colors['grey-a-light'][900],
         }}

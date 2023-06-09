@@ -66,6 +66,7 @@ export const allStaticQueryKeys = {
   getBanks: ['banks'],
   getUserDetails: ['user-details'],
   getCardAdditionURL: ['card-addition-url'],
+  getActionStatusCounts: ['action-status-counts'],
 };
 
 /**

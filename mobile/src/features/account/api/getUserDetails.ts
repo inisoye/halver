@@ -33,12 +33,16 @@ export const useUserDetails = () => {
         deleteAxiosDefaultToken();
 
         const errorMessage = formatAxiosErrorMessage(error);
-        Alert.alert('Error', `Your account details could not be obtained. ${errorMessage}`, [
-          {
-            text: 'OK',
-            style: 'default',
-          },
-        ]);
+        Alert.alert(
+          'Error',
+          `Your account details could not be obtained. ${errorMessage}`,
+          [
+            {
+              text: 'OK',
+              style: 'default',
+            },
+          ],
+        );
       }
     },
   });

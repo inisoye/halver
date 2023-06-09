@@ -49,7 +49,10 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
         style={[{ gap: 12 }]} // eslint-disable-line react-native/no-inline-styles
       >
         <Image
-          className="h-10 w-10 rounded-lg bg-white"
+          className={cn(
+            'h-10 w-10 rounded-lg bg-white',
+            !item.logo && 'bg-grey-light-600 dark:bg-grey-dark-1000',
+          )}
           contentFit="contain"
           key={item.name}
           source={item.logo}
@@ -86,11 +89,11 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
     setFalse: closeModal,
   } = useBooleanStateControl();
   const { control: controlForSelectFilter, resetField } = useForm();
-  const selectFilterValue = useWatch({ control: controlForSelectFilter });
-  // const flashListRef = React.useRef(null);
+  const selectFilterObject = useWatch({ control: controlForSelectFilter });
+  const selectFilterValue = selectFilterObject.bankFilter;
 
   const filteredBanks = banks?.filter(bank =>
-    bank.name.toLowerCase().includes(selectFilterValue.bankFilter?.toLowerCase() || ''),
+    bank.name.toLowerCase().includes(selectFilterValue?.toLowerCase() || ''),
   );
 
   const resetBankFilter = () => resetField('bankFilter');
@@ -117,6 +120,8 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
     ),
     [selectedBank?.id], // eslint-disable-line react-hooks/exhaustive-deps
   );
+
+  const noBankMatchesFilter = filteredBanks?.length === 0;
 
   return (
     <View className={className}>
@@ -170,6 +175,12 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
               />
             </View>
           </View>
+
+          {noBankMatchesFilter && (
+            <Text className="px-6 py-6" color="light">
+              We found no banks matching "{selectFilterValue}"
+            </Text>
+          )}
 
           <FlashList
             data={filteredBanks}

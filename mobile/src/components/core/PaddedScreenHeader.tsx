@@ -18,7 +18,10 @@ export const PaddedScreenHeader: React.FunctionComponent<PaddedScreenHeaderProps
   hasExtraPadding,
 }) => {
   return (
-    <View className={cn('mt-5 p-2 px-6', hasExtraPadding && 'pt-8')} style={gapStyles[8]}>
+    <View
+      className={cn('mt-5 p-2 px-6', hasExtraPadding && 'pt-8')}
+      style={gapStyles[8]}
+    >
       <Text variant="2xl" weight="bold">
         {heading}
       </Text>

@@ -1,22 +1,19 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { Button, View } from 'react-native';
+import { View } from 'react-native';
 
-import { Screen, Text } from '@/components';
-import { showToast } from '@/lib/root-toast';
+import { Screen } from '@/components';
+import { ActionStatusCounts } from '@/features/home';
+import { AppRootStackParamList } from '@/navigation';
 
-export const Home: React.FunctionComponent = () => {
+type HomeProps = NativeStackScreenProps<AppRootStackParamList, 'Home'>;
+
+export const Home = ({ navigation }: HomeProps) => {
   return (
-    <>
-      <Screen hasNoIOSBottomInset>
-        <View className="flex-1 p-2 px-6">
-          <Text>This is the home</Text>
-
-          <Button
-            title="Launch pharlap toast"
-            onPress={() => showToast('This is the toast', 'pharlap')}
-          />
-        </View>
-      </Screen>
-    </>
+    <Screen hasNoIOSBottomInset>
+      <View className="flex-1 p-2 px-6">
+        <ActionStatusCounts navigation={navigation} />
+      </View>
+    </Screen>
   );
 };

@@ -145,7 +145,7 @@ export const BottomTabNavigator = () => {
             options={{
               title: label,
               tabBarIconStyle: {
-                marginTop: isMiddleItem ? 6 : 0,
+                marginTop: isMiddleItem ? 8 : 0,
               },
               tabBarIcon: ({ focused }) => (icon ? icon({ focused }) : undefined),
               tabBarLabel: ({ focused }) =>
