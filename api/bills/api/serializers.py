@@ -344,6 +344,11 @@ class NestedBillInActionStatusListSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
+class BillActionStatusCountSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(choices=BillAction.StatusChoices.choices)
+    count = serializers.IntegerField()
+
+
 class BillActionStatusListSerializer(serializers.ModelSerializer):
     bill = NestedBillInActionStatusListSerializer()
 

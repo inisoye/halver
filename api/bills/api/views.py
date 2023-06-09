@@ -20,6 +20,7 @@ from bills.api.permissions import (
 )
 from bills.api.serializers import (
     BillActionResponseUpdateSerializer,
+    BillActionStatusCountSerializer,
     BillActionStatusListSerializer,
     BillArrearListSerializer,
     BillArrearResponseUpdateSerializer,
@@ -281,6 +282,8 @@ class BillActionStatusCountAPIView(APIView):
 
     Accepts GET requests.
     """
+
+    serializer_class = BillActionStatusCountSerializer
 
     def get(self, request):
         action_status_counts = BillAction.get_action_status_counts_for_user(
