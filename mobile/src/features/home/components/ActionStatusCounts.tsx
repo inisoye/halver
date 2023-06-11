@@ -107,7 +107,7 @@ const NewBillButton: React.FunctionComponent<NewBillButtonProps> = ({ navigation
 //   },
 //   {
 //     status: 'overdue',
-//     count: 0,
+//     count: 1,
 //   },
 //   {
 //     status: 'ongoing',
@@ -153,7 +153,7 @@ export const ActionStatusCounts: React.FunctionComponent<ActionStatusCountsProps
         <HalverTinyIcon />
       </View>
 
-      <View className="flex-row flex-wrap" style={gapStyles[12]}>
+      <View className="mb-10 flex-row flex-wrap" style={gapStyles[12]}>
         <ActionStatusButton
           count={overdue ?? 0}
           disabled={!overdue}

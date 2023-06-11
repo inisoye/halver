@@ -9,8 +9,7 @@ import { cn } from '@/utils';
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const buttonSizes = {
-  default:
-    'w-full flex-row items-center justify-center rounded px-6 py-3 disabled:opacity-50',
+  default: 'flex-row items-center justify-center rounded px-6 py-3 disabled:opacity-50',
   sm: 'py-2 px-4',
   xs: 'py-1.5 px-3',
 };
@@ -42,13 +41,14 @@ export interface ButtonProps extends PressableProps {
   className?: string;
   color?: keyof typeof buttonColors;
   disabled?: boolean;
+  isFullWidth?: boolean;
   isHapticsEnabled?: boolean;
   isTextContentOnly: boolean;
   onPress: () => void;
   pressableClassName?: string;
   size?: keyof typeof buttonSizes;
-  textClassName?: string;
   style?: ViewStyle;
+  textClassName?: string;
 }
 
 export const Button: React.FunctionComponent<ButtonProps> = ({
@@ -56,13 +56,14 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   className,
   color = 'casal',
   disabled = false,
+  isFullWidth = true,
   isHapticsEnabled = true,
   isTextContentOnly = true,
   onPress,
   pressableClassName,
   size = 'default',
-  textClassName = 'default',
   style,
+  textClassName = 'default',
   ...otherProps
 }) => {
   const { animatedStyle, handlePressIn, handlePressOut } = useButtonAnimation({
@@ -84,6 +85,7 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
         buttonSizes.default,
         buttonSizes[size],
         buttonColors[color],
+        isFullWidth && 'w-full',
         className,
       )}
       disabled={disabled}
