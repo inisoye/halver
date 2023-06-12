@@ -26,7 +26,7 @@ export const CloseModal: React.FunctionComponent<CloseModalProps> = ({
       <StyledCircle
         cx={20}
         cy={20}
-        fill="fill-grey-light-300 dark:fill-grey-dark-300"
+        fill="fill-grey-light-600 dark:fill-grey-dark-300"
         r={20}
       />
       <StyledPath

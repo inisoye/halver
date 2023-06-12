@@ -24,8 +24,8 @@ export const buttonColors = {
   default: '',
   apricot: 'bg-apricot-600 dark:bg-apricot',
   casal: 'bg-casal',
-  pharlap: 'bg-pharlap-700 dark:bg-pharlap',
-  neutral: 'bg-grey-light-200 dark:bg-grey-dark-200',
+  pharlap: 'bg-pharlap-600 dark:bg-pharlap',
+  neutral: 'bg-grey-light-100 dark:bg-grey-dark-200',
 };
 
 export const buttonTextColors = {

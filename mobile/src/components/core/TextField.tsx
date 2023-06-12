@@ -59,7 +59,7 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
   return (
     <View className="mt-1.5 flex-row" style={gapStyles[4]}>
       {(!!prefixText || !!prefixComponent) && (
-        <View className="justify-center rounded bg-grey-light-200 px-3 dark:bg-grey-dark-200">
+        <View className="justify-center rounded bg-grey-light-100 px-3 dark:bg-grey-dark-200">
           {!!prefixText && <Text color="light">{prefixText}</Text>}
           {!!prefixComponent && prefixComponent}
         </View>
@@ -72,7 +72,7 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
           <TextInput
             autoFocus={autoFocus}
             className={cn(
-              'flex-1 rounded bg-grey-light-200 p-3 px-4 font-sans-medium text-[16px] text-grey-light-1000 dark:bg-grey-dark-200 dark:text-grey-dark-1000',
+              'flex-1 rounded bg-grey-light-100 p-3 px-4 font-sans-medium text-[16px] text-grey-light-1000 dark:bg-grey-dark-200 dark:text-grey-dark-1000',
               className,
             )}
             inputAccessoryViewID={inputAccessoryViewID}
@@ -105,7 +105,7 @@ export const TextFieldError: React.FunctionComponent<TextFieldErrorProps> = ({
 }) => {
   return (
     <Animated.View
-      className="mt-1.5 overflow-hidden rounded-sm bg-red-700 px-2 py-1 dark:bg-red-dark-700"
+      className="mt-1.5 overflow-hidden rounded-sm bg-red-800 px-2 py-1 dark:bg-red-dark-600"
       entering={FadeIn}
       exiting={FadeOut}
     >

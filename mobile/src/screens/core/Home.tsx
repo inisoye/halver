@@ -21,7 +21,7 @@ export const Home = ({ navigation }: HomeProps) => {
           </Text>
 
           <Text className="mb-6 max-w-[190px]" color="light" variant="sm">
-            You can invite a maximum of sixteen people to it with.
+            You can invite a maximum of sixteen people to it.
           </Text>
 
           <HalverMillipede className="mb-16 w-full" />
@@ -33,7 +33,7 @@ export const Home = ({ navigation }: HomeProps) => {
             size="sm"
             isTextContentOnly
             onPress={() => {
-              navigation.push('Bill Amount');
+              navigation.push('Bill Details');
             }}
           >
             Get started

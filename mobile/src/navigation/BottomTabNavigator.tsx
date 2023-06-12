@@ -16,7 +16,7 @@ import {
   HomeStackNavigator,
   TransactionsStackNavigator,
 } from '@/navigation/stacks';
-import { BillAmountPlaceholder } from '@/screens';
+import { BillDetailsPlaceholder } from '@/screens';
 import { colors } from '@/theme';
 import { cn, isIOS } from '@/utils';
 
@@ -76,8 +76,8 @@ const tabs: TabType[] = [
   },
   {
     name: 'Bill Amount Placeholder',
-    component: BillAmountPlaceholder as React.FunctionComponent,
-    label: 'BillAmountPlaceholder',
+    component: BillDetailsPlaceholder as React.FunctionComponent,
+    label: 'BillDetailsPlaceholder',
     icon: NewBillIcon,
   },
   {
@@ -137,7 +137,7 @@ export const BottomTabNavigator = () => {
               tabPress: event => {
                 if (isMiddleItem) {
                   event.preventDefault();
-                  navigation.navigate('Bill Amount');
+                  navigation.navigate('Bill Details');
                 }
               },
             })}

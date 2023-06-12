@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
-import { BillAmount, BillDetails, BillsByStatus } from '@/screens';
+import { BillDetails, BillsByStatus } from '@/screens';
 
 import { BottomTabNavigator } from './BottomTabNavigator';
 
@@ -26,13 +26,6 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
       />
 
       <AppRootStack.Group>
-        <AppRootStack.Screen
-          component={BillAmount}
-          name="Bill Amount"
-          options={{
-            headerShown: false,
-          }}
-        />
         <AppRootStack.Screen
           component={BillDetails}
           name="Bill Details"

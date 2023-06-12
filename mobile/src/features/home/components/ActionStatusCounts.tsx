@@ -90,7 +90,7 @@ const NewBillButton: React.FunctionComponent<NewBillButtonProps> = ({ navigation
       className="flex-grow basis-[48.2%] items-center justify-center rounded-lg bg-apricot-50 p-4 dark:bg-grey-dark-200"
       style={[gapStyles[16], animatedStyle]}
       onPress={() => {
-        navigation.push('Bill Amount');
+        navigation.push('Bill Details');
       }}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}

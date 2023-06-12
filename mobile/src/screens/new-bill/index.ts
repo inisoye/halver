@@ -1,3 +1,2 @@
-export * from './BillAmount';
-export * from './BillAmountPlaceholder';
+export * from './BillDetailsPlaceholder';
 export * from './BillDetails';

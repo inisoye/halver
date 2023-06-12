@@ -37,10 +37,18 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
 
   return (
     <RNModal animationType="slide" transparent={true} visible={isModalOpen}>
-      <View className={cn('flex-1 justify-end bg-main-bg-light dark:bg-[#0D0D0D]', className)}>
+      <View
+        className={cn(
+          'flex-1 justify-end bg-main-bg-light dark:bg-[#0D0D0D]',
+          className,
+        )}
+      >
         <View
           className="mt-auto flex-row items-center justify-between  py-4"
-          style={[{ marginTop: isIOS() ? Constants.statusBarHeight : undefined }, gapStyles[16]]}
+          style={[
+            { marginTop: isIOS() ? Constants.statusBarHeight : undefined },
+            gapStyles[16],
+          ]}
         >
           <View className="ml-6 w-full max-w-[70%]">
             <Text variant={hasLargeHeading ? '2xl' : 'xl'} weight="bold">

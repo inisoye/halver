@@ -3,11 +3,11 @@ import { View } from 'react-native';
 
 import { Screen, Text } from '@/components';
 
-export const BillAmountPlaceholder: React.FunctionComponent = () => {
+export const BillDetailsPlaceholder: React.FunctionComponent = () => {
   return (
     <Screen>
       <View className="p-2 px-6 opacity-0">
-        <Text>This is the bill amount placeholder screen</Text>
+        <Text>This is the bill details placeholder screen</Text>
       </View>
     </Screen>
   );
