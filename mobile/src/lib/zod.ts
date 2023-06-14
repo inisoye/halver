@@ -42,6 +42,26 @@ export const BillUnregisteredParticipantCreate = z.object({
   uuid: z.string().uuid(),
 });
 
+export const BillCreateMMKV = z.object({
+  created: z.string().datetime().optional(),
+  creator: z.number().int().optional(),
+  creditorId: z.string().uuid().optional(),
+  currencyCode: z.string().max(3).optional(),
+  currencyName: z.string().max(100).optional(),
+  currencySymbol: z.string().max(10).optional(),
+  deadline: z.date().nullish(),
+  evidence: z.string().url().nullish(),
+  firstChargeDate: z.date().nullish(),
+  interval: IntervalEnum,
+  modified: z.string().datetime().optional(),
+  name: z.string().max(100),
+  notes: z.string().nullish().optional(),
+  participantsContributionIndex: z.record(z.number()).optional(),
+  totalAmountDue: z.string().regex(/^-?\d{0,15}(?:\.\d{0,4})?$/),
+  unregisteredParticipants: z.array(BillUnregisteredParticipantCreate).optional(),
+  uuid: z.string().uuid().optional(),
+});
+
 export const BillCreate = z.object({
   created: z.string().datetime(),
   creator: z.number().int(),
@@ -51,12 +71,12 @@ export const BillCreate = z.object({
   currencySymbol: z.string().max(10).optional(),
   deadline: z.string().datetime().nullish(),
   evidence: z.string().url().nullish(),
-  first_charge_date: z.string().datetime().nullish(),
+  firstChargeDate: z.string().datetime().nullish(),
   interval: IntervalEnum.optional(),
   modified: z.string().datetime(),
   name: z.string().max(100),
   notes: z.string().nullish(),
-  participantsContribution_index: z.record(z.number()).optional(),
+  participantsContributionIndex: z.record(z.number()).optional(),
   totalAmountDue: z.string().regex(/^-?\d{0,15}(?:\.\d{0,4})?$/),
   unregisteredParticipants: z.array(BillUnregisteredParticipantCreate).optional(),
   uuid: z.string().uuid(),

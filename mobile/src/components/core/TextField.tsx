@@ -18,7 +18,7 @@ export const TextFieldLabel: React.FunctionComponent<TextFieldLabelProps> = ({
   label,
 }) => {
   return (
-    <Text className={className} color="light" variant="sm">
+    <Text className={className} variant="sm">
       {label}
     </Text>
   );
@@ -68,7 +68,7 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
       <Controller
         control={control}
         name={name}
-        render={({ field: { onChange, onBlur, value } }) => (
+        render={({ field: { onChange, onBlur, value, ref } }) => (
           <TextInput
             autoFocus={autoFocus}
             className={cn(
@@ -80,9 +80,10 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
             placeholder={placeholder}
             placeholderTextColor={
               scheme === 'light'
-                ? colors['grey-a-light'][800]
-                : colors['grey-a-dark'][800]
+                ? colors['grey-a-light'][700]
+                : colors['grey-a-dark'][700]
             }
+            ref={ref}
             value={value}
             onBlur={onBlur}
             onChangeText={onChange}

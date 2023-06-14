@@ -1,18 +1,27 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { ScrollView, View } from 'react-native';
+import { useMMKVObject } from 'react-native-mmkv';
+import Animated, { FadeInUp, FadeOutDown } from 'react-native-reanimated';
 import { z } from 'zod';
 
 import {
   KeyboardStickyButton,
+  RadioSelector,
   Screen,
   TextField,
   TextFieldError,
   TextFieldLabel,
 } from '@/components';
-import { BillDeadlineSelector } from '@/features/new-bill';
+import {
+  BillCreationMMKVPayload,
+  BillDeadlineSelector,
+  BillFirstChargeDateSelector,
+} from '@/features/new-bill';
+import { allMMKVKeys } from '@/lib/mmkv';
+import { IntervalEnum } from '@/lib/zod';
 import { AppRootStackParamList } from '@/navigation';
 import { gapStyles } from '@/theme';
 
@@ -24,7 +33,8 @@ const BillDetailsFormSchema = z.object({
       required_error: 'A bill amount is required.',
       invalid_type_error: 'The bill amount is required and must be a number.',
     })
-    .min(500, { message: 'The total bill amount must be at least 500 Naira.' }),
+    .min(500, { message: 'The total bill amount must be at least 500 Naira.' })
+    .transform(amount => amount.toString()),
   name: z
     .string()
     .max(100, { message: 'Your bill name should be less than 100 characters.' }),
@@ -36,15 +46,33 @@ const BillDetailsFormSchema = z.object({
     .refine(data => data > new Date(), {
       message: "Your bill's deadline must be in the future.",
     }),
+  interval: IntervalEnum,
+  firstChargeDate: z.coerce
+    .date({
+      required_error: "The bill's first charge date is required.",
+      invalid_type_error: 'The first charge date must be a valid date.',
+    })
+    .refine(data => data > new Date(), {
+      message: "Your bill's first charge date must be in the future.",
+    })
+    .optional(),
 });
 
 export type BillDetailsFormValues = z.infer<typeof BillDetailsFormSchema>;
 
-export const BillDetails: React.FunctionComponent<BillAmountProps> = (
-  {
-    // navigation,
-  },
-) => {
+export const intervalOptions = [
+  { value: 'none', name: 'One time' },
+  { value: 'daily', name: 'Daily' },
+  { value: 'weekly', name: 'Weekly' },
+  { value: 'monthly', name: 'Monthly' },
+  { value: 'quarterly', name: 'Quarterly' },
+  { value: 'biannually', name: 'Biannually' },
+  { value: 'annually', name: 'Annually' },
+] as const;
+
+export const BillDetails: React.FunctionComponent<BillAmountProps> = ({
+  navigation,
+}) => {
   const {
     control,
     handleSubmit,
@@ -52,24 +80,34 @@ export const BillDetails: React.FunctionComponent<BillAmountProps> = (
   } = useForm<BillDetailsFormValues>({
     defaultValues: {
       totalAmountDue: undefined,
+      name: undefined,
       deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+      interval: intervalOptions[0].value,
+      firstChargeDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
     },
     resolver: zodResolver(BillDetailsFormSchema),
   });
 
+  const [_newBillPayload, setNewBillPayload] = useMMKVObject<BillCreationMMKVPayload>(
+    allMMKVKeys.newBillPayload,
+  );
+
+  const intervalValue = useWatch({ control, name: 'interval' });
+  const isRecurringBill = intervalValue !== 'none';
+
   const onBillDetailsSubmit = (submittedData: BillDetailsFormValues) => {
-    // eslint-disable-next-line no-console
-    console.log(submittedData);
+    setNewBillPayload(submittedData);
+    navigation.navigate('Bill Participants');
   };
 
   return (
     <Screen hasNoIOSBottomInset>
       <ScrollView
         className="p-2 px-6"
-        keyboardDismissMode="interactive"
+        keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
       >
-        <View style={gapStyles[28]}>
+        <View className="pb-20" style={gapStyles[28]}>
           <View>
             <TextFieldLabel label="How much is the bill?" />
 
@@ -119,6 +157,44 @@ export const BillDetails: React.FunctionComponent<BillAmountProps> = (
               />
             )}
           </View>
+
+          <View>
+            <TextFieldLabel label="Is this a one-time or periodic bill?" />
+
+            <Controller
+              control={control}
+              name="interval"
+              render={({ field: { onChange, value } }) => {
+                return (
+                  <RadioSelector
+                    data={intervalOptions}
+                    option={value}
+                    setOption={onChange}
+                  />
+                );
+              }}
+            />
+
+            {errors.interval && (
+              <TextFieldError
+                errorMessage={errors.interval?.message}
+                fieldName="your bill's interval"
+              />
+            )}
+          </View>
+
+          {isRecurringBill && (
+            <Animated.View entering={FadeInUp} exiting={FadeOutDown}>
+              <BillFirstChargeDateSelector control={control} />
+
+              {errors.firstChargeDate && (
+                <TextFieldError
+                  errorMessage={errors.firstChargeDate?.message}
+                  fieldName="your bill's first charge date"
+                />
+              )}
+            </Animated.View>
+          )}
         </View>
       </ScrollView>
 

@@ -33,7 +33,7 @@ export const Home = ({ navigation }: HomeProps) => {
             size="sm"
             isTextContentOnly
             onPress={() => {
-              navigation.push('Bill Details');
+              navigation.navigate('Bill Details');
             }}
           >
             Get started

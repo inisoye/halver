@@ -24,4 +24,5 @@ module.exports = {
   importOrderCombineTypeAndValueImports: true,
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
+  tailwindAttributes: ['textClassName'],
 };

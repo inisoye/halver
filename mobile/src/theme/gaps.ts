@@ -22,4 +22,7 @@ export const gapStyles = StyleSheet.create({
   28: {
     gap: 28,
   },
+  32: {
+    gap: 32,
+  },
 });

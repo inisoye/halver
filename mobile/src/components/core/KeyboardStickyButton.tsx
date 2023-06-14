@@ -19,7 +19,7 @@ import { cn, isIOS } from '@/utils';
 import {
   buttonColors,
   ButtonProps,
-  buttonSizes,
+  // buttonSizes,
   buttonTextColors,
   buttonTextSizes,
 } from './Button';
@@ -29,6 +29,12 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 type KeyboardStickyButtonProps = ButtonProps;
 
 const absoluteBottomValue = isIOS() ? 40 : 28;
+
+export const stickyButtonSizes = {
+  default: 'flex-row items-center justify-center px-6 py-3 disabled:opacity-50',
+  sm: 'py-2 px-4',
+  xs: 'py-1.5 px-3',
+};
 
 export const KeyboardStickyButton: React.FunctionComponent<
   KeyboardStickyButtonProps
@@ -57,7 +63,7 @@ export const KeyboardStickyButton: React.FunctionComponent<
     disabled,
   });
 
-  const buttonContainerPaddingHorizontalValue = useSharedValue(12);
+  const buttonContainerPaddingHorizontalValue = useSharedValue(24);
   const buttonContainerPaddingValue = useSharedValue(0);
   const buttonContainerBottomValue = useSharedValue(absoluteBottomValue);
 
@@ -74,6 +80,7 @@ export const KeyboardStickyButton: React.FunctionComponent<
   const buttonAnimatedStyle = useAnimatedStyle(() => {
     return {
       borderRadius: buttonBorderRadiusValue.value,
+      borderBottomLeftRadius: buttonBorderRadiusValue.value,
     };
   });
 
@@ -85,7 +92,7 @@ export const KeyboardStickyButton: React.FunctionComponent<
   });
 
   useSoftInputHidden(() => {
-    buttonContainerPaddingHorizontalValue.value = withTiming(12);
+    buttonContainerPaddingHorizontalValue.value = withTiming(24);
     buttonContainerPaddingValue.value = withTiming(0);
     buttonContainerBottomValue.value = withTiming(absoluteBottomValue);
     buttonBorderRadiusValue.value = withTiming(4);
@@ -107,8 +114,8 @@ export const KeyboardStickyButton: React.FunctionComponent<
       <AnimatedPressable
         className={cn(
           pressableClassName,
-          buttonSizes.default,
-          buttonSizes[size],
+          stickyButtonSizes.default,
+          stickyButtonSizes[size],
           buttonColors[color],
         )}
         disabled={disabled}

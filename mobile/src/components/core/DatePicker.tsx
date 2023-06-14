@@ -1,5 +1,7 @@
-// Custom date picker component.
-// Built as a modification of: https://github.com/DieTime/react-native-date-picker
+/**
+ *  Custom date picker component.
+ *  Built with modifications on: https://github.com/DieTime/react-native-date-picker
+ */
 
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef, useState } from 'react';
@@ -230,7 +232,7 @@ const DateBlock: React.FC<DateBlockProps> = ({
 
 const formatAsText = ['Year', 'Month', 'Day'];
 
-const DatePicker: React.FC<DatePickerProps> = ({
+export const DatePicker: React.FC<DatePickerProps> = ({
   value,
   onChange,
   height,
@@ -283,6 +285,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
         date.setFullYear(digit);
         break;
     }
+
+    // Set to Midnigght UTC
+    date.setUTCHours(0, 0, 0, 0);
 
     onChange(date);
   };
@@ -357,5 +362,3 @@ const DatePicker: React.FC<DatePickerProps> = ({
     </View>
   );
 };
-
-export default DatePicker;

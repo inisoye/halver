@@ -5,14 +5,17 @@ import { ScrollView, View } from 'react-native';
 import { KeyboardStickyButton, Screen, Text } from '@/components';
 import { AppRootStackParamList } from '@/navigation';
 
-type BillAmountProps = NativeStackScreenProps<AppRootStackParamList, 'Bill Amount'>;
+type BillParticipantsProps = NativeStackScreenProps<
+  AppRootStackParamList,
+  'Bill Participants'
+>;
 
-export const BillAmount = ({ navigation }: BillAmountProps) => {
+export const BillParticipants = ({ navigation }: BillParticipantsProps) => {
   return (
     <Screen hasNoIOSBottomInset>
       <ScrollView keyboardDismissMode="interactive">
         <View className="p-2 px-6">
-          <Text>This is the bill amount</Text>
+          <Text>This is bill participants</Text>
         </View>
       </ScrollView>
 

@@ -3,12 +3,12 @@ import * as React from 'react';
 import Svg, { Path } from 'react-native-svg';
 import { ISvgProps } from 'svg.types';
 
-type SearchProps = ISvgProps;
+type RadioTickProps = ISvgProps;
 
 const StyledSvg = styled(Svg, { classProps: ['fill', 'stroke'] });
 const StyledPath = styled(Path, { classProps: ['fill', 'stroke'] });
 
-export const Search: React.FunctionComponent<SearchProps> = ({
+export const RadioTick: React.FunctionComponent<RadioTickProps> = ({
   className,
   ...props
 }) => {
@@ -16,15 +16,15 @@ export const Search: React.FunctionComponent<SearchProps> = ({
     <StyledSvg
       className={className}
       fill="none"
-      height={20}
-      viewBox="0 0 20 20"
-      width={20}
+      height={9}
+      viewBox="0 0 13 9"
+      width={13}
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <StyledPath
-        d="m17.945 17.055-3.383-3.375a7.203 7.203 0 1 0-.882.883l3.375 3.382a.64.64 0 0 0 .89 0 .633.633 0 0 0 0-.89ZM3.125 9.063A5.938 5.938 0 1 1 9.063 15a5.946 5.946 0 0 1-5.938-5.938Z"
-        fill="fill-grey-light-800 dark:fill-grey-dark-800"
+        d="M4.251 8.751a.763.763 0 0 1-.531-.218l-3.5-3.5A.751.751 0 0 1 1.283 3.97L4.25 6.939 10.721.47a.75.75 0 0 1 1.224.819.751.751 0 0 1-.162.244l-7 7a.763.763 0 0 1-.532.218Z"
+        fill="fill-grey-light-50 dark:fill-grey-dark-50"
       />
     </StyledSvg>
   );

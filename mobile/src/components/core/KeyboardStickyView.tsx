@@ -1,6 +1,5 @@
 import React from 'react';
 import { KeyboardAvoidingView, View, ViewStyle } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { cn } from '@/utils';
 
@@ -24,7 +23,10 @@ export const KeyboardStickyView: React.FunctionComponent<KeyboardStickyViewProps
     <>
       <KeyboardAvoidingView
         behavior="padding"
-        className={cn('absolute bottom-10 w-full bg-main-bg-light dark:bg-grey-dark-50', className)}
+        className={cn(
+          'absolute bottom-10 w-full bg-main-bg-light dark:bg-grey-dark-50',
+          className,
+        )}
         style={style}
       >
         {children}
