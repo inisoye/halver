@@ -1,13 +1,20 @@
 import * as React from 'react';
 import { Control, Controller, useWatch } from 'react-hook-form';
-import { View } from 'react-native';
 
-import { Button, DatePicker, Modal, Text, TextFieldLabel } from '@/components';
+import {
+  Box,
+  Button,
+  DatePicker,
+  DynamicText,
+  Modal,
+  Text,
+  TextFieldLabel,
+} from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { SelectCaret } from '@/icons';
 import { BillDetailsFormValues } from '@/screens';
-import { gapStyles } from '@/theme';
-import { cn, isIOS } from '@/utils';
+import { marginAutoStyles } from '@/theme';
+import { isIOS } from '@/utils';
 
 interface BillDeadlineSelectorProps {
   control: Control<BillDetailsFormValues>;
@@ -32,18 +39,19 @@ export const BillDeadlineSelector: React.FunctionComponent<
       <TextFieldLabel label="Select a deadline" />
 
       <Button
-        className={cn('mt-1.5 px-4 ', isIOS() ? 'py-[9.6px]' : 'py-3.5')}
-        color="neutral"
-        isTextContentOnly={false}
+        backgroundColor="buttonNeutral"
+        marginTop="1.5"
+        paddingHorizontal="4"
+        paddingVertical={isIOS() ? '3' : '3.5'}
         onPress={openModal}
       >
-        <View className="flex-row items-center" style={gapStyles[8]}>
-          <Text className="w-48 flex-shrink" numberOfLines={1}>
+        <Box alignItems="center" flexDirection="row" gap="2">
+          <DynamicText flexShrink={1} numberOfLines={1} width={192}>
             {deadline ? deadline.toDateString() : 'Select a date'}
-          </Text>
-        </View>
+          </DynamicText>
+        </Box>
 
-        <SelectCaret className="ml-auto" />
+        <SelectCaret style={marginAutoStyles['ml-auto']} />
       </Button>
 
       <Modal
@@ -53,8 +61,13 @@ export const BillDeadlineSelector: React.FunctionComponent<
         isModalOpen={isModalOpen}
         hasLargeHeading
       >
-        <View className="bg-grey-light-50 p-6 pb-8 dark:bg-grey-dark-50">
-          <Text className="mb-6" color="light" variant="sm">
+        <Box
+          backgroundColor="gray1"
+          paddingBottom="8"
+          paddingHorizontal="6"
+          paddingTop="6"
+        >
+          <Text color="textLight" marginBottom="6" variant="sm">
             The bill's deadline must be in the future.
           </Text>
 
@@ -77,15 +90,12 @@ export const BillDeadlineSelector: React.FunctionComponent<
             }}
           />
 
-          <Button
-            className="mt-2"
-            color="apricot"
-            isTextContentOnly
-            onPress={closeModal}
-          >
-            Done
+          <Button backgroundColor="buttonApricot" marginTop="2" onPress={closeModal}>
+            <Text color="buttonTextApricot" fontFamily="Halver-Semibold">
+              Done
+            </Text>
           </Button>
-        </View>
+        </Box>
       </Modal>
     </>
   );

@@ -7,6 +7,7 @@ import { ScrollView, View } from 'react-native';
 import { z } from 'zod';
 
 import {
+  Box,
   Button,
   FullScreenLoader,
   KeyboardStickyButton,
@@ -29,7 +30,6 @@ import { useBooleanStateControl } from '@/hooks';
 import { showToast } from '@/lib/root-toast';
 import { PaystackBank } from '@/lib/zod';
 import type { OnboardingStackParamList } from '@/navigation';
-import { gapStyles } from '@/theme';
 import {
   convertKebabAndSnakeToTitleCase,
   handleAxiosErrorAlertAndHaptics,
@@ -148,7 +148,14 @@ export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps>
             hasExtraPadding
           />
 
-          <View className="mt-10 flex-1 p-2 px-6 pb-20" style={gapStyles[28]}>
+          <Box
+            flex={1}
+            gap="7"
+            marginTop="10"
+            paddingBottom="20"
+            paddingHorizontal="6"
+            paddingTop="2"
+          >
             <View>
               <BankSelector
                 areBanksLoading={areBanksLoading}
@@ -181,17 +188,19 @@ export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps>
                 />
               )}
             </View>
-          </View>
+          </Box>
         </ScrollView>
 
         <KeyboardStickyButton
+          backgroundColor="buttonCasal"
           disabled={areBanksLoading || isValidateAccountDetailsLoading}
-          isTextContentOnly
           onPress={handleSubmit(onAccountValidationSubmit)}
         >
-          {areBanksLoading || isValidateAccountDetailsLoading
-            ? 'Loading...'
-            : 'Continue'}
+          <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
+            {areBanksLoading || isValidateAccountDetailsLoading
+              ? 'Loading...'
+              : 'Continue'}
+          </Text>
         </KeyboardStickyButton>
 
         <Modal
@@ -208,33 +217,40 @@ export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps>
           isModalOpen={isConfirmationModalOpen}
           hasLargeHeading
         >
-          <View className="bg-grey-light-50 p-6 pb-10 dark:bg-grey-dark-50">
-            <Text className="mb-3">Is this you?</Text>
-            <Text className="mb-6" color="light" variant="sm">
+          <Box
+            backgroundColor="modalBackground"
+            paddingBottom="10"
+            paddingHorizontal="6"
+            paddingTop="6"
+          >
+            <Text fontFamily="Halver-Semibold" marginBottom="3">
+              Is this you?
+            </Text>
+            <Text color="textLight" marginBottom="6" variant="sm">
               To continue, confirm that the above name is the name associated with the
               account details you have entered.
             </Text>
 
-            <View className="flex-row" style={gapStyles[12]}>
+            <Box flexDirection="row" gap="3">
               <Button
-                className="flex-1"
-                color="neutral"
-                isTextContentOnly
+                backgroundColor="buttonNeutralDarker"
+                flex={1}
                 onPress={closeConfirmationModal}
               >
-                No
+                <Text fontFamily="Halver-Semibold">No</Text>
               </Button>
               <Button
-                className="flex-1"
-                color="casal"
+                backgroundColor="buttonCasal"
                 disabled={isCreateTransferRecipientLoading}
-                isTextContentOnly
+                flex={1}
                 onPress={onCreateTransferRecipientSubmit}
               >
-                {isCreateTransferRecipientLoading ? 'Loading...' : 'Yes'}
+                <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
+                  {isCreateTransferRecipientLoading ? 'Loading...' : 'Yes'}
+                </Text>
               </Button>
-            </View>
-          </View>
+            </Box>
+          </Box>
         </Modal>
       </Screen>
     </>

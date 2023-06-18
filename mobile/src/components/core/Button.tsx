@@ -1,114 +1,64 @@
+import {
+  border,
+  BoxProps,
+  color,
+  ColorProps,
+  createBox,
+  createRestyleComponent,
+  createVariant,
+  spacing,
+  SpacingProps,
+} from '@shopify/restyle';
 import * as Haptics from 'expo-haptics';
 import * as React from 'react';
-import { Pressable, Text, ViewStyle, type PressableProps } from 'react-native';
+import { Pressable, PressableProps } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { useButtonAnimation } from '@/hooks';
-import { cn } from '@/utils';
+import { Theme } from '@/lib/restyle';
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-export const buttonSizes = {
-  default: 'flex-row items-center justify-center rounded px-6 py-3 disabled:opacity-50',
-  sm: 'py-2 px-4',
-  xs: 'py-1.5 px-3',
-};
-
-export const buttonTextSizes = {
-  default: 'text-[16px] font-sans-bold tracking-[-0.1px]',
-  sm: 'text-[14px]',
-  xs: 'text-[12px]',
-};
-
-export const buttonColors = {
-  default: '',
-  apricot: 'bg-apricot-600 dark:bg-apricot',
-  casal: 'bg-casal',
-  pharlap: 'bg-pharlap-600 dark:bg-pharlap',
-  neutral: 'bg-grey-light-100 dark:bg-grey-dark-200',
-};
-
-export const buttonTextColors = {
-  default: '',
-  apricot: 'text-grey-light-50 dark:text-grey-dark-50',
-  casal: 'text-grey-dark-1000',
-  pharlap: 'text-grey-light-50 dark:text-grey-dark-50',
-  neutral: 'text-grey-light-1000 dark:text-grey-dark-1000',
-};
-
-export interface ButtonProps extends PressableProps {
-  children: React.ReactNode;
-  className?: string;
-  color?: keyof typeof buttonColors;
-  disabled?: boolean;
-  isFullWidth?: boolean;
-  isHapticsEnabled?: boolean;
-  isTextContentOnly: boolean;
-  onPress: () => void;
-  pressableClassName?: string;
-  size?: keyof typeof buttonSizes;
-  style?: ViewStyle;
-  textClassName?: string;
-}
-
-export const Button: React.FunctionComponent<ButtonProps> = ({
-  children,
-  className,
-  color = 'casal',
-  disabled = false,
-  isFullWidth = true,
-  isHapticsEnabled = true,
-  isTextContentOnly = true,
-  onPress,
-  pressableClassName,
-  size = 'default',
-  style,
-  textClassName = 'default',
-  ...otherProps
-}) => {
-  const { animatedStyle, handlePressIn, handlePressOut } = useButtonAnimation({
-    disabled,
-  });
-
-  const handlePress = () => {
-    onPress();
-
-    if (isHapticsEnabled) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
+export type ButtonProps = BoxProps<Theme> &
+  SpacingProps<Theme> &
+  ColorProps<Theme> &
+  PressableProps & {
+    variant?: keyof Theme['buttonVariants'];
+    areHapticsEnabled?: boolean;
   };
 
-  return (
-    <AnimatedPressable
-      className={cn(
-        pressableClassName,
-        buttonSizes.default,
-        buttonSizes[size],
-        buttonColors[color],
-        isFullWidth && 'w-full',
-        className,
-      )}
-      disabled={disabled}
-      style={[style, animatedStyle]}
-      onPress={handlePress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      {...otherProps}
-    >
-      {isTextContentOnly ? (
-        <Text
-          className={cn(
-            buttonTextSizes.default,
-            buttonTextSizes[size],
-            buttonTextColors[color],
-            textClassName,
-          )}
-        >
-          {children}
-        </Text>
-      ) : (
-        children
-      )}
-    </AnimatedPressable>
-  );
-};
+const buttonVariant = createVariant({ themeKey: 'buttonVariants' });
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+// Create a box component with Pressable as the base component
+const PressableBox = createBox<Theme>(AnimatedPressable);
+
+// Create a Restyle component with useButtonAnimation hook
+export const Button = createRestyleComponent<ButtonProps, Theme>(
+  // Use the buttonVariant, spacing and color Restyle functions together
+  [buttonVariant, spacing, color, border],
+  ({ areHapticsEnabled = true, ...props }) => {
+    const {
+      animatedStyle,
+      handlePressIn: handlePressInAnimation,
+      handlePressOut,
+    } = useButtonAnimation({
+      disabled: props.disabled,
+    });
+
+    const handlePressIn = () => {
+      handlePressInAnimation();
+
+      if (areHapticsEnabled) {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
+    };
+
+    return (
+      <PressableBox
+        {...props}
+        style={[props.style, animatedStyle]}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+      />
+    );
+  },
+);

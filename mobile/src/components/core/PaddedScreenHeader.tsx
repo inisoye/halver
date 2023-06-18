@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { View } from 'react-native';
 
 import { gapStyles } from '@/theme';
-import { cn } from '@/utils';
 
+import { Box } from './Box';
 import { Text } from './Text';
 
 interface PaddedScreenHeaderProps {
@@ -18,17 +17,20 @@ export const PaddedScreenHeader: React.FunctionComponent<PaddedScreenHeaderProps
   hasExtraPadding,
 }) => {
   return (
-    <View
-      className={cn('mt-5 p-2 px-6', hasExtraPadding && 'pt-8')}
+    <Box
+      marginTop="5"
+      paddingBottom="2"
+      paddingHorizontal="6"
+      paddingTop={hasExtraPadding ? '8' : '2'}
       style={gapStyles[8]}
     >
-      <Text variant="2xl" weight="bold">
+      <Text fontFamily="Halver-Semibold" variant="2xl">
         {heading}
       </Text>
 
-      <Text color="light" variant="sm">
+      <Text color="textLight" variant="sm">
         {subHeading}
       </Text>
-    </View>
+    </Box>
   );
 };

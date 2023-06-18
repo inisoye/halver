@@ -1,12 +1,9 @@
 import { useFlipper } from '@react-navigation/devtools';
 import {
-  DarkTheme,
-  DefaultTheme,
   NavigationContainer as RNNavigationContainer,
   useNavigationContainerRef,
 } from '@react-navigation/native';
 import * as React from 'react';
-import { useColorScheme } from 'react-native';
 import { useMMKVString } from 'react-native-mmkv';
 
 import { checkIfUserDetailsAreIncomplete, useUserDetails } from '@/features/account';
@@ -19,7 +16,6 @@ import { AppRootStackNavigator } from './AppRootStackNavigator';
 
 export const NavigationContainer: React.FunctionComponent = () => {
   const [token] = useMMKVString(allMMKVKeys.token);
-  const scheme = useColorScheme();
   const { data: userDetails, isLoading, isFetching } = useUserDetails();
 
   const navigationRef = useNavigationContainerRef();
@@ -41,10 +37,7 @@ export const NavigationContainer: React.FunctionComponent = () => {
 
   return (
     <>
-      <RNNavigationContainer
-        ref={navigationRef}
-        theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
-      >
+      <RNNavigationContainer ref={navigationRef}>
         {!token || isLoading ? (
           <LoginStackNavigator />
         ) : areUserDetailsIncomplete ? (

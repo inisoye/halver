@@ -1,16 +1,11 @@
 import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
-import { NativeWindStyleSheet } from 'nativewind';
 import * as React from 'react';
 import { initializeMMKVFlipper } from 'react-native-mmkv-flipper-plugin';
 
 import { storage } from '@/lib/mmkv';
 import { NavigationContainer } from '@/navigation';
 import { Providers } from '@/providers';
-
-NativeWindStyleSheet.setOutput({
-  default: 'native',
-});
 
 if (__DEV__) {
   initializeMMKVFlipper({ default: storage });
@@ -30,7 +25,6 @@ export default function App() {
   return (
     <Providers>
       <StatusBar style="auto" />
-
       <NavigationContainer />
     </Providers>
   );

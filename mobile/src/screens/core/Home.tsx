@@ -1,45 +1,62 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import { Button, Card, Screen, Text } from '@/components';
+import { Box, Button, Card, Screen, Text } from '@/components';
 import { ActionStatusCounts } from '@/features/home';
 import { HalverMillipede } from '@/icons';
 import { AppRootStackParamList } from '@/navigation';
 
 type HomeProps = NativeStackScreenProps<AppRootStackParamList, 'Home'>;
 
+const customStyles = StyleSheet.create({
+  cardSubheading: {
+    maxWidth: 190,
+  },
+});
+
 export const Home = ({ navigation }: HomeProps) => {
   return (
     <Screen hasNoIOSBottomInset>
-      <View className="flex-1 p-2 px-6">
+      <Box flex={1} paddingHorizontal="6" paddingVertical="2">
         <ActionStatusCounts navigation={navigation} />
 
-        <Card className="items-start overflow-hidden rounded-lg px-4 py-6">
-          <Text className="mb-4" variant="xl" weight="bold">
+        <Card
+          alignItems="flex-start"
+          overflow="hidden"
+          paddingHorizontal="4"
+          paddingVertical="5"
+        >
+          <Text fontFamily="Halver-Semibold" marginBottom="4" variant="xl">
             Create your first bill
           </Text>
 
-          <Text className="mb-6 max-w-[190px]" color="light" variant="sm">
+          <Text
+            color="textLight"
+            marginBottom="6"
+            style={customStyles.cardSubheading}
+            variant="sm"
+          >
             You can invite a maximum of sixteen people to it.
           </Text>
 
-          <HalverMillipede className="mb-16 w-full" />
+          <HalverMillipede />
 
           <Button
-            className="justify-start self-start"
+            backgroundColor="buttonCasal"
             hitSlop={100}
-            isFullWidth={false}
-            size="sm"
-            isTextContentOnly
+            marginTop="16"
+            variant="sm"
             onPress={() => {
               navigation.navigate('Bill Details');
             }}
           >
-            Get started
+            <Text color="buttonTextCasal" fontFamily="Halver-Semibold" variant="sm">
+              Get started
+            </Text>
           </Button>
         </Card>
-      </View>
+      </Box>
     </Screen>
   );
 };

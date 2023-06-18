@@ -1,10 +1,16 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
-import { View } from 'react-native';
 import { WebViewNavigation } from 'react-native-webview';
 
-import { KeyboardStickyButton, PaddedScreenHeader, Screen, Text } from '@/components';
+import {
+  Box,
+  DynamicText,
+  KeyboardStickyButton,
+  PaddedScreenHeader,
+  Screen,
+  Text,
+} from '@/components';
 import {
   PaystackCardAdditionModal,
   useGetCardAdditionURL,
@@ -51,28 +57,38 @@ export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({
   return (
     <>
       <Screen isHeaderShown={false} hasNoIOSBottomInset>
-        <View className="flex-1">
+        <Box flex={1}>
           <PaddedScreenHeader
             heading="We also need your card"
             subHeading="You'll use this to make contributions on Halver."
             hasExtraPadding
           />
 
-          <Text className="mt-1 p-2 px-6" color="light" variant="sm">
+          <Text
+            color="textLight"
+            marginTop="1"
+            paddingHorizontal="6"
+            paddingVertical="2"
+            variant="sm"
+          >
             Adding your card is easy. Click the button below and follow Paystack's
             instructions. We'll need to charge you 60 Naira (NGN) to get it done, but
             don't worry - we'll attempt to refund most of it right after your card is
             successfully added.
           </Text>
 
-          <Text
-            className="mt-10 max-w-xs p-2 px-6 opacity-60"
-            color="light"
+          <DynamicText
+            color="textLight"
+            marginTop="10"
+            maxWidth={320}
+            opacity={0.6}
+            paddingHorizontal="6"
+            paddingVertical="2"
             variant="xs"
           >
             *The refund excludes transaction charges and totals to about 38 Naira. All
             financial details are handled and stored by Paystack.
-          </Text>
+          </DynamicText>
 
           {!!authorizationUrl && (
             <PaystackCardAdditionModal
@@ -82,14 +98,16 @@ export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({
               onNavigationStateChange={onNavigationStateChange}
             />
           )}
-        </View>
+        </Box>
 
         <KeyboardStickyButton
+          backgroundColor="buttonCasal"
           disabled={isCardAdditionUrlLoading}
-          isTextContentOnly
           onPress={openModal}
         >
-          {isCardAdditionUrlLoading ? 'Loading...' : 'Add card'}
+          <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
+            {isCardAdditionUrlLoading ? 'Loading...' : 'Add card'}
+          </Text>
         </KeyboardStickyButton>
       </Screen>
     </>

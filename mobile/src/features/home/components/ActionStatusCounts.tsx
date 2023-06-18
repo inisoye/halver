@@ -1,11 +1,8 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { Pressable, View } from 'react-native';
-import Animated from 'react-native-reanimated';
 import type { ISvgProps } from 'svg.types';
 
-import { Text } from '@/components';
-import { useButtonAnimation } from '@/hooks';
+import { Box, Pressable, Text } from '@/components';
 import {
   HalverTiny as HalverTinyIcon,
   NewBillSmall as NewBillSmallIcon,
@@ -14,17 +11,14 @@ import {
   Recurring as RecurringIcon,
 } from '@/icons';
 import { AppRootStackParamList } from '@/navigation';
-import { gapStyles } from '@/theme';
-import { cn, isAndroid } from '@/utils';
+import { isAndroid } from '@/utils';
 
 import { useActionStatusCounts } from '../api';
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
 const actionStatusColors = {
-  Pending: 'bg-orange-light-200',
-  Overdue: 'bg-red-light-200',
-  Recurring: 'bg-green-light-200',
+  Pending: 'pendingActionStatusBackground',
+  Overdue: 'overdueActionStatusBackground',
+  Recurring: 'recurringActionStatusBackground',
 };
 
 interface ActionStatusButtonProps {
@@ -42,39 +36,32 @@ const ActionStatusButton: React.FunctionComponent<ActionStatusButtonProps> = ({
   navigation,
   status,
 }) => {
-  const { animatedStyle, handlePressIn, handlePressOut } = useButtonAnimation({
-    disabled,
-  });
-
   return (
-    <AnimatedPressable
-      className={cn(
-        'flex-grow basis-[48.2%] flex-row justify-between rounded-lg p-4',
-        actionStatusColors[status],
-        'dark:bg-grey-dark-200',
-      )}
+    <Pressable
+      backgroundColor={actionStatusColors[status]}
+      borderRadius="lg"
       disabled={disabled}
-      style={[gapStyles[16], animatedStyle]}
+      flexBasis="48.2%"
+      flexDirection="row"
+      flexGrow={1}
+      gap="4"
+      justifyContent="space-between"
+      padding="4"
       onPress={() => navigation.navigate('Bills By Status', { status })}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
     >
       <Text>
-        <Text variant="xl" weight="bold">
+        <Text fontFamily="Halver-Semibold" variant="xl">
           {count}
           {'\n'}
         </Text>
-        <Text
-          className={cn(isAndroid() ? 'leading-[20px]' : 'leading-[16px]')}
-          color="lighter"
-          variant="xs"
-        >
+
+        <Text color="textLighter" lineHeight={isAndroid() ? 20 : 16} variant="xs">
           {status}
         </Text>
       </Text>
 
       <Icon />
-    </AnimatedPressable>
+    </Pressable>
   );
 };
 
@@ -83,20 +70,23 @@ interface NewBillButtonProps {
 }
 
 const NewBillButton: React.FunctionComponent<NewBillButtonProps> = ({ navigation }) => {
-  const { animatedStyle, handlePressIn, handlePressOut } = useButtonAnimation();
-
   return (
-    <AnimatedPressable
-      className="flex-grow basis-[48.2%] items-center justify-center rounded-lg bg-apricot-50 p-4 dark:bg-grey-dark-200"
-      style={[gapStyles[16], animatedStyle]}
+    <Pressable
+      alignItems="center"
+      backgroundColor="newBillActionStatusBackground"
+      borderRadius="lg"
+      flexBasis="48.2%"
+      flexDirection="row"
+      flexGrow={1}
+      gap="4"
+      justifyContent="center"
+      padding="4"
       onPress={() => {
         navigation.navigate('Bill Details');
       }}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
     >
       <NewBillSmallIcon />
-    </AnimatedPressable>
+    </Pressable>
   );
 };
 
@@ -145,15 +135,21 @@ export const ActionStatusCounts: React.FunctionComponent<ActionStatusCountsProps
 
   return (
     <>
-      <View className="mb-4 flex-row items-center justify-between">
-        <Text color="light" variant="sm">
+      <Box
+        alignItems="center"
+        flexDirection="row"
+        justifyContent="space-between"
+        marginBottom="4"
+        rowGap="4"
+      >
+        <Text color="textLight" variant="sm">
           Here's a summary of your bills.
         </Text>
 
         <HalverTinyIcon />
-      </View>
+      </Box>
 
-      <View className="mb-10 flex-row flex-wrap" style={gapStyles[12]}>
+      <Box flexDirection="row" flexWrap="wrap" gap="3" marginBottom="10">
         <ActionStatusButton
           count={overdue ?? 0}
           disabled={!overdue}
@@ -178,7 +174,7 @@ export const ActionStatusCounts: React.FunctionComponent<ActionStatusCountsProps
         />
 
         <NewBillButton navigation={navigation} />
-      </View>
+      </Box>
     </>
   );
 };

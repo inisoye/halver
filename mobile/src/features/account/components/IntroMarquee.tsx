@@ -1,7 +1,5 @@
-import { LinearGradient } from 'expo-linear-gradient';
-import { styled } from 'nativewind';
-import React from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import * as React from 'react';
+import { StyleSheet, useWindowDimensions } from 'react-native';
 import Animated, {
   Easing,
   Extrapolate,
@@ -12,21 +10,31 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { Text } from '@/components';
+import { Box, LinearGradient, Text } from '@/components';
 import { Donation, MultipleContributions, SplitPayments, Subscriptions } from '@/icons';
 import { colors } from '@/theme';
-import { cn } from '@/utils';
 
-const styles = StyleSheet.create({
+const customStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   card: {
     width: '100%',
     height: 242,
     paddingHorizontal: 24,
     paddingVertical: 36,
   },
-});
 
-const StyledLinearGradient = styled(LinearGradient);
+  icon: {
+    position: 'absolute',
+    bottom: 32,
+    right: 32,
+  },
+
+  subHeading: {
+    maxWidth: 273,
+  },
+});
 
 const SLIDER_CONTENT = [
   {
@@ -35,7 +43,7 @@ const SLIDER_CONTENT = [
     subHeading: 'Put an end to the awkwardness of paying group bills at restaurants',
     Icon: SplitPayments,
     isDark: true,
-    mainHeadingClassName: 'max-w-[200px]',
+    mainHeadingMaxWidth: 200,
   },
   {
     backgroundColor: colors.apricot.DEFAULT,
@@ -44,7 +52,7 @@ const SLIDER_CONTENT = [
       'Collect contributions for Netflix, Spotify Family, and more, with ease',
     Icon: Subscriptions,
     isDark: false,
-    mainHeadingClassName: 'max-w-[250px]',
+    mainHeadingMaxWidth: 250,
   },
   {
     backgroundColor: colors.casal.DEFAULT,
@@ -53,7 +61,7 @@ const SLIDER_CONTENT = [
       'Drive costs down by adding more people to a bill. The more the merrier',
     Icon: MultipleContributions,
     isDark: true,
-    mainHeadingClassName: 'max-w-[270px]',
+    mainHeadingMaxWidth: 270,
   },
   {
     backgroundColor: colors.pharlap.DEFAULT,
@@ -62,15 +70,17 @@ const SLIDER_CONTENT = [
       'Forget GoFundMe. Raise money from Nigerians with your Nigerian bank account.',
     Icon: Donation,
     isDark: false,
-    mainHeadingClassName: 'max-w-[257px]',
+    mainHeadingMaxWidth: 257,
   },
 ];
 
 export const IntroMarquee: React.FunctionComponent = () => {
   const card = useSharedValue(0);
-  const totalHeight = styles.card.height * SLIDER_CONTENT.length;
+  const totalHeight = customStyles.card.height * SLIDER_CONTENT.length;
 
-  const cardStyle = useAnimatedStyle(() => {
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+
+  const cardAnimatedStyle = useAnimatedStyle(() => {
     // -55 is used here as an offset. It ensures the slider covers the screen at the animation start.
     const yValue = interpolate(
       card.value,
@@ -94,12 +104,7 @@ export const IntroMarquee: React.FunctionComponent = () => {
 
   return (
     <>
-      <View
-        className={cn(
-          'flex-1 bg-grey-light-100 dark:bg-grey-dark-200 md:max-w-xl',
-          Platform.OS === 'web' && 'max-h-screen overflow-hidden',
-        )}
-      >
+      <Box backgroundColor="darkBackground" flex={1}>
         {SLIDER_CONTENT.map(
           ({
             backgroundColor,
@@ -107,35 +112,34 @@ export const IntroMarquee: React.FunctionComponent = () => {
             subHeading,
             isDark,
             Icon,
-            mainHeadingClassName,
+            mainHeadingMaxWidth,
           }) => {
             return (
               <Animated.View
                 key={mainHeading}
-                style={[styles.card, cardStyle, { backgroundColor }]}
+                style={[customStyles.card, cardAnimatedStyle, { backgroundColor }]}
               >
                 <Text
-                  className={cn(
-                    'mb-6 max-w-[70%] leading-[24px]',
-                    isDark ? 'text-grey-dark-1000' : 'text-grey-dark-200',
-                    mainHeadingClassName,
-                  )}
+                  color={isDark ? 'textIntroMarqueeDark' : 'textIntroMarqueeLight'}
+                  fontFamily="Halver-Semibold"
+                  lineHeight={24}
+                  marginBottom="6"
+                  style={{ maxWidth: mainHeadingMaxWidth }}
                   variant="xl"
-                  weight="bold"
                 >
                   {mainHeading}
                 </Text>
                 <Text
-                  className={cn(
-                    'max-w-[273px] leading-[17px] opacity-70',
-                    isDark ? 'text-grey-dark-1000' : 'text-grey-dark-200',
-                  )}
+                  color={isDark ? 'textIntroMarqueeDark' : 'textIntroMarqueeLight'}
+                  lineHeight={17}
+                  opacity={0.7}
+                  style={customStyles.subHeading}
                   variant="sm"
                 >
                   {subHeading}
                 </Text>
 
-                <Icon className="absolute bottom-8 right-8" />
+                <Icon style={customStyles.icon} />
               </Animated.View>
             );
           },
@@ -148,50 +152,60 @@ export const IntroMarquee: React.FunctionComponent = () => {
             subHeading,
             isDark,
             Icon,
-            mainHeadingClassName,
+            mainHeadingMaxWidth,
           }) => {
             return (
               <Animated.View
                 key={mainHeading}
-                style={[styles.card, cardStyle, { backgroundColor }]}
+                style={[customStyles.card, cardAnimatedStyle, { backgroundColor }]}
               >
                 <Text
-                  className={cn(
-                    'mb-6 max-w-[70%] leading-[24px] text-grey-dark-1000',
-                    isDark ? 'text-grey-dark-1000' : 'text-grey-dark-200',
-                    mainHeadingClassName,
-                  )}
+                  color={isDark ? 'textIntroMarqueeDark' : 'textIntroMarqueeLight'}
+                  fontFamily="Halver-Semibold"
+                  lineHeight={24}
+                  marginBottom="6"
+                  style={{ maxWidth: mainHeadingMaxWidth }}
                   variant="xl"
-                  weight="bold"
                 >
                   {mainHeading}
                 </Text>
                 <Text
-                  className={cn(
-                    'max-w-[273px] leading-[17px] text-grey-dark-1000 opacity-70',
-                    isDark ? 'text-grey-dark-1000' : 'text-grey-dark-200',
-                  )}
+                  color={isDark ? 'textIntroMarqueeDark' : 'textIntroMarqueeLight'}
+                  lineHeight={17}
+                  opacity={0.7}
+                  style={customStyles.subHeading}
                   variant="sm"
                 >
                   {subHeading}
                 </Text>
 
-                <Icon className="absolute bottom-8 right-8" />
+                <Icon style={customStyles.icon} />
               </Animated.View>
             );
           },
         )}
 
-        <View
-          className="absolute inset-0 h-screen w-screen flex-1"
+        <Box
+          bottom={0}
+          flex={1}
+          height={windowHeight}
+          left={0}
           pointerEvents="none"
+          position="absolute"
+          right={0}
+          top={0}
+          width={windowWidth}
         >
-          <StyledLinearGradient
-            className="inset-0 left-0 right-0 top-0 h-full w-screen"
+          <LinearGradient
+            bottom={0}
             colors={['transparent', 'rgba(0,0,0,1)']}
+            height="100%"
+            left={0}
+            right={0}
+            top={0}
           />
-        </View>
-      </View>
+        </Box>
+      </Box>
     </>
   );
 };

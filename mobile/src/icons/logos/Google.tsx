@@ -1,16 +1,12 @@
-import { styled } from 'nativewind';
 import * as React from 'react';
 import Svg, { ClipPath, Defs, G, Path } from 'react-native-svg';
 import { ISvgProps } from 'svg.types';
 
 type GoogleProps = ISvgProps;
 
-const StyledSvg = styled(Svg, { classProps: ['fill', 'stroke'] });
-
-export const Google: React.FunctionComponent<GoogleProps> = ({ className, ...otherProps }) => {
+export const Google: React.FunctionComponent<GoogleProps> = ({ ...otherProps }) => {
   return (
-    <StyledSvg
-      className={className}
+    <Svg
       fill="none"
       height={16}
       viewBox="0 0 16 16"
@@ -41,6 +37,6 @@ export const Google: React.FunctionComponent<GoogleProps> = ({ className, ...oth
           <Path d="M0 0h15.64v16H0z" fill="#fff" />
         </ClipPath>
       </Defs>
-    </StyledSvg>
+    </Svg>
   );
 };

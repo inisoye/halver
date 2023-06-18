@@ -1,22 +1,30 @@
 import { FlashList } from '@shopify/flash-list';
-import { Image } from 'expo-image';
+import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
 import { useForm, UseFormSetValue, useWatch } from 'react-hook-form';
-import { Keyboard, Pressable, View } from 'react-native';
-import Animated from 'react-native-reanimated';
+import { Keyboard } from 'react-native';
 import { z } from 'zod';
 
-import { Button, Modal, Text, TextField, TextFieldLabel } from '@/components';
-import { useBooleanStateControl, useButtonAnimation } from '@/hooks';
+import {
+  Box,
+  Button,
+  DynamicText,
+  Image,
+  Modal,
+  Pressable,
+  Text,
+  TextField,
+  TextFieldLabel,
+} from '@/components';
+import { useBooleanStateControl } from '@/hooks';
 import { Search, SelectCaret, SelectTick } from '@/icons';
+import { Theme } from '@/lib/restyle';
 import { PaystackBank } from '@/lib/zod';
 import { BankDetailsFormValues } from '@/screens';
-import { gapStyles } from '@/theme';
-import { cn, isIOS } from '@/utils';
+import { marginAutoStyles } from '@/theme';
+import { isIOS } from '@/utils';
 
 import { BanksList } from '../api';
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 type SelectedBank = z.infer<typeof PaystackBank>;
 
@@ -31,40 +39,47 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
   handleItemClick,
   item,
 }) => {
-  const { animatedStyle, handlePressIn, handlePressOut } = useButtonAnimation();
+  const isSelected = React.useMemo(
+    () => selectedBank?.id === item.id,
+    [selectedBank?.id, item.id],
+  );
+  const { spacing } = useTheme<Theme>();
 
   return (
-    <AnimatedPressable
-      className={cn(
-        'flex-1 flex-row items-center justify-between py-4',
-        selectedBank?.id === item.id && 'bg-green-light-300 dark:bg-green-dark-200',
-      )}
-      style={[{ gap: 12 }, animatedStyle]} // eslint-disable-line react-native/no-inline-styles
+    <Pressable
+      alignItems="center"
+      backgroundColor={isSelected ? 'selectedItemBackground' : 'transparent'}
+      flex={1}
+      flexDirection="row"
+      gap="3"
+      justifyContent="space-between"
+      paddingVertical="4"
       onPress={() => handleItemClick(item)}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
     >
-      <View
-        className="ml-6 w-full max-w-[80%] flex-row items-center "
-        style={[{ gap: 12 }]} // eslint-disable-line react-native/no-inline-styles
+      <Box
+        alignItems="center"
+        flexDirection="row"
+        gap="3"
+        marginLeft="6"
+        maxWidth="80%"
+        width="100%"
       >
         <Image
-          className={cn(
-            'h-10 w-10 rounded-lg bg-white',
-            !item.logo && 'bg-grey-light-600 dark:bg-grey-dark-1000',
-          )}
+          backgroundColor={item.logo ? 'white' : 'bankImageBackground'}
+          borderRadius="lg"
           contentFit="contain"
-          key={item.name}
+          height={40}
           source={item.logo}
+          width={40}
         />
 
-        <Text className="flex-shrink leading-[20px]" numberOfLines={1}>
+        <DynamicText flexShrink={1} lineHeight={20} numberOfLines={1}>
           {item.name}
-        </Text>
-      </View>
+        </DynamicText>
+      </Box>
 
-      {selectedBank?.id === item.id && <SelectTick className="mr-6" />}
-    </AnimatedPressable>
+      {isSelected && <SelectTick style={{ marginRight: spacing[6] }} />}
+    </Pressable>
   );
 };
 
@@ -73,7 +88,6 @@ interface BankSelectorProps {
   banks: BanksList | undefined;
   setValue: UseFormSetValue<BankDetailsFormValues>;
   selectedBank: SelectedBank;
-  className?: string | undefined;
 }
 
 export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
@@ -81,20 +95,27 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
   banks,
   setValue,
   selectedBank,
-  className,
 }) => {
   const {
     state: isModalOpen,
     setTrue: openModal,
     setFalse: closeModal,
   } = useBooleanStateControl();
+
   const { control: controlForSelectFilter, resetField } = useForm();
+
   const selectFilterObject = useWatch({ control: controlForSelectFilter });
   const selectFilterValue = selectFilterObject.bankFilter;
 
-  const filteredBanks = banks?.filter(bank =>
-    bank.name.toLowerCase().includes(selectFilterValue?.toLowerCase() || ''),
-  );
+  const filteredBanks = React.useMemo(() => {
+    if (banks && selectFilterValue) {
+      return banks?.filter(bank =>
+        bank.name.toLowerCase().includes(selectFilterValue.toLowerCase()),
+      );
+    }
+
+    return banks || [];
+  }, [banks, selectFilterValue]);
 
   const resetBankFilter = () => resetField('bankFilter');
 
@@ -124,30 +145,36 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
   const noBankMatchesFilter = filteredBanks?.length === 0;
 
   return (
-    <View className={className}>
+    <>
       <TextFieldLabel label="Your bank" />
       <Button
-        className={cn('mt-1.5 px-4 ', isIOS() ? 'py-[9.6px]' : 'py-3.5')}
-        color="neutral"
-        isTextContentOnly={false}
+        backgroundColor="buttonNeutral"
+        marginTop="1.5"
+        paddingHorizontal="4"
+        paddingVertical={isIOS() ? '3' : '3.5'}
         onPress={openModal}
       >
         {!!selectedBank && (
-          <View className="flex-row items-center" style={gapStyles[8]}>
+          <Box alignItems="center" flexDirection="row" gap="2">
             <Image
-              className="h-6 w-6 rounded-lg bg-white"
+              backgroundColor="white"
+              borderRadius="lg"
               contentFit="contain"
+              height={24}
               key={selectedBank.name}
               source={selectedBank.logo}
+              width={24}
             />
 
-            <Text className="w-48 flex-shrink" numberOfLines={1}>
+            <DynamicText flexShrink={1} numberOfLines={1} width={192}>
               {selectedBank.name}
-            </Text>
-          </View>
+            </DynamicText>
+          </Box>
         )}
-        <Text className="opacity-0">Select a bank</Text>
-        <SelectCaret className="ml-auto" />
+
+        <Text opacity={0}>Select a bank</Text>
+
+        <SelectCaret style={marginAutoStyles['ml-auto']} />
       </Button>
 
       <Modal
@@ -157,40 +184,42 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
         isModalOpen={isModalOpen}
         hasLargeHeading
       >
-        <View className="flex-1 bg-grey-light-50 py-3 dark:bg-grey-dark-50">
-          <View className="px-6">
-            <View
-              className={cn(
-                'border-b border-b-grey-light-300 pb-5 dark:border-b-grey-dark-400',
-                areBanksLoading && 'opacity-0',
-              )}
+        <Box backgroundColor="modalBackground" flex={1} paddingVertical="3">
+          <Box paddingHorizontal="6">
+            <Box
+              borderBottomColor="modalFilterContainerBorder"
+              borderBottomWidth={1}
+              opacity={areBanksLoading ? 0 : 1}
+              paddingBottom="5"
             >
               <TextField
-                className="bg-grey-light-300 p-2 px-3 dark:bg-grey-dark-200"
                 control={controlForSelectFilter}
                 name="bankFilter"
+                paddingHorizontal="3"
+                paddingVertical={isIOS() ? '2' : '1'}
                 placeholder="Search"
                 prefixComponent={<Search />}
                 autoFocus
+                isDarker
               />
-            </View>
-          </View>
+            </Box>
+          </Box>
 
           {noBankMatchesFilter && (
-            <Text className="px-6 py-6" color="light">
+            <Text color="textLight" padding="6">
               We found no banks matching "{selectFilterValue}"
             </Text>
           )}
 
           <FlashList
             data={filteredBanks}
-            estimatedItemSize={108}
+            estimatedItemSize={90}
             keyboardShouldPersistTaps="handled"
             renderItem={renderItem}
             onScrollBeginDrag={dismissKeyboard}
           />
-        </View>
+        </Box>
       </Modal>
-    </View>
+    </>
   );
 };

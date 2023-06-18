@@ -29,16 +29,14 @@ export const useButtonAnimation = ({
 
   const handlePressIn = () => {
     if (animateScale) scale.value = 0.97;
-    if (animateTranslate) offset.value = 3;
-    opacity.value = 0.6;
+    if (animateTranslate) offset.value = 2;
+    if (!disabled) opacity.value = 0.6;
   };
 
   const handlePressOut = () => {
     if (animateScale) scale.value = 1;
     if (animateTranslate) offset.value = 0;
-    if (!disabled) {
-      opacity.value = 1;
-    }
+    if (!disabled) opacity.value = 1;
   };
 
   React.useEffect(() => {

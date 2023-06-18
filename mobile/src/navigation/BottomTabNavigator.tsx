@@ -18,7 +18,7 @@ import {
 } from '@/navigation/stacks';
 import { BillDetailsPlaceholder } from '@/screens';
 import { colors } from '@/theme';
-import { cn, isIOS } from '@/utils';
+import { isIOS } from '@/utils';
 
 interface BottomTabTextProps {
   label: string | undefined;
@@ -33,13 +33,10 @@ export const BottomTabText: React.FunctionComponent<BottomTabTextProps> = ({
 }) => {
   return (
     <Text
-      className={cn(
-        'text-grey-light-800 dark:text-grey-dark-800',
-        focused && 'text-grey-light-1000 dark:text-grey-dark-1000',
-        isMiddleItem && 'hidden',
-      )}
+      color={focused ? 'gray12' : 'gray9'}
+      fontFamily="Halver-Semibold"
       variant="xxs"
-      weight="bold"
+      visible={!isMiddleItem}
     >
       {label}
     </Text>

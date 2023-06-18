@@ -1,32 +1,34 @@
+import { TextProps } from '@shopify/restyle';
 import * as React from 'react';
 import { Control, Controller, FieldValues, RegisterOptions } from 'react-hook-form';
-import { KeyboardTypeOptions, TextInput, useColorScheme, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { KeyboardTypeOptions, useColorScheme } from 'react-native';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { colors, gapStyles } from '@/theme';
-import { cn } from '@/utils';
+import { Theme } from '@/lib/restyle';
+import { colors } from '@/theme';
+import { isIOS } from '@/utils';
 
+import { AnimatedBox, Box } from './Box';
 import { Text } from './Text';
+import { TextInput, TextInputProps } from './TextInput';
 
-interface TextFieldLabelProps {
+type TextFieldLabelProps = TextProps<Theme> & {
   label: string;
-  className?: string;
-}
+};
 
 export const TextFieldLabel: React.FunctionComponent<TextFieldLabelProps> = ({
-  className,
   label,
+  ...props
 }) => {
   return (
-    <Text className={className} variant="sm">
+    <Text variant="sm" {...props}>
       {label}
     </Text>
   );
 };
 
-interface TextFieldProps {
+interface TextFieldProps extends TextInputProps {
   autoFocus?: boolean;
-  className?: string;
   control: Control<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   inputAccessoryViewID?: string;
   keyboardType?: KeyboardTypeOptions;
@@ -40,11 +42,11 @@ interface TextFieldProps {
         'valueAsNumber' | 'valueAsDate' | 'setValueAs' | 'disabled'
       >
     | undefined;
+  isDarker?: boolean;
 }
 
 export const TextField: React.FunctionComponent<TextFieldProps> = ({
   autoFocus = false,
-  className,
   control,
   inputAccessoryViewID,
   keyboardType,
@@ -53,16 +55,23 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
   prefixComponent,
   prefixText,
   rules,
+  isDarker = false,
+  ...props
 }) => {
   const scheme = useColorScheme();
 
   return (
-    <View className="mt-1.5 flex-row" style={gapStyles[4]}>
+    <Box flexDirection="row" gap="1" marginTop="1.5">
       {(!!prefixText || !!prefixComponent) && (
-        <View className="justify-center rounded bg-grey-light-100 px-3 dark:bg-grey-dark-200">
-          {!!prefixText && <Text color="light">{prefixText}</Text>}
+        <Box
+          backgroundColor={isDarker ? 'inputBackgroundDarker' : 'inputBackground'}
+          borderRadius="base"
+          justifyContent="center"
+          paddingHorizontal="3"
+        >
+          {!!prefixText && <Text color="textLight">{prefixText}</Text>}
           {!!prefixComponent && prefixComponent}
-        </View>
+        </Box>
       )}
 
       <Controller
@@ -71,12 +80,16 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
         render={({ field: { onChange, onBlur, value, ref } }) => (
           <TextInput
             autoFocus={autoFocus}
-            className={cn(
-              'flex-1 rounded bg-grey-light-100 p-3 px-4 font-sans-medium text-[16px] text-grey-light-1000 dark:bg-grey-dark-200 dark:text-grey-dark-1000',
-              className,
-            )}
+            backgroundColor={isDarker ? 'inputBackgroundDarker' : 'inputBackground'}
+            borderRadius="base"
+            color="inputText"
+            flex={1}
+            fontFamily="Halver-Medium"
+            fontSize={16}
             inputAccessoryViewID={inputAccessoryViewID}
             keyboardType={keyboardType}
+            paddingHorizontal="4"
+            paddingVertical={isIOS() ? '3' : '2.5'}
             placeholder={placeholder}
             placeholderTextColor={
               scheme === 'light'
@@ -87,11 +100,12 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
             value={value}
             onBlur={onBlur}
             onChangeText={onChange}
+            {...props}
           />
         )}
         rules={rules}
       />
-    </View>
+    </Box>
   );
 };
 
@@ -105,16 +119,21 @@ export const TextFieldError: React.FunctionComponent<TextFieldErrorProps> = ({
   fieldName,
 }) => {
   return (
-    <Animated.View
-      className="mt-1.5 overflow-hidden rounded-sm bg-red-800 px-2 py-1 dark:bg-red-dark-600"
+    <AnimatedBox
+      backgroundColor="inputErrorBackground"
+      borderRadius="sm"
       entering={FadeIn}
       exiting={FadeOut}
+      marginTop="1.5"
+      overflow="hidden"
+      paddingHorizontal="2"
+      paddingVertical="1"
     >
-      <Text className="leading-[14px]" color="white" variant="xs" weight="bold">
+      <Text color="textWhite" fontFamily="Halver-Semibold" lineHeight={14} variant="xs">
         {!errorMessage || errorMessage === 'Required'
           ? `Please enter ${fieldName.toLowerCase()}.`
           : errorMessage}
       </Text>
-    </Animated.View>
+    </AnimatedBox>
   );
 };

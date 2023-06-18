@@ -3,14 +3,16 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { AxiosError } from 'axios';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import { ScrollView, View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { z } from 'zod';
 
 import {
+  Box,
   FullScreenLoader,
   KeyboardStickyButton,
   PaddedScreenHeader,
   Screen,
+  Text,
   TextField,
   TextFieldError,
   TextFieldLabel,
@@ -73,8 +75,9 @@ export const Phone: React.FunctionComponent<PhoneProps> = ({ navigation }) => {
             hasExtraPadding
           />
 
-          <View className="mt-10 p-2 px-6 pb-20">
+          <Box marginTop="10" paddingBottom="20" paddingHorizontal="6" paddingTop="2">
             <TextFieldLabel label="Your phone number" />
+
             <TextField
               control={control}
               keyboardType="phone-pad"
@@ -84,21 +87,24 @@ export const Phone: React.FunctionComponent<PhoneProps> = ({ navigation }) => {
                 required: true,
               }}
             />
+
             {errors.phone && (
               <TextFieldError
                 errorMessage={errors.phone?.message}
                 fieldName="your phone number"
               />
             )}
-          </View>
+          </Box>
         </ScrollView>
 
         <KeyboardStickyButton
+          backgroundColor="buttonApricot"
           disabled={isUserDetailsUpdateLoading}
-          isTextContentOnly
           onPress={handleSubmit(onSubmit)}
         >
-          {isUserDetailsUpdateLoading ? 'Loading...' : 'Continue'}
+          <Text color="buttonTextApricot" fontFamily="Halver-Semibold">
+            {isUserDetailsUpdateLoading ? 'Loading...' : 'Continue'}
+          </Text>
         </KeyboardStickyButton>
       </Screen>
     </>

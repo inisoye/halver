@@ -1,7 +1,6 @@
 module.exports = {
-  plugins: ['@ianvs/prettier-plugin-sort-imports', 'prettier-plugin-tailwindcss'],
+  plugins: ['@ianvs/prettier-plugin-sort-imports'],
   pluginSearchDirs: false,
-  tailwindConfig: './tailwind.config.js',
   arrowParens: 'avoid',
   embeddedLanguageFormatting: 'auto',
   endOfLine: 'lf',
@@ -24,5 +23,4 @@ module.exports = {
   importOrderCombineTypeAndValueImports: true,
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
-  tailwindAttributes: ['textClassName'],
 };

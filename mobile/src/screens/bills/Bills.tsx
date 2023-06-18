@@ -1,14 +1,13 @@
 import * as React from 'react';
-import { View } from 'react-native';
 
-import { Screen, Text } from '@/components';
+import { Box, Screen, Text } from '@/components';
 
 export const Bills: React.FunctionComponent = () => {
   return (
     <Screen>
-      <View className="p-2 px-6">
+      <Box flex={1} paddingHorizontal="6" paddingVertical="2">
         <Text>This is the bills</Text>
-      </View>
+      </Box>
     </Screen>
   );
 };

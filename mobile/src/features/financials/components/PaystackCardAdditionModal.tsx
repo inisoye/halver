@@ -1,7 +1,7 @@
 import * as React from 'react';
-import WebView, { type WebViewNavigation } from 'react-native-webview';
+import { type WebViewNavigation } from 'react-native-webview';
 
-import { Modal } from '@/components';
+import { Modal, WebView } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 
 interface PaystackCardAdditionModalProps {
@@ -29,7 +29,8 @@ export const PaystackCardAdditionModal: React.FunctionComponent<
       hasLargeHeading
     >
       <WebView
-        className="flex-1 bg-white dark:bg-grey-dark-200"
+        backgroundColor="webViewBackground"
+        flex={1}
         source={{ uri: authorizationUrl }}
         onLoadEnd={closeLoader}
         onLoadStart={startLoader}

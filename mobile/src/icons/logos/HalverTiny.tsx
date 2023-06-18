@@ -1,20 +1,19 @@
-import { styled } from 'nativewind';
+import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
 import Svg, { ClipPath, Defs, G, Path } from 'react-native-svg';
 import { ISvgProps } from 'svg.types';
 
+import { Theme } from '@/lib/restyle';
+
 type HalverTinyProps = ISvgProps;
 
-const StyledSvg = styled(Svg, { classProps: ['fill', 'stroke'] });
-const StyledPath = styled(Path, { classProps: ['fill', 'stroke'] });
-
 export const HalverTiny: React.FunctionComponent<HalverTinyProps> = ({
-  className,
   ...otherProps
 }) => {
+  const { colors } = useTheme<Theme>();
+
   return (
-    <StyledSvg
-      className={className}
+    <Svg
       fill="none"
       height={16}
       viewBox="0 0 23 16"
@@ -25,16 +24,13 @@ export const HalverTiny: React.FunctionComponent<HalverTinyProps> = ({
       <G clipPath="url(#a)">
         <Path d="M20 0H-3v7.5h23V0Z" fill="#EE8A79" />
         <Path d="M26 8.5H3V16h23V8.5Z" fill="#315D65" />
-        <StyledPath
-          d="M14.5 16V0"
-          stroke="stroke-grey-dark-1000 dark:stroke-grey-light-1000"
-        />
+        <Path d="M14.5 16V0" stroke={colors.gray1} />
       </G>
       <Defs>
         <ClipPath id="a">
           <Path d="M0 0h23v16H0z" fill="#fff" />
         </ClipPath>
       </Defs>
-    </StyledSvg>
+    </Svg>
   );
 };

@@ -16,7 +16,7 @@ const textVariantStyles = {
   },
   neutral: {
     backgroundColor: isDarkMode()
-      ? colors['grey-dark'][400]
+      ? colors['grey-dark'][500]
       : colors['grey-light'][900],
     color: 'white',
   },
@@ -34,7 +34,7 @@ const styles = {
   },
   container: {
     width: '100%',
-    maxWidth: '93.5%',
+    maxWidth: '88%',
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 3,

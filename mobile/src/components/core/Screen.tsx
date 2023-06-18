@@ -1,14 +1,17 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { BoxProps, useTheme } from '@shopify/restyle';
 import * as React from 'react';
-import { TouchableOpacity, View, type StyleProp, type ViewStyle } from 'react-native';
+import { type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useUserDetails } from '@/features/account/api';
 import { Back as BackIcon } from '@/icons';
-import { gapStyles } from '@/theme';
-import { cn, isIOS } from '@/utils';
+import { Theme } from '@/lib/restyle';
+import { isIOS } from '@/utils';
 
+import { Box } from './Box';
 import { Text } from './Text';
+import { TouchableOpacity } from './TouchableOpacity';
 
 interface ScreenHeaderProps {
   customScreenName?: string;
@@ -16,7 +19,7 @@ interface ScreenHeaderProps {
 }
 
 const screensWithNoBackButton = ['Home'];
-const screensWithLightHeading = ['Homee'];
+const screensWithLightHeading = [''];
 
 const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
   customScreenName,
@@ -30,14 +33,20 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
   const isScreenNamePeculiar = Object.keys(peculiarScreenNames).includes(name);
   const screenName = isScreenNamePeculiar ? peculiarScreenNames[name] : name;
 
-  const hasNoBackButton = screensWithNoBackButton.includes(name);
+  const hasBackButton = !screensWithNoBackButton.includes(name);
   const hasLightHeading = screensWithLightHeading.includes(name);
 
   return (
-    <View className="flex-row items-center px-6 py-4" style={gapStyles[16]}>
+    <Box
+      alignItems="center"
+      flexDirection="row"
+      gap="4"
+      paddingHorizontal="6"
+      paddingVertical="4"
+    >
       <TouchableOpacity
-        className={cn(hasNoBackButton && 'hidden')}
         hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}
+        visible={hasBackButton}
         onPress={() => {
           navigation.goBack();
         }}
@@ -46,51 +55,55 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
       </TouchableOpacity>
 
       {isHeaderTextShown && (
-        <Text color={hasLightHeading ? 'light' : 'default'} variant="2xl" weight="bold">
+        <Text
+          color={hasLightHeading ? 'textLight' : 'textDefault'}
+          fontFamily="Halver-Semibold"
+          variant="2xl"
+        >
           {customScreenName || screenName}
         </Text>
       )}
-    </View>
+    </Box>
   );
 };
 
-interface ScreenProps {
+type ScreenProps = BoxProps<Theme> & {
   children: React.ReactNode;
-  className?: string;
   customScreenName?: string;
   hasNoIOSBottomInset?: boolean;
-  hasVerticalStack?: boolean;
   isHeaderShown?: boolean;
   isHeaderTextShown?: boolean;
   isModal?: boolean;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export const Screen: React.FunctionComponent<ScreenProps> = ({
   children,
-  className,
   customScreenName,
   hasNoIOSBottomInset = false, // Added to make sticky buttons sit properly on IOS
   isHeaderShown = true,
   isHeaderTextShown = true,
   isModal = false,
   style,
+  ...props
 }) => {
   const insets = useSafeAreaInsets();
+  const { spacing } = useTheme<Theme>();
 
   return (
-    <View
-      className={cn('flex-1 bg-main-bg-light dark:bg-grey-dark-50', className)}
+    <Box
+      backgroundColor="background"
+      flex={1}
       style={[
-        // eslint-disable-next-line react-native/no-inline-styles
         {
-          paddingTop: isModal && isIOS() ? 20 : insets.top,
+          paddingTop: isModal && isIOS() ? spacing[5] : insets.top,
           paddingBottom: hasNoIOSBottomInset && isIOS() ? undefined : insets.bottom,
           paddingLeft: insets.left,
           paddingRight: insets.right,
         },
         style,
       ]}
+      {...props}
     >
       {isHeaderShown && (
         <ScreenHeader
@@ -100,6 +113,6 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
       )}
 
       {children}
-    </View>
+    </Box>
   );
 };

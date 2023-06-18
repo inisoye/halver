@@ -1,4 +1,4 @@
 import themeColors from './colors';
 
 export const colors = themeColors;
-export * from './gaps';
+export * from './utilities';

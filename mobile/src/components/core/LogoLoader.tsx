@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Dimensions } from 'react-native';
-import Animated, {
+import {
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
@@ -10,15 +10,11 @@ import Animated, {
   ZoomOutRight,
 } from 'react-native-reanimated';
 
-import { cn } from '@/utils';
+import { AnimatedBox } from './Box';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-interface LogoLoaderProps {
-  className?: string;
-}
-
-export const LogoLoader: React.FunctionComponent<LogoLoaderProps> = ({ className }) => {
+export const LogoLoader: React.FunctionComponent = () => {
   const translateX = useSharedValue(0);
   const widthLeft = useSharedValue(20);
   const widthRight = useSharedValue(40);
@@ -54,19 +50,26 @@ export const LogoLoader: React.FunctionComponent<LogoLoaderProps> = ({ className
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Animated.View
-      className={cn('z-10 h-4 flex-row', className)}
+    <AnimatedBox
       entering={ZoomInLeft.duration(600)}
       exiting={ZoomOutRight.duration(600)}
+      flexDirection="row"
+      height={40}
+      zIndex="10"
     >
-      <Animated.View
-        className="-mr-2 h-2 bg-apricot-700 dark:bg-apricot"
+      <AnimatedBox
+        backgroundColor="logoApricot"
+        height={8}
+        marginRight="-2"
         style={[animatedStyleLeft]}
       />
-      <Animated.View
-        className="-ml-2 mt-2 h-2 bg-casal-700 dark:bg-casal"
+      <AnimatedBox
+        backgroundColor="logoCasal"
+        height={8}
+        marginLeft="-2"
+        marginTop="2"
         style={[animatedStyleRight]}
       />
-    </Animated.View>
+    </AnimatedBox>
   );
 };

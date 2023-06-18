@@ -1,17 +1,21 @@
-import * as React from 'react';
-import { View } from 'react-native';
+import {
+  BoxProps,
+  createRestyleComponent,
+  createVariant,
+  spacing,
+  SpacingProps,
+  VariantProps,
+} from '@shopify/restyle';
 
-import { cn } from '@/utils';
+import { Theme } from '@/lib/restyle';
 
-interface ViewProps {
-  children: React.ReactNode;
-  className?: string;
-}
+type Props = BoxProps<Theme> &
+  SpacingProps<Theme> &
+  VariantProps<Theme, 'cardVariants'> & {
+    children?: React.ReactNode;
+  };
 
-export const Card: React.FunctionComponent<ViewProps> = ({ children, className }) => {
-  return (
-    <View className={cn('bg-grey-light-100 dark:bg-grey-dark-200', className)}>
-      {children}
-    </View>
-  );
-};
+export const Card = createRestyleComponent<Props, Theme>([
+  spacing,
+  createVariant({ themeKey: 'cardVariants' }),
+]);

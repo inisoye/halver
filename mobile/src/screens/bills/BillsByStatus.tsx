@@ -1,8 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { View } from 'react-native';
 
-import { Screen, Text } from '@/components';
+import { Box, Screen, Text } from '@/components';
 import { AppRootStackParamList } from '@/navigation';
 
 type BillsByStatusProps = NativeStackScreenProps<
@@ -15,9 +14,9 @@ export const BillsByStatus = ({ route }: BillsByStatusProps) => {
 
   return (
     <Screen customScreenName={`${status} bills`} isModal>
-      <View className="p-2 px-6">
+      <Box flex={1} paddingHorizontal="6" paddingVertical="2">
         <Text>This is for "{status}" bills</Text>
-      </View>
+      </Box>
     </Screen>
   );
 };

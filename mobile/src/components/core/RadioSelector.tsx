@@ -1,12 +1,59 @@
 import * as React from 'react';
-import { Pressable, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { RadioTick } from '@/icons';
-import { gapStyles } from '@/theme';
-import { cn } from '@/utils';
 
+import { Box } from './Box';
+import { Pressable } from './Pressable';
 import { Text } from './Text';
+
+interface RadioButtonProps {
+  isSelected: boolean;
+  handleSelect: (value: string) => void;
+  item: {
+    value: string;
+    name: string;
+  };
+}
+
+const RadioButton: React.FunctionComponent<RadioButtonProps> = ({
+  isSelected,
+  handleSelect,
+  item,
+}) => {
+  return (
+    <Pressable
+      alignItems="center"
+      animateScale={true}
+      animateTranslate={false}
+      backgroundColor={
+        isSelected ? 'radioButtonBackgroundSelected' : 'radioButtonBackgroundDefault'
+      }
+      borderRadius="md"
+      flexDirection="row"
+      gap="4"
+      handlePressOut={() => handleSelect(item.value)}
+      justifyContent="space-between"
+      key={item.value}
+      paddingHorizontal="4"
+      paddingVertical="2"
+    >
+      <Text
+        color={isSelected ? 'textInverse' : 'textLight'}
+        fontFamily={isSelected ? 'Halver-Semibold' : 'Halver-Medium'}
+        variant="sm"
+      >
+        {item.name}
+      </Text>
+
+      {isSelected && (
+        <Animated.View entering={FadeIn}>
+          <RadioTick />
+        </Animated.View>
+      )}
+    </Pressable>
+  );
+};
 
 interface RadioSelectorProps {
   data:
@@ -17,43 +64,29 @@ interface RadioSelectorProps {
 }
 
 export const RadioSelector = ({ data, setOption, option }: RadioSelectorProps) => {
-  const handleSelect = (value: string) => {
-    setOption(value);
-  };
+  const handleSelect = React.useCallback(
+    (value: string) => {
+      setOption(value);
+    },
+    [setOption],
+  );
+
+  const options = data.map((item: { value: string; name: string }) => {
+    const isSelected = item.value === option;
+
+    return (
+      <RadioButton
+        handleSelect={handleSelect}
+        isSelected={isSelected}
+        item={item}
+        key={item.value}
+      />
+    );
+  });
 
   return (
-    <View className="mt-1.5 flex-row flex-wrap" style={gapStyles[12]}>
-      {data.map(item => {
-        const isSelected = item.value === option;
-
-        return (
-          <Pressable
-            className={cn(
-              'flex-row items-center rounded-md px-4 py-2',
-              isSelected
-                ? 'bg-apricot-700 dark:bg-apricot'
-                : 'bg-grey-light-50 dark:bg-grey-dark-300 ',
-            )}
-            key={item.value}
-            style={gapStyles[16]}
-            onPress={() => handleSelect(item.value)}
-          >
-            <Text
-              color={isSelected ? 'inverse' : 'light'}
-              variant="sm"
-              weight={isSelected ? 'bold' : 'default'}
-            >
-              {item.name}
-            </Text>
-
-            {isSelected && (
-              <Animated.View entering={FadeIn}>
-                <RadioTick />
-              </Animated.View>
-            )}
-          </Pressable>
-        );
-      })}
-    </View>
+    <Box flexDirection="row" flexWrap="wrap" gap="3" marginTop="1.5">
+      {options}
+    </Box>
   );
 };

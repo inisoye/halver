@@ -1,12 +1,12 @@
 import type { AxiosError } from 'axios';
 import * as FaceDetector from 'expo-face-detector';
-import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import * as React from 'react';
-import { View } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import { FadeInDown } from 'react-native-reanimated';
 
 import {
+  AnimatedImage,
+  Box,
   Button,
   FullScreenLoader,
   KeyboardStickyButton,
@@ -17,13 +17,11 @@ import {
 import { useUpdateProfileImage } from '@/features/account';
 import { ProfileImage as ProfileImageIcon, UserFolder } from '@/icons';
 import { showToast } from '@/lib/root-toast';
-import { gapStyles } from '@/theme';
+import { marginAutoStyles } from '@/theme';
 import {
   handleAxiosErrorAlertAndHaptics,
   handleGenericErrorAlertAndHaptics,
 } from '@/utils';
-
-const AnimatedImage = Animated.createAnimatedComponent(Image);
 
 const createFormData = (
   formDataKey: string,
@@ -128,38 +126,49 @@ export const ProfileImage: React.FunctionComponent = () => {
           hasExtraPadding
         />
 
-        <View className="mt-10 flex-1 p-2 px-6 py-8 " style={gapStyles[28]}>
+        <Box flex={1} gap="7" marginTop="10" paddingHorizontal="6" paddingVertical="8">
           {!!imageUri && (
             <AnimatedImage
-              className="mx-auto h-40 w-40 rounded-2xl"
+              borderRadius="2xl"
               entering={FadeInDown}
+              height={160}
+              marginLeft="auto"
+              marginRight="auto"
               source={{ uri: imageUri }}
+              width={160}
             />
           )}
 
-          {!imageUri && <ProfileImageIcon className="mx-auto" />}
+          {!imageUri && (
+            <ProfileImageIcon
+              style={[marginAutoStyles['ml-auto'], marginAutoStyles['mr-auto']]}
+            />
+          )}
 
           <Button
-            className="mx-auto w-max"
-            color="apricot"
-            isTextContentOnly={false}
-            size="sm"
-            style={gapStyles[12]}
+            alignSelf="flex-start"
+            backgroundColor="buttonApricot"
+            gap="3"
+            marginLeft="auto"
+            marginRight="auto"
+            variant="sm"
             onPress={pickImage}
           >
-            <Text color="inverse" variant="sm" weight="bold">
+            <Text color="buttonTextApricot" fontFamily="Halver-Semibold" variant="sm">
               {!imageUri ? 'Select an ' : 'Change '}image
             </Text>
             <UserFolder />
           </Button>
-        </View>
+        </Box>
 
         <KeyboardStickyButton
+          backgroundColor="buttonCasal"
           disabled={!imageUri}
-          isTextContentOnly
           onPress={handleUpload}
         >
-          {imageUri ? 'Continue' : 'No image selected'}
+          <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
+            {imageUri ? 'Continue' : 'No image selected'}
+          </Text>
         </KeyboardStickyButton>
       </Screen>
     </>

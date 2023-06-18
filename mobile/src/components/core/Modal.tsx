@@ -1,18 +1,17 @@
 import Constants from 'expo-constants';
 import * as React from 'react';
-import { Animated, Pressable, Modal as RNModal, View } from 'react-native';
+import { Modal as RNModal } from 'react-native';
 
-import { useButtonAnimation } from '@/hooks';
 import { CloseModal } from '@/icons';
-import { gapStyles } from '@/theme';
-import { cn, isIOS } from '@/utils';
+import { isIOS, useIsDarkMode } from '@/utils';
 
+import { Box } from './Box';
 import { LogoLoader } from './LogoLoader';
+import { Pressable } from './Pressable';
 import { Text } from './Text';
 
 interface ModalProps {
   children: React.ReactNode;
-  className?: string;
   closeModal: () => void;
   isLoaderOpen: boolean;
   isModalOpen: boolean;
@@ -21,11 +20,8 @@ interface ModalProps {
   hasCloseButton?: boolean;
 }
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
 export const Modal: React.FunctionComponent<ModalProps> = ({
   children,
-  className,
   closeModal,
   isLoaderOpen = false,
   isModalOpen,
@@ -33,46 +29,40 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
   hasLargeHeading,
   hasCloseButton = true,
 }) => {
-  const { animatedStyle, handlePressIn, handlePressOut } = useButtonAnimation();
+  const isDarkMode = useIsDarkMode();
 
   return (
     <RNModal animationType="slide" transparent={true} visible={isModalOpen}>
-      <View
-        className={cn(
-          'flex-1 justify-end bg-main-bg-light dark:bg-[#0D0D0D]',
-          className,
-        )}
+      <Box
+        backgroundColor={isDarkMode ? 'blackish' : 'gray6'}
+        flex={1}
+        justifyContent="flex-end"
       >
-        <View
-          className="mt-auto flex-row items-center justify-between  py-4"
-          style={[
-            { marginTop: isIOS() ? Constants.statusBarHeight : undefined },
-            gapStyles[16],
-          ]}
+        <Box
+          alignItems="center"
+          flexDirection="row"
+          gap="4"
+          justifyContent="space-between"
+          paddingVertical="4"
+          style={[{ marginTop: isIOS() ? Constants.statusBarHeight : undefined }]}
         >
-          <View className="ml-6 w-full max-w-[70%]">
-            <Text variant={hasLargeHeading ? '2xl' : 'xl'} weight="bold">
+          <Box marginLeft="6" maxWidth="70%" width="100%">
+            <Text fontFamily="Halver-Semibold" variant={hasLargeHeading ? '2xl' : 'xl'}>
               {headingText}
             </Text>
-          </View>
+          </Box>
 
           {hasCloseButton && (
-            <AnimatedPressable
-              className="mr-6"
-              style={animatedStyle}
-              onPress={closeModal}
-              onPressIn={handlePressIn}
-              onPressOut={handlePressOut}
-            >
+            <Pressable marginRight="6" onPress={closeModal}>
               <CloseModal />
-            </AnimatedPressable>
+            </Pressable>
           )}
-        </View>
+        </Box>
 
         {isLoaderOpen && <LogoLoader />}
 
         {children}
-      </View>
+      </Box>
     </RNModal>
   );
 };

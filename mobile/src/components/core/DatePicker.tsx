@@ -11,11 +11,13 @@ import {
   NativeSyntheticEvent,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   useColorScheme,
   View,
 } from 'react-native';
+
+import { Box } from './Box';
+import { DynamicText, Text } from './Text';
 
 const hex2rgba = (hex: string, alpha: number): string => {
   hex = hex.replace('#', '');
@@ -164,8 +166,8 @@ const DateBlock: React.FC<DateBlockProps> = ({
 
   return (
     <View style={styles.block}>
-      <View
-        className="bg-grey-light-300 dark:bg-grey-dark-200"
+      <Box
+        backgroundColor="datePickerMarkBackground"
         style={[
           styles.mark,
           {
@@ -195,7 +197,6 @@ const DateBlock: React.FC<DateBlockProps> = ({
               }}
             >
               <Text
-                className="font-sans-medium text-base text-grey-light-1000 dark:text-grey-dark-1000"
                 style={[
                   styles.digit,
                   // eslint-disable-next-line react-native/no-inline-styles
@@ -316,17 +317,20 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   };
 
   return (
-    <View>
-      <View className="mb-2 flex-row">
+    <>
+      <Box flexDirection="row" marginBottom="2">
         {formatAsText.map(item => (
-          <Text
-            className="w-1/3 text-center text-[12px] text-grey-light-900 dark:text-grey-dark-900"
+          <DynamicText
+            color="gray11"
             key={item}
+            textAlign="center"
+            variant="xs"
+            width="33.333333%"
           >
             {item}
-          </Text>
+          </DynamicText>
         ))}
-      </View>
+      </Box>
 
       <View style={[styles.picker, { height: pickerHeight, width: pickerWidth }]}>
         {getOrder().map(el => {
@@ -348,17 +352,6 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           );
         })}
       </View>
-
-      <View className="mt-2 hidden flex-row">
-        {formatAsText.map(item => (
-          <Text
-            className="w-1/3 text-center text-[12px] text-grey-light-900 dark:text-grey-dark-900"
-            key={item}
-          >
-            {item}
-          </Text>
-        ))}
-      </View>
-    </View>
+    </>
   );
 };

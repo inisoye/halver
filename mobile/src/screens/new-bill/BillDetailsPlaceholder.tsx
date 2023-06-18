@@ -1,14 +1,13 @@
 import * as React from 'react';
-import { View } from 'react-native';
 
-import { Screen, Text } from '@/components';
+import { Box, Screen, Text } from '@/components';
 
 export const BillDetailsPlaceholder: React.FunctionComponent = () => {
   return (
     <Screen>
-      <View className="p-2 px-6 opacity-0">
+      <Box paddingHorizontal="6" paddingVertical="2">
         <Text>This is the BillDetails placeholder screen</Text>
-      </View>
+      </Box>
     </Screen>
   );
 };

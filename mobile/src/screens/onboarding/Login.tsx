@@ -3,10 +3,10 @@ import * as Google from 'expo-auth-session/providers/google';
 import Constants from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useMMKVString } from 'react-native-mmkv';
 
-import { Button, buttonTextSizes, FullScreenLoader, Screen } from '@/components';
+import { Button, FullScreenLoader, Screen, Text } from '@/components';
 import {
   IntroMarquee,
   usePostSocialLogin,
@@ -15,9 +15,16 @@ import {
 import { Google as GoogleIcon } from '@/icons';
 import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys } from '@/lib/mmkv';
-import { cn, handleAxiosErrorAlertAndHaptics } from '@/utils';
+import { handleAxiosErrorAlertAndHaptics } from '@/utils';
 
 WebBrowser.maybeCompleteAuthSession();
+
+export const customStyles = StyleSheet.create({
+  googleLogo: {
+    position: 'absolute',
+    left: 24,
+  },
+});
 
 export const Login: React.FunctionComponent = () => {
   const [accessToken, setAccessToken] = React.useState<string | undefined>(undefined);
@@ -66,20 +73,23 @@ export const Login: React.FunctionComponent = () => {
     <>
       <FullScreenLoader isVisible={isSocialLoginLoading} message="Logging you in..." />
 
-      <Screen className="md:flex-row md:items-center" isHeaderShown={false}>
+      <Screen isHeaderShown={false}>
         <IntroMarquee />
 
         <Button
-          className="mx-auto mb-8 w-full max-w-[88%] bg-white md:max-w-full"
+          backgroundColor="white"
           disabled={!request || isSocialLoginLoading}
-          isTextContentOnly={false}
-          pressableClassName="md:flex-1 md:h-max md:max-w-sm md:mx-auto md:px-4"
-          isHapticsEnabled
+          marginBottom="8"
+          marginLeft="auto"
+          marginRight="auto"
+          maxWidth="88%"
+          width="100%"
+          areHapticsEnabled
           onPress={handleClick}
         >
-          <GoogleIcon className="absolute left-6" />
+          <GoogleIcon style={customStyles.googleLogo} />
 
-          <Text className={cn(buttonTextSizes.default, 'mx-auto text-grey-dark-200')}>
+          <Text color="textBlack" fontFamily="Halver-Semibold">
             {isSocialLoginLoading ? 'Loading' : 'Continue with Google'}
           </Text>
         </Button>

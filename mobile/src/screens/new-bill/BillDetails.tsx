@@ -2,15 +2,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import { useMMKVObject } from 'react-native-mmkv';
 import Animated, { FadeInUp, FadeOutDown } from 'react-native-reanimated';
 import { z } from 'zod';
 
 import {
+  Box,
   KeyboardStickyButton,
   RadioSelector,
   Screen,
+  ScrollView,
+  Text,
   TextField,
   TextFieldError,
   TextFieldLabel,
@@ -23,7 +26,6 @@ import {
 import { allMMKVKeys } from '@/lib/mmkv';
 import { IntervalEnum } from '@/lib/zod';
 import { AppRootStackParamList } from '@/navigation';
-import { gapStyles } from '@/theme';
 
 type BillAmountProps = NativeStackScreenProps<AppRootStackParamList, 'Bill Details'>;
 
@@ -103,11 +105,12 @@ export const BillDetails: React.FunctionComponent<BillAmountProps> = ({
   return (
     <Screen hasNoIOSBottomInset>
       <ScrollView
-        className="p-2 px-6"
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
+        paddingHorizontal="6"
+        paddingVertical="2"
       >
-        <View className="pb-20" style={gapStyles[28]}>
+        <Box gap="7" paddingBottom="20">
           <View>
             <TextFieldLabel label="How much is the bill?" />
 
@@ -195,15 +198,16 @@ export const BillDetails: React.FunctionComponent<BillAmountProps> = ({
               )}
             </Animated.View>
           )}
-        </View>
+        </Box>
       </ScrollView>
 
       <KeyboardStickyButton
-        color="casal"
-        isTextContentOnly
+        backgroundColor="buttonCasal"
         onPress={handleSubmit(onBillDetailsSubmit)}
       >
-        Continue
+        <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
+          Continue
+        </Text>
       </KeyboardStickyButton>
     </Screen>
   );

@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { ModalfyProvider } from '@/lib/modalfy';
 import { ReactQueryProvider } from '@/lib/react-query';
+import { RestyleProvider } from '@/lib/restyle';
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -12,11 +13,13 @@ interface ProvidersProps {
 export const Providers: React.FunctionComponent<ProvidersProps> = ({ children }) => {
   return (
     <SafeAreaProvider>
-      <ReactQueryProvider>
-        <RootSiblingParent>
-          <ModalfyProvider>{children}</ModalfyProvider>
-        </RootSiblingParent>
-      </ReactQueryProvider>
+      <RestyleProvider>
+        <ReactQueryProvider>
+          <RootSiblingParent>
+            <ModalfyProvider>{children}</ModalfyProvider>
+          </RootSiblingParent>
+        </ReactQueryProvider>
+      </RestyleProvider>
     </SafeAreaProvider>
   );
 };
