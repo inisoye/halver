@@ -79,6 +79,7 @@ export const Pressable = createRestyleComponent<PressableProps, Theme>(
     return (
       <Box
         {...props}
+        disabled={disabled}
         style={[props.style, animatedStyle]}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
