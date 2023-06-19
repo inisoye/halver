@@ -1,6 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
-import { useColorScheme } from 'react-native';
 
 import { Text } from '@/components';
 import {
@@ -18,7 +17,7 @@ import {
 } from '@/navigation/stacks';
 import { BillDetailsPlaceholder } from '@/screens';
 import { colors } from '@/theme';
-import { isIOS } from '@/utils';
+import { isIOS, useIsDarkMode } from '@/utils';
 
 interface BottomTabTextProps {
   label: string | undefined;
@@ -58,7 +57,7 @@ type TabType = {
   icon: React.FunctionComponent;
 };
 
-const tabs: TabType[] = [
+export const tabs: TabType[] = [
   {
     name: 'HomeStackNavigator',
     component: HomeStackNavigator,
@@ -94,33 +93,29 @@ const tabs: TabType[] = [
 const Tab = createBottomTabNavigator<TabParamList>();
 
 export const BottomTabNavigator = () => {
-  const colorScheme = useColorScheme();
-
-  const isDarkMode = colorScheme === 'dark';
+  const isDarkMode = useIsDarkMode();
 
   return (
     <Tab.Navigator
-      screenOptions={() => {
-        return {
-          headerShown: false,
-          tabBarStyle: {
-            flex: isIOS() ? 0.07 : 0.08,
-            elevation: 0,
-            backgroundColor: isDarkMode
-              ? colors['grey-dark'][50]
-              : colors['main-bg-light'],
-            borderTopColor: isDarkMode
-              ? colors['grey-dark'][600]
-              : colors['grey-light'][700],
-          },
-          tabBarItemStyle: {
-            height: 44,
-            flexDirection: 'column',
-          },
-          tabBarLabelStyle: {
-            color: isDarkMode ? colors['grey-dark'][1000] : colors['grey-light'][1000],
-          },
-        };
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
+          flex: isIOS() ? 0.07 : 0.08,
+          elevation: 0,
+          backgroundColor: isDarkMode
+            ? colors['grey-dark'][50]
+            : colors['main-bg-light'],
+          borderTopColor: isDarkMode
+            ? colors['grey-dark'][600]
+            : colors['grey-light'][700],
+        },
+        tabBarItemStyle: {
+          height: 44,
+          flexDirection: 'column',
+        },
+        tabBarLabelStyle: {
+          color: isDarkMode ? colors['grey-dark'][1000] : colors['grey-light'][1000],
+        },
       }}
     >
       {tabs.map(({ name, component, label, icon }, index) => {

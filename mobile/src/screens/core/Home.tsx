@@ -1,19 +1,12 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
 
-import { Box, Button, Card, Screen, Text } from '@/components';
+import { Box, Button, Card, DynamicText, Screen, Text } from '@/components';
 import { ActionStatusCounts } from '@/features/home';
 import { HalverMillipede } from '@/icons';
 import { AppRootStackParamList } from '@/navigation';
 
 type HomeProps = NativeStackScreenProps<AppRootStackParamList, 'Home'>;
-
-const customStyles = StyleSheet.create({
-  cardSubheading: {
-    maxWidth: 190,
-  },
-});
 
 export const Home = ({ navigation }: HomeProps) => {
   return (
@@ -31,14 +24,9 @@ export const Home = ({ navigation }: HomeProps) => {
             Create your first bill
           </Text>
 
-          <Text
-            color="textLight"
-            marginBottom="6"
-            style={customStyles.cardSubheading}
-            variant="sm"
-          >
+          <DynamicText color="textLight" marginBottom="6" maxWidth={190} variant="sm">
             You can invite a maximum of sixteen people to it.
-          </Text>
+          </DynamicText>
 
           <HalverMillipede />
 
