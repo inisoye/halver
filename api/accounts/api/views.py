@@ -4,7 +4,6 @@ from dj_rest_auth.registration.views import SocialLoginView
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from environs import Env
 from rest_framework import status
-from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -61,19 +60,19 @@ class ProfileImageUploadAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class RegisteredContactsListAPIView(ListAPIView):
+class RegisteredContactsListAPIView(APIView):
     """Filter out a list of a person's contacts that have previously
     registered on Halver.
 
-    Accepts GET requests.
+    Accepts POST requests.
     """
 
     permission_classes = (IsAuthenticated,)
     serializer_class = RegisteredContactsSerializer
 
-    def get_queryset(self):
-        phone_numbers = self.request.query_params.getlist("phone_numbers[]", [])
-        return CustomUser.objects.only(
+    def post(self, request):
+        phone_numbers = request.data.get("phone_numbers", [])
+        queryset = CustomUser.objects.only(
             "first_name",
             "last_name",
             "phone",
@@ -82,3 +81,6 @@ class RegisteredContactsListAPIView(ListAPIView):
             "username",
             "uuid",
         ).filter(phone__in=phone_numbers)
+
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
