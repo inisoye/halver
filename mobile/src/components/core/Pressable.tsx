@@ -25,6 +25,8 @@ export type PressableProps = BoxProps<Theme> &
   RNPressableProps & {
     areHapticsEnabled?: boolean;
     animateTranslate?: boolean;
+    animateOpacity?: boolean;
+    animationOn?: boolean;
     animateScale?: boolean;
     handlePressIn?: () => void;
     handlePressOut?: () => void;
@@ -36,8 +38,10 @@ export const Pressable = createRestyleComponent<PressableProps, Theme>(
   [spacing, color, border],
   ({
     areHapticsEnabled = true,
+    animationOn = true,
     animateScale = false,
     animateTranslate = true,
+    animateOpacity = true,
     disabled = false,
     handlePressIn: propHandlePressIn,
     handlePressOut: propHandlePressOut,
@@ -48,7 +52,9 @@ export const Pressable = createRestyleComponent<PressableProps, Theme>(
       handlePressIn: internalHandlePressIn,
       handlePressOut: internalHandlePressOut,
     } = useButtonAnimation({
+      animationOn,
       animateScale,
+      animateOpacity,
       animateTranslate,
       disabled,
     });

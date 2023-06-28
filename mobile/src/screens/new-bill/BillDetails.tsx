@@ -72,34 +72,59 @@ export const intervalOptions = [
   { value: 'annually', name: 'Annually' },
 ] as const;
 
+const twoDaysFromNow = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
+
 export const BillDetails: React.FunctionComponent<BillAmountProps> = ({
   navigation,
 }) => {
+  const [newBillPayload, setNewBillPayload] = useMMKVObject<BillCreationMMKVPayload>(
+    allMMKVKeys.newBillPayload,
+  );
+
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<BillDetailsFormValues>({
     defaultValues: {
-      totalAmountDue: undefined,
-      name: undefined,
-      deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-      interval: intervalOptions[0].value,
-      firstChargeDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+      totalAmountDue: newBillPayload?.totalAmountDue || undefined,
+      name: newBillPayload?.name || undefined,
+      deadline: newBillPayload?.deadline
+        ? new Date(newBillPayload?.deadline)
+        : twoDaysFromNow,
+      interval: newBillPayload?.interval || intervalOptions[0].value,
+      firstChargeDate: newBillPayload?.firstChargeDate
+        ? new Date(newBillPayload?.firstChargeDate)
+        : twoDaysFromNow,
     },
     resolver: zodResolver(BillDetailsFormSchema),
   });
-
-  const [_newBillPayload, setNewBillPayload] = useMMKVObject<BillCreationMMKVPayload>(
-    allMMKVKeys.newBillPayload,
-  );
 
   const intervalValue = useWatch({ control, name: 'interval' });
   const isRecurringBill = intervalValue !== 'none';
 
   const onBillDetailsSubmit = (submittedData: BillDetailsFormValues) => {
-    setNewBillPayload(submittedData);
-    navigation.navigate('Bill Participants');
+    const { firstChargeDate: _firstChargeDate, ...dataWithoutFirstChargeDate } =
+      submittedData;
+
+    const participantsData = {
+      unregisteredParticipants: newBillPayload?.unregisteredParticipants || [],
+      registeredParticipants: newBillPayload?.registeredParticipants || [],
+    };
+
+    if (isRecurringBill) {
+      setNewBillPayload({
+        ...submittedData,
+        ...participantsData,
+      });
+    } else {
+      setNewBillPayload({
+        ...dataWithoutFirstChargeDate,
+        ...participantsData,
+      });
+    }
+
+    navigation.navigate('Select Participants');
   };
 
   return (

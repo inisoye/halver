@@ -17,12 +17,12 @@ import {
   TextFieldLabel,
 } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
-import { Search, SelectCaret, SelectTick } from '@/icons';
+import { Search, SelectCaret, SelectInactiveItem, SelectTick } from '@/icons';
 import { Theme } from '@/lib/restyle';
 import { PaystackBank } from '@/lib/zod';
 import { BankDetailsFormValues } from '@/screens';
 import { marginAutoStyles } from '@/theme';
-import { isIOS } from '@/utils';
+import { getInitials, isIOS } from '@/utils';
 
 import { BanksList } from '../api';
 
@@ -43,6 +43,9 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
     () => selectedBank?.id === item.id,
     [selectedBank?.id, item.id],
   );
+
+  const initials = React.useMemo(() => getInitials(item.name), [item.name]);
+
   const { spacing } = useTheme<Theme>();
 
   return (
@@ -64,14 +67,29 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
         maxWidth="80%"
         width="100%"
       >
-        <Image
-          backgroundColor={item.logo ? 'white' : 'bankImageBackground'}
-          borderRadius="lg"
-          contentFit="contain"
-          height={40}
-          source={item.logo}
-          width={40}
-        />
+        {item.logo ? (
+          <Image
+            backgroundColor={item.logo ? 'white' : 'bankImageBackground'}
+            borderRadius="lg"
+            contentFit="contain"
+            height={40}
+            source={item.logo}
+            width={40}
+          />
+        ) : (
+          <Box
+            alignItems="center"
+            backgroundColor="white"
+            borderRadius="lg"
+            height={40}
+            justifyContent="center"
+            width={40}
+          >
+            <Text color="textBlack" fontFamily="Halver-Semibold" variant="sm">
+              {initials}
+            </Text>
+          </Box>
+        )}
 
         <DynamicText flexShrink={1} lineHeight={20} numberOfLines={1}>
           {item.name}
@@ -79,6 +97,7 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
       </Box>
 
       {isSelected && <SelectTick style={{ marginRight: spacing[6] }} />}
+      {!isSelected && <SelectInactiveItem style={{ marginRight: spacing[6] }} />}
     </Pressable>
   );
 };
@@ -139,16 +158,20 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
         selectedBank={selectedBank}
       />
     ),
-    [selectedBank?.id], // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedBank],
   );
 
   const noBankMatchesFilter = filteredBanks?.length === 0;
+
+  const selectedInitials = selectedBank?.name ? getInitials(selectedBank.name) : '';
 
   return (
     <>
       <TextFieldLabel label="Your bank" />
       <Button
         backgroundColor="buttonNeutral"
+        disabled={!banks}
         marginTop="1.5"
         paddingHorizontal="4"
         paddingVertical={isIOS() ? '3' : '3.5'}
@@ -156,15 +179,30 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
       >
         {!!selectedBank && (
           <Box alignItems="center" flexDirection="row" gap="2">
-            <Image
-              backgroundColor="white"
-              borderRadius="lg"
-              contentFit="contain"
-              height={24}
-              key={selectedBank.name}
-              source={selectedBank.logo}
-              width={24}
-            />
+            {selectedBank.logo ? (
+              <Image
+                backgroundColor="white"
+                borderRadius="lg"
+                contentFit="contain"
+                height={24}
+                key={selectedBank.name}
+                source={selectedBank.logo}
+                width={24}
+              />
+            ) : (
+              <Box
+                alignItems="center"
+                backgroundColor="white"
+                borderRadius="lg"
+                height={24}
+                justifyContent="center"
+                width={24}
+              >
+                <Text color="textBlack" fontFamily="Halver-Semibold" variant="xxs">
+                  {selectedInitials}
+                </Text>
+              </Box>
+            )}
 
             <DynamicText flexShrink={1} numberOfLines={1} width={192}>
               {selectedBank.name}
@@ -172,14 +210,18 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
           </Box>
         )}
 
-        <Text opacity={0}>Select a bank</Text>
+        {!selectedBank && (
+          <Text color="inputPlaceholder">
+            {areBanksLoading ? 'Loading banks' : 'Select a bank'}
+          </Text>
+        )}
 
         <SelectCaret style={marginAutoStyles['ml-auto']} />
       </Button>
 
       <Modal
         closeModal={handleModalClose}
-        headingText="Find your bank"
+        headingText="Select your bank"
         isLoaderOpen={areBanksLoading}
         isModalOpen={isModalOpen}
         hasLargeHeading

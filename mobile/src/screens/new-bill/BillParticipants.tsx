@@ -1,79 +1,83 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import * as Contacts from 'expo-contacts';
 import * as React from 'react';
-import { useForm } from 'react-hook-form';
-import { ScrollView } from 'react-native';
+import { useForm, useWatch } from 'react-hook-form';
 
-import { Box, KeyboardStickyButton, Screen, Text, TextField } from '@/components';
+import { Box, FullWidthTextField, LinearGradient, Screen } from '@/components';
+import {
+  ContactsContinueButton,
+  ContactsList,
+  ViewContactSelectionsModal,
+} from '@/features/new-bill';
 import { Search } from '@/icons';
 import { AppRootStackParamList } from '@/navigation';
-import { isIOS } from '@/utils';
+import { useIsDarkMode } from '@/utils';
 
 type BillParticipantsProps = NativeStackScreenProps<
   AppRootStackParamList,
-  'Bill Participants'
+  'Select Participants'
 >;
 
 export const BillParticipants = ({ navigation }: BillParticipantsProps) => {
-  const [contacts, setContacts] = React.useState<Contacts.Contact[]>([]);
-  const { control: controlForContactFilter, resetField } = useForm();
+  const { control: controlForContactFilter } = useForm<{
+    contactFilter: string;
+  }>({
+    defaultValues: {
+      contactFilter: '',
+    },
+  });
 
-  React.useEffect(() => {
-    (async () => {
-      const { status } = await Contacts.requestPermissionsAsync();
-      if (status === 'granted') {
-        const { data } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.PhoneNumbers],
-        });
+  const contactsFilterValue = useWatch({
+    control: controlForContactFilter,
+    name: 'contactFilter',
+  });
 
-        if (data.length > 0) {
-          setContacts(data);
-        }
-      }
-    })();
-  }, []);
+  const isDarkMode = useIsDarkMode();
 
-  const namesAndNumbers = contacts
-    .flatMap(contact => {
-      const { name, phoneNumbers } = contact;
-      return phoneNumbers?.map(phoneNumber => ({ name, phone: phoneNumber.digits }));
-    })
-    .filter(Boolean);
+  const gradientColors = isDarkMode
+    ? ['rgba(0,0,0,0)', 'rgba(0,0,0,0.2)', 'rgba(0,0,0,0.5)', 'black']
+    : [
+        'rgba(255,255,255,0)',
+        'rgba(255,255,255,0.2)',
+        'rgba(255,255,255,0.5)',
+        'white',
+      ];
 
   return (
     <Screen hasNoIOSBottomInset>
-      <ScrollView keyboardDismissMode="interactive">
-        <Box paddingHorizontal="6">
-          <Box
-            borderBottomColor="modalFilterContainerBorder"
-            borderBottomWidth={1}
-            paddingBottom="5"
-          >
-            <TextField
-              control={controlForContactFilter}
-              name="contactFilter"
-              paddingHorizontal="3"
-              paddingVertical={isIOS() ? '2' : '1'}
-              placeholder="Search"
-              prefixComponent={<Search />}
-              autoFocus
-            />
-          </Box>
-        </Box>
+      <FullWidthTextField
+        autoFocus={false}
+        control={controlForContactFilter}
+        name="contactFilter"
+        paddingHorizontal="0"
+        placeholder="Search for a contact"
+        prefixComponent={<Search />}
+        suffixComponent={<ViewContactSelectionsModal navigation={navigation} />}
+      />
 
-        <Box paddingHorizontal="6" paddingVertical="2">
-          <Text>This is bill participants</Text>
-        </Box>
-      </ScrollView>
+      <ContactsList contactsFilterValue={contactsFilterValue} />
 
-      <KeyboardStickyButton
-        backgroundColor="buttonCasal"
-        onPress={() => navigation.navigate('Bill Details')}
+      <Box
+        bottom={0}
+        flex={1}
+        left={0}
+        pointerEvents="none"
+        position="absolute"
+        right={0}
+        top={0}
       >
-        <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
-          Continue
-        </Text>
-      </KeyboardStickyButton>
+        <LinearGradient
+          bottom={0}
+          colors={gradientColors}
+          flex={1}
+          left={0}
+          locations={[0.5, 0.7, 0.9, 1]}
+          position="absolute"
+          right={0}
+          top={0}
+        />
+      </Box>
+
+      <ContactsContinueButton navigation={navigation} />
     </Screen>
   );
 };

@@ -13,7 +13,7 @@ export const validateAccountDetails = async (
   validateAccountDetailsDto: AccountDetailsPayload,
 ) => {
   const response = await apiClient.post(
-    '/api/v1/financials/bank-details/',
+    '/financials/bank-details/',
     validateAccountDetailsDto,
   );
   return AccountDetailsSchema.parse(response.data);

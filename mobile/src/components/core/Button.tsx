@@ -12,7 +12,7 @@ import {
 import * as Haptics from 'expo-haptics';
 import * as React from 'react';
 import { Pressable, PressableProps } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, { AnimateProps } from 'react-native-reanimated';
 
 import { useButtonAnimation } from '@/hooks';
 import { Theme } from '@/lib/restyle';
@@ -20,6 +20,7 @@ import { Theme } from '@/lib/restyle';
 export type ButtonProps = BoxProps<Theme> &
   SpacingProps<Theme> &
   ColorProps<Theme> &
+  AnimateProps<PressableProps> &
   PressableProps & {
     variant?: keyof Theme['buttonVariants'];
     areHapticsEnabled?: boolean;

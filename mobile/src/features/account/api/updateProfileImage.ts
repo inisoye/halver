@@ -5,7 +5,7 @@ import { allStaticQueryKeys } from '@/lib/react-query';
 
 export const updateProfileImage = async (updateProfileImageDto: FormData) => {
   const response = await apiClient.patch(
-    '/api/v1/accounts/profile-image/',
+    '/accounts/profile-image/',
     updateProfileImageDto,
     {
       headers: {

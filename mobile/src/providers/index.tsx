@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -16,7 +17,11 @@ export const Providers: React.FunctionComponent<ProvidersProps> = ({ children })
       <RestyleProvider>
         <ReactQueryProvider>
           <RootSiblingParent>
-            <ModalfyProvider>{children}</ModalfyProvider>
+            <ModalfyProvider>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                {children}
+              </GestureHandlerRootView>
+            </ModalfyProvider>
           </RootSiblingParent>
         </ReactQueryProvider>
       </RestyleProvider>

@@ -13,7 +13,7 @@ import { formatAxiosErrorMessage } from '@/utils';
 export type UserDetails = z.infer<typeof UserDetailsSchema>;
 
 export const getUserDetails = async () => {
-  const response = await apiClient.get('/api/v1/dj-rest-auth/user/');
+  const response = await apiClient.get('/dj-rest-auth/user/');
   return UserDetailsSchema.parse(response.data);
 };
 

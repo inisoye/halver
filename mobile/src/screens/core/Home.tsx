@@ -16,6 +16,7 @@ export const Home = ({ navigation }: HomeProps) => {
 
         <Card
           alignItems="flex-start"
+          marginBottom="10"
           overflow="hidden"
           paddingHorizontal="4"
           paddingVertical="5"
@@ -44,6 +45,17 @@ export const Home = ({ navigation }: HomeProps) => {
             </Text>
           </Button>
         </Card>
+
+        <Button
+          backgroundColor="buttonPharlap"
+          onPress={() => {
+            navigation.navigate('Select Participants');
+          }}
+        >
+          <Text color="buttonTextCasal" fontFamily="Halver-Semibold" variant="sm">
+            Just go
+          </Text>
+        </Button>
       </Box>
     </Screen>
   );

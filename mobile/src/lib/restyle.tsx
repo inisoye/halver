@@ -195,11 +195,13 @@ export const darkColors = {
   red12: 'hsl(351, 89.0%, 96.0%)',
 };
 
-const tailwindSpacing = {
+export const tailwindSpacing = {
   auto: 'auto',
   '0': 0,
   px: 1,
+  'px.5': 1.5,
   '0.5': 2,
+  '0.75': 3,
   '1': 4,
   '1.5': 6,
   '-2': -8,
@@ -267,7 +269,7 @@ const theme = createTheme({
     buttonTextApricot: lightColors.gray1,
     buttonTextCasal: lightColors.gray1,
     buttonTextPharlap: lightColors.gray1,
-    buttonNeutralText: lightColors.gray12,
+    buttonTextNeutral: lightColors.gray12,
 
     radioButtonBackgroundDefault: lightColors.gray1,
     radioButtonBackgroundSelected: brandColors.apricot8,
@@ -281,7 +283,10 @@ const theme = createTheme({
     inputErrorBackground: darkColors.red8,
     inputPlaceholder: lightColors.grayA8,
 
+    inputNestedButtonBackground: lightColors.gray5,
+
     modalBackground: lightColors.gray2,
+    modalElementBackground: lightColors.gray4,
     modalOverlay: lightColors.grayA10,
     modalFilterContainerBorder: lightColors.gray7,
 
@@ -290,7 +295,7 @@ const theme = createTheme({
     recurringActionStatusBackground: lightColors.green3,
     newBillActionStatusBackground: brandColors.apricot1,
 
-    selectedItemBackground: lightColors.green4,
+    selectedItemBackground: lightColors.green5,
 
     bankImageBackground: lightColors.gray7,
 
@@ -380,14 +385,14 @@ const theme = createTheme({
       paddingHorizontal: '6',
       paddingVertical: '3',
     },
-    xs: {
-      paddingHorizontal: '3',
-      paddingVertical: '1.5',
-    },
     sm: {
       paddingHorizontal: '4',
       paddingVertical: '2',
       fontSize: 14,
+    },
+    xs: {
+      paddingHorizontal: '3',
+      paddingVertical: '1.5',
     },
   },
   cardVariants: {
@@ -427,7 +432,7 @@ const darkTheme: Theme = {
     buttonTextApricot: darkColors.gray1,
     buttonTextCasal: darkColors.gray12,
     buttonTextPharlap: darkColors.gray1,
-    buttonNeutralText: darkColors.gray12,
+    buttonTextNeutral: darkColors.gray12,
 
     radioButtonBackgroundDefault: darkColors.gray4,
     radioButtonBackgroundSelected: brandColors.apricot6,
@@ -441,7 +446,10 @@ const darkTheme: Theme = {
     inputErrorBackground: darkColors.red7,
     inputPlaceholder: darkColors.grayA8,
 
+    inputNestedButtonBackground: darkColors.gray5,
+
     modalBackground: darkColors.gray2,
+    modalElementBackground: darkColors.gray3,
     modalFilterContainerBorder: darkColors.gray5,
 
     pendingActionStatusBackground: darkColors.gray3,
@@ -449,11 +457,11 @@ const darkTheme: Theme = {
     recurringActionStatusBackground: darkColors.gray3,
     newBillActionStatusBackground: darkColors.gray3,
 
-    selectedItemBackground: darkColors.green2,
+    selectedItemBackground: darkColors.green3,
 
     bankImageBackground: darkColors.gray12,
 
-    webViewBackground: darkColors.gray3,
+    webViewBackground: darkColors.gray12,
 
     datePickerMarkBackground: darkColors.gray3,
     datePickerCategoryLabelText: darkColors.gray10,

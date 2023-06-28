@@ -1,5 +1,27 @@
 import { z } from 'zod';
 
+export const RegisteredContacts = z.object({
+  firstName: z.string(),
+  fullName: z.string(),
+  lastName: z.string(),
+  phone: z.string().nullable(),
+  profileImageUrl: z.string().url().nullable(),
+  profileImageHash: z.string().nullable(),
+  username: z.string(),
+  uuid: z.string().uuid(),
+});
+
+export const RegisteredContactsList = z.array(RegisteredContacts);
+
+export const PaginatedRegisteredContactsList = z
+  .object({
+    count: z.number().int(),
+    next: z.string().url().nullable(),
+    previous: z.string().url().nullable(),
+    results: z.array(RegisteredContacts),
+  })
+  .partial();
+
 export const BillList = z.object({
   created: z.string().datetime(),
   interval: z.string(),
@@ -35,11 +57,21 @@ export const IntervalEnum = z.enum([
 
 export const BillUnregisteredParticipantCreate = z.object({
   contribution: z.number().gte(100).lt(1000000000000000),
-  created: z.string().datetime(),
-  modified: z.string().datetime(),
+  created: z.string().datetime().optional(),
+  modified: z.string().datetime().optional(),
   name: z.string().max(100),
   phone: z.string(),
+  uuid: z.string().uuid().optional(),
+});
+
+export const BillRegisteredParticipantMMKV = z.object({
+  contribution: z.number().gte(100).lt(1000000000000000),
+  name: z.string().max(100),
+  username: z.string(),
   uuid: z.string().uuid(),
+  profileImageUrl: z.string().url().nullable(),
+  profileImageHash: z.string().nullable(),
+  phone: z.string(),
 });
 
 export const BillCreateMMKV = z.object({
@@ -56,9 +88,9 @@ export const BillCreateMMKV = z.object({
   modified: z.string().datetime().optional(),
   name: z.string().max(100),
   notes: z.string().nullish().optional(),
-  participantsContributionIndex: z.record(z.number()).optional(),
   totalAmountDue: z.string().regex(/^-?\d{0,15}(?:\.\d{0,4})?$/),
   unregisteredParticipants: z.array(BillUnregisteredParticipantCreate).optional(),
+  registeredParticipants: z.array(BillRegisteredParticipantMMKV).optional(),
   uuid: z.string().uuid().optional(),
 });
 

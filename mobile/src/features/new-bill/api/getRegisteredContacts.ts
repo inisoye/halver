@@ -1,0 +1,85 @@
+import { useMutation } from '@tanstack/react-query';
+import { type AxiosError } from 'axios';
+import * as React from 'react';
+import { useMMKVObject } from 'react-native-mmkv';
+import { z } from 'zod';
+
+import { useRefreshOnFocus } from '@/hooks';
+import { apiClient } from '@/lib/axios';
+import { allMMKVKeys } from '@/lib/mmkv';
+import { RegisteredContactsList as RegisteredContactsListSchema } from '@/lib/zod';
+import { handleAxiosErrorAlertAndHaptics } from '@/utils';
+
+export type RegisteredContactsList = z.infer<typeof RegisteredContactsListSchema>;
+
+export const getRegisteredContacts = async (phoneNumbers: string[]) => {
+  const response = await apiClient.post('/accounts/registered-contacts/', {
+    phoneNumbers,
+  });
+  return RegisteredContactsListSchema.parse(response.data);
+};
+
+export const useRequestRegisteredContacts = () => {
+  return useMutation({
+    mutationFn: getRegisteredContacts,
+  });
+};
+
+interface UseRegisteredContactsParams {
+  allContacts: {
+    namesAndNumbers: (
+      | {
+          fullName: string;
+          phone: string | false | undefined;
+        }
+      | undefined
+    )[];
+    phoneNumbers: string[];
+  };
+  contactsFilterValue: string;
+}
+
+export const useRegisteredContacts = ({
+  allContacts,
+  contactsFilterValue,
+}: UseRegisteredContactsParams) => {
+  const [registeredContacts, setRegisteredContacts] =
+    useMMKVObject<RegisteredContactsList>(allMMKVKeys.registeredContacts);
+
+  const filteredRegisteredContacts = React.useMemo(() => {
+    return registeredContacts?.filter(contact =>
+      contact?.fullName?.toLowerCase().includes(contactsFilterValue?.toLowerCase()),
+    );
+  }, [contactsFilterValue, registeredContacts]);
+
+  const { mutate: requestRegisteredContacts, isLoading: areRegisteredContactsLoading } =
+    useRequestRegisteredContacts();
+
+  const getAndUpdateContacts = React.useCallback(() => {
+    if (allContacts.phoneNumbers.length > 0) {
+      requestRegisteredContacts(allContacts.phoneNumbers, {
+        onSuccess: data => {
+          setRegisteredContacts(data);
+        },
+        onError: error => {
+          handleAxiosErrorAlertAndHaptics(
+            'Error Fetching Registered Contacts',
+            error as AxiosError,
+          );
+        },
+      });
+    }
+  }, [requestRegisteredContacts, allContacts.phoneNumbers, setRegisteredContacts]);
+
+  React.useEffect(() => {
+    getAndUpdateContacts();
+  }, [getAndUpdateContacts]);
+
+  useRefreshOnFocus(getAndUpdateContacts);
+
+  return {
+    registeredContacts,
+    filteredRegisteredContacts,
+    areRegisteredContactsLoading,
+  };
+};

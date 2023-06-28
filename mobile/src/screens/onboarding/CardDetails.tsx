@@ -73,7 +73,7 @@ export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({
           >
             Adding your card is easy. Click the button below and follow Paystack's
             instructions. We'll need to charge you 60 Naira (NGN) to get it done, but
-            don't worry - we'll attempt to refund most of it right after your card is
+            don't worry - we'll attempt to refund* most of it right after your card is
             successfully added.
           </Text>
 
@@ -87,7 +87,7 @@ export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({
             variant="xs"
           >
             *The refund excludes transaction charges and totals to about 38 Naira. All
-            financial details are handled and stored by Paystack.
+            sensitive financial details are handled and stored by Paystack.
           </DynamicText>
 
           {!!authorizationUrl && (

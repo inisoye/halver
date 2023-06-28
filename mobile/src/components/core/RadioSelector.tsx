@@ -1,9 +1,9 @@
 import * as React from 'react';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { FadeIn } from 'react-native-reanimated';
 
 import { RadioTick } from '@/icons';
 
-import { Box } from './Box';
+import { AnimatedBox, Box } from './Box';
 import { Pressable } from './Pressable';
 import { Text } from './Text';
 
@@ -47,9 +47,9 @@ const RadioButton: React.FunctionComponent<RadioButtonProps> = ({
       </Text>
 
       {isSelected && (
-        <Animated.View entering={FadeIn}>
+        <AnimatedBox entering={FadeIn}>
           <RadioTick />
-        </Animated.View>
+        </AnimatedBox>
       )}
     </Pressable>
   );

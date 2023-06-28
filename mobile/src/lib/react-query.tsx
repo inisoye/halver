@@ -3,9 +3,9 @@ import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persist
 import {
   focusManager,
   onlineManager,
-  Query,
   QueryClient,
-  QueryKey,
+  type Query,
+  type QueryKey,
 } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
@@ -63,19 +63,20 @@ onlineManager.setEventListener(setOnline => {
  * Centralize all query keys here.
  */
 export const allStaticQueryKeys = {
-  getBanks: ['banks'],
-  getUserDetails: ['user-details'],
-  getCardAdditionURL: ['card-addition-url'],
   getActionStatusCounts: ['action-status-counts'],
+  getBanks: ['banks'],
+  getCardAdditionURL: ['card-addition-url'],
+  getRegisteredContacts: ['registered-contacts'],
+  getUserDetails: ['user-details'],
 };
 
 /**
  * Specify the queries that should be stored in MMKV, by their keys.
  */
-
 const persistedQueriesList: QueryKey[] = [
-  allStaticQueryKeys.getUserDetails,
   allStaticQueryKeys.getBanks,
+  allStaticQueryKeys.getRegisteredContacts,
+  allStaticQueryKeys.getUserDetails,
 ];
 
 export const ReactQueryProvider: React.FunctionComponent<ReactQueryProviderProps> = ({

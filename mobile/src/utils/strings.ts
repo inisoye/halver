@@ -90,3 +90,31 @@ export const convertKebabAndSnakeToTitleCase = (string: string | undefined) => {
 
   return convertToTitleCase(formattedString);
 };
+
+/**
+ * @param string A user's (full, first or last) name.
+ * @returns The intials of the user.
+ */
+export const getInitials = (string: string) => {
+  const names = string.split(' ');
+  let initials = names[0].substring(0, 1).toUpperCase();
+
+  if (names.length > 1) {
+    initials += names[names.length - 1].substring(0, 1).toUpperCase();
+  }
+
+  return initials;
+};
+
+/**
+ * Removes all spaces (trailing, leading, and in-between) from a string.
+ * @param string - The input string.
+ * @returns The string without any spaces.
+ */
+export function removeSpaces(string: string): string {
+  if (!string) {
+    return '';
+  }
+
+  return string.replace(/\s/g, '');
+}

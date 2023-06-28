@@ -8,7 +8,7 @@ import { PaystackBanksList as BanksListSchema } from '@/lib/zod';
 export type BanksList = z.infer<typeof BanksListSchema>;
 
 export const getBanks = async () => {
-  const response = await apiClient.get<BanksList>('/api/v1/financials/banks/');
+  const response = await apiClient.get<BanksList>('/financials/banks/');
   return response.data; // Not parsed as it is a large dataset.
 };
 

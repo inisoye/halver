@@ -12,7 +12,7 @@ export const createTransferRecipient = async (
   transferRecipientCreateDto: TransferRecipientCreatePayload,
 ) => {
   const response = await apiClient.post<void>(
-    '/api/v1/financials/transfer-recipients/',
+    '/financials/transfer-recipients/',
     transferRecipientCreateDto,
   );
   return response.data;

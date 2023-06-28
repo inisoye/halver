@@ -11,7 +11,9 @@ const springConfig = {
 export const useButtonAnimation = ({
   animateScale = false,
   animateTranslate = true,
+  animateOpacity = true,
   disabled = false,
+  animationOn = true,
 } = {}) => {
   const scale = useSharedValue(1);
   const offset = useSharedValue(0);
@@ -28,15 +30,15 @@ export const useButtonAnimation = ({
   });
 
   const handlePressIn = () => {
-    if (animateScale) scale.value = 0.97;
-    if (animateTranslate) offset.value = 2;
-    if (!disabled) opacity.value = 0.6;
+    if (animateScale && animationOn) scale.value = 0.97;
+    if (animateTranslate && animationOn) offset.value = 2;
+    if (!disabled && animateOpacity) opacity.value = 0.6;
   };
 
   const handlePressOut = () => {
-    if (animateScale) scale.value = 1;
-    if (animateTranslate) offset.value = 0;
-    if (!disabled) opacity.value = 1;
+    if (animateScale && animationOn) scale.value = 1;
+    if (animateTranslate && animationOn) offset.value = 0;
+    if (!disabled && animateOpacity) opacity.value = 1;
   };
 
   React.useEffect(() => {

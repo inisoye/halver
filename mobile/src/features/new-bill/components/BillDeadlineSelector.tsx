@@ -90,8 +90,8 @@ export const BillDeadlineSelector: React.FunctionComponent<
             }}
           />
 
-          <Button backgroundColor="buttonApricot" marginTop="2" onPress={closeModal}>
-            <Text color="buttonTextApricot" fontFamily="Halver-Semibold">
+          <Button backgroundColor="buttonPharlap" marginTop="2" onPress={closeModal}>
+            <Text color="buttonTextPharlap" fontFamily="Halver-Semibold">
               Done
             </Text>
           </Button>

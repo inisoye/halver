@@ -54,7 +54,6 @@ export const LogoLoader: React.FunctionComponent = () => {
       entering={ZoomInLeft.duration(600)}
       exiting={ZoomOutRight.duration(600)}
       flexDirection="row"
-      height={40}
       zIndex="10"
     >
       <AnimatedBox

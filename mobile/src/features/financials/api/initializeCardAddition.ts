@@ -6,7 +6,7 @@ import { UserCardAdditionResponse as UserCardAdditionResponseSchema } from '@/li
 
 export const getCardAdditionURL = async () => {
   const response = await apiClient.get(
-    '/api/v1/financials/user-cards/initialize-card-addition/',
+    '/financials/user-cards/initialize-card-addition/',
   );
   return UserCardAdditionResponseSchema.parse(response.data);
 };

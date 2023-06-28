@@ -1,15 +1,21 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
-import { BillDetails, BillParticipants, BillsByStatus } from '@/screens';
+import {
+  BillDetails,
+  BillParticipants,
+  BillsByStatus,
+  SplitBreakdown,
+} from '@/screens';
 
 import { BottomTabNavigator } from './BottomTabNavigator';
 
 export type AppRootStackParamList = {
   Home: undefined;
   'Bill Details': undefined;
-  'Bill Participants': undefined;
+  'Select Participants': undefined;
   'Bills By Status': { status: string };
+  'Split Breakdown': undefined;
 };
 
 const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
@@ -27,7 +33,8 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
 
       <AppRootStack.Group screenOptions={{ headerShown: false }}>
         <AppRootStack.Screen component={BillDetails} name="Bill Details" />
-        <AppRootStack.Screen component={BillParticipants} name="Bill Participants" />
+        <AppRootStack.Screen component={BillParticipants} name="Select Participants" />
+        <AppRootStack.Screen component={SplitBreakdown} name="Split Breakdown" />
       </AppRootStack.Group>
 
       <AppRootStack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>

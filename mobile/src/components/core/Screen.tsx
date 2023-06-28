@@ -29,12 +29,22 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
   const navigation = useNavigation();
   const { data: userDetails } = useUserDetails();
 
-  const peculiarScreenNames = { Home: `Hello ${userDetails?.firstName}` };
-  const isScreenNamePeculiar = Object.keys(peculiarScreenNames).includes(name);
-  const screenName = isScreenNamePeculiar ? peculiarScreenNames[name] : name;
+  const screenInfo = React.useMemo(() => {
+    const peculiarScreenNames = {
+      Home: `Hello ${userDetails?.firstName}`,
+    };
 
-  const hasBackButton = !screensWithNoBackButton.includes(name);
-  const hasLightHeading = screensWithLightHeading.includes(name);
+    const isScreenNamePeculiar = Object.keys(peculiarScreenNames).includes(name);
+    const screenName = isScreenNamePeculiar ? peculiarScreenNames[name] : name;
+    const hasBackButton = !screensWithNoBackButton.includes(name);
+    const hasLightHeading = screensWithLightHeading.includes(name);
+
+    return {
+      screenName,
+      hasBackButton,
+      hasLightHeading,
+    };
+  }, [name, userDetails]);
 
   return (
     <Box
@@ -46,7 +56,7 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
     >
       <TouchableOpacity
         hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}
-        visible={hasBackButton}
+        visible={screenInfo.hasBackButton}
         onPress={() => {
           navigation.goBack();
         }}
@@ -56,11 +66,11 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
 
       {isHeaderTextShown && (
         <Text
-          color={hasLightHeading ? 'textLight' : 'textDefault'}
+          color={screenInfo.hasLightHeading ? 'textLight' : 'textDefault'}
           fontFamily="Halver-Semibold"
           variant="2xl"
         >
-          {customScreenName || screenName}
+          {customScreenName || screenInfo.screenName}
         </Text>
       )}
     </Box>
