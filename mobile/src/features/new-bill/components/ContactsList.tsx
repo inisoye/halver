@@ -3,15 +3,14 @@ import { FlashList } from '@shopify/flash-list';
 import * as Contacts from 'expo-contacts';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 import * as React from 'react';
-import { useMMKVObject } from 'react-native-mmkv';
 
 import { AbsoluteKeyboardStickyButton, Text } from '@/components';
-import { allMMKVKeys } from '@/lib/mmkv';
+import { showToast } from '@/lib/root-toast';
 import { AppRootStackParamList } from '@/navigation';
 import { isMobilePhone, removeSpaces } from '@/utils';
 
 import { useRegisteredContacts } from '../api';
-import { BillCreationMMKVPayload } from '../types';
+import { useBillPayloadWithSelectionDetails } from '../hooks';
 import { ContactRenderItem } from './ContactRenderItem';
 
 interface ContactsListProps {
@@ -102,6 +101,20 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
     ];
   }, [filteredRegisteredContacts, noContactsFound, filteredUnregisteredContacts]);
 
+  const stickyHeaderIndices = React.useMemo(
+    () =>
+      contactsWithHeadings
+        .map((item, index) => {
+          if (typeof item === 'string') {
+            return index;
+          } else {
+            return null;
+          }
+        })
+        .filter(item => item !== null) as number[],
+    [contactsWithHeadings],
+  );
+
   const renderItem = ({ item, index }) => {
     const isLastItem = index === contactsWithHeadings.length - 1;
 
@@ -120,9 +133,13 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
       <FlashList
         data={contactsWithHeadings}
         estimatedItemSize={90}
+        getItemType={item => {
+          return typeof item === 'string' ? 'sectionHeader' : 'row';
+        }}
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
         renderItem={renderItem}
+        stickyHeaderIndices={stickyHeaderIndices}
       />
     </>
   );
@@ -139,35 +156,20 @@ interface ContactsContinueButtonProps {
 export const ContactsContinueButton: React.FunctionComponent<
   ContactsContinueButtonProps
 > = ({ navigation }) => {
-  const [newBillPayload] = useMMKVObject<BillCreationMMKVPayload>(
-    allMMKVKeys.newBillPayload,
-  );
-
-  const selectedRegisteredParticipants = newBillPayload?.registeredParticipants;
-  const selectedUnregisteredParticipants = newBillPayload?.unregisteredParticipants;
-
-  const selectedRegisteredParticipantsLength = selectedRegisteredParticipants
-    ? selectedRegisteredParticipants.length
-    : 0;
-  const selectedUnregisteredParticipantsLength = selectedUnregisteredParticipants
-    ? selectedUnregisteredParticipants.length
-    : 0;
-
-  const numberOfSelections =
-    selectedRegisteredParticipants && selectedUnregisteredParticipants
-      ? selectedRegisteredParticipantsLength + selectedUnregisteredParticipantsLength
-      : 0;
-
-  const pluralDenoter = !!numberOfSelections && numberOfSelections !== 1 ? 's' : '';
+  const { numberOfSelections, pluralDenoter } = useBillPayloadWithSelectionDetails();
 
   const handleContinue = () => {
+    if (numberOfSelections < 1) {
+      showToast('Please select a participant first', 'error');
+      return;
+    }
+
     navigation.navigate('Split Breakdown');
   };
 
   return (
     <AbsoluteKeyboardStickyButton
       backgroundColor="buttonCasal"
-      disabled={numberOfSelections < 1}
       position="absolute"
       onPress={handleContinue}
     >

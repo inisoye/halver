@@ -26,9 +26,7 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
       <AppRootStack.Screen
         component={BottomTabNavigator}
         name="Home"
-        options={{
-          headerShown: false,
-        }}
+        options={{ headerShown: false }}
       />
 
       <AppRootStack.Group screenOptions={{ headerShown: false }}>

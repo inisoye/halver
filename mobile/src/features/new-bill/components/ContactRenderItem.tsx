@@ -10,12 +10,16 @@ import type {
 import { SelectInactiveItem, SelectTick } from '@/icons';
 import { allMMKVKeys } from '@/lib/mmkv';
 import { Theme } from '@/lib/restyle';
-import { getInitials, useIsDarkMode } from '@/utils';
-import { getDarkColorFromString, getLightColorFromString } from '@/utils/colors';
+import {
+  getDarkColorFromString,
+  getInitials,
+  getLightColorFromString,
+  useIsDarkMode,
+} from '@/utils';
 
-type RegisteredContact = RegisteredContactsList[number];
+export type RegisteredContact = RegisteredContactsList[number];
 
-type DefinedContactItem =
+export type DefinedContactItem =
   | RegisteredContact
   | {
       fullName: string;
@@ -29,7 +33,6 @@ interface ContactOptionProps {
   contactHasImage: boolean;
   handleItemClick: (clickedItem: DefinedContactItem) => void;
   initials: string | undefined;
-  isDarkMode: boolean;
   isRegistered: boolean;
   isSelected: boolean | undefined;
   item: DefinedContactItem;
@@ -43,7 +46,6 @@ const ContactOption: React.FunctionComponent<ContactOptionProps> = ({
   contactHasImage,
   handleItemClick,
   initials,
-  isDarkMode,
   isRegistered,
   isSelected,
   item,
@@ -69,7 +71,7 @@ const ContactOption: React.FunctionComponent<ContactOptionProps> = ({
         flexDirection="row"
         gap="3"
         justifyContent="space-between"
-        paddingVertical="4"
+        paddingVertical="3.5"
         accessible
       >
         <Box
@@ -83,28 +85,23 @@ const ContactOption: React.FunctionComponent<ContactOptionProps> = ({
           <Box position="relative">
             {contactHasImage ? (
               <Image
-                backgroundColor={false ? 'white' : 'bankImageBackground'}
                 borderRadius="lg"
                 contentFit="contain"
-                height={40}
+                height={38}
                 placeholder={(item as RegisteredContact).profileImageHash}
                 source={(item as RegisteredContact).profileImageUrl}
-                width={40}
+                width={38}
               />
             ) : (
               <Box
                 alignItems="center"
-                backgroundColor={false ? 'white' : 'bankImageBackground'}
                 borderRadius="lg"
-                height={40}
+                height={38}
                 justifyContent="center"
                 style={{ backgroundColor: avatarBackground }}
-                width={40}
+                width={38}
               >
-                <Text
-                  color={isDarkMode ? 'textBlack' : 'textWhite'}
-                  fontFamily="Halver-Semibold"
-                >
+                <Text color="textInverse" fontFamily="Halver-Semibold" opacity={0.85}>
                   {initials}
                 </Text>
               </Box>
@@ -149,7 +146,7 @@ const ContactOption: React.FunctionComponent<ContactOptionProps> = ({
               numberOfLines={1}
               variant="xs"
             >
-              {item?.phone}
+              {isRegistered ? `@${(item as RegisteredContact).username}` : item?.phone}
             </DynamicText>
           </Box>
         </Box>
@@ -225,19 +222,19 @@ export const ContactRenderItem = ({
     }
 
     const {
-      uuid: selectedParticipantUUID,
-      fullName: selectedParticipantName,
-      username: selectedParticipantUsername,
-      profileImageHash: selectedParticipantProfileImageHash,
-      profileImageUrl: selectedParticipantProfileImageUrl,
-      phone: selectedParticipantPhone,
+      uuid: clickedParticipantUUID,
+      fullName: clickedParticipantName,
+      username: clickedParticipantUsername,
+      profileImageHash: clickedParticipantProfileImageHash,
+      profileImageUrl: clickedParticipantProfileImageUrl,
+      phone: clickedParticipantPhone,
     } = clickedItem;
 
     if (isSelectedAsRegistered) {
       setNewBillPayload({
         ...newBillPayload,
         registeredParticipants: selectedRegisteredParticipants.filter(
-          mmkvItem => mmkvItem.uuid !== selectedParticipantUUID,
+          mmkvItem => mmkvItem.uuid !== clickedParticipantUUID,
         ),
       });
     } else {
@@ -246,13 +243,13 @@ export const ContactRenderItem = ({
         registeredParticipants: [
           ...selectedRegisteredParticipants,
           {
-            name: selectedParticipantName,
+            name: clickedParticipantName,
             contribution: 0,
-            username: selectedParticipantUsername,
-            uuid: selectedParticipantUUID,
-            profileImageHash: selectedParticipantProfileImageHash,
-            profileImageUrl: selectedParticipantProfileImageUrl,
-            phone: selectedParticipantPhone || '',
+            username: clickedParticipantUsername,
+            uuid: clickedParticipantUUID,
+            profileImageHash: clickedParticipantProfileImageHash,
+            profileImageUrl: clickedParticipantProfileImageUrl,
+            phone: clickedParticipantPhone || '',
           },
         ],
       });
@@ -301,15 +298,16 @@ export const ContactRenderItem = ({
 
   if (typeof item === 'string') {
     return (
-      <Text
+      <DynamicText
+        backgroundColor="background"
         fontFamily="Halver-Semibold"
-        marginBottom="2"
-        marginTop="8"
+        marginTop="6"
         paddingHorizontal="6"
+        paddingVertical="2"
         variant="xl"
       >
         {item}
-      </Text>
+      </DynamicText>
     );
   }
 
@@ -320,7 +318,6 @@ export const ContactRenderItem = ({
       handleItemClick={handleItemClick}
       iconMargin={spacing[6]}
       initials={initials}
-      isDarkMode={isDarkMode}
       isLastItem={isLastItem}
       isRegistered={isRegistered}
       isSelected={isSelected}

@@ -1,8 +1,7 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
-import { useMMKVObject } from 'react-native-mmkv';
-import { FadeInDown } from 'react-native-reanimated';
+import { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 import {
   AnimatedBox,
@@ -12,19 +11,21 @@ import {
   Image,
   Modal,
   Pressable,
+  ScrollView,
   Text,
 } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { SmallClose } from '@/icons';
-import { allMMKVKeys } from '@/lib/mmkv';
+import { Theme } from '@/lib/restyle';
 import { AppRootStackParamList } from '@/navigation';
-import { getInitials, useIsDarkMode } from '@/utils';
 import {
   getDarkColorWithBackgroundFromString,
+  getInitials,
   getLightColorWithBackgroundFromString,
-} from '@/utils/colors';
+  useIsDarkMode,
+} from '@/utils';
 
-import type { BillCreationMMKVPayload } from '../types';
+import { useBillPayloadWithSelectionDetails } from '../hooks';
 
 interface SelectionItemProps {
   name: string;
@@ -52,7 +53,7 @@ const SelectionItem: React.FunctionComponent<SelectionItemProps> = ({
   handleSelectionRemoval,
 }) => {
   const isDarkMode = useIsDarkMode();
-  const { colors } = useTheme();
+  const { colors } = useTheme<Theme>();
 
   const initials = React.useMemo(() => getInitials(name), [name]);
 
@@ -64,9 +65,9 @@ const SelectionItem: React.FunctionComponent<SelectionItemProps> = ({
     [isDarkMode, name],
   );
 
-  const handlePress = React.useCallback(() => {
+  const handlePress = () => {
     handleSelectionRemoval(isRegistered, uuid, phone);
-  }, [handleSelectionRemoval, isRegistered, phone, uuid]);
+  };
 
   const contactHasImage = profileImageHash || profileImageUrl;
 
@@ -108,16 +109,15 @@ const SelectionItem: React.FunctionComponent<SelectionItemProps> = ({
             }}
             width={28}
           >
-            <Text
-              color={isDarkMode ? 'textBlack' : 'textWhite'}
-              fontFamily="Halver-Semibold"
-            >
+            <Text color="textInverse" fontFamily="Halver-Semibold" opacity={0.85}>
               {initials[0]}
             </Text>
           </Box>
         )}
 
-        <DynamicText>{name}</DynamicText>
+        <DynamicText flexShrink={1} lineHeight={20} maxWidth="80%" numberOfLines={1}>
+          {name}
+        </DynamicText>
       </Box>
 
       <Pressable hitSlop={16} onPress={handlePress}>
@@ -138,32 +138,21 @@ interface ViewContactSelectionsModalProps {
 export const ViewContactSelectionsModal: React.FunctionComponent<
   ViewContactSelectionsModalProps
 > = ({ navigation }) => {
-  const [newBillPayload, setNewBillPayload] = useMMKVObject<BillCreationMMKVPayload>(
-    allMMKVKeys.newBillPayload,
-  );
+  const {
+    newBillPayload,
+    numberOfSelections,
+    pluralDenoter,
+    selectedRegisteredParticipants,
+    selectedRegisteredParticipantsLength,
+    selectedUnregisteredParticipants,
+    setNewBillPayload,
+  } = useBillPayloadWithSelectionDetails();
 
   const {
     state: isModalOpen,
     setTrue: openModal,
     setFalse: closeModal,
   } = useBooleanStateControl();
-
-  const selectedRegisteredParticipants = newBillPayload?.registeredParticipants;
-  const selectedUnregisteredParticipants = newBillPayload?.unregisteredParticipants;
-
-  const selectedRegisteredParticipantsLength = selectedRegisteredParticipants
-    ? selectedRegisteredParticipants.length
-    : 0;
-  const selectedUnregisteredParticipantsLength = selectedUnregisteredParticipants
-    ? selectedUnregisteredParticipants.length
-    : 0;
-
-  const numberOfSelections =
-    selectedRegisteredParticipants && selectedUnregisteredParticipants
-      ? selectedRegisteredParticipantsLength + selectedUnregisteredParticipantsLength
-      : 0;
-
-  const pluralDenoter = !!numberOfSelections && numberOfSelections !== 1 ? 's' : '';
 
   React.useEffect(() => {
     // Delay closing by a tiny amount to ensure (removal) calculations are completed first.
@@ -224,6 +213,7 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
       {!!numberOfSelections && (
         <Button
           backgroundColor="inputNestedButtonBackground"
+          entering={FadeIn}
           variant="xs"
           onPress={openModal}
         >
@@ -244,63 +234,62 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
         <Box
           backgroundColor="gray1"
           gap="6"
+          maxHeight="91%"
           paddingBottom="8"
           paddingHorizontal="6"
           paddingTop="6"
         >
-          <Box gap="4">
-            {selectedRegisteredParticipants?.map(
-              ({ name, uuid, profileImageHash, profileImageUrl, phone }, index) => {
+          <ScrollView>
+            <Box gap="4">
+              {selectedRegisteredParticipants?.map(
+                ({ name, uuid, profileImageHash, profileImageUrl, phone }, index) => {
+                  return (
+                    <SelectionItem
+                      handleSelectionRemoval={handleSelectionRemoval}
+                      index={index}
+                      key={uuid}
+                      name={name}
+                      phone={phone}
+                      profileImageHash={profileImageHash}
+                      profileImageUrl={profileImageUrl}
+                      uuid={uuid}
+                      isRegistered
+                    />
+                  );
+                },
+              )}
+
+              {selectedUnregisteredParticipants?.map(({ name, phone }, index) => {
                 return (
                   <SelectionItem
                     handleSelectionRemoval={handleSelectionRemoval}
-                    index={index}
-                    key={uuid}
+                    index={selectedRegisteredParticipantsLength + index - 1}
+                    isRegistered={false}
+                    key={phone}
                     name={name}
                     phone={phone}
-                    profileImageHash={profileImageHash}
-                    profileImageUrl={profileImageUrl}
-                    uuid={uuid}
-                    isRegistered
                   />
                 );
-              },
-            )}
+              })}
+            </Box>
+          </ScrollView>
 
-            {selectedUnregisteredParticipants?.map(({ name, phone }, index) => {
-              return (
-                <SelectionItem
-                  handleSelectionRemoval={handleSelectionRemoval}
-                  index={selectedRegisteredParticipantsLength + index - 1}
-                  isRegistered={false}
-                  key={phone}
-                  name={name}
-                  phone={phone}
-                />
-              );
-            })}
-
-            {numberOfSelections > 1 && (
-              <Button
-                alignSelf="flex-end"
-                backgroundColor="inputNestedButtonBackground"
-                entering={FadeInDown.duration(350).delay(
-                  (numberOfSelections + 1) * 100,
-                )}
-                variant="xs"
-                onPress={handleRemoveAll}
-              >
-                <Text fontFamily="Halver-Semibold" variant="xs">
-                  Clear all
-                </Text>
-              </Button>
-            )}
-          </Box>
+          {numberOfSelections > 1 && (
+            <Button
+              alignSelf="flex-end"
+              backgroundColor="inputNestedButtonBackground"
+              variant="xs"
+              onPress={handleRemoveAll}
+            >
+              <Text fontFamily="Halver-Semibold" variant="xs">
+                Clear all
+              </Text>
+            </Button>
+          )}
 
           <Button
             backgroundColor="buttonPharlap"
             disabled={numberOfSelections < 1}
-            entering={FadeInDown.duration(350).delay((numberOfSelections + 2) * 100)}
             marginTop="2"
             onPress={handleContinue}
           >

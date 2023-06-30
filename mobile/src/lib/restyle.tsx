@@ -313,6 +313,7 @@ const theme = createTheme({
     tablet: 768,
   },
   borderRadii: {
+    none: 0,
     sm: 2,
     base: 4,
     md: 6,

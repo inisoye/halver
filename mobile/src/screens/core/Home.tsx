@@ -49,10 +49,10 @@ export const Home = ({ navigation }: HomeProps) => {
         <Button
           backgroundColor="buttonPharlap"
           onPress={() => {
-            navigation.navigate('Select Participants');
+            navigation.navigate('Split Breakdown');
           }}
         >
-          <Text color="buttonTextCasal" fontFamily="Halver-Semibold" variant="sm">
+          <Text color="buttonTextPharlap" fontFamily="Halver-Semibold" variant="sm">
             Just go
           </Text>
         </Button>

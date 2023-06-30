@@ -14,6 +14,7 @@ import {
   VisibleProps,
 } from '@shopify/restyle';
 import { TextProps as RNTextProps } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { Theme } from '@/lib/restyle';
 
@@ -34,3 +35,5 @@ export const DynamicText = createRestyleComponent<DynamicTextProps, Theme>(
   [spacing, visible, typography, color],
   createBox<Theme>(Text),
 );
+
+export const AnimatedText = Animated.createAnimatedComponent(DynamicText);

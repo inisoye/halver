@@ -42,6 +42,8 @@ interface TextFieldProps extends TextInputProps {
       >
     | undefined;
   isDarker?: boolean;
+  containerProps?: BoxProps<Theme>;
+  prefixContainerProps?: BoxProps<Theme>;
 }
 
 export const TextField: React.FunctionComponent<TextFieldProps> = ({
@@ -55,18 +57,21 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
   prefixText,
   rules,
   isDarker = false,
+  containerProps,
+  prefixContainerProps,
   ...props
 }) => {
-  const { colors } = useTheme();
+  const { colors } = useTheme<Theme>();
 
   return (
-    <Box flexDirection="row" gap="1" marginTop="1.5">
+    <Box flexDirection="row" gap="1" marginTop="1.5" {...containerProps}>
       {(!!prefixText || !!prefixComponent) && (
         <Box
           backgroundColor={isDarker ? 'inputBackgroundDarker' : 'inputBackground'}
           borderRadius="base"
           justifyContent="center"
-          paddingHorizontal="3"
+          paddingHorizontal="2"
+          {...prefixContainerProps}
         >
           {!!prefixText && <Text color="textLight">{prefixText}</Text>}
           {!!prefixComponent && prefixComponent}
@@ -170,7 +175,7 @@ export const FullWidthTextField: React.FunctionComponent<FullWidthTextFieldProps
   isDarker = false,
   ...props
 }) => {
-  const { colors } = useTheme();
+  const { colors } = useTheme<Theme>();
 
   return (
     <Box flexDirection="row" marginTop="1.5" {...containerProps}>
