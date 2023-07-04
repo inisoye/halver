@@ -1,27 +1,25 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { NativeSyntheticEvent } from 'react-native';
-import type { default as PagerViewType } from 'react-native-pager-view';
 
 import {
   AbsoluteKeyboardStickyButton,
   Box,
   DynamicText,
   Image,
-  PagerView,
-  Pressable,
   Screen,
   Text,
 } from '@/components';
 import { useUserDetails } from '@/features/account';
 import {
-  AmountSplitBreakdownTabs,
-  EvenSplitBreakdownTabs,
-  formatParticipantsData,
-  formatUnregisteredParticipantsData,
+  AllocationVarianceAlert,
+  AmountSplitBreakdownTab,
+  calculateEvenAmounts,
   GradientOverlay,
+  removeDuplicateParticipants,
+  removeDuplicateUnregisteredParticipants,
   SelectCreditorModal,
+  sumTotalParticipantAllocations,
 } from '@/features/new-bill';
 import { useBillPayloadWithSelectionDetails } from '@/features/new-bill/hooks';
 import { AppRootStackParamList } from '@/navigation';
@@ -32,6 +30,7 @@ import {
   getLightColorFromString,
   useIsDarkMode,
 } from '@/utils';
+import { formatNumberWithCommas } from '@/utils/numbers';
 
 type SplitBreakdownProps = NativeStackScreenProps<
   AppRootStackParamList,
@@ -39,22 +38,17 @@ type SplitBreakdownProps = NativeStackScreenProps<
 >;
 
 export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () => {
-  const pagerRef = React.useRef<PagerViewType>(null);
-  const [activePage, setActivePage] = React.useState(0);
   const { data: creatorDetails } = useUserDetails();
   const isDarkMode = useIsDarkMode();
 
   const {
     newBillPayload,
-    numberOfSelections,
+    setNewBillPayload,
     selectedRegisteredParticipants,
     selectedUnregisteredParticipants,
   } = useBillPayloadWithSelectionDetails();
 
-  const evenAmount =
-    numberOfSelections > 0
-      ? Number(newBillPayload?.totalAmountDue) / numberOfSelections
-      : 0;
+  const totalAmountDue = newBillPayload?.totalAmountDue;
 
   /**
    * Default values are provided below to ensure types are
@@ -68,34 +62,73 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () =
       profileImageHash: creatorDetails?.profileImageHash || null,
       profileImageUrl: creatorDetails?.profileImageUrl || null,
       phone: creatorDetails?.phone || '',
-      contribution: String(evenAmount) || '0',
+      contribution: '0',
     };
-  }, [creatorDetails, evenAmount]);
+  }, [creatorDetails]);
 
   const [creditor, setCreditor] = React.useState(formattedCreatorDetails);
 
   const { formattedRegisteredParticipants, formattedUnregisteredParticipants } =
     React.useMemo(() => {
-      return {
-        formattedRegisteredParticipants: [
-          formattedCreatorDetails,
-          ...formatParticipantsData(
-            selectedRegisteredParticipants,
-            evenAmount,
-            formattedCreatorDetails,
-          ),
-        ],
-        formattedUnregisteredParticipants: formatUnregisteredParticipantsData(
-          selectedUnregisteredParticipants,
-          evenAmount,
+      const uniqueRegisteredParticipants = [
+        formattedCreatorDetails,
+        ...removeDuplicateParticipants(
+          selectedRegisteredParticipants,
           formattedCreatorDetails,
         ),
+      ];
+
+      const uniqueUnregisteredParticipants = removeDuplicateUnregisteredParticipants(
+        selectedUnregisteredParticipants,
+        formattedCreatorDetails,
+      );
+
+      const numberOfRegisteredParticipants = uniqueRegisteredParticipants.length;
+      const numberOfUnregisteredParticipants = uniqueUnregisteredParticipants.length;
+      const numberOfParticipants =
+        numberOfRegisteredParticipants + numberOfUnregisteredParticipants;
+
+      const evenAmounts = calculateEvenAmounts(
+        Number(totalAmountDue),
+        numberOfParticipants,
+      );
+
+      const registeredParticipantAmounts = evenAmounts.slice(
+        0,
+        numberOfRegisteredParticipants,
+      );
+      const unregisteredParticipantAmounts = evenAmounts.slice(
+        numberOfRegisteredParticipants,
+        numberOfParticipants + 1,
+      );
+
+      const _formattedRegisteredParticipants = uniqueRegisteredParticipants.map(
+        (participant, index) => {
+          return {
+            ...participant,
+            contribution: String(registeredParticipantAmounts[index]),
+          };
+        },
+      );
+
+      const _formattedUnregisteredParticipants = uniqueUnregisteredParticipants.map(
+        (participant, index) => {
+          return {
+            ...participant,
+            contribution: String(unregisteredParticipantAmounts[index]),
+          };
+        },
+      );
+
+      return {
+        formattedRegisteredParticipants: _formattedRegisteredParticipants,
+        formattedUnregisteredParticipants: _formattedUnregisteredParticipants,
       };
     }, [
-      evenAmount,
       formattedCreatorDetails,
       selectedRegisteredParticipants,
       selectedUnregisteredParticipants,
+      totalAmountDue,
     ]);
 
   const {
@@ -112,7 +145,7 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () =
       isCreatorTheCreditor: creditor.uuid === formattedCreatorDetails.uuid,
       creditorFirstName: creditor.name.split(' ')[0],
     };
-  }, [creditor.name, creditor.uuid, formattedCreatorDetails.uuid, isDarkMode]);
+  }, [creditor, formattedCreatorDetails, isDarkMode]);
 
   const { control: controlForAmountForm } = useForm({
     defaultValues: {
@@ -122,6 +155,34 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () =
   });
 
   const allValues = useWatch({ control: controlForAmountForm });
+
+  const participantAllocationsBreakdown = sumTotalParticipantAllocations(allValues);
+  const totalParticipantAllocations = participantAllocationsBreakdown.total;
+
+  const areContributionAllocationsEqual =
+    totalParticipantAllocations === Number(totalAmountDue);
+
+  const areContributionAllocationsGreater =
+    totalParticipantAllocations > Number(totalAmountDue);
+
+  const areContributionAllocationsLess =
+    totalParticipantAllocations < Number(totalAmountDue);
+
+  const excessAmount = areContributionAllocationsGreater
+    ? totalParticipantAllocations - Number(totalAmountDue)
+    : 0;
+
+  const deficitAmount = areContributionAllocationsLess
+    ? Number(totalAmountDue) - totalParticipantAllocations
+    : 0;
+
+  const totalAllocationTextColor = areContributionAllocationsEqual
+    ? 'green11'
+    : areContributionAllocationsLess
+    ? 'amber11'
+    : areContributionAllocationsGreater
+    ? 'tomato11'
+    : undefined;
 
   const { fields: registeredParticipantAmountFields } = useFieldArray({
     control: controlForAmountForm,
@@ -133,37 +194,16 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () =
     name: 'unregisteredParticipants',
   });
 
-  const goToPage = (page: number) => {
-    if (pagerRef.current) {
-      pagerRef.current.setPage(page);
+  const updateBillAmount = () => {
+    if (!newBillPayload) {
+      return;
     }
+
+    setNewBillPayload({
+      ...newBillPayload,
+      totalAmountDue: String(totalParticipantAllocations),
+    });
   };
-
-  const handlePageChange = (
-    event: NativeSyntheticEvent<
-      Readonly<{
-        position: number;
-      }>
-    >,
-  ) => {
-    setActivePage(event.nativeEvent.position);
-  };
-
-  const slides = [
-    {
-      name: 'Split evenly',
-      description: `Everyone pays the same share - about ${convertNumberToNaira(
-        evenAmount,
-      )}`,
-    },
-    {
-      name: 'Split by amount',
-      description: 'Specify the amount each person pays',
-    },
-  ];
-
-  const selection = slides[activePage].name;
-  const activeDescription = slides[activePage].description;
 
   return (
     <Screen hasNoIOSBottomInset>
@@ -173,10 +213,10 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () =
         flexDirection="row"
         gap="2"
         justifyContent="space-between"
-        marginBottom="8"
+        marginBottom="6"
         marginTop="1.5"
         paddingHorizontal="6"
-        paddingVertical="2.5"
+        paddingVertical="2"
       >
         <Box
           alignItems="center"
@@ -221,80 +261,61 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () =
       </Box>
 
       <Box
-        flexDirection="row"
-        gap="2"
-        marginBottom="6"
-        marginLeft="auto"
-        marginRight="auto"
-        paddingHorizontal="6"
-      >
-        {slides.map(({ name }, index) => {
-          const isSelected = selection === name;
-
-          return (
-            <Pressable
-              animateScale={true}
-              animateTranslate={false}
-              backgroundColor={
-                isSelected
-                  ? 'radioButtonBackgroundSelected'
-                  : 'radioButtonBackgroundDefault'
-              }
-              borderRadius="md"
-              flex={0}
-              handlePressOut={() => goToPage(index)}
-              key={name}
-              paddingHorizontal="4"
-              paddingVertical="2"
-            >
-              <Text
-                color={isSelected ? 'textInverse' : 'textLight'}
-                fontFamily={isSelected ? 'Halver-Semibold' : 'Halver-Medium'}
-                textAlign="center"
-                variant="sm"
-              >
-                {name}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </Box>
-
-      <DynamicText
-        color="textLight"
+        alignItems="center"
         marginBottom="3"
         marginLeft="auto"
         marginRight="auto"
         paddingHorizontal="6"
-        textAlign="center"
-        variant="xs"
       >
-        {activeDescription}
-      </DynamicText>
+        <Box flexDirection="row">
+          <Text
+            color={totalAllocationTextColor}
+            fontFamily="Halver-Naira"
+            lineHeight={40}
+          >
+            ₦
+          </Text>
 
-      <PagerView
-        flex={1}
-        initialPage={0}
-        ref={pagerRef}
-        onPageSelected={handlePageChange}
-      >
-        <Box key="1">
-          <EvenSplitBreakdownTabs
-            creditor={creditor}
-            formattedParticipants={formattedRegisteredParticipants}
-            formattedUnregisteredParticipants={formattedUnregisteredParticipants}
-          />
+          <DynamicText
+            color={totalAllocationTextColor}
+            flexDirection="row"
+            fontFamily="Halver-Semibold"
+            textAlign="center"
+            variant="4xl"
+          >
+            {formatNumberWithCommas(Number(totalParticipantAllocations))}
+          </DynamicText>
         </Box>
 
-        <Box key="2">
-          <AmountSplitBreakdownTabs
-            controlForAmountForm={controlForAmountForm}
-            creditor={creditor}
-            registeredParticipantAmountFields={registeredParticipantAmountFields}
-            unregisteredParticipantAmountFields={unregisteredParticipantAmountFields}
-          />
-        </Box>
-      </PagerView>
+        <DynamicText color="textLight" textAlign="center" variant="sm">
+          allocated out of {convertNumberToNaira(Number(totalAmountDue))}.
+        </DynamicText>
+      </Box>
+
+      {areContributionAllocationsGreater && (
+        <AllocationVarianceAlert
+          totalAllocationTextColor={totalAllocationTextColor}
+          updateBillAmount={updateBillAmount}
+          variantAmount={excessAmount}
+          isExcess
+        />
+      )}
+
+      {areContributionAllocationsLess && (
+        <AllocationVarianceAlert
+          isExcess={false}
+          totalAllocationTextColor={totalAllocationTextColor}
+          updateBillAmount={updateBillAmount}
+          variantAmount={deficitAmount}
+        />
+      )}
+
+      <AmountSplitBreakdownTab
+        controlForAmountForm={controlForAmountForm}
+        creditor={creditor}
+        registeredParticipantAmountFields={registeredParticipantAmountFields}
+        unregisteredParticipantAmountFields={unregisteredParticipantAmountFields}
+      />
 
       <GradientOverlay />
 

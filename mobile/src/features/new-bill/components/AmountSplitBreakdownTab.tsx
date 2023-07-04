@@ -6,6 +6,7 @@ import {
   getDarkColorFromString,
   getInitials,
   getLightColorFromString,
+  isIOS,
   useIsDarkMode,
 } from '@/utils';
 
@@ -28,7 +29,7 @@ interface AmountSplitParticipantItemProps {
   subtext: string;
 }
 
-const AmountSplitParticipantItem: React.FunctionComponent<
+export const AmountSplitParticipantItem: React.FunctionComponent<
   AmountSplitParticipantItemProps
 > = ({
   control,
@@ -49,62 +50,61 @@ const AmountSplitParticipantItem: React.FunctionComponent<
   }, [isDarkMode, name]);
 
   return (
-    <Box
-      alignItems="center"
-      backgroundColor={isCreditor ? 'selectedItemBackground' : 'transparent'}
-      flexDirection="row"
-      gap="2"
-      justifyContent="space-between"
-      paddingHorizontal="6"
-      paddingVertical="3.5"
-    >
-      <Box alignItems="center" flexDirection="row" flexGrow={0} flexShrink={1} gap="3">
-        {profileImageUrl ? (
-          <Image
-            borderRadius="lg"
-            contentFit="contain"
-            height={38}
-            placeholder={profileImageHash}
-            source={profileImageUrl}
-            width={38}
-          />
-        ) : (
-          <Box
-            alignItems="center"
-            borderRadius="lg"
-            height={38}
-            justifyContent="center"
-            style={{ backgroundColor: avatarBackground }}
-            width={38}
-          >
-            <Text color="textInverse" fontFamily="Halver-Semibold">
-              {initials}
+    <>
+      <Box
+        alignItems="center"
+        backgroundColor={isCreditor ? 'selectedItemBackground' : 'transparent'}
+        flexDirection="row"
+        gap="2"
+        justifyContent="space-between"
+        paddingHorizontal="6"
+        paddingVertical="3.5"
+      >
+        <Box
+          alignItems="center"
+          flexDirection="row"
+          flexGrow={0}
+          flexShrink={1}
+          gap="3"
+        >
+          {profileImageUrl ? (
+            <Image
+              borderRadius="lg"
+              contentFit="contain"
+              height={36}
+              placeholder={profileImageHash}
+              source={profileImageUrl}
+              width={36}
+            />
+          ) : (
+            <Box
+              alignItems="center"
+              borderRadius="lg"
+              height={36}
+              justifyContent="center"
+              style={{ backgroundColor: avatarBackground }}
+              width={36}
+            >
+              <Text color="textInverse" fontFamily="Halver-Semibold" variant="sm">
+                {initials}
+              </Text>
+            </Box>
+          )}
+
+          <Box gap="1" width="65%">
+            <DynamicText fontSize={15} numberOfLines={1}>
+              {name}
+            </DynamicText>
+            <Text color="textLight" variant="xs">
+              {subtext}
             </Text>
           </Box>
-        )}
-
-        <Box gap="1" width="65%">
-          <DynamicText numberOfLines={1}>{name}</DynamicText>
-          <Text color="textLight" variant="xs">
-            {subtext}
-          </Text>
         </Box>
-      </Box>
 
-      {isCreditor ? (
-        <DynamicText
-          color="green11"
-          flexGrow={1}
-          maxWidth="50%"
-          textAlign="right"
-          variant="sm"
-        >
-          Creditor
-        </DynamicText>
-      ) : (
         <TextField
+          alignSelf="flex-end"
           backgroundColor="transparent"
-          borderBottomColor="gray11"
+          borderBottomColor="gray9"
           borderBottomWidth={1}
           borderRadius="none"
           containerProps={{ maxWidth: '35%' }}
@@ -112,12 +112,12 @@ const AmountSplitParticipantItem: React.FunctionComponent<
           flex={-1}
           fontSize={14}
           keyboardType="number-pad"
+          minWidth={30}
           name={`${
             isRegistered ? 'registeredParticipants' : 'unregisteredParticipants'
           }.${index}.contribution`}
           paddingHorizontal="0"
-          paddingVertical="0.5"
-          placeholder="min. ₦300"
+          paddingVertical={isIOS() ? '1' : '0'}
           prefixComponent={<Text variant="sm">₦</Text>}
           prefixContainerProps={{
             backgroundColor: 'transparent',
@@ -126,12 +126,12 @@ const AmountSplitParticipantItem: React.FunctionComponent<
           }}
           textAlign="right"
         />
-      )}
-    </Box>
+      </Box>
+    </>
   );
 };
 
-interface AmountSplitBreakdownTabsProps {
+interface AmountSplitBreakdownTabProps {
   controlForAmountForm: Control<{
     registeredParticipants: FormattedRegisteredParticipant[];
     unregisteredParticipants: FormattedUnregisteredParticipant[];
@@ -155,8 +155,8 @@ interface AmountSplitBreakdownTabsProps {
   >[];
 }
 
-export const AmountSplitBreakdownTabs: React.FunctionComponent<
-  AmountSplitBreakdownTabsProps
+export const AmountSplitBreakdownTab: React.FunctionComponent<
+  AmountSplitBreakdownTabProps
 > = ({
   controlForAmountForm,
   creditor,

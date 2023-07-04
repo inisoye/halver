@@ -87,21 +87,26 @@ const ContactOption: React.FunctionComponent<ContactOptionProps> = ({
               <Image
                 borderRadius="lg"
                 contentFit="contain"
-                height={38}
+                height={36}
                 placeholder={(item as RegisteredContact).profileImageHash}
                 source={(item as RegisteredContact).profileImageUrl}
-                width={38}
+                width={36}
               />
             ) : (
               <Box
                 alignItems="center"
                 borderRadius="lg"
-                height={38}
+                height={36}
                 justifyContent="center"
                 style={{ backgroundColor: avatarBackground }}
-                width={38}
+                width={36}
               >
-                <Text color="textInverse" fontFamily="Halver-Semibold" opacity={0.85}>
+                <Text
+                  color="textInverse"
+                  fontFamily="Halver-Semibold"
+                  opacity={0.85}
+                  variant="sm"
+                >
                   {initials}
                 </Text>
               </Box>
@@ -136,7 +141,7 @@ const ContactOption: React.FunctionComponent<ContactOptionProps> = ({
           </Box>
 
           <Box flexShrink={1}>
-            <DynamicText flexShrink={1} lineHeight={20} numberOfLines={1}>
+            <DynamicText flexShrink={1} fontSize={15} lineHeight={20} numberOfLines={1}>
               {item?.fullName}
             </DynamicText>
             <DynamicText

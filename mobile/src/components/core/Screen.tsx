@@ -51,8 +51,9 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
       alignItems="center"
       flexDirection="row"
       gap="4"
+      paddingBottom="4"
       paddingHorizontal="6"
-      paddingVertical="4"
+      paddingTop={isIOS() ? '6' : '8'}
     >
       <TouchableOpacity
         hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}

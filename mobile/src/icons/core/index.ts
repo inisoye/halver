@@ -7,3 +7,4 @@ export * from './UserFolder';
 export * from './RadioTick';
 export * from './SelectInactiveItem';
 export * from './SmallClose';
+export * from './SmallAlert';

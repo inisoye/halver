@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useMMKVObject } from 'react-native-mmkv';
 import { z } from 'zod';
 
+import { useUserDetails } from '@/features/account';
 import { useRefreshOnFocus } from '@/hooks';
 import { apiClient } from '@/lib/axios';
 import { allMMKVKeys } from '@/lib/mmkv';
@@ -19,7 +20,7 @@ export const getRegisteredContacts = async (phoneNumbers: string[]) => {
   return RegisteredContactsListSchema.parse(response.data);
 };
 
-export const useRequestRegisteredContacts = () => {
+export const useRegisteredContactsRequest = () => {
   return useMutation({
     mutationFn: getRegisteredContacts,
   });
@@ -45,15 +46,18 @@ export const useRegisteredContacts = ({
 }: UseRegisteredContactsParams) => {
   const [registeredContacts, setRegisteredContacts] =
     useMMKVObject<RegisteredContactsList>(allMMKVKeys.registeredContacts);
+  const { data: creatorDetails } = useUserDetails();
 
   const filteredRegisteredContacts = React.useMemo(() => {
-    return registeredContacts?.filter(contact =>
-      contact?.fullName?.toLowerCase().includes(contactsFilterValue?.toLowerCase()),
+    return registeredContacts?.filter(
+      contact =>
+        contact?.fullName?.toLowerCase().includes(contactsFilterValue?.toLowerCase()) &&
+        contact.uuid !== creatorDetails?.uuid, // Remove creator
     );
-  }, [contactsFilterValue, registeredContacts]);
+  }, [contactsFilterValue, creatorDetails?.uuid, registeredContacts]);
 
   const { mutate: requestRegisteredContacts, isLoading: areRegisteredContactsLoading } =
-    useRequestRegisteredContacts();
+    useRegisteredContactsRequest();
 
   const getAndUpdateContacts = React.useCallback(() => {
     if (allContacts.phoneNumbers.length > 0) {

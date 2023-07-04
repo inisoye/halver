@@ -14,7 +14,7 @@ import {
   Pressable as RNPressable,
   PressableProps as RNPressableProps,
 } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, { AnimateProps } from 'react-native-reanimated';
 
 import { useButtonAnimation } from '@/hooks';
 import { Theme } from '@/lib/restyle';
@@ -22,6 +22,7 @@ import { Theme } from '@/lib/restyle';
 export type PressableProps = BoxProps<Theme> &
   SpacingProps<Theme> &
   ColorProps<Theme> &
+  AnimateProps<RNPressableProps> &
   RNPressableProps & {
     areHapticsEnabled?: boolean;
     animateTranslate?: boolean;

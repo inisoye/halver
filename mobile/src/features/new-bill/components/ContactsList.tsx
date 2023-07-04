@@ -46,13 +46,13 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
 
           return {
             fullName: name,
-            phone:
-              isMobilePhone(numberWithoutSpaces, 'en-NG') &&
-              parsePhoneNumberFromString(numberWithoutSpaces, 'NG')?.format('E.164'),
+            phone: isMobilePhone(numberWithoutSpaces, 'en-NG')
+              ? parsePhoneNumberFromString(numberWithoutSpaces, 'NG')?.format('E.164')
+              : undefined,
           };
         });
       })
-      .filter(item => !!item?.phone);
+      .filter(item => !!item?.phone); // Remove falsy values
 
     const phoneNumbers = namesAndNumbers.map(c => c?.phone || '');
 
@@ -64,9 +64,13 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
     contactsFilterValue,
   });
 
+  // Remove registered contacts from unregistered list.
   const allUnregisteredContacts = React.useMemo(() => {
+    const registeredContactsSet = new Set(
+      registeredContacts?.map(item => item.phone || undefined),
+    );
     return allContacts.namesAndNumbers.filter(
-      item1 => !registeredContacts?.some(item2 => item1?.phone === item2.phone),
+      item => !registeredContactsSet.has(item?.phone),
     );
   }, [allContacts.namesAndNumbers, registeredContacts]);
 

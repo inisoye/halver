@@ -70,7 +70,7 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
           backgroundColor={isDarker ? 'inputBackgroundDarker' : 'inputBackground'}
           borderRadius="base"
           justifyContent="center"
-          paddingHorizontal="2"
+          paddingHorizontal="3"
           {...prefixContainerProps}
         >
           {!!prefixText && <Text color="textLight">{prefixText}</Text>}

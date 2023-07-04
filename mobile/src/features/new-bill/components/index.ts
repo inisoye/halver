@@ -6,3 +6,4 @@ export * from './EvenSplitBreakdownTab';
 export * from './AmountSplitBreakdownTab';
 export * from './GradientOverlay';
 export * from './SelectCreditorModal';
+export * from './AllocationVarianceAlert';

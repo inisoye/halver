@@ -17,6 +17,5 @@ export * from './SearchField';
 export * from './Text';
 export * from './TextField';
 export * from './TouchableOpacity';
-export * from './PagerView';
 export * from './RectButton';
 export * from './WebView';

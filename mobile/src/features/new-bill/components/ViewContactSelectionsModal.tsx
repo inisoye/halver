@@ -160,7 +160,7 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
       if (!numberOfSelections || (numberOfSelections && numberOfSelections === 0)) {
         closeModal();
       }
-    }, 0.1);
+    }, 10);
 
     return () => clearTimeout(timeout);
   }, [closeModal, numberOfSelections]);

@@ -1,6 +1,6 @@
 import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
-import { FadeIn } from 'react-native-reanimated';
+import { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 import {
   Box,
@@ -25,12 +25,14 @@ import { FormattedRegisteredParticipant } from '../types';
 
 interface SelectCreditorOptionProps {
   closeModal: () => void;
+  index: number;
   participant: FormattedRegisteredParticipant;
   setCreditor: React.Dispatch<React.SetStateAction<FormattedRegisteredParticipant>>;
 }
 
 const SelectCreditorOption: React.FunctionComponent<SelectCreditorOptionProps> = ({
   closeModal,
+  index,
   participant,
   setCreditor,
 }) => {
@@ -53,7 +55,10 @@ const SelectCreditorOption: React.FunctionComponent<SelectCreditorOptionProps> =
   };
 
   return (
-    <Pressable onPress={handleCreditorSelection}>
+    <Pressable
+      entering={FadeInDown.duration(350).delay((index + 1) * 150)}
+      onPress={handleCreditorSelection}
+    >
       {profileImageUrl ? (
         <Image
           borderRadius="lg"
@@ -127,7 +132,7 @@ export const SelectCreditorModal: React.FunctionComponent<SelectCreditorModalPro
         <Box
           backgroundColor="modalBackground"
           maxHeight="91%"
-          paddingBottom="10"
+          paddingBottom="6"
           paddingHorizontal="6"
           paddingTop="6"
         >
@@ -140,10 +145,11 @@ export const SelectCreditorModal: React.FunctionComponent<SelectCreditorModalPro
             flexDirection="row"
             horizontal={true}
           >
-            {formattedRegisteredParticipants.map(participant => {
+            {formattedRegisteredParticipants.map((participant, index) => {
               return (
                 <SelectCreditorOption
                   closeModal={closeModal}
+                  index={index}
                   key={participant.uuid}
                   participant={participant}
                   setCreditor={setCreditor}

@@ -16,44 +16,45 @@ interface RadioButtonProps {
   };
 }
 
-const RadioButton: React.FunctionComponent<RadioButtonProps> = ({
-  isSelected,
-  handleSelect,
-  item,
-}) => {
-  return (
-    <Pressable
-      alignItems="center"
-      animateScale={true}
-      animateTranslate={false}
-      backgroundColor={
-        isSelected ? 'radioButtonBackgroundSelected' : 'radioButtonBackgroundDefault'
-      }
-      borderRadius="md"
-      flexDirection="row"
-      gap="4"
-      handlePressOut={() => handleSelect(item.value)}
-      justifyContent="space-between"
-      key={item.value}
-      paddingHorizontal="4"
-      paddingVertical="2"
-    >
-      <Text
-        color={isSelected ? 'textInverse' : 'textLight'}
-        fontFamily={isSelected ? 'Halver-Semibold' : 'Halver-Medium'}
-        variant="sm"
+const RadioButton: React.FunctionComponent<RadioButtonProps> = React.memo(
+  ({ isSelected, handleSelect, item }) => {
+    return (
+      <Pressable
+        alignItems="center"
+        animateScale={true}
+        animateTranslate={false}
+        backgroundColor={
+          isSelected ? 'radioButtonBackgroundSelected' : 'radioButtonBackgroundDefault'
+        }
+        borderRadius="md"
+        flexDirection="row"
+        gap="4"
+        handlePressOut={() => handleSelect(item.value)}
+        justifyContent="space-between"
+        key={item.value}
+        paddingHorizontal="4"
+        paddingVertical="2"
       >
-        {item.name}
-      </Text>
+        <Text
+          color={isSelected ? 'textInverse' : 'textLight'}
+          fontFamily={isSelected ? 'Halver-Semibold' : 'Halver-Medium'}
+          variant="sm"
+        >
+          {item.name}
+        </Text>
 
-      {isSelected && (
-        <AnimatedBox entering={FadeIn}>
-          <RadioTick />
-        </AnimatedBox>
-      )}
-    </Pressable>
-  );
-};
+        {isSelected && (
+          <AnimatedBox entering={FadeIn}>
+            <RadioTick />
+          </AnimatedBox>
+        )}
+      </Pressable>
+    );
+  },
+  (prevProps, nextProps) => {
+    return prevProps.isSelected === nextProps.isSelected;
+  },
+);
 
 interface RadioSelectorProps {
   data:
