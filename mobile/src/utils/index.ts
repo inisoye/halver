@@ -4,3 +4,4 @@ export * from './phoneNumbers';
 export * from './platform';
 export * from './colors';
 export * from './currency';
+export * from './numbers';

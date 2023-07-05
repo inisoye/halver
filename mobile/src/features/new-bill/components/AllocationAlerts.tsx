@@ -3,8 +3,9 @@ import * as React from 'react';
 import { Box, Button, DynamicText, Text } from '@/components';
 import { SmallAlert } from '@/icons';
 import { lightColors } from '@/lib/restyle';
-import { convertNumberToNaira } from '@/utils';
-import { formatNumberWithCommas } from '@/utils/numbers';
+import { convertNumberToNaira, formatNumberWithCommas } from '@/utils';
+
+import { MINIMUM_CONTRIBUTION } from '../constants';
 
 interface AllocationVarianceAlertProps {
   variantAmount: number;
@@ -32,7 +33,7 @@ export const AllocationVarianceAlert: React.FunctionComponent<
         <DynamicText color="textInverse" fontFamily="Halver-Semibold" variant="xs">
           {variantAmount > 1
             ? convertNumberToNaira(variantAmount)
-            : `₦${formatNumberWithCommas(variantAmount, 10)}`}
+            : `₦${formatNumberWithCommas(variantAmount, 18)}`}
           {isExcess ? ' in excess' : ' left'}
         </DynamicText>
       </Box>
@@ -47,6 +48,29 @@ export const AllocationVarianceAlert: React.FunctionComponent<
           {isExcess ? 'Increase ' : 'Reduce '}bill total
         </Text>
       </Button>
+    </Box>
+  );
+};
+
+export const MinimumAllocationAlert: React.FunctionComponent = () => {
+  return (
+    <Box
+      alignItems="center"
+      backgroundColor="tomato11"
+      flexDirection="row"
+      gap="2"
+      justifyContent="space-between"
+      paddingHorizontal="6"
+      paddingVertical="1.5"
+    >
+      <Box alignItems="center" flexDirection="row" gap="2">
+        <SmallAlert />
+
+        <DynamicText color="textInverse" fontFamily="Halver-Semibold" variant="xs">
+          All contributions must be greater than{' '}
+          {convertNumberToNaira(MINIMUM_CONTRIBUTION)}
+        </DynamicText>
+      </Box>
     </Box>
   );
 };

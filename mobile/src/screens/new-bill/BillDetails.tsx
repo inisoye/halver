@@ -22,10 +22,12 @@ import {
   BillCreationMMKVPayload,
   BillDeadlineSelector,
   BillFirstChargeDateSelector,
+  MINIMUM_BILL_AMOUNT,
 } from '@/features/new-bill';
 import { allMMKVKeys } from '@/lib/mmkv';
 import { IntervalEnum } from '@/lib/zod';
 import { AppRootStackParamList } from '@/navigation';
+import { convertNumberToNaira } from '@/utils';
 
 type BillAmountProps = NativeStackScreenProps<AppRootStackParamList, 'Bill Details'>;
 
@@ -35,7 +37,11 @@ const BillDetailsFormSchema = z.object({
       required_error: 'A bill amount is required.',
       invalid_type_error: 'The bill amount is required and must be a number.',
     })
-    .min(500, { message: 'The total bill amount must be at least 500 Naira.' })
+    .min(MINIMUM_BILL_AMOUNT, {
+      message: `The total bill amount must be at least ${convertNumberToNaira(
+        MINIMUM_BILL_AMOUNT,
+      )}.`,
+    })
     .transform(amount => amount.toString()),
   name: z
     .string()

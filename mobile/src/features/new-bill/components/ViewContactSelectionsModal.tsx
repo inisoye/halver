@@ -1,7 +1,7 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
-import { FadeIn, FadeInDown } from 'react-native-reanimated';
+import { FadeInDown } from 'react-native-reanimated';
 
 import {
   AnimatedBox,
@@ -27,67 +27,37 @@ import {
 
 import { useBillPayloadWithSelectionDetails } from '../hooks';
 
-interface SelectionItemProps {
-  name: string;
-  index: number;
+interface SelectionAvatarAndNameProps {
+  avatarBackground: {
+    color: string;
+    backgroundColor: string;
+  };
   profileImageHash?: string | null;
   profileImageUrl?: string | null;
-  isRegistered: boolean;
-  phone?: string | undefined;
-  uuid?: string | undefined;
-  handleSelectionRemoval: (
-    isRegistered: boolean,
-    clickedItemUUID: string | undefined,
-    clickedItemPhone: string | undefined,
-  ) => void;
+  name: string;
 }
 
-const SelectionItem: React.FunctionComponent<SelectionItemProps> = ({
-  name,
-  profileImageHash,
-  profileImageUrl,
-  isRegistered,
-  index,
-  phone,
-  uuid,
-  handleSelectionRemoval,
-}) => {
-  const isDarkMode = useIsDarkMode();
-  const { colors } = useTheme<Theme>();
-
-  const initials = React.useMemo(() => getInitials(name), [name]);
-
-  const avatarBackground = React.useMemo(
-    () =>
-      isDarkMode
-        ? getLightColorWithBackgroundFromString(name || '')
-        : getDarkColorWithBackgroundFromString(name || ''),
-    [isDarkMode, name],
-  );
-
-  const handlePress = () => {
-    handleSelectionRemoval(isRegistered, uuid, phone);
-  };
-
-  const contactHasImage = profileImageHash || profileImageUrl;
-
+const areSelectionAvatarAndNamePropsEqual = (
+  prevProps: SelectionAvatarAndNameProps,
+  nextProps: SelectionAvatarAndNameProps,
+) => {
   return (
-    <AnimatedBox
-      alignItems="center"
-      backgroundColor="modalElementBackground"
-      borderRadius="md"
-      columnGap="3"
-      entering={FadeInDown.duration(350).delay((index + 1) * 100)}
-      flexDirection="row"
-      justifyContent="space-between"
-      paddingHorizontal="4"
-      paddingVertical="2"
-      style={{
-        backgroundColor: isDarkMode
-          ? colors.modalElementBackground
-          : avatarBackground.backgroundColor,
-      }}
-    >
+    prevProps.name === nextProps.name &&
+    prevProps.profileImageHash === nextProps.profileImageHash &&
+    prevProps.profileImageUrl === nextProps.profileImageUrl &&
+    prevProps.avatarBackground.color === nextProps.avatarBackground.color &&
+    prevProps.avatarBackground.backgroundColor ===
+      nextProps.avatarBackground.backgroundColor
+  );
+};
+
+const SelectionAvatarAndName: React.FunctionComponent<SelectionAvatarAndNameProps> =
+  React.memo(({ avatarBackground, name, profileImageHash, profileImageUrl }) => {
+    const initials = React.useMemo(() => getInitials(name), [name]);
+
+    const contactHasImage = profileImageHash || profileImageUrl;
+
+    return (
       <Box alignItems="center" columnGap="3" flexDirection="row">
         {contactHasImage ? (
           <Image
@@ -119,6 +89,72 @@ const SelectionItem: React.FunctionComponent<SelectionItemProps> = ({
           {name}
         </DynamicText>
       </Box>
+    );
+  }, areSelectionAvatarAndNamePropsEqual);
+
+interface SelectionItemProps {
+  name: string;
+  index: number;
+  profileImageHash?: string | null;
+  profileImageUrl?: string | null;
+  isRegistered: boolean;
+  phone?: string | undefined;
+  uuid?: string | undefined;
+  handleSelectionRemoval: (
+    isRegistered: boolean,
+    clickedItemUUID: string | undefined,
+    clickedItemPhone: string | undefined,
+  ) => void;
+}
+
+const SelectionItem: React.FunctionComponent<SelectionItemProps> = ({
+  name,
+  profileImageHash,
+  profileImageUrl,
+  isRegistered,
+  index,
+  phone,
+  uuid,
+  handleSelectionRemoval,
+}) => {
+  const isDarkMode = useIsDarkMode();
+  const { colors } = useTheme<Theme>();
+
+  const avatarBackground = React.useMemo(
+    () =>
+      isDarkMode
+        ? getLightColorWithBackgroundFromString(name || '')
+        : getDarkColorWithBackgroundFromString(name || ''),
+    [isDarkMode, name],
+  );
+
+  const handlePress = () => {
+    handleSelectionRemoval(isRegistered, uuid, phone);
+  };
+
+  return (
+    <AnimatedBox
+      alignItems="center"
+      backgroundColor="modalElementBackground"
+      borderRadius="md"
+      columnGap="3"
+      entering={FadeInDown.duration(350).delay((index + 1) * 100)}
+      flexDirection="row"
+      justifyContent="space-between"
+      paddingHorizontal="4"
+      paddingVertical="2"
+      style={{
+        backgroundColor: isDarkMode
+          ? colors.modalElementBackground
+          : avatarBackground.backgroundColor,
+      }}
+    >
+      <SelectionAvatarAndName
+        avatarBackground={avatarBackground}
+        name={name}
+        profileImageHash={profileImageHash}
+        profileImageUrl={profileImageUrl}
+      />
 
       <Pressable hitSlop={16} onPress={handlePress}>
         <SmallClose />
@@ -213,7 +249,6 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
       {!!numberOfSelections && (
         <Button
           backgroundColor="inputNestedButtonBackground"
-          entering={FadeIn}
           variant="xs"
           onPress={openModal}
         >
@@ -288,12 +323,12 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
           )}
 
           <Button
-            backgroundColor="buttonPharlap"
+            backgroundColor="buttonApricot"
             disabled={numberOfSelections < 1}
             marginTop="2"
             onPress={handleContinue}
           >
-            <Text color="buttonTextPharlap" fontFamily="Halver-Semibold">
+            <Text color="buttonTextApricot" fontFamily="Halver-Semibold">
               Continue
               {numberOfSelections >= 1 && ` with ${numberOfSelections} selection`}
               {pluralDenoter}

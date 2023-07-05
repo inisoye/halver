@@ -1,0 +1,2 @@
+export const MINIMUM_CONTRIBUTION = 100;
+export const MINIMUM_BILL_AMOUNT = 500;

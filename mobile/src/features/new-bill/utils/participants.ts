@@ -1,28 +1,51 @@
 import {
   DefinedRegisteredParticipant,
   DefinedUnregisteredParticipant,
-  FormattedRegisteredParticipant,
   RegisteredParticipants,
   UnregisteredParticipants,
 } from '../types';
 
-export function calculateEvenAmounts(amount: number, divisions: number) {
-  const division = Math.floor(amount / divisions);
-  const remainder = amount % divisions;
+/**
+ * Calculates even amounts for each participant based on the bill amount and number of participants.
+ * @param billAmount - The total bill amount.
+ * @param numParticipants - The number of participants.
+ * @returns An array of even contributions for each participant.
+ */
+export function calculateEvenAmounts(
+  billAmount: number,
+  numParticipants: number,
+): number[] {
+  const MULTIPLIER = 100; // Used for convert amounts from decimal and back.
 
-  const divisionsArray = Array(divisions).fill(division);
+  const evenContribution = Math.floor((billAmount * MULTIPLIER) / numParticipants);
 
-  // Distribute the remainder among divisions
-  for (let i = 0; i < remainder; i++) {
-    divisionsArray[i]++; // Increment the division
+  const remainingAmount = (billAmount * MULTIPLIER) % numParticipants;
+
+  const contributions: number[] = [];
+
+  for (let i = 0; i < numParticipants; i++) {
+    contributions.push(evenContribution);
   }
 
-  return divisionsArray;
+  let remaining = remainingAmount;
+  let index = 0;
+
+  // Distribute the remaining amount among participants
+  while (remaining > 0) {
+    contributions[index]++;
+
+    remaining--;
+
+    // Move to the next participant using modulo operator
+    index = (index + 1) % numParticipants;
+  }
+
+  return contributions.map(contribution => contribution / MULTIPLIER);
 }
 
 export function removeDuplicateParticipants(
   participants: RegisteredParticipants | undefined,
-  creatorDetails?: FormattedRegisteredParticipant,
+  creatorDetails?: DefinedRegisteredParticipant,
 ) {
   if (!participants) return [];
 
@@ -45,7 +68,7 @@ export function removeDuplicateParticipants(
 
 export function removeDuplicateUnregisteredParticipants(
   participants: UnregisteredParticipants | undefined,
-  creatorDetails?: FormattedRegisteredParticipant,
+  creatorDetails?: DefinedRegisteredParticipant,
 ) {
   if (!participants) return [];
 
@@ -68,25 +91,31 @@ export function removeDuplicateUnregisteredParticipants(
 
 interface FormParticipantContributions {
   registeredParticipants?:
-    | {
-        name?: string | undefined;
-        phone?: string | undefined;
-        uuid?: string | undefined;
-        username?: string | undefined;
-        profileImageUrl?: string | null | undefined;
-        profileImageHash?: string | null | undefined;
-        contribution?: string | undefined;
-      }[]
+    | (
+        | {
+            name?: string | undefined;
+            contribution?: number | undefined;
+            phone?: string | undefined;
+            uuid?: string | undefined;
+            username?: string | undefined;
+            profileImageUrl?: string | null | undefined;
+            profileImageHash?: string | null | undefined;
+          }
+        | undefined
+      )[]
     | undefined;
   unregisteredParticipants?:
-    | {
-        created?: string | undefined;
-        modified?: string | undefined;
-        name?: string | undefined;
-        phone?: string | undefined;
-        uuid?: string | undefined;
-        contribution?: string | undefined;
-      }[]
+    | (
+        | {
+            name?: string | undefined;
+            contribution?: number | undefined;
+            phone?: string | undefined;
+            created?: string | undefined;
+            modified?: string | undefined;
+            uuid?: string | undefined;
+          }
+        | undefined
+      )[]
     | undefined;
 }
 
@@ -96,21 +125,31 @@ export function sumTotalParticipantAllocations(
   registered: number;
   unregistered: number;
   total: number;
+  allAllocations: number[];
 } {
   let registeredSum = 0;
   let unregisteredSum = 0;
 
-  participants.registeredParticipants?.forEach(participant => {
-    registeredSum += Number(participant.contribution);
+  const allAllocations: number[] = [];
+
+  participants.registeredParticipants?.forEach((participant, index) => {
+    if (participant) {
+      registeredSum += Number(participant[`registeredContribution${index}`]);
+      allAllocations.push(Number(participant[`registeredContribution${index}`]));
+    }
   });
 
-  participants.unregisteredParticipants?.forEach(participant => {
-    unregisteredSum += Number(participant.contribution);
+  participants.unregisteredParticipants?.forEach((participant, index) => {
+    if (participant) {
+      unregisteredSum += Number(participant[`unregisteredContribution${index}`]);
+      allAllocations.push(Number(participant[`unregisteredContribution${index}`]));
+    }
   });
 
   return {
     registered: registeredSum,
     unregistered: unregisteredSum,
     total: unregisteredSum + registeredSum,
+    allAllocations,
   };
 }

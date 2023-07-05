@@ -28,6 +28,96 @@ export type DefinedContactItem =
 
 type ContactItem = DefinedContactItem | undefined;
 
+interface ContactAvatarAndNameProps {
+  avatarBackground: string | undefined;
+  contactHasImage: boolean;
+  initials: string | undefined;
+  isRegistered: boolean;
+  item: DefinedContactItem;
+}
+
+const ContactAvatarAndName: React.FunctionComponent<ContactAvatarAndNameProps> =
+  React.memo(({ avatarBackground, contactHasImage, initials, isRegistered, item }) => {
+    return (
+      <Box
+        alignItems="center"
+        flexDirection="row"
+        gap="3"
+        marginLeft="6"
+        maxWidth="80%"
+        width="100%"
+      >
+        <Box position="relative">
+          {contactHasImage ? (
+            <Image
+              borderRadius="lg"
+              contentFit="contain"
+              height={36}
+              placeholder={(item as RegisteredContact).profileImageHash}
+              source={(item as RegisteredContact).profileImageUrl}
+              width={36}
+            />
+          ) : (
+            <Box
+              alignItems="center"
+              borderRadius="lg"
+              height={36}
+              justifyContent="center"
+              style={{ backgroundColor: avatarBackground }}
+              width={36}
+            >
+              <Text
+                color="textInverse"
+                fontFamily="Halver-Semibold"
+                opacity={0.85}
+                variant="sm"
+              >
+                {initials}
+              </Text>
+            </Box>
+          )}
+
+          {isRegistered && (
+            <Box
+              backgroundColor="background"
+              borderRadius="base"
+              left={-13}
+              padding="0.75"
+              position="absolute"
+              top={-10}
+            >
+              <Box backgroundColor="apricot6" height={5} marginBottom="px" width={14} />
+              <Box backgroundColor="casal7" height={5} marginLeft="0.75" width={14} />
+              <Box
+                backgroundColor="background"
+                height={12}
+                position="absolute"
+                right={9}
+                top={3}
+                width={1}
+              />
+            </Box>
+          )}
+        </Box>
+
+        <Box flexShrink={1}>
+          <DynamicText flexShrink={1} fontSize={15} lineHeight={20} numberOfLines={1}>
+            {item?.fullName}
+          </DynamicText>
+          <DynamicText
+            color="textLight"
+            flexShrink={1}
+            lineHeight={20}
+            numberOfLines={1}
+            variant="xs"
+          >
+            {isRegistered ? `@${(item as RegisteredContact).username}` : item?.phone}
+          </DynamicText>
+        </Box>
+      </Box>
+    );
+  });
+
 interface ContactOptionProps {
   avatarBackground: string | undefined;
   contactHasImage: boolean;
@@ -74,87 +164,13 @@ const ContactOption: React.FunctionComponent<ContactOptionProps> = ({
         paddingVertical="3.5"
         accessible
       >
-        <Box
-          alignItems="center"
-          flexDirection="row"
-          gap="3"
-          marginLeft="6"
-          maxWidth="80%"
-          width="100%"
-        >
-          <Box position="relative">
-            {contactHasImage ? (
-              <Image
-                borderRadius="lg"
-                contentFit="contain"
-                height={36}
-                placeholder={(item as RegisteredContact).profileImageHash}
-                source={(item as RegisteredContact).profileImageUrl}
-                width={36}
-              />
-            ) : (
-              <Box
-                alignItems="center"
-                borderRadius="lg"
-                height={36}
-                justifyContent="center"
-                style={{ backgroundColor: avatarBackground }}
-                width={36}
-              >
-                <Text
-                  color="textInverse"
-                  fontFamily="Halver-Semibold"
-                  opacity={0.85}
-                  variant="sm"
-                >
-                  {initials}
-                </Text>
-              </Box>
-            )}
-
-            {isRegistered && (
-              <Box
-                backgroundColor="background"
-                borderRadius="base"
-                left={-13}
-                padding="0.75"
-                position="absolute"
-                top={-10}
-              >
-                <Box
-                  backgroundColor="apricot6"
-                  height={5}
-                  marginBottom="px"
-                  width={14}
-                />
-                <Box backgroundColor="casal7" height={5} marginLeft="0.75" width={14} />
-                <Box
-                  backgroundColor="background"
-                  height={12}
-                  position="absolute"
-                  right={9}
-                  top={3}
-                  width={1}
-                />
-              </Box>
-            )}
-          </Box>
-
-          <Box flexShrink={1}>
-            <DynamicText flexShrink={1} fontSize={15} lineHeight={20} numberOfLines={1}>
-              {item?.fullName}
-            </DynamicText>
-            <DynamicText
-              color="textLight"
-              flexShrink={1}
-              lineHeight={20}
-              numberOfLines={1}
-              variant="xs"
-            >
-              {isRegistered ? `@${(item as RegisteredContact).username}` : item?.phone}
-            </DynamicText>
-          </Box>
-        </Box>
+        <ContactAvatarAndName
+          avatarBackground={avatarBackground}
+          contactHasImage={contactHasImage}
+          initials={initials}
+          isRegistered={isRegistered}
+          item={item}
+        />
 
         {isSelected && <SelectTick style={{ marginRight: iconMargin }} />}
         {!isSelected && <SelectInactiveItem style={{ marginRight: iconMargin }} />}

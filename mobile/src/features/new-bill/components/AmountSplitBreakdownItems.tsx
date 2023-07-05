@@ -10,15 +10,80 @@ import {
   useIsDarkMode,
 } from '@/utils';
 
-import {
-  FormattedRegisteredParticipant,
-  FormattedUnregisteredParticipant,
-} from '../types';
+import { DefinedRegisteredParticipant, DefinedUnregisteredParticipant } from '../types';
+
+interface ParticipantAvatarAndNameProps {
+  isCreditor?: boolean;
+  name: string;
+  profileImageHash?: string | null | undefined;
+  profileImageUrl?: string | null | undefined;
+  subtext: string;
+}
+
+const ParticipantAvatarAndName: React.FunctionComponent<ParticipantAvatarAndNameProps> =
+  React.memo(({ isCreditor, name, profileImageHash, profileImageUrl, subtext }) => {
+    const isDarkMode = useIsDarkMode();
+
+    const initials = React.useMemo(() => getInitials(name), [name]);
+
+    const avatarBackground = React.useMemo(() => {
+      return isDarkMode ? getLightColorFromString(name) : getDarkColorFromString(name);
+    }, [isDarkMode, name]);
+
+    return (
+      <Box alignItems="center" flexDirection="row" flexGrow={0} flexShrink={1} gap="3">
+        {profileImageUrl ? (
+          <Image
+            borderRadius="lg"
+            contentFit="contain"
+            height={36}
+            placeholder={profileImageHash}
+            source={profileImageUrl}
+            width={36}
+          />
+        ) : (
+          <Box
+            alignItems="center"
+            borderRadius="lg"
+            height={36}
+            justifyContent="center"
+            style={{ backgroundColor: avatarBackground }}
+            width={36}
+          >
+            <Text color="textInverse" fontFamily="Halver-Semibold" variant="sm">
+              {initials}
+            </Text>
+          </Box>
+        )}
+
+        <Box gap="1" width="65%">
+          <Box flexDirection="row" justifyContent="flex-start">
+            <DynamicText
+              fontSize={15}
+              maxWidth={isCreditor ? '70%' : undefined}
+              numberOfLines={1}
+            >
+              {name}
+            </DynamicText>
+            {isCreditor && (
+              <Text color="green11" fontSize={15} numberOfLines={1}>
+                {' '}
+                - Creditor
+              </Text>
+            )}
+          </Box>
+          <Text color="textLight" variant="xs">
+            {subtext}
+          </Text>
+        </Box>
+      </Box>
+    );
+  });
 
 interface AmountSplitParticipantItemProps {
   control: Control<{
-    registeredParticipants: FormattedRegisteredParticipant[];
-    unregisteredParticipants: FormattedUnregisteredParticipant[];
+    registeredParticipants: DefinedRegisteredParticipant[];
+    unregisteredParticipants: DefinedUnregisteredParticipant[];
   }>;
   index: number;
   isCreditor?: boolean;
@@ -41,14 +106,6 @@ export const AmountSplitParticipantItem: React.FunctionComponent<
   profileImageUrl,
   subtext,
 }) => {
-  const isDarkMode = useIsDarkMode();
-
-  const initials = React.useMemo(() => getInitials(name), [name]);
-
-  const avatarBackground = React.useMemo(() => {
-    return isDarkMode ? getLightColorFromString(name) : getDarkColorFromString(name);
-  }, [isDarkMode, name]);
-
   return (
     <>
       <Box
@@ -60,46 +117,13 @@ export const AmountSplitParticipantItem: React.FunctionComponent<
         paddingHorizontal="6"
         paddingVertical="3.5"
       >
-        <Box
-          alignItems="center"
-          flexDirection="row"
-          flexGrow={0}
-          flexShrink={1}
-          gap="3"
-        >
-          {profileImageUrl ? (
-            <Image
-              borderRadius="lg"
-              contentFit="contain"
-              height={36}
-              placeholder={profileImageHash}
-              source={profileImageUrl}
-              width={36}
-            />
-          ) : (
-            <Box
-              alignItems="center"
-              borderRadius="lg"
-              height={36}
-              justifyContent="center"
-              style={{ backgroundColor: avatarBackground }}
-              width={36}
-            >
-              <Text color="textInverse" fontFamily="Halver-Semibold" variant="sm">
-                {initials}
-              </Text>
-            </Box>
-          )}
-
-          <Box gap="1" width="65%">
-            <DynamicText fontSize={15} numberOfLines={1}>
-              {name}
-            </DynamicText>
-            <Text color="textLight" variant="xs">
-              {subtext}
-            </Text>
-          </Box>
-        </Box>
+        <ParticipantAvatarAndName
+          isCreditor={isCreditor}
+          name={name}
+          profileImageHash={profileImageHash}
+          profileImageUrl={profileImageUrl}
+          subtext={subtext}
+        />
 
         <TextField
           alignSelf="flex-end"
@@ -113,9 +137,9 @@ export const AmountSplitParticipantItem: React.FunctionComponent<
           fontSize={14}
           keyboardType="number-pad"
           minWidth={30}
-          name={`${
-            isRegistered ? 'registeredParticipants' : 'unregisteredParticipants'
-          }.${index}.contribution`}
+          name={`${isRegistered ? '' : 'un'}registeredParticipants.${index}.${
+            isRegistered ? '' : 'un'
+          }registeredContribution${index}`}
           paddingHorizontal="0"
           paddingVertical={isIOS() ? '1' : '0'}
           prefixComponent={<Text variant="sm">₦</Text>}
@@ -131,32 +155,32 @@ export const AmountSplitParticipantItem: React.FunctionComponent<
   );
 };
 
-interface AmountSplitBreakdownTabProps {
+interface AmountSplitBreakdownItemsProps {
   controlForAmountForm: Control<{
-    registeredParticipants: FormattedRegisteredParticipant[];
-    unregisteredParticipants: FormattedUnregisteredParticipant[];
+    registeredParticipants: DefinedRegisteredParticipant[];
+    unregisteredParticipants: DefinedUnregisteredParticipant[];
   }>;
-  creditor: FormattedRegisteredParticipant;
+  creditor: DefinedRegisteredParticipant;
   registeredParticipantAmountFields: FieldArrayWithId<
     {
-      registeredParticipants: FormattedRegisteredParticipant[];
-      unregisteredParticipants: FormattedUnregisteredParticipant[];
+      registeredParticipants: DefinedRegisteredParticipant[];
+      unregisteredParticipants: DefinedUnregisteredParticipant[];
     },
     'registeredParticipants',
     'id'
   >[];
   unregisteredParticipantAmountFields: FieldArrayWithId<
     {
-      registeredParticipants: FormattedRegisteredParticipant[];
-      unregisteredParticipants: FormattedUnregisteredParticipant[];
+      registeredParticipants: DefinedRegisteredParticipant[];
+      unregisteredParticipants: DefinedUnregisteredParticipant[];
     },
     'unregisteredParticipants',
     'id'
   >[];
 }
 
-export const AmountSplitBreakdownTab: React.FunctionComponent<
-  AmountSplitBreakdownTabProps
+export const AmountSplitBreakdownItems: React.FunctionComponent<
+  AmountSplitBreakdownItemsProps
 > = ({
   controlForAmountForm,
   creditor,

@@ -81,28 +81,30 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
       <Controller
         control={control}
         name={name}
-        render={({ field: { onChange, onBlur, value, ref } }) => (
-          <TextInput
-            autoFocus={autoFocus}
-            backgroundColor={isDarker ? 'inputBackgroundDarker' : 'inputBackground'}
-            borderRadius="base"
-            color="inputText"
-            flex={1}
-            fontFamily="Halver-Medium"
-            fontSize={16}
-            inputAccessoryViewID={inputAccessoryViewID}
-            keyboardType={keyboardType}
-            paddingHorizontal="4"
-            paddingVertical={isIOS() ? '3' : '2.5'}
-            placeholder={placeholder}
-            placeholderTextColor={colors.inputPlaceholder}
-            ref={ref}
-            value={value}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            {...props}
-          />
-        )}
+        render={({ field: { onChange, onBlur, value, ref } }) => {
+          return (
+            <TextInput
+              autoFocus={autoFocus}
+              backgroundColor={isDarker ? 'inputBackgroundDarker' : 'inputBackground'}
+              borderRadius="base"
+              color="inputText"
+              flex={1}
+              fontFamily="Halver-Medium"
+              fontSize={16}
+              inputAccessoryViewID={inputAccessoryViewID}
+              keyboardType={keyboardType}
+              paddingHorizontal="4"
+              paddingVertical={isIOS() ? '3' : '2.5'}
+              placeholder={placeholder}
+              placeholderTextColor={colors.inputPlaceholder}
+              ref={ref}
+              value={value}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              {...props}
+            />
+          );
+        }}
         rules={rules}
       />
     </Box>

@@ -1,36 +1,24 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 
-import {
-  AbsoluteKeyboardStickyButton,
-  Box,
-  DynamicText,
-  Image,
-  Screen,
-  Text,
-} from '@/components';
+import { Box, DynamicText, Image, Screen, Text } from '@/components';
 import { useUserDetails } from '@/features/account';
 import {
-  AllocationVarianceAlert,
-  AmountSplitBreakdownTab,
   calculateEvenAmounts,
   GradientOverlay,
   removeDuplicateParticipants,
   removeDuplicateUnregisteredParticipants,
   SelectCreditorModal,
-  sumTotalParticipantAllocations,
+  SplitBreakdownForm,
 } from '@/features/new-bill';
 import { useBillPayloadWithSelectionDetails } from '@/features/new-bill/hooks';
 import { AppRootStackParamList } from '@/navigation';
 import {
-  convertNumberToNaira,
   getDarkColorFromString,
   getInitials,
   getLightColorFromString,
   useIsDarkMode,
 } from '@/utils';
-import { formatNumberWithCommas } from '@/utils/numbers';
 
 type SplitBreakdownProps = NativeStackScreenProps<
   AppRootStackParamList,
@@ -62,7 +50,7 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () =
       profileImageHash: creatorDetails?.profileImageHash || null,
       profileImageUrl: creatorDetails?.profileImageUrl || null,
       phone: creatorDetails?.phone || '',
-      contribution: '0',
+      contribution: 0,
     };
   }, [creatorDetails]);
 
@@ -106,7 +94,11 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () =
         (participant, index) => {
           return {
             ...participant,
-            contribution: String(registeredParticipantAmounts[index]),
+            /* Additional contribution field named this way to track dirty fields.
+             A simple contribution name on every field would make them impossible to track. */
+            [`registeredContribution${index}`]: String(
+              registeredParticipantAmounts[index],
+            ),
           };
         },
       );
@@ -115,7 +107,9 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () =
         (participant, index) => {
           return {
             ...participant,
-            contribution: String(unregisteredParticipantAmounts[index]),
+            [`unregisteredContribution${index}`]: String(
+              unregisteredParticipantAmounts[index],
+            ),
           };
         },
       );
@@ -146,64 +140,6 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () =
       creditorFirstName: creditor.name.split(' ')[0],
     };
   }, [creditor, formattedCreatorDetails, isDarkMode]);
-
-  const { control: controlForAmountForm } = useForm({
-    defaultValues: {
-      registeredParticipants: formattedRegisteredParticipants,
-      unregisteredParticipants: formattedUnregisteredParticipants,
-    },
-  });
-
-  const allValues = useWatch({ control: controlForAmountForm });
-
-  const participantAllocationsBreakdown = sumTotalParticipantAllocations(allValues);
-  const totalParticipantAllocations = participantAllocationsBreakdown.total;
-
-  const areContributionAllocationsEqual =
-    totalParticipantAllocations === Number(totalAmountDue);
-
-  const areContributionAllocationsGreater =
-    totalParticipantAllocations > Number(totalAmountDue);
-
-  const areContributionAllocationsLess =
-    totalParticipantAllocations < Number(totalAmountDue);
-
-  const excessAmount = areContributionAllocationsGreater
-    ? totalParticipantAllocations - Number(totalAmountDue)
-    : 0;
-
-  const deficitAmount = areContributionAllocationsLess
-    ? Number(totalAmountDue) - totalParticipantAllocations
-    : 0;
-
-  const totalAllocationTextColor = areContributionAllocationsEqual
-    ? 'green11'
-    : areContributionAllocationsLess
-    ? 'amber11'
-    : areContributionAllocationsGreater
-    ? 'tomato11'
-    : undefined;
-
-  const { fields: registeredParticipantAmountFields } = useFieldArray({
-    control: controlForAmountForm,
-    name: 'registeredParticipants',
-  });
-
-  const { fields: unregisteredParticipantAmountFields } = useFieldArray({
-    control: controlForAmountForm,
-    name: 'unregisteredParticipants',
-  });
-
-  const updateBillAmount = () => {
-    if (!newBillPayload) {
-      return;
-    }
-
-    setNewBillPayload({
-      ...newBillPayload,
-      totalAmountDue: String(totalParticipantAllocations),
-    });
-  };
 
   return (
     <Screen hasNoIOSBottomInset>
@@ -260,70 +196,16 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () =
         />
       </Box>
 
-      <Box
-        alignItems="center"
-        marginBottom="3"
-        marginLeft="auto"
-        marginRight="auto"
-        paddingHorizontal="6"
-      >
-        <Box flexDirection="row">
-          <Text
-            color={totalAllocationTextColor}
-            fontFamily="Halver-Naira"
-            lineHeight={40}
-          >
-            ₦
-          </Text>
-
-          <DynamicText
-            color={totalAllocationTextColor}
-            flexDirection="row"
-            fontFamily="Halver-Semibold"
-            textAlign="center"
-            variant="4xl"
-          >
-            {formatNumberWithCommas(Number(totalParticipantAllocations))}
-          </DynamicText>
-        </Box>
-
-        <DynamicText color="textLight" textAlign="center" variant="sm">
-          allocated out of {convertNumberToNaira(Number(totalAmountDue))}.
-        </DynamicText>
-      </Box>
-
-      {areContributionAllocationsGreater && (
-        <AllocationVarianceAlert
-          totalAllocationTextColor={totalAllocationTextColor}
-          updateBillAmount={updateBillAmount}
-          variantAmount={excessAmount}
-          isExcess
-        />
-      )}
-
-      {areContributionAllocationsLess && (
-        <AllocationVarianceAlert
-          isExcess={false}
-          totalAllocationTextColor={totalAllocationTextColor}
-          updateBillAmount={updateBillAmount}
-          variantAmount={deficitAmount}
-        />
-      )}
-
-      <AmountSplitBreakdownTab
-        controlForAmountForm={controlForAmountForm}
-        creditor={creditor}
-        registeredParticipantAmountFields={registeredParticipantAmountFields}
-        unregisteredParticipantAmountFields={unregisteredParticipantAmountFields}
-      />
-
       <GradientOverlay />
 
-      <AbsoluteKeyboardStickyButton backgroundColor="buttonCasal" position="absolute">
-        <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
-          Continue
-        </Text>
-      </AbsoluteKeyboardStickyButton>
+      <SplitBreakdownForm
+        creditor={creditor}
+        formattedRegisteredParticipants={formattedRegisteredParticipants}
+        formattedUnregisteredParticipants={formattedUnregisteredParticipants}
+        newBillPayload={newBillPayload}
+        setNewBillPayload={setNewBillPayload}
+        totalAmountDue={totalAmountDue}
+      />
     </Screen>
   );
 };

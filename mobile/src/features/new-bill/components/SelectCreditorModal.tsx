@@ -21,13 +21,13 @@ import {
   useIsDarkMode,
 } from '@/utils';
 
-import { FormattedRegisteredParticipant } from '../types';
+import { DefinedRegisteredParticipant } from '../types';
 
 interface SelectCreditorOptionProps {
   closeModal: () => void;
   index: number;
-  participant: FormattedRegisteredParticipant;
-  setCreditor: React.Dispatch<React.SetStateAction<FormattedRegisteredParticipant>>;
+  participant: DefinedRegisteredParticipant;
+  setCreditor: React.Dispatch<React.SetStateAction<DefinedRegisteredParticipant>>;
 }
 
 const SelectCreditorOption: React.FunctionComponent<SelectCreditorOptionProps> = ({
@@ -56,7 +56,7 @@ const SelectCreditorOption: React.FunctionComponent<SelectCreditorOptionProps> =
 
   return (
     <Pressable
-      entering={FadeInDown.duration(350).delay((index + 1) * 150)}
+      entering={FadeInDown.duration(350).delay((index + 2) * 150)}
       onPress={handleCreditorSelection}
     >
       {profileImageUrl ? (
@@ -93,8 +93,8 @@ const SelectCreditorOption: React.FunctionComponent<SelectCreditorOptionProps> =
 };
 
 interface SelectCreditorModalProps {
-  formattedRegisteredParticipants: FormattedRegisteredParticipant[];
-  setCreditor: React.Dispatch<React.SetStateAction<FormattedRegisteredParticipant>>;
+  formattedRegisteredParticipants: DefinedRegisteredParticipant[];
+  setCreditor: React.Dispatch<React.SetStateAction<DefinedRegisteredParticipant>>;
 }
 
 export const SelectCreditorModal: React.FunctionComponent<SelectCreditorModalProps> = ({
