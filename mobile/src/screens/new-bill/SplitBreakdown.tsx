@@ -5,7 +5,7 @@ import { Box, DynamicText, Image, Screen, Text } from '@/components';
 import { useUserDetails } from '@/features/account';
 import {
   calculateEvenAmounts,
-  GradientOverlay,
+  DefinedRegisteredParticipant,
   removeDuplicateParticipants,
   removeDuplicateUnregisteredParticipants,
   SelectCreditorModal,
@@ -25,7 +25,9 @@ type SplitBreakdownProps = NativeStackScreenProps<
   'Split Breakdown'
 >;
 
-export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () => {
+export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = ({
+  navigation,
+}) => {
   const { data: creatorDetails } = useUserDetails();
   const isDarkMode = useIsDarkMode();
 
@@ -44,17 +46,19 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () =
    */
   const formattedCreatorDetails = React.useMemo(() => {
     return {
-      name: 'You' || '',
-      username: creatorDetails?.username || '',
-      uuid: creatorDetails?.uuid || '',
+      name: creatorDetails?.fullName ? 'You' : undefined,
+      username: creatorDetails?.username,
+      uuid: creatorDetails?.uuid,
       profileImageHash: creatorDetails?.profileImageHash || null,
       profileImageUrl: creatorDetails?.profileImageUrl || null,
-      phone: creatorDetails?.phone || '',
+      phone: creatorDetails?.phone || undefined,
       contribution: 0,
     };
   }, [creatorDetails]);
 
-  const [creditor, setCreditor] = React.useState(formattedCreatorDetails);
+  const [creditor, setCreditor] = React.useState<DefinedRegisteredParticipant>(
+    formattedCreatorDetails,
+  );
 
   const { formattedRegisteredParticipants, formattedUnregisteredParticipants } =
     React.useMemo(() => {
@@ -137,7 +141,7 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () =
         : getDarkColorFromString(creditor.name),
       creditorInitials: getInitials(creditor.name),
       isCreatorTheCreditor: creditor.uuid === formattedCreatorDetails.uuid,
-      creditorFirstName: creditor.name.split(' ')[0],
+      creditorFirstName: creditor.name?.split(' ')[0],
     };
   }, [creditor, formattedCreatorDetails, isDarkMode]);
 
@@ -196,12 +200,11 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = () =
         />
       </Box>
 
-      <GradientOverlay />
-
       <SplitBreakdownForm
         creditor={creditor}
         formattedRegisteredParticipants={formattedRegisteredParticipants}
         formattedUnregisteredParticipants={formattedUnregisteredParticipants}
+        navigation={navigation}
         newBillPayload={newBillPayload}
         setNewBillPayload={setNewBillPayload}
         totalAmountDue={totalAmountDue}

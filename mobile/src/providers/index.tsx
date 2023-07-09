@@ -17,11 +17,9 @@ export const Providers: React.FunctionComponent<ProvidersProps> = ({ children })
       <RestyleProvider>
         <ReactQueryProvider>
           <RootSiblingParent>
-            <ModalfyProvider>
-              <GestureHandlerRootView style={{ flex: 1 }}>
-                {children}
-              </GestureHandlerRootView>
-            </ModalfyProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <ModalfyProvider>{children}</ModalfyProvider>
+            </GestureHandlerRootView>
           </RootSiblingParent>
         </ReactQueryProvider>
       </RestyleProvider>

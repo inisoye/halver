@@ -44,9 +44,6 @@ module.exports = {
         'expo-build-properties',
         {
           ios: { flipper: true },
-          android: {
-            kotlinVersion: '1.6.10',
-          },
         },
       ],
       [

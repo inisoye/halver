@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Box, LinearGradient } from '@/components';
 import { useIsDarkMode } from '@/utils';
 
-export const GradientOverlay: React.FunctionComponent = () => {
+export const GradientOverlay: React.FunctionComponent = React.memo(() => {
   const isDarkMode = useIsDarkMode();
 
   const gradientColors = isDarkMode
@@ -37,4 +37,4 @@ export const GradientOverlay: React.FunctionComponent = () => {
       />
     </Box>
   );
-};
+});

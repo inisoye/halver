@@ -14,10 +14,10 @@ import { DefinedRegisteredParticipant, DefinedUnregisteredParticipant } from '..
 
 interface ParticipantAvatarAndNameProps {
   isCreditor?: boolean;
-  name: string;
+  name: string | undefined;
   profileImageHash?: string | null | undefined;
   profileImageUrl?: string | null | undefined;
-  subtext: string;
+  subtext: string | undefined;
 }
 
 const ParticipantAvatarAndName: React.FunctionComponent<ParticipantAvatarAndNameProps> =
@@ -88,10 +88,10 @@ interface AmountSplitParticipantItemProps {
   index: number;
   isCreditor?: boolean;
   isRegistered: boolean;
-  name: string;
+  name: string | undefined;
   profileImageHash?: string | null | undefined;
   profileImageUrl?: string | null | undefined;
-  subtext: string;
+  subtext: string | undefined;
 }
 
 export const AmountSplitParticipantItem: React.FunctionComponent<
@@ -188,39 +188,41 @@ export const AmountSplitBreakdownItems: React.FunctionComponent<
   unregisteredParticipantAmountFields,
 }) => {
   return (
-    <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled">
-      <Box paddingBottom="40">
-        {registeredParticipantAmountFields?.map(
-          ({ name, uuid, username, profileImageHash, profileImageUrl }, index) => {
+    <>
+      <ScrollView>
+        <Box paddingBottom="20">
+          {registeredParticipantAmountFields?.map(
+            ({ name, uuid, username, profileImageHash, profileImageUrl }, index) => {
+              return (
+                <AmountSplitParticipantItem
+                  control={controlForAmountForm}
+                  index={index}
+                  isCreditor={uuid === creditor.uuid}
+                  key={uuid}
+                  name={name}
+                  profileImageHash={profileImageHash}
+                  profileImageUrl={profileImageUrl}
+                  subtext={`@${username}`}
+                  isRegistered
+                />
+              );
+            },
+          )}
+
+          {unregisteredParticipantAmountFields?.map(({ name, phone }, index) => {
             return (
               <AmountSplitParticipantItem
                 control={controlForAmountForm}
                 index={index}
-                isCreditor={uuid === creditor.uuid}
-                key={uuid}
+                isRegistered={false}
+                key={phone}
                 name={name}
-                profileImageHash={profileImageHash}
-                profileImageUrl={profileImageUrl}
-                subtext={`@${username}`}
-                isRegistered
+                subtext={phone}
               />
             );
-          },
-        )}
-
-        {unregisteredParticipantAmountFields?.map(({ name, phone }, index) => {
-          return (
-            <AmountSplitParticipantItem
-              control={controlForAmountForm}
-              index={index}
-              isRegistered={false}
-              key={phone}
-              name={name}
-              subtext={phone}
-            />
-          );
-        })}
-      </Box>
-    </ScrollView>
+          })}
+        </Box>
+      </ScrollView>
+    </>
   );
 };

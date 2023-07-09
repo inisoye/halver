@@ -35,7 +35,11 @@ export function getRandomDarkColor(): string {
  * @param string - The string used to generate the color.
  * @returns The randomly generated light color in HSL format.
  */
-export function getLightColorFromString(string: string) {
+export function getLightColorFromString(string: string | undefined) {
+  if (!string) {
+    return '';
+  }
+
   const { hue, saturation } = convertStringToHueAndSaturation(string);
   return `hsl(${hue}, ${saturation}%, 85%)`;
 }
@@ -53,7 +57,11 @@ export function getLightColorWithBackgroundFromString(string: string) {
  * @param string - The string used to generate the color.
  * @returns The randomly generated light color in HSL format.
  */
-export function getDarkColorFromString(string: string) {
+export function getDarkColorFromString(string: string | undefined) {
+  if (!string) {
+    return '';
+  }
+
   const { hue, saturation } = convertStringToHueAndSaturation(string);
   return `hsl(${hue}, ${saturation}%, 25%)`;
 }

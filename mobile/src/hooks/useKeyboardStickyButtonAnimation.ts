@@ -67,6 +67,73 @@ export const useKeyboardStickyButtonAnimation = () => {
   };
 };
 
+export const useKeyboardStickyButtonWithPrefixAnimation = () => {
+  const isFocused = useIsFocused();
+
+  React.useEffect(() => {
+    AvoidSoftInput.setShouldMimicIOSBehavior(true);
+
+    return () => {
+      AvoidSoftInput.setShouldMimicIOSBehavior(false);
+    };
+  }, [isFocused]);
+
+  const buttonContainerPaddingHorizontalValue = useSharedValue(horizontalPadding);
+  const buttonContainerPaddingValue = useSharedValue(0);
+  const buttonContainerBottomValue = useSharedValue(absoluteBottomValue);
+  const buttonsGapValue = useSharedValue(8);
+
+  const buttonBorderRadiusValue = useSharedValue(4);
+
+  const buttonContainerAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      paddingHorizontal: buttonContainerPaddingHorizontalValue.value,
+      paddingBottom: buttonContainerPaddingValue.value,
+      bottom: buttonContainerBottomValue.value,
+    };
+  });
+
+  const buttonAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      borderRadius: buttonBorderRadiusValue.value,
+      borderBottomLeftRadius: buttonBorderRadiusValue.value,
+      marginLeft: buttonsGapValue.value,
+    };
+  });
+
+  const prefixButtonAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      borderRadius: buttonBorderRadiusValue.value,
+      borderBottomLeftRadius: buttonBorderRadiusValue.value,
+    };
+  });
+
+  useSoftInputShown(({ softInputHeight }) => {
+    buttonContainerPaddingHorizontalValue.value = withTiming(0);
+    buttonContainerPaddingValue.value = withTiming(softInputHeight);
+    buttonContainerBottomValue.value = withTiming(0);
+    buttonBorderRadiusValue.value = withTiming(0);
+
+    buttonsGapValue.value = withTiming(0);
+  });
+
+  useSoftInputHidden(() => {
+    buttonContainerPaddingHorizontalValue.value = withTiming(horizontalPadding);
+    buttonContainerPaddingValue.value = withTiming(0);
+    buttonContainerBottomValue.value = withTiming(absoluteBottomValue);
+    buttonBorderRadiusValue.value = withTiming(4);
+
+    buttonsGapValue.value = withTiming(8);
+  });
+
+  return {
+    isFocused,
+    buttonContainerAnimatedStyle,
+    buttonAnimatedStyle,
+    prefixButtonAnimatedStyle,
+  };
+};
+
 export const useAbsoluteKeyboardStickyButtonAnimation = () => {
   const isFocused = useIsFocused();
 

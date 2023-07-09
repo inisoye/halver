@@ -49,7 +49,7 @@ export function removeDuplicateParticipants(
 ) {
   if (!participants) return [];
 
-  const uniqueParticipantsSet = new Set<string>();
+  const uniqueParticipantsSet = new Set<string | undefined>();
   const uniqueParticipants: DefinedRegisteredParticipant[] = [];
 
   participants.forEach(participant => {
@@ -72,7 +72,7 @@ export function removeDuplicateUnregisteredParticipants(
 ) {
   if (!participants) return [];
 
-  const uniqueParticipantsSet = new Set<string>();
+  const uniqueParticipantsSet = new Set<string | undefined>();
   const uniqueParticipants: DefinedUnregisteredParticipant[] = [];
 
   participants.forEach(participant => {

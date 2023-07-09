@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Box, Button, DynamicText, Text } from '@/components';
+import { AnimatedBox, Box, Button, DynamicText, Text } from '@/components';
 import { SmallAlert } from '@/icons';
 import { lightColors } from '@/lib/restyle';
 import { convertNumberToNaira, formatNumberWithCommas } from '@/utils';
@@ -52,11 +52,11 @@ export const AllocationVarianceAlert: React.FunctionComponent<
   );
 };
 
-export const MinimumAllocationAlert: React.FunctionComponent = () => {
+export const InvalidEntryAlert: React.FunctionComponent = () => {
   return (
-    <Box
+    <AnimatedBox
       alignItems="center"
-      backgroundColor="tomato11"
+      backgroundColor="orange11"
       flexDirection="row"
       gap="2"
       justifyContent="space-between"
@@ -67,10 +67,32 @@ export const MinimumAllocationAlert: React.FunctionComponent = () => {
         <SmallAlert />
 
         <DynamicText color="textInverse" fontFamily="Halver-Semibold" variant="xs">
-          All contributions must be greater than{' '}
+          Please ensure all your allocations are valid numbers
+        </DynamicText>
+      </Box>
+    </AnimatedBox>
+  );
+};
+
+export const MinimumAllocationAlert: React.FunctionComponent = () => {
+  return (
+    <AnimatedBox
+      alignItems="center"
+      backgroundColor="orange11"
+      flexDirection="row"
+      gap="2"
+      justifyContent="space-between"
+      paddingHorizontal="6"
+      paddingVertical="1.5"
+    >
+      <Box alignItems="center" flexDirection="row" gap="2">
+        <SmallAlert />
+
+        <DynamicText color="textInverse" fontFamily="Halver-Semibold" variant="xs">
+          All contributions must be at least{' '}
           {convertNumberToNaira(MINIMUM_CONTRIBUTION)}
         </DynamicText>
       </Box>
-    </Box>
+    </AnimatedBox>
   );
 };

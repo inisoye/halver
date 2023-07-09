@@ -56,22 +56,22 @@ export const IntervalEnum = z.enum([
 ]);
 
 export const BillUnregisteredParticipantCreate = z.object({
-  contribution: z.number().gte(100).lt(1000000000000000),
+  contribution: z.number().gte(100).lt(1000000000000000).optional(),
   created: z.string().datetime().optional(),
   modified: z.string().datetime().optional(),
-  name: z.string().max(100),
-  phone: z.string(),
+  name: z.string().max(100).optional(),
+  phone: z.string().optional(),
   uuid: z.string().uuid().optional(),
 });
 
 export const BillRegisteredParticipantMMKV = z.object({
-  contribution: z.number().gte(100).lt(1000000000000000),
-  name: z.string().max(100),
-  username: z.string(),
-  uuid: z.string().uuid(),
-  profileImageUrl: z.string().url().nullable(),
-  profileImageHash: z.string().nullable(),
-  phone: z.string(),
+  contribution: z.number().gte(100).lt(1000000000000000).optional(),
+  name: z.string().max(100).optional(),
+  username: z.string().optional(),
+  uuid: z.string().uuid().optional(),
+  profileImageUrl: z.string().url().nullable().optional(),
+  profileImageHash: z.string().nullable().optional(),
+  phone: z.string().optional(),
 });
 
 export const BillCreateMMKV = z.object({

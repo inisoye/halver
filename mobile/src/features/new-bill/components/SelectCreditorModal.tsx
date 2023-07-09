@@ -42,7 +42,7 @@ const SelectCreditorOption: React.FunctionComponent<SelectCreditorOptionProps> =
   const { avatarBackground, firstName, initials } = React.useMemo(() => {
     return {
       initials: getInitials(name),
-      firstName: name.split(' ')[0],
+      firstName: name?.split(' ')[0],
       avatarBackground: isDarkMode
         ? getLightColorFromString(name)
         : getDarkColorFromString(name),
@@ -108,19 +108,24 @@ export const SelectCreditorModal: React.FunctionComponent<SelectCreditorModalPro
   } = useBooleanStateControl();
   const { spacing } = useTheme<Theme>();
 
+  const areThereMultipleRegisteredParticipants =
+    formattedRegisteredParticipants.length > 1;
+
   return (
     <>
-      <Button
-        backgroundColor="inputNestedButtonBackground"
-        entering={FadeIn}
-        hitSlop={16}
-        variant="xs"
-        onPress={openModal}
-      >
-        <Text fontFamily="Halver-Semibold" variant="xs">
-          Change creditor
-        </Text>
-      </Button>
+      {areThereMultipleRegisteredParticipants && (
+        <Button
+          backgroundColor="inputNestedButtonBackground"
+          entering={FadeIn}
+          hitSlop={16}
+          variant="xs"
+          onPress={openModal}
+        >
+          <Text fontFamily="Halver-Semibold" variant="xs">
+            Change creditor
+          </Text>
+        </Button>
+      )}
 
       <Modal
         closeModal={closeModal}

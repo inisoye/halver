@@ -95,7 +95,11 @@ export const convertKebabAndSnakeToTitleCase = (string: string | undefined) => {
  * @param string A user's (full, first or last) name.
  * @returns The intials of the user.
  */
-export const getInitials = (string: string) => {
+export const getInitials = (string: string | undefined) => {
+  if (!string) {
+    return '';
+  }
+
   const names = string.split(' ');
   let initials = names[0].substring(0, 1).toUpperCase();
 

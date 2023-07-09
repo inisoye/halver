@@ -1,7 +1,11 @@
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 
-import { AbsoluteKeyboardStickyButton, Box, DynamicText, Text } from '@/components';
+import { Box, DynamicText, KeyboardStickyButtonWithPrefix, Text } from '@/components';
+import { useDebounce, useIsFirstRender } from '@/hooks';
+import { RewindArrow } from '@/icons';
+import type { AppRootStackParamList } from '@/navigation';
 import { convertNumberToNaira, formatNumberWithCommas } from '@/utils';
 
 import { MINIMUM_CONTRIBUTION } from '../constants';
@@ -11,25 +15,40 @@ import {
   DefinedUnregisteredParticipant,
 } from '../types';
 import { calculateEvenAmounts, sumTotalParticipantAllocations } from '../utils';
-import { AllocationVarianceAlert, MinimumAllocationAlert } from './AllocationAlerts';
+import {
+  AllocationVarianceAlert,
+  InvalidEntryAlert,
+  MinimumAllocationAlert,
+} from './AllocationAlerts';
 import { AmountSplitBreakdownItems } from './AmountSplitBreakdownItems';
 
 interface SubmitButtonProps {
   disabled: boolean;
+  isPrefixButtonShown: boolean;
+  handleSubmit: () => void;
+  resetFormAverages: () => void;
 }
 
 const SubmitButton: React.FunctionComponent<SubmitButtonProps> = React.memo(
-  ({ disabled }) => {
+  ({ disabled, handleSubmit, resetFormAverages, isPrefixButtonShown }) => {
     return (
-      <AbsoluteKeyboardStickyButton
+      <KeyboardStickyButtonWithPrefix
         backgroundColor="buttonCasal"
         disabled={disabled}
-        position="absolute"
+        isPrefixButtonShown={isPrefixButtonShown}
+        prefix={<RewindArrow />}
+        prefixProps={{
+          backgroundColor: 'casal10',
+          paddingHorizontal: '4',
+          alignItems: 'center',
+          onPress: resetFormAverages,
+        }}
+        onPress={handleSubmit}
       >
         <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
           Continue
         </Text>
-      </AbsoluteKeyboardStickyButton>
+      </KeyboardStickyButtonWithPrefix>
     );
   },
 );
@@ -38,6 +57,11 @@ interface SplitBreakdownFormProps {
   creditor: DefinedRegisteredParticipant;
   formattedRegisteredParticipants: DefinedRegisteredParticipant[];
   formattedUnregisteredParticipants: DefinedUnregisteredParticipant[];
+  navigation: NativeStackNavigationProp<
+    AppRootStackParamList,
+    'Split Breakdown',
+    undefined
+  >;
   newBillPayload: BillCreationMMKVPayload | undefined;
   setNewBillPayload: (value: BillCreationMMKVPayload | undefined) => void;
   totalAmountDue: string | undefined;
@@ -47,19 +71,32 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
   creditor,
   formattedRegisteredParticipants,
   formattedUnregisteredParticipants,
+  navigation,
   newBillPayload,
   setNewBillPayload,
   totalAmountDue,
 }) => {
+  const isFirstRender = useIsFirstRender();
+
   const {
     control: controlForAmountForm,
     reset: resetAmountForm,
-    formState: { dirtyFields },
+    formState: { dirtyFields, isDirty },
   } = useForm({
     defaultValues: {
       registeredParticipants: formattedRegisteredParticipants,
       unregisteredParticipants: formattedUnregisteredParticipants,
     },
+  });
+
+  const { fields: registeredParticipantAmountFields } = useFieldArray({
+    control: controlForAmountForm,
+    name: 'registeredParticipants',
+  });
+
+  const { fields: unregisteredParticipantAmountFields } = useFieldArray({
+    control: controlForAmountForm,
+    name: 'unregisteredParticipants',
   });
 
   const allValues = useWatch({ control: controlForAmountForm });
@@ -73,6 +110,8 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
   const isAnyAllocationBelowMinimum = allAllocations.some(
     allocation => allocation < MINIMUM_CONTRIBUTION,
   );
+
+  const isAnyEntryInvalid = isNaN(totalParticipantAllocations);
 
   const areContributionAllocationsEqual =
     totalParticipantAllocations === Number(totalAmountDue);
@@ -92,11 +131,11 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
     : 0;
 
   const totalAllocationTextColor = areContributionAllocationsEqual
-    ? 'green11'
+    ? ('green11' as const)
     : areContributionAllocationsLess
-    ? 'amber11'
+    ? ('amber11' as const)
     : areContributionAllocationsGreater
-    ? 'tomato11'
+    ? ('orange11' as const)
     : undefined;
 
   const dirtyRegisteredContributionFields = dirtyFields.registeredParticipants;
@@ -249,24 +288,14 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
     },
   );
 
-  const { fields: registeredParticipantAmountFields } = useFieldArray({
-    control: controlForAmountForm,
-    name: 'registeredParticipants',
-  });
-
-  const { fields: unregisteredParticipantAmountFields } = useFieldArray({
-    control: controlForAmountForm,
-    name: 'unregisteredParticipants',
-  });
-
   React.useEffect(() => {
-    if (numberOfCleanFields > 0) {
+    if (numberOfCleanFields > 0 && !isFirstRender) {
       resetAmountForm(
         {
           registeredParticipants: allRegisteredFieldsWithUpdatedCleanFields,
           unregisteredParticipants: allUnregisteredFieldsWithUpdatedCleanFields,
         },
-        { keepDirtyValues: true },
+        { keepDirty: true, keepDirtyValues: true },
       );
     }
 
@@ -284,10 +313,42 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
     });
   };
 
+  const resetFormAverages = () => {
+    resetAmountForm({
+      registeredParticipants: formattedRegisteredParticipants,
+      unregisteredParticipants: formattedUnregisteredParticipants,
+    });
+  };
+
+  const handleSubmit = () => {
+    if (!newBillPayload) {
+      return;
+    }
+
+    setNewBillPayload({
+      ...newBillPayload,
+      registeredParticipants: allRegisteredFields,
+      unregisteredParticipants: allUnregisteredFields,
+    });
+
+    navigation.navigate('Bill Summary');
+  };
+
   const isSubmitDisabled =
     isAnyAllocationBelowMinimum ||
     areContributionAllocationsGreater ||
     areContributionAllocationsLess;
+
+  const debouncedUIUpdaters = useDebounce({
+    isAnyAllocationBelowMinimum,
+    isAnyEntryInvalid,
+    areContributionAllocationsGreater,
+    areContributionAllocationsLess,
+    totalParticipantAllocations,
+    totalAllocationTextColor,
+    registeredParticipantAmountFields,
+    unregisteredParticipantAmountFields,
+  });
 
   return (
     <>
@@ -298,50 +359,73 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
         marginRight="auto"
         paddingHorizontal="6"
       >
-        <Box flexDirection="row">
-          <Text
-            color={totalAllocationTextColor}
-            fontFamily="Halver-Naira"
-            lineHeight={40}
-          >
-            ₦
-          </Text>
+        {debouncedUIUpdaters.isAnyEntryInvalid ? (
+          <>
+            <DynamicText
+              color="orange11"
+              flexDirection="row"
+              fontFamily="Halver-Semibold"
+              textAlign="center"
+              variant="4xl"
+            >
+              Invalid allocation
+            </DynamicText>
+          </>
+        ) : (
+          <>
+            <Box flexDirection="row">
+              <Text
+                color={debouncedUIUpdaters.totalAllocationTextColor}
+                fontFamily="Halver-Naira"
+                lineHeight={40}
+              >
+                ₦
+              </Text>
 
-          <DynamicText
-            color={totalAllocationTextColor}
-            flexDirection="row"
-            fontFamily="Halver-Semibold"
-            textAlign="center"
-            variant="4xl"
-          >
-            {formatNumberWithCommas(Number(totalParticipantAllocations))}
-          </DynamicText>
-        </Box>
+              <DynamicText
+                color={debouncedUIUpdaters.totalAllocationTextColor}
+                flexDirection="row"
+                fontFamily="Halver-Semibold"
+                textAlign="center"
+                variant="4xl"
+              >
+                {formatNumberWithCommas(
+                  Number(debouncedUIUpdaters.totalParticipantAllocations),
+                )}
+              </DynamicText>
+            </Box>
 
-        <DynamicText color="textLight" textAlign="center" variant="sm">
-          allocated out of {convertNumberToNaira(Number(totalAmountDue))}.
-        </DynamicText>
+            <DynamicText color="textLight" textAlign="center" variant="sm">
+              allocated out of {convertNumberToNaira(Number(totalAmountDue))}.
+            </DynamicText>
+          </>
+        )}
       </Box>
 
-      {isAnyAllocationBelowMinimum && <MinimumAllocationAlert />}
+      {debouncedUIUpdaters.isAnyEntryInvalid && <InvalidEntryAlert />}
 
-      {areContributionAllocationsGreater && !isAnyAllocationBelowMinimum && (
-        <AllocationVarianceAlert
-          totalAllocationTextColor={totalAllocationTextColor}
-          updateBillAmount={updateBillAmount}
-          variantAmount={excessAmount}
-          isExcess
-        />
-      )}
+      {debouncedUIUpdaters.isAnyAllocationBelowMinimum &&
+        !debouncedUIUpdaters.isAnyEntryInvalid && <MinimumAllocationAlert />}
 
-      {areContributionAllocationsLess && !isAnyAllocationBelowMinimum && (
-        <AllocationVarianceAlert
-          isExcess={false}
-          totalAllocationTextColor={totalAllocationTextColor}
-          updateBillAmount={updateBillAmount}
-          variantAmount={deficitAmount}
-        />
-      )}
+      {debouncedUIUpdaters.areContributionAllocationsGreater &&
+        !debouncedUIUpdaters.isAnyAllocationBelowMinimum && (
+          <AllocationVarianceAlert
+            totalAllocationTextColor={totalAllocationTextColor}
+            updateBillAmount={updateBillAmount}
+            variantAmount={excessAmount}
+            isExcess
+          />
+        )}
+
+      {debouncedUIUpdaters.areContributionAllocationsLess &&
+        !debouncedUIUpdaters.isAnyAllocationBelowMinimum && (
+          <AllocationVarianceAlert
+            isExcess={false}
+            totalAllocationTextColor={totalAllocationTextColor}
+            updateBillAmount={updateBillAmount}
+            variantAmount={deficitAmount}
+          />
+        )}
 
       <AmountSplitBreakdownItems
         controlForAmountForm={controlForAmountForm}
@@ -350,7 +434,12 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
         unregisteredParticipantAmountFields={unregisteredParticipantAmountFields}
       />
 
-      <SubmitButton disabled={isSubmitDisabled} />
+      <SubmitButton
+        disabled={isSubmitDisabled}
+        handleSubmit={handleSubmit}
+        isPrefixButtonShown={isDirty}
+        resetFormAverages={resetFormAverages}
+      />
     </>
   );
 };
