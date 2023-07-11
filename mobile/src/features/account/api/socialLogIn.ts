@@ -1,13 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 import { z } from 'zod';
 
-import { apiClient } from '@/lib/axios';
+import { tokenlessApiClient } from '@/lib/axios';
 import { SocialLogin as SocialLoginSchema, Token as TokenSchema } from '@/lib/zod';
 
 export type SocialLoginPayload = z.infer<typeof SocialLoginSchema>;
 
 export const postSocialLogIn = async (lotteryPaymentDto: SocialLoginPayload) => {
-  const response = await apiClient.post('/dj-rest-auth/google/', lotteryPaymentDto);
+  const response = await tokenlessApiClient.post(
+    '/dj-rest-auth/google/',
+    lotteryPaymentDto,
+  );
   return TokenSchema.parse(response.data);
 };
 

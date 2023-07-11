@@ -141,8 +141,9 @@ export const SelectCreditorModal: React.FunctionComponent<SelectCreditorModalPro
           paddingHorizontal="6"
           paddingTop="6"
         >
-          <DynamicText color="textLight" marginBottom="3" maxWidth="75%" variant="sm">
-            Select one registered participant below
+          <DynamicText color="textLight" marginBottom="3" maxWidth="85%" variant="sm">
+            Select one registered participant below as the creditor. Creditors are not
+            charged.
           </DynamicText>
 
           <ScrollView

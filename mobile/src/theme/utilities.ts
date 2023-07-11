@@ -47,3 +47,9 @@ export const marginAutoStyles = StyleSheet.create({
     marginVertical: 'auto',
   },
 });
+
+export const flexStyles = StyleSheet.create({
+  1: {
+    flex: 1,
+  },
+});

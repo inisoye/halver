@@ -95,23 +95,26 @@ export const BillCreateMMKV = z.object({
 });
 
 export const BillCreate = z.object({
-  created: z.string().datetime(),
-  creator: z.number().int(),
-  creditorId: z.string().uuid(),
+  created: z.string().datetime().optional(),
+  creator: z.number().int().optional(),
+  creditorId: z.string().uuid().optional(),
   currencyCode: z.string().max(3).optional(),
   currencyName: z.string().max(100).optional(),
   currencySymbol: z.string().max(10).optional(),
   deadline: z.string().datetime().nullish(),
   evidence: z.string().url().nullish(),
-  firstChargeDate: z.string().datetime().nullish(),
+  firstChargeDate: z.string().datetime().nullish().optional(),
   interval: IntervalEnum.optional(),
-  modified: z.string().datetime(),
-  name: z.string().max(100),
-  notes: z.string().nullish(),
-  participantsContributionIndex: z.record(z.number()).optional(),
-  totalAmountDue: z.string().regex(/^-?\d{0,15}(?:\.\d{0,4})?$/),
+  modified: z.string().datetime().optional(),
+  name: z.string().max(100).optional(),
+  notes: z.string().nullish().optional(),
+  participantsContributionIndex: z.record(z.number()),
+  totalAmountDue: z
+    .string()
+    .regex(/^-?\d{0,15}(?:\.\d{0,4})?$/)
+    .optional(),
   unregisteredParticipants: z.array(BillUnregisteredParticipantCreate).optional(),
-  uuid: z.string().uuid(),
+  uuid: z.string().uuid().optional(),
 });
 
 export const BillCreatorCreditorParticipant = z.object({

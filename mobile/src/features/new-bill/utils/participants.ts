@@ -121,21 +121,30 @@ interface FormParticipantContributions {
 
 export function sumTotalParticipantAllocations(
   participants: FormParticipantContributions,
+  creditorId: string | undefined,
 ): {
   registered: number;
   unregistered: number;
   total: number;
   allAllocations: number[];
+  allAllocationsExcludingCreditor: number[];
 } {
   let registeredSum = 0;
   let unregisteredSum = 0;
 
   const allAllocations: number[] = [];
+  const allAllocationsExcludingCreditor: number[] = [];
 
   participants.registeredParticipants?.forEach((participant, index) => {
     if (participant) {
       registeredSum += Number(participant[`registeredContribution${index}`]);
       allAllocations.push(Number(participant[`registeredContribution${index}`]));
+
+      if (participant.uuid !== creditorId) {
+        allAllocationsExcludingCreditor.push(
+          Number(participant[`registeredContribution${index}`]),
+        );
+      }
     }
   });
 
@@ -143,6 +152,9 @@ export function sumTotalParticipantAllocations(
     if (participant) {
       unregisteredSum += Number(participant[`unregisteredContribution${index}`]);
       allAllocations.push(Number(participant[`unregisteredContribution${index}`]));
+      allAllocationsExcludingCreditor.push(
+        Number(participant[`unregisteredContribution${index}`]),
+      );
     }
   });
 
@@ -151,5 +163,6 @@ export function sumTotalParticipantAllocations(
     unregistered: unregisteredSum,
     total: unregisteredSum + registeredSum,
     allAllocations,
+    allAllocationsExcludingCreditor,
   };
 }

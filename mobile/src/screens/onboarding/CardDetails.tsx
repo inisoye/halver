@@ -25,8 +25,11 @@ type CardDetailsProps = NativeStackScreenProps<OnboardingStackParamList, 'CardDe
 export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({
   navigation,
 }) => {
-  const { data: cardAdditionURLResponse, isLoading: isCardAdditionUrlLoading } =
-    useGetCardAdditionURL();
+  const {
+    data: cardAdditionURLResponse,
+    isLoading: isCardAdditionUrlLoading,
+    isFetching: isCardAdditionUrlFetching,
+  } = useGetCardAdditionURL();
   const {
     state: isModalOpen,
     setTrue: openModal,
@@ -53,6 +56,16 @@ export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({
       navigation.navigate('ProfileImage');
     }
   };
+
+  const handleCloseModal = () => {
+    closeModal();
+    queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getUserDetails });
+    queryClient.invalidateQueries({
+      queryKey: allStaticQueryKeys.getCardAdditionURL,
+    });
+  };
+
+  const isAddCardButtonDisabled = isCardAdditionUrlLoading || isCardAdditionUrlFetching;
 
   return (
     <>
@@ -93,7 +106,7 @@ export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({
           {!!authorizationUrl && (
             <PaystackCardAdditionModal
               authorizationUrl={authorizationUrl}
-              closeModal={closeModal}
+              closeModal={handleCloseModal}
               isModalOpen={isModalOpen}
               onNavigationStateChange={onNavigationStateChange}
             />
@@ -102,11 +115,11 @@ export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({
 
         <KeyboardStickyButton
           backgroundColor="buttonCasal"
-          disabled={isCardAdditionUrlLoading}
+          disabled={isAddCardButtonDisabled}
           onPress={openModal}
         >
           <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
-            {isCardAdditionUrlLoading ? 'Loading...' : 'Add card'}
+            {isAddCardButtonDisabled ? 'Loading...' : 'Add card'}
           </Text>
         </KeyboardStickyButton>
       </Screen>

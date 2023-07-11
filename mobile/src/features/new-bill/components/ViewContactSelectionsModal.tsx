@@ -1,5 +1,4 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
 import { FadeInDown } from 'react-native-reanimated';
 
@@ -16,7 +15,6 @@ import {
 } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { SmallClose } from '@/icons';
-import { Theme } from '@/lib/restyle';
 import { AppRootStackParamList } from '@/navigation';
 import {
   getDarkColorWithBackgroundFromString,
@@ -34,7 +32,7 @@ interface SelectionAvatarAndNameProps {
   };
   profileImageHash?: string | null;
   profileImageUrl?: string | null;
-  name: string;
+  name: string | undefined;
 }
 
 const areSelectionAvatarAndNamePropsEqual = (
@@ -93,10 +91,10 @@ const SelectionAvatarAndName: React.FunctionComponent<SelectionAvatarAndNameProp
   }, areSelectionAvatarAndNamePropsEqual);
 
 interface SelectionItemProps {
-  name: string;
+  name: string | undefined;
   index: number;
-  profileImageHash?: string | null;
-  profileImageUrl?: string | null;
+  profileImageHash?: string | null | undefined;
+  profileImageUrl?: string | null | undefined;
   isRegistered: boolean;
   phone?: string | undefined;
   uuid?: string | undefined;
@@ -118,7 +116,6 @@ const SelectionItem: React.FunctionComponent<SelectionItemProps> = ({
   handleSelectionRemoval,
 }) => {
   const isDarkMode = useIsDarkMode();
-  const { colors } = useTheme<Theme>();
 
   const avatarBackground = React.useMemo(
     () =>
@@ -143,11 +140,6 @@ const SelectionItem: React.FunctionComponent<SelectionItemProps> = ({
       justifyContent="space-between"
       paddingHorizontal="4"
       paddingVertical="2"
-      style={{
-        backgroundColor: isDarkMode
-          ? colors.modalElementBackground
-          : avatarBackground.backgroundColor,
-      }}
     >
       <SelectionAvatarAndName
         avatarBackground={avatarBackground}
@@ -176,10 +168,10 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
 > = ({ navigation }) => {
   const {
     newBillPayload,
-    numberOfSelections,
-    pluralDenoter,
-    selectedRegisteredParticipants,
-    selectedRegisteredParticipantsLength,
+    numberOfSelectionsExcludingCreator,
+    pluralExcludingCreatorDenoter,
+    selectedRegisteredParticipantsExcludingCreator,
+    selectedRegisteredParticipantsExcludingCreatorLength,
     selectedUnregisteredParticipants,
     setNewBillPayload,
   } = useBillPayloadWithSelectionDetails();
@@ -193,13 +185,16 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
   React.useEffect(() => {
     // Delay closing by a tiny amount to ensure (removal) calculations are completed first.
     const timeout = setTimeout(() => {
-      if (!numberOfSelections || (numberOfSelections && numberOfSelections === 0)) {
+      if (
+        !numberOfSelectionsExcludingCreator ||
+        (numberOfSelectionsExcludingCreator && numberOfSelectionsExcludingCreator === 0)
+      ) {
         closeModal();
       }
     }, 10);
 
     return () => clearTimeout(timeout);
-  }, [closeModal, numberOfSelections]);
+  }, [closeModal, numberOfSelectionsExcludingCreator]);
 
   const handleSelectionRemoval = (
     isRegistered: boolean,
@@ -213,7 +208,7 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
     if (isRegistered) {
       setNewBillPayload({
         ...newBillPayload,
-        registeredParticipants: selectedRegisteredParticipants?.filter(
+        registeredParticipants: selectedRegisteredParticipantsExcludingCreator?.filter(
           participant => participant.uuid !== clickedItemUUID,
         ),
       });
@@ -246,22 +241,26 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
 
   return (
     <>
-      {!!numberOfSelections && (
+      {!!numberOfSelectionsExcludingCreator && (
         <Button
           backgroundColor="inputNestedButtonBackground"
           variant="xs"
           onPress={openModal}
         >
           <Text fontFamily="Halver-Semibold" variant="xs">
-            View{numberOfSelections ? ` ${numberOfSelections}` : undefined} selection
-            {pluralDenoter}
+            View
+            {numberOfSelectionsExcludingCreator
+              ? ` ${numberOfSelectionsExcludingCreator}`
+              : undefined}{' '}
+            selection
+            {pluralExcludingCreatorDenoter}
           </Text>
         </Button>
       )}
 
       <Modal
         closeModal={closeModal}
-        headingText={`Your ${numberOfSelections} selection${pluralDenoter}`}
+        headingText={`Your ${numberOfSelectionsExcludingCreator} selection${pluralExcludingCreatorDenoter}`}
         isLoaderOpen={false}
         isModalOpen={isModalOpen}
         hasLargeHeading
@@ -276,7 +275,7 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
         >
           <ScrollView>
             <Box gap="4">
-              {selectedRegisteredParticipants?.map(
+              {selectedRegisteredParticipantsExcludingCreator?.map(
                 ({ name, uuid, profileImageHash, profileImageUrl, phone }, index) => {
                   return (
                     <SelectionItem
@@ -298,7 +297,9 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
                 return (
                   <SelectionItem
                     handleSelectionRemoval={handleSelectionRemoval}
-                    index={selectedRegisteredParticipantsLength + index - 1}
+                    index={
+                      selectedRegisteredParticipantsExcludingCreatorLength + index - 1
+                    }
                     isRegistered={false}
                     key={phone}
                     name={name}
@@ -309,7 +310,7 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
             </Box>
           </ScrollView>
 
-          {numberOfSelections > 1 && (
+          {numberOfSelectionsExcludingCreator > 1 && (
             <Button
               alignSelf="flex-end"
               backgroundColor="inputNestedButtonBackground"
@@ -324,14 +325,15 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
 
           <Button
             backgroundColor="buttonApricot"
-            disabled={numberOfSelections < 1}
+            disabled={numberOfSelectionsExcludingCreator < 1}
             marginTop="2"
             onPress={handleContinue}
           >
             <Text color="buttonTextApricot" fontFamily="Halver-Semibold">
               Continue
-              {numberOfSelections >= 1 && ` with ${numberOfSelections} selection`}
-              {pluralDenoter}
+              {numberOfSelectionsExcludingCreator >= 1 &&
+                ` with ${numberOfSelectionsExcludingCreator} selection`}
+              {pluralExcludingCreatorDenoter}
             </Text>
           </Button>
         </Box>

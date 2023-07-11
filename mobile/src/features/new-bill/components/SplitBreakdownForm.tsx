@@ -38,7 +38,7 @@ const SubmitButton: React.FunctionComponent<SubmitButtonProps> = React.memo(
         isPrefixButtonShown={isPrefixButtonShown}
         prefix={<RewindArrow />}
         prefixProps={{
-          backgroundColor: 'casal10',
+          backgroundColor: 'casal11',
           paddingHorizontal: '4',
           alignItems: 'center',
           onPress: resetFormAverages,
@@ -101,15 +101,16 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
 
   const allValues = useWatch({ control: controlForAmountForm });
 
-  const totalParticipantAllocationsBreakdown =
-    sumTotalParticipantAllocations(allValues);
+  const totalParticipantAllocationsBreakdown = sumTotalParticipantAllocations(
+    allValues,
+    creditor.uuid,
+  );
   const totalParticipantAllocations = totalParticipantAllocationsBreakdown.total;
 
-  const allAllocations = totalParticipantAllocationsBreakdown.allAllocations;
-
-  const isAnyAllocationBelowMinimum = allAllocations.some(
-    allocation => allocation < MINIMUM_CONTRIBUTION,
-  );
+  const isAnyAllocationBelowMinimum =
+    totalParticipantAllocationsBreakdown.allAllocationsExcludingCreditor.some(
+      allocation => allocation < MINIMUM_CONTRIBUTION,
+    );
 
   const isAnyEntryInvalid = isNaN(totalParticipantAllocations);
 
@@ -198,10 +199,13 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
   const numberOfCleanFields =
     numberOfCleanRegisteredFields + numberOfCleanUnregisteredFields;
 
-  const totalDirtyAllocationsBreakdown = sumTotalParticipantAllocations({
-    registeredParticipants: dirtyRegisteredFields,
-    unregisteredParticipants: dirtyUnregisteredFields,
-  });
+  const totalDirtyAllocationsBreakdown = sumTotalParticipantAllocations(
+    {
+      registeredParticipants: dirtyRegisteredFields,
+      unregisteredParticipants: dirtyUnregisteredFields,
+    },
+    creditor.uuid,
+  );
   const totalCleanAllocations =
     Number(totalAmountDue) - totalDirtyAllocationsBreakdown.total;
 
@@ -327,6 +331,7 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
 
     setNewBillPayload({
       ...newBillPayload,
+      creditorId: creditor.uuid,
       registeredParticipants: allRegisteredFields,
       unregisteredParticipants: allUnregisteredFields,
     });

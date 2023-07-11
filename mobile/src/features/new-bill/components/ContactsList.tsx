@@ -5,9 +5,12 @@ import parsePhoneNumberFromString from 'libphonenumber-js';
 import * as React from 'react';
 
 import { AbsoluteKeyboardStickyButton, Text } from '@/components';
-import { showToast } from '@/lib/root-toast';
 import { AppRootStackParamList } from '@/navigation';
-import { isMobilePhone, removeSpaces } from '@/utils';
+import {
+  handleGenericErrorAlertAndHaptics,
+  isMobilePhone,
+  removeSpaces,
+} from '@/utils';
 
 import { useRegisteredContacts } from '../api';
 import { useBillPayloadWithSelectionDetails } from '../hooks';
@@ -160,11 +163,15 @@ interface ContactsContinueButtonProps {
 export const ContactsContinueButton: React.FunctionComponent<
   ContactsContinueButtonProps
 > = ({ navigation }) => {
-  const { numberOfSelections, pluralDenoter } = useBillPayloadWithSelectionDetails();
+  const { numberOfSelectionsExcludingCreator, pluralDenoter } =
+    useBillPayloadWithSelectionDetails();
 
   const handleContinue = () => {
-    if (numberOfSelections < 1) {
-      showToast('Please select a participant first', 'error');
+    if (numberOfSelectionsExcludingCreator < 1) {
+      handleGenericErrorAlertAndHaptics(
+        'No participant selected',
+        'Please select at least one participant to continue',
+      );
       return;
     }
 
@@ -179,7 +186,8 @@ export const ContactsContinueButton: React.FunctionComponent<
     >
       <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
         Continue
-        {numberOfSelections >= 1 && ` with ${numberOfSelections} selection`}
+        {numberOfSelectionsExcludingCreator >= 1 &&
+          ` with ${numberOfSelectionsExcludingCreator} selection`}
         {pluralDenoter}
       </Text>
     </AbsoluteKeyboardStickyButton>

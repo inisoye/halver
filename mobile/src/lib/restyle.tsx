@@ -56,6 +56,7 @@ const neutralColors = {
   black: '#000000',
   white: '#ffffff',
   blackish: '#0D0D0D',
+  greenNight: '#080F0B',
   transparent: 'transparent',
 };
 
@@ -368,6 +369,9 @@ const theme = createTheme({
     modalOverlay: lightColors.grayA10,
     modalFilterContainerBorder: lightColors.gray7,
 
+    successModalBackground: lightColors.green3,
+    successModalHeadingBackground: lightColors.green1,
+
     pendingActionStatusBackground: lightColors.orange3,
     overdueActionStatusBackground: lightColors.red3,
     recurringActionStatusBackground: lightColors.green3,
@@ -482,6 +486,15 @@ const theme = createTheme({
     defaults: {
       backgroundColor: 'elementBackground',
       borderRadius: 'lg',
+      shadowColor: 'black',
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowOpacity: 0.18,
+      shadowRadius: 1.0,
+
+      elevation: 1,
     },
   },
 });
@@ -534,6 +547,9 @@ const darkTheme: Theme = {
     modalBackground: darkColors.gray2,
     modalElementBackground: darkColors.gray3,
     modalFilterContainerBorder: darkColors.gray5,
+
+    successModalBackground: darkColors.green3,
+    successModalHeadingBackground: darkColors.green1,
 
     pendingActionStatusBackground: darkColors.gray3,
     overdueActionStatusBackground: darkColors.gray3,

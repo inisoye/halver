@@ -9,3 +9,5 @@ export * from './SelectTick';
 export * from './SmallAlert';
 export * from './SmallClose';
 export * from './UserFolder';
+export * from './SuccessTick';
+export * from './GoToArrow';
