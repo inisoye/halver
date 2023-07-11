@@ -241,7 +241,18 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
 
         bills = (
             Bill.objects.select_related("creditor", "creator")
-            .prefetch_related("unregistered_participants", "participants")
+            .prefetch_related(
+                Prefetch(
+                    "unregistered_participants",
+                    queryset=BillUnregisteredParticipant.objects.only("uuid"),
+                ),
+                Prefetch(
+                    "participants",
+                    queryset=CustomUser.objects.only(
+                        "profile_image_url", "profile_image_hash"
+                    ),
+                ),
+            )
             .filter(Q(participants=user) | Q(creditor=user))
         )
 

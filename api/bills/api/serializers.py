@@ -130,6 +130,16 @@ class BillCreateSerializer(serializers.ModelSerializer):
         )
 
 
+class NestedBillListParticipantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = (
+            "profile_image_url",
+            "profile_image_hash",
+        )
+        read_only_fields = fields
+
+
 class BillListSerializer(serializers.ModelSerializer):
     interval = serializers.SerializerMethodField()
     is_creator = serializers.SerializerMethodField()
@@ -137,6 +147,7 @@ class BillListSerializer(serializers.ModelSerializer):
     is_recurring = serializers.BooleanField()
     status_info = serializers.SerializerMethodField()
     total_participants = serializers.IntegerField()
+    participants = NestedBillListParticipantSerializer(many=True)
 
     def get_interval(self, obj) -> str:
         """Returns the human-readable version of the interval field.
@@ -177,6 +188,7 @@ class BillListSerializer(serializers.ModelSerializer):
             "name",
             "status_info",
             "total_participants",
+            "participants",
             "uuid",
         )
         read_only_fields = fields
@@ -219,7 +231,7 @@ class BillDetailUnregisteredParticipantSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
-class BillDetailActionSerializer(serializers.ModelSerializer):
+class NestedBillDetailActionSerializer(serializers.ModelSerializer):
     participant = NestedCustomUserSerializer()
     unregistered_participant = BillDetailUnregisteredParticipantSerializer()
 
@@ -244,7 +256,7 @@ class BillDetailActionSerializer(serializers.ModelSerializer):
 
 
 class BillDetailSerializer(serializers.ModelSerializer):
-    actions = BillDetailActionSerializer(many=True)
+    actions = NestedBillDetailActionSerializer(many=True)
     creator = NestedCustomUserSerializer()
     creditor = NestedCustomUserSerializer()
     interval = serializers.SerializerMethodField()
