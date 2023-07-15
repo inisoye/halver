@@ -234,6 +234,21 @@ class BillDetailUnregisteredParticipantSerializer(serializers.ModelSerializer):
 class NestedBillDetailActionSerializer(serializers.ModelSerializer):
     participant = NestedCustomUserSerializer()
     unregistered_participant = BillDetailUnregisteredParticipantSerializer()
+    status = serializers.SerializerMethodField()
+
+    def get_status(self, obj) -> str:
+        """Returns the human-readable version of the status field.
+
+        https://docs.djangoproject.com/en/dev/ref/models/instances/#django.db.models.Model.get_FOO_display.
+
+        Parameters:
+            obj (Bill): An instance of the Bill model.
+
+        Returns:
+            str: A human-readable string of the status field.
+        """
+
+        return obj.get_status_display()
 
     class Meta:
         model = BillAction
