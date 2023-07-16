@@ -7,10 +7,8 @@ import {
   visible,
   VisibleProps,
 } from '@shopify/restyle';
-import {
-  TouchableOpacity as RNTouchableOpacity,
-  TouchableOpacityProps as RNTouchableOpacityProps,
-} from 'react-native';
+import { TouchableOpacityProps as RNTouchableOpacityProps } from 'react-native';
+import { TouchableOpacity as RNGHTouchableOpacity } from 'react-native-gesture-handler';
 
 import { Theme } from '@/lib/restyle';
 
@@ -21,5 +19,5 @@ export type TouchableOpacityProps = BoxProps<Theme> &
 
 export const TouchableOpacity = createRestyleComponent<TouchableOpacityProps, Theme>(
   [spacing, visible],
-  createBox<Theme>(RNTouchableOpacity),
+  createBox<Theme>(RNGHTouchableOpacity),
 );

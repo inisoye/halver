@@ -1,5 +1,5 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { FlashList } from '@shopify/flash-list';
+import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import * as Contacts from 'expo-contacts';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 import * as React from 'react';
@@ -122,7 +122,10 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
     [contactsWithHeadings],
   );
 
-  const renderItem = ({ item, index }) => {
+  const renderItem: ListRenderItem<(typeof contactsWithHeadings)[number]> = ({
+    item,
+    index,
+  }) => {
     const isLastItem = index === contactsWithHeadings.length - 1;
 
     return <ContactRenderItem index={index} isLastItem={isLastItem} item={item} />;

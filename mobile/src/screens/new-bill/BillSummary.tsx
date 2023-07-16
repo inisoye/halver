@@ -58,6 +58,7 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = () => {
     interval,
     deadline,
     firstChargeDate,
+    notes,
   } = newBillPayload || {};
 
   const updatedParticipants = React.useMemo(
@@ -117,6 +118,7 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = () => {
     name: billName,
     deadline: String(deadline),
     interval,
+    notes,
     totalAmountDue: String(totalAmountDueExcludingCreditor),
     participantsContributionIndex,
   };

@@ -10,12 +10,14 @@ import { Theme } from '@/lib/restyle';
 import { isIOS } from '@/utils';
 
 import { Box } from './Box';
-import { Text } from './Text';
+import { DynamicText } from './Text';
 import { TouchableOpacity } from './TouchableOpacity';
 
 interface ScreenHeaderProps {
   customScreenName?: string;
   isHeaderTextShown?: boolean;
+  headerProps?: BoxProps<Theme>;
+  rightComponent?: React.ReactNode;
 }
 
 const screensWithNoBackButton = ['Home'];
@@ -24,6 +26,8 @@ const screensWithLightHeading = [''];
 const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
   customScreenName,
   isHeaderTextShown = true,
+  headerProps,
+  rightComponent,
 }) => {
   const { name } = useRoute();
   const navigation = useNavigation();
@@ -50,30 +54,40 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
     <Box
       alignItems="center"
       flexDirection="row"
-      gap="4"
+      gap="2"
+      justifyContent="space-between"
       paddingBottom="4"
       paddingHorizontal="6"
       paddingTop={isIOS() ? '6' : '8'}
+      {...headerProps}
     >
-      <TouchableOpacity
-        hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}
-        visible={screenInfo.hasBackButton}
-        onPress={() => {
-          navigation.goBack();
-        }}
-      >
-        <BackIcon />
-      </TouchableOpacity>
+      <Box alignItems="center" flexDirection="row" gap="4" maxWidth="60%">
+        {screenInfo.hasBackButton && (
+          <TouchableOpacity
+            hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}
+            visible={screenInfo.hasBackButton}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <BackIcon />
+          </TouchableOpacity>
+        )}
 
-      {isHeaderTextShown && (
-        <Text
-          color={screenInfo.hasLightHeading ? 'textLight' : 'textDefault'}
-          fontFamily="Halver-Semibold"
-          variant="2xl"
-        >
-          {customScreenName || screenInfo.screenName}
-        </Text>
-      )}
+        {isHeaderTextShown && (
+          <DynamicText
+            color={screenInfo.hasLightHeading ? 'textLight' : 'textDefault'}
+            fontFamily="Halver-Semibold"
+            maxWidth="100%"
+            numberOfLines={1}
+            variant="2xl"
+          >
+            {customScreenName || screenInfo.screenName}
+          </DynamicText>
+        )}
+      </Box>
+
+      {rightComponent}
     </Box>
   );
 };
@@ -86,6 +100,8 @@ type ScreenProps = BoxProps<Theme> & {
   isHeaderTextShown?: boolean;
   isModal?: boolean;
   style?: StyleProp<ViewStyle>;
+  headerProps?: BoxProps<Theme>;
+  headerRightComponent?: React.ReactNode;
 };
 
 export const Screen: React.FunctionComponent<ScreenProps> = ({
@@ -96,6 +112,8 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
   isHeaderTextShown = true,
   isModal = false,
   style,
+  headerProps,
+  headerRightComponent,
   ...props
 }) => {
   const insets = useSafeAreaInsets();
@@ -119,7 +137,9 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
       {isHeaderShown && (
         <ScreenHeader
           customScreenName={customScreenName}
+          headerProps={headerProps}
           isHeaderTextShown={isHeaderTextShown}
+          rightComponent={headerRightComponent}
         />
       )}
 

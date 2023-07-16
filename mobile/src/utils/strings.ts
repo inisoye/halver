@@ -92,6 +92,7 @@ export const convertKebabAndSnakeToTitleCase = (string: string | undefined) => {
 };
 
 /**
+ * Returns the initials of a user when fed the user's full, first or last name.
  * @param string A user's (full, first or last) name.
  * @returns The intials of the user.
  */

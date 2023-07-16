@@ -36,8 +36,10 @@ const SubmitButton: React.FunctionComponent<SubmitButtonProps> = React.memo(
         backgroundColor="buttonCasal"
         disabled={disabled}
         isPrefixButtonShown={isPrefixButtonShown}
+        marginTop="1.5"
         prefix={<RewindArrow />}
         prefixProps={{
+          marginTop: '1.5',
           backgroundColor: 'casal11',
           paddingHorizontal: '4',
           alignItems: 'center',

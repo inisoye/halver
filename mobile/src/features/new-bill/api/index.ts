@@ -1,2 +1,2 @@
-export * from './getRegisteredContacts';
 export * from './createBill';
+export * from './getRegisteredContacts';

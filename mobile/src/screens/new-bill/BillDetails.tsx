@@ -2,12 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useMMKVObject } from 'react-native-mmkv';
-import Animated, { FadeInUp, FadeOutDown } from 'react-native-reanimated';
+import { FadeInUp, FadeOutDown } from 'react-native-reanimated';
 import { z } from 'zod';
 
 import {
+  AnimatedBox,
   Box,
   KeyboardStickyButton,
   RadioSelector,
@@ -27,9 +28,13 @@ import {
 import { allMMKVKeys } from '@/lib/mmkv';
 import { IntervalEnum } from '@/lib/zod';
 import { AppRootStackParamList } from '@/navigation';
-import { convertNumberToNaira } from '@/utils';
+import { convertNumberToNaira, isIOS } from '@/utils';
 
-type BillAmountProps = NativeStackScreenProps<AppRootStackParamList, 'Bill Details'>;
+const styles = StyleSheet.create({
+  scrollContainer: {},
+});
+
+type BillDetailsProps = NativeStackScreenProps<AppRootStackParamList, 'Bill Details'>;
 
 const BillDetailsFormSchema = z.object({
   totalAmountDue: z.coerce
@@ -44,7 +49,7 @@ const BillDetailsFormSchema = z.object({
     })
     .transform(amount => amount.toString()),
   name: z
-    .string()
+    .string({ required_error: 'A bill name is required.' })
     .max(100, { message: 'Your bill name should be less than 100 characters.' }),
   deadline: z.coerce
     .date({
@@ -64,6 +69,12 @@ const BillDetailsFormSchema = z.object({
       message: "Your bill's first charge date must be in the future.",
     })
     .optional(),
+  notes: z
+    .string()
+    .max(100, {
+      message: 'Please ensure your description less than 500 characters',
+    })
+    .optional(),
 });
 
 export type BillDetailsFormValues = z.infer<typeof BillDetailsFormSchema>;
@@ -80,7 +91,7 @@ export const intervalOptions = [
 
 const twoDaysFromNow = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
 
-export const BillDetails: React.FunctionComponent<BillAmountProps> = ({
+export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
   navigation,
 }) => {
   const [newBillPayload, setNewBillPayload] = useMMKVObject<BillCreationMMKVPayload>(
@@ -135,14 +146,9 @@ export const BillDetails: React.FunctionComponent<BillAmountProps> = ({
 
   return (
     <Screen hasNoIOSBottomInset>
-      <ScrollView
-        keyboardDismissMode="on-drag"
-        keyboardShouldPersistTaps="handled"
-        paddingHorizontal="6"
-        paddingVertical="2"
-      >
-        <Box gap="7" paddingBottom="20">
-          <View>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Box gap="7" paddingBottom="20" paddingHorizontal="6" paddingTop="4">
+          <Box>
             <TextFieldLabel label="How much is the bill?" />
 
             <TextField
@@ -161,14 +167,14 @@ export const BillDetails: React.FunctionComponent<BillAmountProps> = ({
                 fieldName="the total amount due"
               />
             )}
-          </View>
+          </Box>
 
-          <View>
+          <Box>
             <TextFieldLabel label="Give the bill a name" />
             <TextField
               control={control}
               name="name"
-              placeholder="e.g Our Netflix Subscription"
+              placeholder="e.g. Our Netflix Subscription"
               rules={{
                 required: true,
               }}
@@ -179,9 +185,28 @@ export const BillDetails: React.FunctionComponent<BillAmountProps> = ({
                 fieldName="a name for the bill"
               />
             )}
-          </View>
+          </Box>
 
-          <View>
+          <Box>
+            <TextFieldLabel label="Add a quick note" isOptional />
+            <TextField
+              control={control}
+              height={80}
+              multiline={true}
+              name="notes"
+              numberOfLines={4}
+              paddingVertical={isIOS() ? '3' : '2.5'}
+              placeholder="e.g. Hi guys! This is just for all of us to conveniently make our contributions."
+            />
+            {errors.notes && (
+              <TextFieldError
+                errorMessage={errors.notes?.message}
+                fieldName="a name for the bill"
+              />
+            )}
+          </Box>
+
+          <Box>
             <BillDeadlineSelector control={control} />
 
             {errors.deadline && (
@@ -190,9 +215,9 @@ export const BillDetails: React.FunctionComponent<BillAmountProps> = ({
                 fieldName="your bill's deadline"
               />
             )}
-          </View>
+          </Box>
 
-          <View>
+          <Box>
             <TextFieldLabel label="Is this a one-time or periodic bill?" />
 
             <Controller
@@ -215,10 +240,10 @@ export const BillDetails: React.FunctionComponent<BillAmountProps> = ({
                 fieldName="your bill's interval"
               />
             )}
-          </View>
+          </Box>
 
           {isRecurringBill && (
-            <Animated.View entering={FadeInUp} exiting={FadeOutDown}>
+            <AnimatedBox entering={FadeInUp} exiting={FadeOutDown}>
               <BillFirstChargeDateSelector control={control} />
 
               {errors.firstChargeDate && (
@@ -227,13 +252,14 @@ export const BillDetails: React.FunctionComponent<BillAmountProps> = ({
                   fieldName="your bill's first charge date"
                 />
               )}
-            </Animated.View>
+            </AnimatedBox>
           )}
         </Box>
       </ScrollView>
 
       <KeyboardStickyButton
         backgroundColor="buttonCasal"
+        marginTop="1.5"
         onPress={handleSubmit(onBillDetailsSubmit)}
       >
         <Text color="buttonTextCasal" fontFamily="Halver-Semibold">

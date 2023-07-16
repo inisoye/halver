@@ -46,7 +46,7 @@ export const BillDeadlineSelector: React.FunctionComponent<
         onPress={openModal}
       >
         <Box alignItems="center" flexDirection="row" gap="2">
-          <DynamicText flexShrink={1} numberOfLines={1} width={192}>
+          <DynamicText flexShrink={1} fontSize={15} numberOfLines={1} width={192}>
             {deadline ? deadline.toDateString() : 'Select a date'}
           </DynamicText>
         </Box>
@@ -78,7 +78,7 @@ export const BillDeadlineSelector: React.FunctionComponent<
               return (
                 <DatePicker
                   endYear={futureYear}
-                  fontSize={16}
+                  fontSize={15}
                   format="yyyy-mm-dd"
                   height={160}
                   markHeight={36}
@@ -90,8 +90,8 @@ export const BillDeadlineSelector: React.FunctionComponent<
             }}
           />
 
-          <Button backgroundColor="buttonPharlap" marginTop="2" onPress={closeModal}>
-            <Text color="buttonTextPharlap" fontFamily="Halver-Semibold">
+          <Button backgroundColor="buttonApricot" marginTop="2" onPress={closeModal}>
+            <Text color="buttonTextApricot" fontFamily="Halver-Semibold">
               Done
             </Text>
           </Button>

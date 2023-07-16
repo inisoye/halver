@@ -268,7 +268,7 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
         <Box
           backgroundColor="gray1"
           gap="6"
-          maxHeight="91%"
+          maxHeight="81%"
           paddingBottom="8"
           paddingHorizontal="6"
           paddingTop="6"

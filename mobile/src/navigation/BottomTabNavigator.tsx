@@ -45,7 +45,7 @@ export const BottomTabText: React.FunctionComponent<BottomTabTextProps> = ({
 export type TabParamList = {
   HomeStackNavigator: undefined;
   BillsStackNavigator: undefined;
-  'Bill Amount Placeholder': undefined;
+  BillDetailsPlaceholder: undefined;
   TransactionsStackNavigator: undefined;
   AccountStackNavigator: undefined;
 };
@@ -71,7 +71,7 @@ export const tabs: TabType[] = [
     icon: BillsIcon,
   },
   {
-    name: 'Bill Amount Placeholder',
+    name: 'BillDetailsPlaceholder',
     component: BillDetailsPlaceholder as React.FunctionComponent,
     label: 'BillDetailsPlaceholder',
     icon: NewBillIcon,

@@ -1,4 +1,4 @@
-import { FlashList } from '@shopify/flash-list';
+import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
 import { useForm, UseFormSetValue, useWatch } from 'react-hook-form';
@@ -150,7 +150,7 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
     handleModalClose();
   };
 
-  const renderItem = React.useCallback(
+  const renderItem: ListRenderItem<(typeof filteredBanks)[number]> = React.useCallback(
     ({ item }: { item: SelectedBank }) => (
       <SelectorOption
         handleItemClick={handleItemClick}

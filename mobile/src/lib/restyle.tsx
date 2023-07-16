@@ -166,6 +166,58 @@ export const lightColors = {
   tomato10: 'hsl(10, 71.5%, 50.0%)',
   tomato11: 'hsl(10, 82.0%, 43.5%)',
   tomato12: 'hsl(10, 50.0%, 13.5%)',
+
+  brown1: 'hsl(30, 40.0%, 99.1%)',
+  brown2: 'hsl(30, 50.0%, 97.6%)',
+  brown3: 'hsl(30, 52.5%, 94.6%)',
+  brown4: 'hsl(30, 53.0%, 91.2%)',
+  brown5: 'hsl(29, 52.9%, 86.8%)',
+  brown6: 'hsl(29, 52.5%, 80.9%)',
+  brown7: 'hsl(29, 51.5%, 72.8%)',
+  brown8: 'hsl(28, 50.0%, 63.1%)',
+  brown9: 'hsl(28, 34.0%, 51.0%)',
+  brown10: 'hsl(27, 31.8%, 47.6%)',
+  brown11: 'hsl(25, 30.0%, 41.0%)',
+  brown12: 'hsl(20, 30.0%, 19.0%)',
+
+  indigo1: 'hsl(225, 60.0%, 99.4%)',
+  indigo2: 'hsl(223, 100%, 98.6%)',
+  indigo3: 'hsl(223, 98.4%, 97.1%)',
+  indigo4: 'hsl(223, 92.9%, 95.0%)',
+  indigo5: 'hsl(224, 87.1%, 92.0%)',
+  indigo6: 'hsl(224, 81.9%, 87.8%)',
+  indigo7: 'hsl(225, 77.4%, 82.1%)',
+  indigo8: 'hsl(226, 75.4%, 74.5%)',
+  indigo9: 'hsl(226, 70.0%, 55.5%)',
+  indigo10: 'hsl(226, 58.6%, 51.3%)',
+  indigo11: 'hsl(226, 55.0%, 45.0%)',
+  indigo12: 'hsl(226, 62.0%, 17.0%)',
+
+  plum1: 'hsl(292, 90.0%, 99.4%)',
+  plum2: 'hsl(300, 100%, 98.6%)',
+  plum3: 'hsl(299, 71.2%, 96.4%)',
+  plum4: 'hsl(299, 62.0%, 93.8%)',
+  plum5: 'hsl(298, 56.1%, 90.5%)',
+  plum6: 'hsl(296, 51.3%, 85.8%)',
+  plum7: 'hsl(295, 48.2%, 78.9%)',
+  plum8: 'hsl(292, 47.7%, 70.8%)',
+  plum9: 'hsl(292, 45.0%, 51.0%)',
+  plum10: 'hsl(292, 50.2%, 46.9%)',
+  plum11: 'hsl(292, 60.0%, 42.5%)',
+  plum12: 'hsl(291, 66.0%, 14.0%)',
+
+  yellow1: 'hsl(60, 54.0%, 98.5%)',
+  yellow2: 'hsl(52, 100%, 95.5%)',
+  yellow3: 'hsl(55, 100%, 90.9%)',
+  yellow4: 'hsl(54, 100%, 86.6%)',
+  yellow5: 'hsl(52, 97.9%, 82.0%)',
+  yellow6: 'hsl(50, 89.4%, 76.1%)',
+  yellow7: 'hsl(47, 80.4%, 68.0%)',
+  yellow8: 'hsl(48, 100%, 46.1%)',
+  yellow9: 'hsl(53, 92.0%, 50.0%)',
+  yellow10: 'hsl(50, 100%, 48.5%)',
+  yellow11: 'hsl(42, 100%, 29.0%)',
+  yellow12: 'hsl(40, 55.0%, 13.5%)',
 };
 
 export const darkColors = {
@@ -272,6 +324,58 @@ export const darkColors = {
   tomato10: 'hsl(10, 81.7%, 59.0%)',
   tomato11: 'hsl(10, 85.0%, 62.8%)',
   tomato12: 'hsl(10, 89.0%, 96.0%)',
+
+  brown1: 'hsl(22, 15.0%, 8.7%)',
+  brown2: 'hsl(20, 28.3%, 10.4%)',
+  brown3: 'hsl(20, 28.0%, 14.0%)',
+  brown4: 'hsl(21, 28.4%, 16.5%)',
+  brown5: 'hsl(22, 28.7%, 18.9%)',
+  brown6: 'hsl(23, 29.0%, 22.3%)',
+  brown7: 'hsl(25, 29.5%, 27.8%)',
+  brown8: 'hsl(27, 30.1%, 35.9%)',
+  brown9: 'hsl(28, 34.0%, 51.0%)',
+  brown10: 'hsl(28, 41.4%, 55.8%)',
+  brown11: 'hsl(28, 60.0%, 64.5%)',
+  brown12: 'hsl(30, 67.0%, 94.0%)',
+
+  indigo1: 'hsl(229, 24.0%, 10.0%)',
+  indigo2: 'hsl(230, 36.4%, 12.9%)',
+  indigo3: 'hsl(228, 43.3%, 17.5%)',
+  indigo4: 'hsl(227, 47.2%, 21.0%)',
+  indigo5: 'hsl(227, 50.0%, 24.1%)',
+  indigo6: 'hsl(226, 52.9%, 28.2%)',
+  indigo7: 'hsl(226, 56.0%, 34.5%)',
+  indigo8: 'hsl(226, 58.2%, 44.1%)',
+  indigo9: 'hsl(226, 70.0%, 55.5%)',
+  indigo10: 'hsl(227, 75.2%, 61.6%)',
+  indigo11: 'hsl(228, 100%, 75.9%)',
+  indigo12: 'hsl(226, 83.0%, 96.3%)',
+
+  plum1: 'hsl(301, 20.0%, 9.4%)',
+  plum2: 'hsl(300, 29.8%, 11.2%)',
+  plum3: 'hsl(298, 34.4%, 15.3%)',
+  plum4: 'hsl(297, 36.8%, 18.3%)',
+  plum5: 'hsl(296, 38.5%, 21.1%)',
+  plum6: 'hsl(295, 40.4%, 24.7%)',
+  plum7: 'hsl(294, 42.7%, 30.6%)',
+  plum8: 'hsl(292, 45.1%, 40.0%)',
+  plum9: 'hsl(292, 45.0%, 51.0%)',
+  plum10: 'hsl(295, 50.0%, 55.4%)',
+  plum11: 'hsl(300, 60.0%, 62.0%)',
+  plum12: 'hsl(296, 74.0%, 95.7%)',
+
+  yellow1: 'hsl(45, 100%, 5.5%)',
+  yellow2: 'hsl(46, 100%, 6.7%)',
+  yellow3: 'hsl(45, 100%, 8.7%)',
+  yellow4: 'hsl(45, 100%, 10.4%)',
+  yellow5: 'hsl(47, 100%, 12.1%)',
+  yellow6: 'hsl(49, 100%, 14.3%)',
+  yellow7: 'hsl(49, 90.3%, 18.4%)',
+  yellow8: 'hsl(50, 100%, 22.0%)',
+  yellow9: 'hsl(53, 92.0%, 50.0%)',
+  yellow10: 'hsl(54, 100%, 68.0%)',
+  yellow11: 'hsl(48, 100%, 47.0%)',
+  yellow12: 'hsl(53, 100%, 91.0%)',
 };
 
 export const tailwindSpacing = {
@@ -388,6 +492,9 @@ const theme = createTheme({
 
     logoApricot: brandColors.apricot6,
     logoCasal: brandColors.casal7,
+
+    billScreenBackground: brandColors.pharlap2,
+    billMeterBackground: brandColors.pharlap7,
   },
   spacing: tailwindSpacing,
   breakpoints: {
@@ -397,6 +504,7 @@ const theme = createTheme({
   borderRadii: {
     none: 0,
     sm: 2,
+    sm2: 3,
     base: 4,
     md: 6,
     lg: 8,
@@ -418,9 +526,9 @@ const theme = createTheme({
   textVariants: {
     defaults: {
       fontFamily: 'Halver-Medium',
-      fontSize: 16,
+      fontSize: 15,
       color: 'textDefault',
-      letterSpacing: -0.1,
+      letterSpacing: -0.14,
     },
     xxs: {
       fontSize: 10,
@@ -432,7 +540,7 @@ const theme = createTheme({
     },
     sm: {
       fontSize: 14,
-      lineHeight: 18,
+      lineHeight: 17.85,
     },
     lg: {
       fontSize: 18,
@@ -440,23 +548,27 @@ const theme = createTheme({
     },
     xl: {
       fontSize: 20,
-      lineHeight: 24,
-      letterSpacing: -0.65,
+      lineHeight: 20.4,
+      letterSpacing: -0.8,
     },
     '2xl': {
       fontSize: 24,
-      lineHeight: 28,
-      letterSpacing: -0.8,
+      lineHeight: 30,
+      letterSpacing: -0.96,
     },
     '3xl': {
       fontSize: 28,
       lineHeight: 42,
-      letterSpacing: -0.8,
+      letterSpacing: -0.96,
     },
     '4xl': {
       fontSize: 32,
-      lineHeight: 48,
-      letterSpacing: -1.3,
+      lineHeight: 32.64,
+      letterSpacing: -1.28,
+    },
+    buttonText: {
+      fontSize: 15,
+      fontFamily: 'Halver-Semibold',
     },
   },
   buttonVariants: {
@@ -567,6 +679,9 @@ const darkTheme: Theme = {
 
     logoApricot: brandColors.apricot8,
     logoCasal: brandColors.casal8,
+
+    billScreenBackground: neutralColors.blackish,
+    billMeterBackground: brandColors.pharlap6,
   },
 };
 

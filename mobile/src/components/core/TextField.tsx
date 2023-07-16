@@ -13,15 +13,22 @@ import { TextInput, TextInputProps } from './TextInput';
 
 type TextFieldLabelProps = TextProps<Theme> & {
   label: string;
+  isOptional?: boolean;
 };
 
 export const TextFieldLabel: React.FunctionComponent<TextFieldLabelProps> = ({
   label,
+  isOptional = false,
   ...props
 }) => {
   return (
     <Text variant="sm" {...props}>
-      {label}
+      {label}{' '}
+      {isOptional && (
+        <Text color="textLight" variant="sm">
+          (optional)
+        </Text>
+      )}
     </Text>
   );
 };
@@ -73,7 +80,11 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
           paddingHorizontal="3"
           {...prefixContainerProps}
         >
-          {!!prefixText && <Text color="textLight">{prefixText}</Text>}
+          {!!prefixText && (
+            <Text color="textLight" fontSize={15}>
+              {prefixText}
+            </Text>
+          )}
           {!!prefixComponent && prefixComponent}
         </Box>
       )}
@@ -90,11 +101,12 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
               color="inputText"
               flex={1}
               fontFamily="Halver-Medium"
-              fontSize={16}
+              fontSize={15}
               inputAccessoryViewID={inputAccessoryViewID}
               keyboardType={keyboardType}
+              paddingBottom={isIOS() ? '3' : '2.5'}
               paddingHorizontal="4"
-              paddingVertical={isIOS() ? '3' : '2.5'}
+              paddingTop={isIOS() ? '3' : '2.5'}
               placeholder={placeholder}
               placeholderTextColor={colors.inputPlaceholder}
               ref={ref}

@@ -65,6 +65,8 @@ onlineManager.setEventListener(setOnline => {
 export const allStaticQueryKeys = {
   getActionStatusCounts: ['action-status-counts'],
   getBanks: ['banks'],
+  getBill: ['bill'],
+  getBills: ['bills'],
   getCardAdditionURL: ['card-addition-url'],
   getRegisteredContacts: ['registered-contacts'],
   getUserDetails: ['user-details'],

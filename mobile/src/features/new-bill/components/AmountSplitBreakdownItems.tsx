@@ -140,8 +140,9 @@ export const AmountSplitParticipantItem: React.FunctionComponent<
           name={`${isRegistered ? '' : 'un'}registeredParticipants.${index}.${
             isRegistered ? '' : 'un'
           }registeredContribution${index}`}
+          paddingBottom={isIOS() ? '1' : '0'}
           paddingHorizontal="0"
-          paddingVertical={isIOS() ? '1' : '0'}
+          paddingTop={isIOS() ? '1' : '0'}
           prefixComponent={<Text variant="sm">₦</Text>}
           prefixContainerProps={{
             backgroundColor: 'transparent',

@@ -136,7 +136,7 @@ export const SelectCreditorModal: React.FunctionComponent<SelectCreditorModalPro
       >
         <Box
           backgroundColor="modalBackground"
-          maxHeight="91%"
+          maxHeight="81%"
           paddingBottom="6"
           paddingHorizontal="6"
           paddingTop="6"
@@ -149,7 +149,8 @@ export const SelectCreditorModal: React.FunctionComponent<SelectCreditorModalPro
           <ScrollView
             contentContainerStyle={{ gap: spacing[6] }}
             flexDirection="row"
-            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            horizontal
           >
             {formattedRegisteredParticipants.map((participant, index) => {
               return (

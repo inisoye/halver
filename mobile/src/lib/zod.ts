@@ -30,12 +30,22 @@ export const BillList = z.object({
   isRecurring: z.boolean(),
   modified: z.string().datetime(),
   name: z.string(),
-  statusInfo: z.string(),
+  participants: z.array(
+    z.object({
+      profileImageUrl: z.string().nullish(),
+      profileImageHash: z.string().nullish(),
+    }),
+  ),
+  statusInfo: z.object({
+    mostCommonStatus: z.string(),
+    mostCommonStatusCount: z.number(),
+    areAllStatusesSame: z.boolean(),
+  }),
   totalParticipants: z.number().int(),
   uuid: z.string().uuid(),
 });
 
-export const PaginatedBillListList = z
+export const PaginatedBillList = z
   .object({
     count: z.number().int(),
     next: z.string().url().nullable(),
@@ -187,7 +197,7 @@ export const BillDetail = z.object({
   modified: z.string().datetime(),
   name: z.string(),
   notes: z.string().nullable(),
-  status: z.object({}).partial().passthrough(),
+  status: z.object({ short: BillActionStatusEnum, long: z.string() }),
   totalAmountDue: z.string().regex(/^-?\d{0,15}(?:\.\d{0,4})?$/),
   totalAmountPaid: z
     .string()

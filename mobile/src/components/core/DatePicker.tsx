@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   useColorScheme,
   View,
+  type DimensionValue,
 } from 'react-native';
 
 import { Box } from './Box';
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   digit: {
-    fontSize: 16,
+    fontSize: 15,
     textAlign: 'center',
   },
   mark: {
@@ -129,7 +130,7 @@ const DateBlock: React.FC<DateBlockProps> = ({
   const dHeight: number = Math.round(height / 4);
 
   const mHeight: number = markHeight || Math.min(dHeight, 65);
-  const mWidth: number | string = markWidth || '80%';
+  const mWidth = (markWidth || '80%') as DimensionValue;
 
   const offsets = digits.map((_: number, index: number) => index * dHeight);
 
@@ -269,7 +270,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   const pickerHeight: number = Math.round(
     height || Dimensions.get('window').height / 3.5,
   );
-  const pickerWidth: number | string = width || '100%';
+  const pickerWidth = (width || '100%') as DimensionValue;
 
   const unexpectedDate: Date = new Date(years[0], 0, 1);
   const date = new Date(value || unexpectedDate);
