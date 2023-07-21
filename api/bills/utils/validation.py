@@ -84,7 +84,7 @@ def validate_contribution_amounts(
     participants_contributions = []
     if participants_contribution_index:
         for value in participants_contribution_index.values():
-            contribution = float(value)
+            contribution = Decimal(value)
             if contribution < MINIMUM_CONTRIBUTION:
                 raise serializers.ValidationError(
                     "A participant's contribution cannot be less than"
@@ -94,7 +94,7 @@ def validate_contribution_amounts(
 
     unregistered_participants_contributions = []
     for participant in unregistered_participants:
-        contribution = float(participant["contribution"])
+        contribution = Decimal(participant["contribution"])
         if contribution < MINIMUM_CONTRIBUTION:
             raise serializers.ValidationError(
                 "An unregistered participant's contribution cannot be less than"
