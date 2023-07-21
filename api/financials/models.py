@@ -545,8 +545,7 @@ class PaystackTransfer(AbstractTimeStampedUUIDModel, models.Model):
         max_length=50,
         choices=TransferChoices.choices,
     )
-    reason = models.CharField(
-        max_length=200,
+    reason = models.TextField(
         null=True,
     )
     complete_paystack_response = models.JSONField(
