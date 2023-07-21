@@ -1,5 +1,5 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AxiosError } from 'axios';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { AxiosError } from 'axios';
 import * as React from 'react';
 import { useMMKVObject } from 'react-native-mmkv';
 
@@ -31,7 +31,13 @@ import {
 
 type BillSummaryProps = NativeStackScreenProps<AppRootStackParamList, 'Bill Summary'>;
 
-export const BillSummary: React.FunctionComponent<BillSummaryProps> = () => {
+export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
+  navigation,
+}) => {
+  const [createdBill, setCreatedBill] = React.useState<
+    { id: string; name: string } | undefined
+  >(undefined);
+
   const [newBillPayload] = useMMKVObject<BillCreationMMKVPayload>(
     allMMKVKeys.newBillPayload,
   );
@@ -129,12 +135,27 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = () => {
 
   const handleCreateBillSubmit = () => {
     createBill(finalBillPayload, {
-      onSuccess: () => {
+      onSuccess: ({ uuid, name }) => {
+        setCreatedBill({ id: uuid, name });
         openSuccessModal();
       },
 
       onError: error => {
         handleAxiosErrorAlertAndHaptics('Error Creating Bill', error as AxiosError);
+      },
+    });
+  };
+
+  const handleGoToBill = () => {
+    navigation.navigate('Home', {
+      screen: 'BillsStackNavigator',
+      params: {
+        screen: 'Bill',
+        initial: false,
+        params: {
+          id: createdBill?.id || '',
+          name: createdBill?.name || '',
+        },
       },
     });
   };
@@ -318,7 +339,7 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = () => {
             You can always send additional notifications later.
           </Text>
 
-          <Button backgroundColor="green8" onPress={closeSuccessModal}>
+          <Button backgroundColor="green8" onPress={handleGoToBill}>
             <Box
               flexDirection="row"
               gap="4"

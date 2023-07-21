@@ -7,9 +7,16 @@ import { BillCreate as BillCreateSchema } from '@/lib/zod';
 
 export type BillCreatePayload = z.infer<typeof BillCreateSchema>;
 
+export interface BillCreationResponse {
+  created: string;
+  modified: string;
+  name: string;
+  uuid: string;
+}
+
 export const createBill = async (billCreateDto: BillCreatePayload) => {
-  const response = await apiClient.post<void>('/bills/', billCreateDto);
-  return response.data;
+  const response = await apiClient.post('/bills/', billCreateDto);
+  return response.data as BillCreationResponse;
 };
 
 export const useCreateBill = () => {

@@ -107,7 +107,7 @@ type ScreenProps = BoxProps<Theme> & {
 export const Screen: React.FunctionComponent<ScreenProps> = ({
   children,
   customScreenName,
-  hasNoIOSBottomInset = false, // Added to make sticky buttons sit properly on IOS
+  hasNoIOSBottomInset = true, // Added to make sticky buttons sit properly on IOS
   isHeaderShown = true,
   isHeaderTextShown = true,
   isModal = false,

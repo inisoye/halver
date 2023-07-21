@@ -605,7 +605,6 @@ const theme = createTheme({
       },
       shadowOpacity: 0.18,
       shadowRadius: 1.0,
-
       elevation: 1,
     },
   },

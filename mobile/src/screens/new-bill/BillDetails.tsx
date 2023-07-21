@@ -106,6 +106,7 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
     defaultValues: {
       totalAmountDue: newBillPayload?.totalAmountDue || undefined,
       name: newBillPayload?.name || undefined,
+      notes: newBillPayload?.notes || undefined,
       deadline: newBillPayload?.deadline
         ? new Date(newBillPayload?.deadline)
         : twoDaysFromNow,

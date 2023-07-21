@@ -130,13 +130,33 @@ class BillCreateSerializer(serializers.ModelSerializer):
         )
 
 
+class BillCreateResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bill
+        fields = (
+            "created",
+            "modified",
+            "name",
+            "uuid",
+        )
+        read_only_fields = fields
+
+
 class NestedBillListParticipantSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = (
+            "full_name",
             "profile_image_url",
             "profile_image_hash",
         )
+        read_only_fields = fields
+
+
+class NestedBillListUnregisteredParticipantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BillUnregisteredParticipant
+        fields = ("name",)
         read_only_fields = fields
 
 
@@ -148,6 +168,9 @@ class BillListSerializer(serializers.ModelSerializer):
     status_info = serializers.SerializerMethodField()
     total_participants = serializers.IntegerField()
     participants = NestedBillListParticipantSerializer(many=True)
+    unregistered_participants = NestedBillListUnregisteredParticipantSerializer(
+        many=True
+    )
 
     def get_interval(self, obj) -> str:
         """Returns the human-readable version of the interval field.
@@ -189,6 +212,7 @@ class BillListSerializer(serializers.ModelSerializer):
             "status_info",
             "total_participants",
             "participants",
+            "unregistered_participants",
             "uuid",
         )
         read_only_fields = fields

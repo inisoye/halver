@@ -12,7 +12,19 @@ import {
 import { BottomTabNavigator } from './BottomTabNavigator';
 
 export type AppRootStackParamList = {
-  Home: undefined;
+  Home: // Arcane type added mainly for routing routing to bill after creation.
+  | {
+        screen: string;
+        params: {
+          screen: string;
+          initial: boolean;
+          params: {
+            id: string;
+            name: string;
+          };
+        };
+      }
+    | undefined;
   'Bill Details': undefined;
   'Select Participants': undefined;
   'Bills By Status': { status: string };

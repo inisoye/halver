@@ -2,8 +2,6 @@ import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
 
 import { Box, Image, ScrollView, Text, TouchableOpacity } from '@/components';
-import { useUserDetails } from '@/features/account';
-import { statusColorIndex } from '@/features/new-bill';
 import { useBooleanStateControl } from '@/hooks';
 import { Theme } from '@/lib/restyle';
 import {
@@ -15,6 +13,7 @@ import {
 } from '@/utils';
 
 import { BillDetailAction } from '../types';
+import { statusColorIndex } from '../utils';
 import { ParticipantsListDetailsModal } from './ParticipantsListDetailsModal';
 
 interface BillParticipantItemProps {
@@ -45,6 +44,10 @@ const BillParticipantItem: React.FunctionComponent<BillParticipantItemProps> =
       handleItemSelection(action);
     };
 
+    const name = convertKebabAndSnakeToTitleCase(
+      participant?.fullName || unregisteredParticipant?.name,
+    );
+
     return (
       <TouchableOpacity
         alignItems="center"
@@ -56,7 +59,7 @@ const BillParticipantItem: React.FunctionComponent<BillParticipantItemProps> =
         gap="4"
         key={uuid}
         paddingHorizontal="2.5"
-        paddingVertical="2.5"
+        paddingVertical="2"
         shadowColor="black"
         shadowOffset={{
           width: 0.1,
@@ -97,7 +100,7 @@ const BillParticipantItem: React.FunctionComponent<BillParticipantItemProps> =
 
         <Box>
           <Text fontFamily="Halver-Semibold" marginBottom="0.75" variant="xs">
-            {participant?.fullName || unregisteredParticipant?.name}
+            {name}
           </Text>
           <Text color={actionStatusColor} fontFamily="Halver-Semibold" variant="xxs">
             {formattedStatus}
@@ -116,7 +119,6 @@ export const BillParticipantsList: React.FunctionComponent<
   BillParticipantsListProps
 > = ({ actions, isDiscreet }) => {
   const { spacing } = useTheme<Theme>();
-  const { data: userDetails } = useUserDetails();
   const [selectedAction, setSelectedAction] = React.useState<
     BillDetailAction[] | undefined
   >(undefined);
@@ -126,27 +128,6 @@ export const BillParticipantsList: React.FunctionComponent<
     setTrue: openModal,
     setFalse: closeModal,
   } = useBooleanStateControl();
-
-  let modifiedActions = actions || [];
-
-  const currentUserIndex = modifiedActions.findIndex(
-    ({ participant }) => userDetails?.uuid === participant?.uuid,
-  );
-
-  if (currentUserIndex > 0) {
-    const currentUserAction = modifiedActions.splice(currentUserIndex, 1)[0];
-
-    modifiedActions = [
-      {
-        ...currentUserAction,
-        participant: {
-          ...currentUserAction.participant,
-          fullName: `You (${currentUserAction.participant?.firstName})`,
-        },
-      },
-      ...modifiedActions,
-    ];
-  }
 
   const handleOpenAllItems = () => {
     setSelectedAction(undefined);
@@ -162,10 +143,10 @@ export const BillParticipantsList: React.FunctionComponent<
     <>
       <Box>
         <ParticipantsListDetailsModal
+          actions={actions}
           closeModal={closeModal}
           isDiscreet={isDiscreet}
           isModalOpen={isModalOpen}
-          modifiedActions={modifiedActions}
           openModal={handleOpenAllItems}
           selectedAction={selectedAction}
         />
@@ -178,7 +159,7 @@ export const BillParticipantsList: React.FunctionComponent<
           showsHorizontalScrollIndicator={false}
           horizontal
         >
-          {modifiedActions?.map(action => {
+          {actions?.map(action => {
             return (
               <BillParticipantItem
                 action={action}

@@ -20,9 +20,13 @@ import {
   Text,
   TouchableOpacity,
 } from '@/components';
-import { BillListItem, useBills } from '@/features/bills';
-import { generateLongStatus, StatusInfo } from '@/features/new-bill';
-import { Plus, RightCaret, Search } from '@/icons';
+import {
+  BillListItem,
+  generateLongStatus,
+  StatusInfo,
+  useBills,
+} from '@/features/bills';
+import { Plus, RightCaret, Search, ThreeUsersCluster } from '@/icons';
 import { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 import { useIsDarkMode } from '@/utils';
 
@@ -31,6 +35,50 @@ import { useIsDarkMode } from '@/utils';
  * Add filter for search, integrate with React Query and debounce.
  * Add memo where possible. Considering moving stuff to separate files.
  */
+
+interface BillParticipantAvatarProps {
+  participant:
+    | {
+        fullName: string;
+        profileImageUrl?: string | null | undefined;
+        profileImageHash?: string | null | undefined;
+      }
+    | {
+        name: string;
+      };
+}
+
+export const BillParticipantAvatar: React.FunctionComponent<BillParticipantAvatarProps> =
+  React.memo(({ participant }) => {
+    if ('fullName' in participant) {
+      return participant.profileImageUrl ? (
+        <Image
+          contentFit="contain"
+          flexBasis="50%"
+          height={20}
+          placeholder={participant.profileImageHash || ''}
+          source={participant.profileImageUrl}
+          width={20}
+        />
+      ) : (
+        <Box
+          backgroundColor="elementBackground"
+          flexBasis="50%"
+          height={20}
+          width={20}
+        />
+      );
+    } else {
+      return (
+        <Box
+          backgroundColor="elementBackground"
+          flexBasis="50%"
+          height={20}
+          width={20}
+        />
+      );
+    }
+  });
 
 interface BillListRenderItemProps {
   item: BillListItem | undefined;
@@ -48,13 +96,17 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
 }) => {
   const isDarkMode = useIsDarkMode();
 
-  const firstFourParticipants = item?.participants?.slice(0, 5) || [];
+  const participantsAndUnregisteredParticipants = [
+    ...(item?.participants || []),
+    ...(item?.unregisteredParticipants || []),
+  ];
 
-  const filledUpParticipantsList = Array.from(
-    { length: 4 },
-    (_, i) =>
-      firstFourParticipants[i] || { profileImageHash: null, profileImageUrl: null },
-  );
+  const firstFourParticipants = participantsAndUnregisteredParticipants.slice(0, 5);
+
+  const hasNoRegisteredParticipantWithPhotos =
+    !!item?.participants &&
+    (item.participants.length < 1 ||
+      item.participants.every(participant => !participant.profileImageUrl));
 
   const status = item?.statusInfo
     ? generateLongStatus(item?.statusInfo as StatusInfo)
@@ -82,9 +134,12 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
       >
         <Box alignItems="center" flexDirection="row" gap="3">
           <Box
+            alignItems="center"
             backgroundColor="elementBackground"
             borderRadius="lg"
             elevation={1}
+            height={40}
+            justifyContent="center"
             shadowColor="black"
             shadowOffset={{
               width: 0,
@@ -92,39 +147,29 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
             }}
             shadowOpacity={0.18}
             shadowRadius={0.2}
+            width={40}
           >
-            <Box
-              borderRadius="lg"
-              flexDirection="row"
-              flexWrap="wrap"
-              height={40}
-              overflow="hidden"
-              width={40}
-            >
-              {filledUpParticipantsList.map(
-                ({ profileImageHash, profileImageUrl }, participantIndex) => {
-                  return profileImageUrl ? (
-                    <Image
-                      contentFit="contain"
-                      flexBasis="50%"
-                      height={20}
+            {hasNoRegisteredParticipantWithPhotos ? (
+              <ThreeUsersCluster />
+            ) : (
+              <Box
+                borderRadius="lg"
+                flexDirection="row"
+                flexWrap="wrap"
+                height={40}
+                overflow="hidden"
+                width={40}
+              >
+                {firstFourParticipants.map((participant, participantIndex) => {
+                  return (
+                    <BillParticipantAvatar
                       key={participantIndex}
-                      placeholder={profileImageHash}
-                      source={profileImageUrl}
-                      width={20}
-                    />
-                  ) : (
-                    <Box
-                      backgroundColor="elementBackground"
-                      flexBasis="50%"
-                      height={20}
-                      key={participantIndex}
-                      width={20}
+                      participant={participant}
                     />
                   );
-                },
-              )}
-            </Box>
+                })}
+              </Box>
+            )}
           </Box>
 
           <Box width="74%">
@@ -194,6 +239,7 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ navigation }) => {
           <Plus />
         </TouchableOpacity>
       }
+      hasNoIOSBottomInset
     >
       <Box backgroundColor="transparent" height={16}>
         {areBillsLoading && <LogoLoader />}

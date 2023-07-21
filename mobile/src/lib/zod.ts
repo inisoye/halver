@@ -32,8 +32,14 @@ export const BillList = z.object({
   name: z.string(),
   participants: z.array(
     z.object({
+      fullName: z.string(),
       profileImageUrl: z.string().nullish(),
       profileImageHash: z.string().nullish(),
+    }),
+  ),
+  unregisteredParticipants: z.array(
+    z.object({
+      name: z.string(),
     }),
   ),
   statusInfo: z.object({
@@ -240,12 +246,21 @@ export const PaginatedBillArrearListList = z
   })
   .partial();
 
+export const BillTransactionBill = z.object({
+  name: z.string(),
+  uuid: z.string().uuid(),
+});
+
 export const TransactionTypeEnum = z.enum(['regular', 'arrear']);
 
 export const BillTransaction = z.object({
+  bill: BillTransactionBill,
   contribution: z.string().regex(/^-?\d{0,15}(?:\.\d{0,4})?$/),
-  created: z.string().datetime(),
-  modified: z.string().datetime(),
+  created: z.string().datetime({ offset: true }),
+  isCredit: z.boolean(),
+  modified: z.string().datetime({ offset: true }),
+  payingUser: BillCreatorCreditorParticipant,
+  receivingUser: BillCreatorCreditorParticipant,
   totalPayment: z.string().regex(/^-?\d{0,15}(?:\.\d{0,4})?$/),
   transactionType: TransactionTypeEnum,
   uuid: z.string().uuid(),

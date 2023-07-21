@@ -8,22 +8,22 @@ import {
 /**
  * Calculates even amounts for each participant based on the bill amount and number of participants.
  * @param billAmount - The total bill amount.
- * @param numParticipants - The number of participants.
+ * @param numberOfParticipants - The number of participants.
  * @returns An array of even contributions for each participant.
  */
 export function calculateEvenAmounts(
   billAmount: number,
-  numParticipants: number,
+  numberOfParticipants: number,
 ): number[] {
   const MULTIPLIER = 100; // Used for convert amounts from decimal and back.
 
-  const evenContribution = Math.floor((billAmount * MULTIPLIER) / numParticipants);
+  const evenContribution = Math.floor((billAmount * MULTIPLIER) / numberOfParticipants);
 
-  const remainingAmount = (billAmount * MULTIPLIER) % numParticipants;
+  const remainingAmount = (billAmount * MULTIPLIER) % numberOfParticipants;
 
   const contributions: number[] = [];
 
-  for (let i = 0; i < numParticipants; i++) {
+  for (let i = 0; i < numberOfParticipants; i++) {
     contributions.push(evenContribution);
   }
 
@@ -37,7 +37,7 @@ export function calculateEvenAmounts(
     remaining--;
 
     // Move to the next participant using modulo operator
-    index = (index + 1) % numParticipants;
+    index = (index + 1) % numberOfParticipants;
   }
 
   return contributions.map(contribution => contribution / MULTIPLIER);

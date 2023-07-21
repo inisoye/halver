@@ -4,8 +4,8 @@ import { FadeIn } from 'react-native-reanimated';
 import { RadioTick } from '@/icons';
 
 import { AnimatedBox, Box } from './Box';
-import { Pressable } from './Pressable';
 import { Text } from './Text';
+import { TouchableOpacity } from './TouchableOpacity';
 
 interface RadioButtonProps {
   isSelected: boolean;
@@ -19,21 +19,19 @@ interface RadioButtonProps {
 const RadioButton: React.FunctionComponent<RadioButtonProps> = React.memo(
   ({ isSelected, handleSelect, item }) => {
     return (
-      <Pressable
+      <TouchableOpacity
         alignItems="center"
-        animateScale={true}
-        animateTranslate={false}
         backgroundColor={
           isSelected ? 'radioButtonBackgroundSelected' : 'radioButtonBackgroundDefault'
         }
         borderRadius="md"
         flexDirection="row"
         gap="4"
-        handlePressOut={() => handleSelect(item.value)}
         justifyContent="space-between"
         key={item.value}
         paddingHorizontal="4"
         paddingVertical="2"
+        onPress={() => handleSelect(item.value)}
       >
         <Text
           color={isSelected ? 'textInverse' : 'textLight'}
@@ -48,7 +46,7 @@ const RadioButton: React.FunctionComponent<RadioButtonProps> = React.memo(
             <RadioTick />
           </AnimatedBox>
         )}
-      </Pressable>
+      </TouchableOpacity>
     );
   },
   (prevProps, nextProps) => {

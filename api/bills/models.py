@@ -244,12 +244,18 @@ class Bill(AbstractTimeStampedUUIDModel, AbstractCurrencyModel, models.Model):
             .prefetch_related(
                 Prefetch(
                     "unregistered_participants",
-                    queryset=BillUnregisteredParticipant.objects.only("uuid"),
+                    queryset=BillUnregisteredParticipant.objects.only(
+                        "uuid",
+                        "name",
+                    ),
                 ),
                 Prefetch(
                     "participants",
                     queryset=CustomUser.objects.only(
-                        "profile_image_url", "profile_image_hash"
+                        "profile_image_url",
+                        "profile_image_hash",
+                        "first_name",
+                        "last_name",
                     ),
                 ),
             )

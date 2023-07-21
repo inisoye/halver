@@ -92,23 +92,33 @@ export const convertKebabAndSnakeToTitleCase = (string: string | undefined) => {
 };
 
 /**
- * Returns the initials of a user when fed the user's full, first or last name.
- * @param string A user's (full, first or last) name.
- * @returns The intials of the user.
+ * Returns the initials of a user when fed the user's full, first, or last name.
+ * @param name A user's (full, first, or last) name.
+ * @param oneLetter Boolean flag to determine whether to return one-letter initials or not.
+ * @returns The initials of the user.
  */
-export const getInitials = (string: string | undefined) => {
-  if (!string) {
+export const getInitials = (name: string | undefined, oneLetter = false) => {
+  if (!name) {
     return '';
   }
 
-  const names = string.split(' ');
-  let initials = names[0].substring(0, 1).toUpperCase();
+  const nameParts = name.split(' ');
 
-  if (names.length > 1) {
-    initials += names[names.length - 1].substring(0, 1).toUpperCase();
+  const firstNameInitial = nameParts[0].substring(0, 1).toUpperCase();
+
+  if (oneLetter) {
+    return firstNameInitial;
   }
 
-  return initials;
+  // Combine the initials of the first and last name (if available)
+  if (nameParts.length > 1) {
+    const lastNameInitial = nameParts[nameParts.length - 1]
+      .substring(0, 1)
+      .toUpperCase();
+    return firstNameInitial + lastNameInitial;
+  }
+
+  return firstNameInitial; // If only one name provided, return the first name initial
 };
 
 /**

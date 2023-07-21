@@ -13,8 +13,12 @@ import {
   Text,
   TouchableOpacity,
 } from '@/components';
-import { BillParticipantsList, useBill } from '@/features/bills';
-import { statusColorIndex } from '@/features/new-bill';
+import {
+  BillParticipantsList,
+  BillRecentContributionsList,
+  statusColorIndex,
+  useBill,
+} from '@/features/bills';
 import { BackWithBackground, Gear } from '@/icons';
 import { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 
@@ -36,6 +40,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
 
   const handleGoBack = () => {
     navigation.goBack();
+    // navigation.navigate('Bills');
   };
 
   return (
@@ -129,7 +134,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
             </Box>
           </Box>
 
-          <Box gap="10" paddingHorizontal="6" paddingVertical="10">
+          <Box gap="10" paddingBottom="2" paddingHorizontal="6" paddingTop="10">
             {!!notes && (
               <Box gap="3">
                 <Text color="textLight" variant="sm">
@@ -145,6 +150,8 @@ export const Bill = ({ navigation, route }: BillProps) => {
             {!!actions && (
               <BillParticipantsList actions={actions} isDiscreet={isDiscreet} />
             )}
+
+            <BillRecentContributionsList id={id} isDiscreet={isDiscreet} />
           </Box>
         </ScrollView>
       </Box>

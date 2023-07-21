@@ -174,7 +174,7 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
         disabled={!banks}
         marginTop="1.5"
         paddingHorizontal="4"
-        paddingVertical={isIOS() ? '3' : '3.5'}
+        paddingVertical={isIOS() ? '2.5' : '3'}
         onPress={openModal}
       >
         {!!selectedBank && (

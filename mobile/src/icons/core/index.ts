@@ -1,6 +1,7 @@
 export * from './Back';
 export * from './BackWithBackground';
 export * from './CloseModal';
+export * from './Gear';
 export * from './GoToArrow';
 export * from './Plus';
 export * from './RadioTick';
@@ -13,5 +14,5 @@ export * from './SelectTick';
 export * from './SmallAlert';
 export * from './SmallClose';
 export * from './SuccessTick';
+export * from './ThreeUsersCluster';
 export * from './UserFolder';
-export * from './Gear';

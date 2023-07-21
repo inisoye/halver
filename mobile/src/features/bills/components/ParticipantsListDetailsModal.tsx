@@ -8,11 +8,11 @@ import {
   Text,
   TouchableOpacity,
 } from '@/components';
-import { statusColorIndex } from '@/features/new-bill';
 import { RightCaret } from '@/icons';
 import { convertKebabAndSnakeToTitleCase, convertNumberToNaira } from '@/utils';
 
 import { BillDetailAction } from '../types';
+import { statusColorIndex } from '../utils';
 
 const hitSlop = {
   top: 10,
@@ -22,7 +22,7 @@ const hitSlop = {
 };
 
 interface ParticipantsListDetailsModalProps {
-  modifiedActions: BillDetailAction[];
+  actions: BillDetailAction[] | undefined;
   selectedAction: BillDetailAction[] | undefined;
   openModal: () => void;
   closeModal: () => void;
@@ -32,15 +32,8 @@ interface ParticipantsListDetailsModalProps {
 
 export const ParticipantsListDetailsModal: React.FunctionComponent<
   ParticipantsListDetailsModalProps
-> = ({
-  modifiedActions,
-  openModal,
-  closeModal,
-  isModalOpen,
-  selectedAction,
-  isDiscreet,
-}) => {
-  const displayedActions = selectedAction || modifiedActions;
+> = ({ actions, openModal, closeModal, isModalOpen, selectedAction, isDiscreet }) => {
+  const displayedActions = selectedAction || actions;
 
   const modalHeading = selectedAction
     ? selectedAction?.[0]?.participant?.fullName ||
@@ -99,13 +92,13 @@ export const ParticipantsListDetailsModal: React.FunctionComponent<
               Participant
             </Text>
             <Text fontFamily="Halver-Semibold" variant="xs">
-              Contribution amount
+              Expected contribution
             </Text>
           </Box>
 
           <ScrollView>
             <Box>
-              {displayedActions.map(
+              {displayedActions?.map(
                 ({
                   uuid,
                   participant,
@@ -119,6 +112,10 @@ export const ParticipantsListDetailsModal: React.FunctionComponent<
 
                   const formattedStatus = convertKebabAndSnakeToTitleCase(status);
 
+                  const name = convertKebabAndSnakeToTitleCase(
+                    participant?.fullName || unregisteredParticipant?.name,
+                  );
+
                   return (
                     <Box
                       alignItems="center"
@@ -130,9 +127,14 @@ export const ParticipantsListDetailsModal: React.FunctionComponent<
                       key={uuid}
                       paddingVertical="4"
                     >
-                      <Box>
-                        <Text color="textLight" marginBottom="0.5" variant="sm">
-                          {participant?.fullName || unregisteredParticipant?.name}
+                      <Box maxWidth="60%">
+                        <Text
+                          color="textLight"
+                          marginBottom="0.5"
+                          numberOfLines={1}
+                          variant="sm"
+                        >
+                          {name}
                         </Text>
 
                         <Text
@@ -144,9 +146,9 @@ export const ParticipantsListDetailsModal: React.FunctionComponent<
                         </Text>
                       </Box>
 
-                      <Text variant="sm">
+                      <DynamicText maxWidth="36%" variant="sm">
                         {!!contribution && convertNumberToNaira(Number(contribution))}
-                      </Text>
+                      </DynamicText>
                     </Box>
                   );
                 },

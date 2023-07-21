@@ -24,6 +24,7 @@ from bills.api.serializers import (
     BillActionStatusListSerializer,
     BillArrearListSerializer,
     BillArrearResponseUpdateSerializer,
+    BillCreateResponseSerializer,
     BillCreateSerializer,
     BillDetailSerializer,
     BillDetailsUpdateSerializer,
@@ -59,6 +60,7 @@ class BillListCreateAPIView(ListCreateAPIView):
 
     permission_classes = (IsParticipantOrCreditor,)
     serializer_class = BillCreateSerializer
+    create_response_serializer_class = BillCreateResponseSerializer
     list_serializer_class = BillListSerializer
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ("name",)
@@ -82,6 +84,24 @@ class BillListCreateAPIView(ListCreateAPIView):
         # If the bill is recurring, Paystack plans will also be created for each action.
         if new_bill.is_recurring:
             create_paystack_plans_for_recurring_bills.delay(new_bill.id)
+
+        return new_bill
+
+    # Create method overriden to control response after bill creation:
+    # https://stackoverflow.com/a/69395096
+    # https://www.cdrf.co/3.14/rest_framework.generics/ListCreateAPIView.html#create
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        created_bill = self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        serialized_created_bill = self.create_response_serializer_class(
+            created_bill
+        ).data
+        return Response(
+            serialized_created_bill, status=status.HTTP_201_CREATED, headers=headers
+        )
 
 
 class BillRetrieveUpdateAPIView(APIView):
