@@ -1,9 +1,11 @@
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
+import { FadeInUp } from 'react-native-reanimated';
 
 import {
   AfterInteractions,
+  AnimatedBox,
   Box,
   Button,
   DynamicText,
@@ -31,7 +33,8 @@ export const Bill = ({ navigation, route }: BillProps) => {
   const { id, name } = route.params;
 
   const { data: bill, isLoading: isBillLoading } = useBill(id);
-  const { status, actions, notes, creator, isDiscreet } = bill || {};
+  const { status, actions, notes, creator, creditor, isDiscreet, isCreditor } =
+    bill || {};
 
   const statusColor = React.useMemo(
     () => (status ? statusColorIndex[status?.short] : undefined),
@@ -40,7 +43,6 @@ export const Bill = ({ navigation, route }: BillProps) => {
 
   const handleGoBack = () => {
     navigation.goBack();
-    // navigation.navigate('Bills');
   };
 
   return (
@@ -124,7 +126,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
               </Box>
 
               <Box backgroundColor="elementBackground" borderRadius="sm2" height={12}>
-                <Box
+                <AnimatedBox
                   backgroundColor="billMeterBackground"
                   borderRadius="sm2"
                   height={12}
@@ -132,6 +134,68 @@ export const Bill = ({ navigation, route }: BillProps) => {
                 />
               </Box>
             </Box>
+          </Box>
+
+          <Box
+            columnGap="2"
+            flexDirection="row"
+            flexWrap="wrap"
+            justifyContent="space-between"
+            paddingHorizontal="6"
+          >
+            {!!creator && (
+              <AnimatedBox
+                borderBottomLeftRadius="xl"
+                borderBottomRightRadius="xl"
+                borderColor="gray7"
+                borderTopWidth={0}
+                borderWidth={1}
+                entering={FadeInUp.springify()}
+                maxWidth="48%"
+                paddingHorizontal="4"
+                paddingVertical="2"
+              >
+                <Text
+                  color="textLight"
+                  marginBottom="0.75"
+                  numberOfLines={1}
+                  variant="xs"
+                >
+                  Created by
+                </Text>
+
+                <Text fontFamily="Halver-Semibold" numberOfLines={1} variant="sm">
+                  {creator?.fullName}
+                </Text>
+              </AnimatedBox>
+            )}
+
+            {!!creditor && (
+              <AnimatedBox
+                borderBottomLeftRadius="xl"
+                borderBottomRightRadius="xl"
+                borderColor="gray7"
+                borderTopWidth={0}
+                borderWidth={1}
+                entering={FadeInUp.springify().delay(200)}
+                maxWidth="48%"
+                paddingHorizontal="4"
+                paddingVertical="2"
+              >
+                <Text
+                  color="textLight"
+                  marginBottom="0.75"
+                  numberOfLines={1}
+                  variant="xs"
+                >
+                  Bill creditor
+                </Text>
+
+                <Text fontFamily="Halver-Semibold" numberOfLines={1} variant="sm">
+                  {creditor?.fullName}
+                </Text>
+              </AnimatedBox>
+            )}
           </Box>
 
           <Box gap="10" paddingBottom="2" paddingHorizontal="6" paddingTop="10">
@@ -156,13 +220,15 @@ export const Bill = ({ navigation, route }: BillProps) => {
         </ScrollView>
       </Box>
 
-      <Box backgroundColor="background" paddingHorizontal="6" paddingVertical="3">
-        <Button backgroundColor="buttonCasal" disabled={isBillLoading}>
-          <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
-            Make your contribution
-          </Text>
-        </Button>
-      </Box>
+      {!isBillLoading && !isCreditor && (
+        <Box backgroundColor="background" paddingHorizontal="6" paddingVertical="3">
+          <Button backgroundColor="buttonCasal" disabled={isBillLoading}>
+            <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
+              Make your contribution
+            </Text>
+          </Button>
+        </Box>
+      )}
     </Screen>
   );
 };

@@ -3,8 +3,12 @@ import { z } from 'zod';
 
 import { apiClient } from '@/lib/axios';
 import { allStaticQueryKeys } from '@/lib/react-query';
-import { PaginatedBillTransactionList as BillTransactionListSchema } from '@/lib/zod';
+import {
+  PaginatedBillTransactionList as BillTransactionListSchema,
+  BillTransaction as BillTransactionSchema,
+} from '@/lib/zod';
 
+export type BillTransaction = z.infer<typeof BillTransactionSchema>;
 export type BillTransactionList = z.infer<typeof BillTransactionListSchema>;
 
 export const getBillTransactions = async (id: string) => {

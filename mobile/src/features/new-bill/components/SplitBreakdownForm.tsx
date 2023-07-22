@@ -384,7 +384,6 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
               <Text
                 color={debouncedUIUpdaters.totalAllocationTextColor}
                 fontFamily="Halver-Naira"
-                lineHeight={40}
               >
                 ₦
               </Text>
