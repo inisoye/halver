@@ -267,6 +267,7 @@ class NestedBillDetailActionSerializer(serializers.ModelSerializer):
             "modified",
             "participant",
             "status",
+            "total_fee",
             "total_payment_due",
             "unregistered_participant",
             "uuid",
