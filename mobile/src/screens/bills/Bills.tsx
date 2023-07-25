@@ -1,12 +1,12 @@
-import {
+import type {
   CompositeNavigationProp,
   CompositeScreenProps,
 } from '@react-navigation/native';
-import {
+import type {
   NativeStackNavigationProp,
-  type NativeStackScreenProps,
+  NativeStackScreenProps,
 } from '@react-navigation/native-stack';
-import { FlashList, ListRenderItem } from '@shopify/flash-list';
+import { FlashList, type ListRenderItem } from '@shopify/flash-list';
 import * as React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
@@ -27,7 +27,7 @@ import {
   useBills,
 } from '@/features/bills';
 import { Plus, RightCaret, Search, ThreeUsersCluster } from '@/icons';
-import { AppRootStackParamList, BillsStackParamList } from '@/navigation';
+import type { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 import { useIsDarkMode } from '@/utils';
 
 /**

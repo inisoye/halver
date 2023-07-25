@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
@@ -27,7 +27,7 @@ import {
 } from '@/features/new-bill';
 import { allMMKVKeys } from '@/lib/mmkv';
 import { IntervalEnum } from '@/lib/zod';
-import { AppRootStackParamList } from '@/navigation';
+import type { AppRootStackParamList } from '@/navigation';
 import { convertNumberToNaira, isIOS } from '@/utils';
 
 const styles = StyleSheet.create({

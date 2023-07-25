@@ -22,7 +22,7 @@ import {
 import { useBooleanStateControl, useFullScreenLoader } from '@/hooks';
 import { GoToArrow } from '@/icons';
 import { allMMKVKeys } from '@/lib/mmkv';
-import { AppRootStackParamList } from '@/navigation';
+import type { AppRootStackParamList } from '@/navigation';
 import {
   convertKebabAndSnakeToTitleCase,
   convertNumberToNaira,

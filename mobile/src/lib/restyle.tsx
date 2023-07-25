@@ -431,6 +431,8 @@ const theme = createTheme({
     lightBackground: lightColors.mainBgLight,
     elementBackground: lightColors.gray2,
 
+    borderDefault: lightColors.gray7,
+
     textDefault: lightColors.gray12,
     textInverse: lightColors.gray1,
     textWhite: lightColors.gray1,
@@ -597,7 +599,10 @@ const theme = createTheme({
   cardVariants: {
     defaults: {
       backgroundColor: 'elementBackground',
-      borderRadius: 'lg',
+      borderTopEndRadius: 'lg',
+      borderTopStartRadius: 'lg',
+      borderBottomEndRadius: 'lg',
+      borderBottomStartRadius: 'lg',
       shadowColor: 'black',
       shadowOffset: {
         width: 0,
@@ -620,6 +625,8 @@ const darkTheme: Theme = {
 
     background: darkColors.gray1,
     elementBackground: darkColors.gray3,
+
+    borderDefault: darkColors.gray5,
 
     textDefault: darkColors.gray12,
     textInverse: darkColors.gray1,

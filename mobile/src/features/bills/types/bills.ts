@@ -6,21 +6,12 @@ import {
   BillCreate as BillCreateSchema,
 } from '@/lib/zod';
 
+import { BillActionStatus } from './actions';
+
 export type BillCreationMMKVPayload = z.infer<typeof BillCreateMMKVSchema>;
 export type BillCreationPayload = z.infer<typeof BillCreateSchema>;
 
-export type BillStatus =
-  | 'unregistered'
-  | 'pending'
-  | 'overdue'
-  | 'opted_out'
-  | 'pending_transfer'
-  | 'failed_transfer'
-  | 'reversed_transfer'
-  | 'cancelled'
-  | 'completed'
-  | 'ongoing'
-  | 'last_payment_failed';
+export type BillStatus = BillActionStatus;
 
 export type StatusInfo = {
   areAllStatusesSame: boolean;

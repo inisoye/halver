@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import { Box, DynamicText, Image, Screen, Text } from '@/components';
@@ -12,7 +12,7 @@ import {
   SplitBreakdownForm,
 } from '@/features/new-bill';
 import { useBillPayloadWithSelectionDetails } from '@/features/new-bill/hooks';
-import { AppRootStackParamList } from '@/navigation';
+import type { AppRootStackParamList } from '@/navigation';
 import {
   getDarkColorFromString,
   getInitials,

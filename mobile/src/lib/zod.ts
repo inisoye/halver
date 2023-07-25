@@ -176,7 +176,11 @@ export const BillDetailAction = z.object({
   modified: z.string().datetime(),
   participant: BillCreatorCreditorParticipant,
   status: BillActionStatusEnum,
-  total_payment_due: z
+  totalFee: z
+    .string()
+    .regex(/^-?\d{0,15}(?:\.\d{0,4})?$/)
+    .nullable(),
+  totalPaymentDue: z
     .string()
     .regex(/^-?\d{0,15}(?:\.\d{0,4})?$/)
     .nullable(),

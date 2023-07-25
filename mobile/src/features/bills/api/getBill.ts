@@ -3,9 +3,15 @@ import { z } from 'zod';
 
 import { apiClient } from '@/lib/axios';
 import { allStaticQueryKeys } from '@/lib/react-query';
-import { BillDetail as BillDetailSchema } from '@/lib/zod';
+import {
+  BillCreatorCreditorParticipant as BillCreatorCreditorParticipantSchema,
+  BillDetail as BillDetailSchema,
+} from '@/lib/zod';
 
 export type BillDetailItem = z.infer<typeof BillDetailSchema>;
+export type BillCreatorCreditorParticipant = z.infer<
+  typeof BillCreatorCreditorParticipantSchema
+>;
 
 export const getBill = async (id: string) => {
   const response = await apiClient.get(`/bills/${id}/`);

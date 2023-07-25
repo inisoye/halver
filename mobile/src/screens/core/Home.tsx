@@ -1,10 +1,10 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import { Box, Button, Card, DynamicText, Screen, Text } from '@/components';
 import { ActionStatusCounts } from '@/features/home';
 import { HalverMillipede } from '@/icons';
-import { AppRootStackParamList } from '@/navigation';
+import type { AppRootStackParamList } from '@/navigation';
 
 type HomeProps = NativeStackScreenProps<AppRootStackParamList, 'Home'>;
 

@@ -41,12 +41,20 @@ const ActionStatusButton: React.FunctionComponent<ActionStatusButtonProps> = ({
       backgroundColor={actionStatusColors[status]}
       borderRadius="lg"
       disabled={disabled}
+      elevation={1}
       flexBasis="48.2%"
       flexDirection="row"
       flexGrow={1}
       gap="4"
       justifyContent="space-between"
       padding="4"
+      shadowColor="black"
+      shadowOffset={{
+        width: 0.1,
+        height: 0.1,
+      }}
+      shadowOpacity={0.2}
+      shadowRadius={0.3}
       onPress={() => navigation.navigate('Bills By Status', { status })}
     >
       <Text>
@@ -75,12 +83,20 @@ const NewBillButton: React.FunctionComponent<NewBillButtonProps> = ({ navigation
       alignItems="center"
       backgroundColor="newBillActionStatusBackground"
       borderRadius="lg"
+      elevation={1}
       flexBasis="48.2%"
       flexDirection="row"
       flexGrow={1}
       gap="4"
       justifyContent="center"
       padding="4"
+      shadowColor="black"
+      shadowOffset={{
+        width: 0.1,
+        height: 0.1,
+      }}
+      shadowOpacity={0.2}
+      shadowRadius={0.3}
       onPress={() => {
         navigation.navigate('Bill Details');
       }}
@@ -89,25 +105,6 @@ const NewBillButton: React.FunctionComponent<NewBillButtonProps> = ({ navigation
     </Pressable>
   );
 };
-
-// const sample = [
-//   {
-//     status: 'pending',
-//     count: 3,
-//   },
-//   {
-//     status: 'overdue',
-//     count: 1,
-//   },
-//   {
-//     status: 'ongoing',
-//     count: 7,
-//   },
-//   {
-//     status: 'pending_transfer',
-//     count: 2,
-//   },
-// ];
 
 interface ActionStatusCountsProps {
   navigation: NativeStackNavigationProp<AppRootStackParamList, 'Home'>;

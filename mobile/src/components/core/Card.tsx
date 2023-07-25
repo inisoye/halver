@@ -1,4 +1,5 @@
 import {
+  BorderProps,
   BoxProps,
   createRestyleComponent,
   createVariant,
@@ -11,6 +12,7 @@ import { Theme } from '@/lib/restyle';
 
 type Props = BoxProps<Theme> &
   SpacingProps<Theme> &
+  BorderProps<Theme> &
   VariantProps<Theme, 'cardVariants'> & {
     children?: React.ReactNode;
   };

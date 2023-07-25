@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
@@ -10,7 +10,7 @@ import {
   ViewContactSelectionsModal,
 } from '@/features/new-bill';
 import { Search } from '@/icons';
-import { AppRootStackParamList } from '@/navigation';
+import type { AppRootStackParamList } from '@/navigation';
 
 type BillParticipantsProps = NativeStackScreenProps<
   AppRootStackParamList,
