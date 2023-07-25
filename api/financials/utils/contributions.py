@@ -152,6 +152,9 @@ def handle_bill_contribution(action):
     a one-time payment or creating a subscription to automatically charge the
     participant's card over a given interval.
 
+    Actions tied to recurring bills are marked as ongoing immediately a Paystack
+    subscription is created for them.
+
     The function is called after a valid response to a bill action is recieved.
 
     Args:
@@ -206,6 +209,10 @@ def handle_bill_contribution(action):
         subscription_creation_response = handle_subscription_creation(
             bill, participant_card, action
         )
+
+        # Mark status as ongoing here for instant feedback
+        if subscription_creation_response["status"]:
+            action.mark_as_ongoing()
 
         return subscription_creation_response
 
