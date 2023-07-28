@@ -125,7 +125,7 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
       flex={1}
       style={[
         {
-          paddingTop: isModal && isIOS() ? spacing[5] : insets.top,
+          paddingTop: isModal && isIOS() ? spacing[4] : insets.top,
           paddingBottom: hasNoIOSBottomInset && isIOS() ? undefined : insets.bottom,
           paddingLeft: insets.left,
           paddingRight: insets.right,

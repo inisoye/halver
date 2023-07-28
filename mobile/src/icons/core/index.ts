@@ -1,5 +1,6 @@
 export * from './Back';
 export * from './BackWithBackground';
+export * from './CirclePlus';
 export * from './CloseModal';
 export * from './Gear';
 export * from './GoToArrow';

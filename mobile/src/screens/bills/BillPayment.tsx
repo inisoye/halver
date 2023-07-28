@@ -5,6 +5,7 @@ import * as React from 'react';
 import { FadeInDown } from 'react-native-reanimated';
 
 import {
+  AnimatedBox,
   Box,
   Button,
   DynamicText,
@@ -13,7 +14,9 @@ import {
   SuccessModal,
   Text,
 } from '@/components';
-import { useUpdateBillAction } from '@/features/bills';
+import { useUserDetails } from '@/features/account';
+import { DefaultCardSelectorModal, useUpdateBillAction } from '@/features/bills';
+import { CardIcon } from '@/features/financials';
 import { useBooleanStateControl, useFullScreenLoader } from '@/hooks';
 import { GoToArrow } from '@/icons';
 import type { AppRootStackParamList, BillsStackParamList } from '@/navigation';
@@ -21,11 +24,12 @@ import {
   convertKebabAndSnakeToTitleCase,
   convertNumberToNaira,
   handleAxiosErrorAlertAndHaptics,
+  isIOS,
 } from '@/utils';
 
 type BillPaymentProps = CompositeScreenProps<
   NativeStackScreenProps<BillsStackParamList, 'Bill Payment'>,
-  NativeStackScreenProps<AppRootStackParamList>
+  NativeStackScreenProps<AppRootStackParamList, 'Bill Payment'>
 >;
 
 export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
@@ -115,8 +119,12 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
     isLoading: isBillUpdateLoading,
   });
 
+  const { data: userDetails } = useUserDetails();
+  const { defaultCard } = userDetails || {};
+  const { last4, cardType } = defaultCard || {};
+
   return (
-    <Screen hasNoIOSBottomInset>
+    <Screen>
       <Box flex={1} paddingHorizontal="6" paddingVertical="2">
         {isBillOverdue && (
           <Box
@@ -209,7 +217,7 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
                 Deduction pattern
               </Text>
               <Text variant="sm">
-                {deductionPattern === 'none'
+                {deductionPattern === 'None'
                   ? 'One time'
                   : convertKebabAndSnakeToTitleCase(deductionPattern)}
               </Text>
@@ -227,17 +235,44 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
         </Box>
       </Box>
 
+      {!!defaultCard && (
+        <AnimatedBox
+          alignItems="center"
+          backgroundColor="elementBackground"
+          borderRadius="base"
+          columnGap="3"
+          entering={FadeInDown.springify().delay(500)}
+          flexDirection="row"
+          justifyContent="space-between"
+          marginBottom="2"
+          marginHorizontal="6"
+          paddingHorizontal="6"
+          paddingVertical="2.5"
+        >
+          <Box alignItems="center" columnGap="2" flexDirection="row">
+            <CardIcon type={cardType} />
+
+            <Text color="textLight" fontFamily="Halver-Semibold" variant="sm">
+              •••• {last4}
+            </Text>
+          </Box>
+
+          <DefaultCardSelectorModal />
+        </AnimatedBox>
+      )}
+
       <Box
         backgroundColor="background"
         flexDirection="row"
+        gap="2"
         justifyContent="space-between"
+        paddingBottom={isIOS() ? '10' : '7'}
         paddingHorizontal="6"
-        paddingVertical="3"
       >
         <Button
           backgroundColor="buttonNeutral"
           entering={FadeInDown.springify().delay(100)}
-          width="49%"
+          flexGrow={1}
           onPress={handleOptOut}
         >
           <Text color="buttonTextNeutral" fontFamily="Halver-Semibold">
@@ -248,7 +283,7 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
         <Button
           backgroundColor="buttonCasal"
           entering={FadeInDown.springify().delay(350)}
-          width="49%"
+          flexGrow={1}
           onPress={handleBillPayment}
         >
           <Text color="buttonTextCasal" fontFamily="Halver-Semibold">

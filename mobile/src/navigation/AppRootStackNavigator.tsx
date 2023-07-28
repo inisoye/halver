@@ -1,9 +1,11 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
+import type { BillActionStatus } from '@/features/bills';
 import {
   BillDetails,
   BillParticipants,
+  BillPayment,
   BillsByStatus,
   BillSummary,
   SplitBreakdown,
@@ -30,6 +32,18 @@ export type AppRootStackParamList = {
   'Bills By Status': { status: string };
   'Split Breakdown': undefined;
   'Bill Summary': undefined;
+  'Bill Payment': {
+    actionId: string | undefined;
+    status: BillActionStatus | undefined;
+    billId: string;
+    contribution: string | null | undefined;
+    creditorName: string | undefined;
+    deadline: string | null | undefined;
+    deductionPattern: string | undefined;
+    fee: string | null | undefined;
+    firstChargeDate: string | null | undefined;
+    name: string;
+  };
 };
 
 const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
@@ -48,6 +62,16 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
         <AppRootStack.Screen component={BillParticipants} name="Select Participants" />
         <AppRootStack.Screen component={SplitBreakdown} name="Split Breakdown" />
         <AppRootStack.Screen component={BillSummary} name="Bill Summary" />
+      </AppRootStack.Group>
+
+      <AppRootStack.Group screenOptions={{ headerShown: false }}>
+        <AppRootStack.Screen
+          component={BillPayment}
+          name="Bill Payment"
+          options={{
+            headerShown: false,
+          }}
+        />
       </AppRootStack.Group>
 
       <AppRootStack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>

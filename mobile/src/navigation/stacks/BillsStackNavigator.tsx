@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import { BillActionStatus } from '@/features/bills';
-import { Bill, BillPayment, Bills } from '@/screens';
+import { Bill, Bills } from '@/screens';
 
 export type BillsStackParamList = {
   Bills: undefined;
@@ -37,14 +37,6 @@ export const BillsStackNavigator: React.FunctionComponent = () => {
       <BillsStack.Screen
         component={Bill}
         name="Bill"
-        options={{
-          headerShown: false,
-        }}
-      />
-
-      <BillsStack.Screen
-        component={BillPayment}
-        name="Bill Payment"
         options={{
           headerShown: false,
         }}

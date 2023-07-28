@@ -69,6 +69,7 @@ export const allStaticQueryKeys = {
   getBillTransactions: ['bill-transactions'],
   getBills: ['bills'],
   getCardAdditionURL: ['card-addition-url'],
+  getCards: ['cards'],
   getRegisteredContacts: ['registered-contacts'],
   getUserDetails: ['user-details'],
 };

@@ -26,6 +26,9 @@ export const useCreateBill = () => {
     mutationFn: createBill,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getBills });
+      queryClient.invalidateQueries({
+        queryKey: allStaticQueryKeys.getActionStatusCounts,
+      });
     },
   });
 };

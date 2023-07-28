@@ -8,10 +8,11 @@ import { BillCreatorCreditorParticipant } from '../api';
 interface BillCreatorCreditorFlagProps {
   creatorOrCreditor: BillCreatorCreditorParticipant;
   hasDelay?: boolean;
+  isCreditor?: boolean;
 }
 
 export const BillCreatorCreditorFlag: React.FunctionComponent<BillCreatorCreditorFlagProps> =
-  React.memo(({ creatorOrCreditor, hasDelay }) => {
+  React.memo(({ creatorOrCreditor, hasDelay, isCreditor }) => {
     return (
       <AnimatedBox
         alignItems="center"
@@ -29,9 +30,9 @@ export const BillCreatorCreditorFlag: React.FunctionComponent<BillCreatorCredito
         paddingVertical="2"
         width="48%"
       >
-        <Box maxWidth="70%">
+        <Box width="70%">
           <Text color="textLight" marginBottom="0.75" numberOfLines={1} variant="xxs">
-            Created by
+            {isCreditor ? 'Bill creditor' : 'Created by'}
           </Text>
           <Text fontFamily="Halver-Semibold" numberOfLines={1} variant="xs">
             {creatorOrCreditor?.fullName}

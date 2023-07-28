@@ -5,6 +5,7 @@ import { Modal as RNModal } from 'react-native';
 import { CloseModal } from '@/icons';
 import { isIOS, useIsDarkMode } from '@/utils';
 
+import { AfterInteractions } from './AfterInteractions';
 import { Box } from './Box';
 import { LogoLoader } from './LogoLoader';
 import { Pressable } from './Pressable';
@@ -43,7 +44,8 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
           flexDirection="row"
           gap="4"
           justifyContent="space-between"
-          paddingVertical="4"
+          paddingBottom={isLoaderOpen ? undefined : '4'}
+          paddingTop="4"
           style={[{ marginTop: isIOS() ? Constants.statusBarHeight : undefined }]}
         >
           <Box marginLeft="6" maxWidth="70%" width="100%">
@@ -59,7 +61,7 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
           )}
         </Box>
 
-        {isLoaderOpen && <LogoLoader />}
+        <AfterInteractions>{isLoaderOpen && <LogoLoader />}</AfterInteractions>
 
         {children}
       </Box>

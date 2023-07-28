@@ -27,6 +27,7 @@ from financials.api.serializers import (
     TransferRecipientCreateSerializer,
     TransferRecipientListSerializer,
     TransferRecipientUpdateDeleteSerializer,
+    UserCardListSerializer,
     UserCardSerializer,
 )
 from financials.data.banks import all_banks
@@ -212,7 +213,7 @@ class UserCardListAPIView(ListAPIView):
 
     permission_classes = (IsOwner,)
     queryset = UserCard.objects.all().defer("complete_paystack_response")
-    serializer_class = UserCardSerializer
+    serializer_class = UserCardListSerializer
 
     def get_queryset(self):
         """Returns a queryset containing all cards for the current user."""

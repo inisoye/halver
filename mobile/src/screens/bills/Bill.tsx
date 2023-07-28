@@ -266,7 +266,11 @@ export const Bill = ({ navigation, route }: BillProps) => {
             {!!creator && <BillCreatorCreditorFlag creatorOrCreditor={creator} />}
 
             {!!creditor && (
-              <BillCreatorCreditorFlag creatorOrCreditor={creditor} hasDelay />
+              <BillCreatorCreditorFlag
+                creatorOrCreditor={creditor}
+                hasDelay
+                isCreditor
+              />
             )}
           </Box>
 

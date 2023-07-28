@@ -27,6 +27,22 @@ class UserCardSerializer(serializers.ModelSerializer):
         )
 
 
+class UserCardListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserCard
+        fields = (
+            "account_name",
+            "bank",
+            "card_type",
+            "created",
+            "email",
+            "first_6",
+            "is_default",
+            "last_4",
+            "uuid",
+        )
+
+
 class PaystackBankListSerializer(serializers.Serializer):
     id = serializers.IntegerField(
         required=False,

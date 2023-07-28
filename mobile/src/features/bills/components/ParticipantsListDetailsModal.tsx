@@ -125,7 +125,7 @@ export const ParticipantsListDetailsModal: React.FunctionComponent<
                       gap="4"
                       justifyContent="space-between"
                       key={uuid}
-                      paddingVertical="4"
+                      paddingVertical="3.5"
                     >
                       <Box maxWidth="60%">
                         <Text

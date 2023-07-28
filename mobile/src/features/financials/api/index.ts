@@ -1,4 +1,5 @@
 export * from './createTransferRecipient';
-export * from './initializeCardAddition';
 export * from './getBanks';
+export * from './getCards';
+export * from './initializeCardAddition';
 export * from './validateAccountDetails';

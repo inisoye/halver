@@ -26,6 +26,7 @@ import {
   MINIMUM_BILL_AMOUNT,
 } from '@/features/new-bill';
 import { allMMKVKeys } from '@/lib/mmkv';
+import { showToast } from '@/lib/root-toast';
 import { IntervalEnum } from '@/lib/zod';
 import type { AppRootStackParamList } from '@/navigation';
 import { convertNumberToNaira, isIOS } from '@/utils';
@@ -89,6 +90,7 @@ export const intervalOptions = [
   { value: 'annually', name: 'Annually' },
 ] as const;
 
+const oneDayFromNow = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
 const twoDaysFromNow = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
 
 export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
@@ -113,13 +115,22 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
       interval: newBillPayload?.interval || intervalOptions[0].value,
       firstChargeDate: newBillPayload?.firstChargeDate
         ? new Date(newBillPayload?.firstChargeDate)
-        : twoDaysFromNow,
+        : oneDayFromNow,
     },
     resolver: zodResolver(BillDetailsFormSchema),
   });
 
   const intervalValue = useWatch({ control, name: 'interval' });
   const isRecurringBill = intervalValue !== 'none';
+
+  React.useEffect(() => {
+    if (errors.firstChargeDate) {
+      showToast(
+        errors.firstChargeDate?.message || 'Invalid first charge date',
+        'error',
+      );
+    }
+  }, [errors.firstChargeDate]);
 
   const onBillDetailsSubmit = (submittedData: BillDetailsFormValues) => {
     const { firstChargeDate: _firstChargeDate, ...dataWithoutFirstChargeDate } =
@@ -198,6 +209,7 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
               numberOfLines={4}
               paddingVertical={isIOS() ? '3' : '2.5'}
               placeholder="e.g. Hi guys! This is just for all of us to conveniently make our contributions."
+              textAlignVertical="top"
             />
             {errors.notes && (
               <TextFieldError

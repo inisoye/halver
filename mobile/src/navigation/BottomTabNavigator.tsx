@@ -106,11 +106,11 @@ export const BottomTabNavigator = () => {
             ? colors['grey-dark'][50]
             : colors['main-bg-light'],
           borderTopColor: isDarkMode
-            ? colors['grey-dark'][600]
+            ? colors['grey-dark'][700]
             : colors['grey-light'][700],
         },
         tabBarItemStyle: {
-          height: 44,
+          height: 46,
           flexDirection: 'column',
         },
         tabBarLabelStyle: {

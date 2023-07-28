@@ -2,7 +2,7 @@ import { createTheme, ThemeProvider } from '@shopify/restyle';
 import * as React from 'react';
 import { useColorScheme } from 'react-native';
 
-const brandColors = {
+export const brandColors = {
   apricot1: '#FEF5F3',
   apricot2: '#FCE9E6',
   apricot3: '#F8D1CA',
@@ -663,7 +663,7 @@ const darkTheme: Theme = {
     inputNestedButtonBackground: darkColors.gray5,
 
     modalBackground: darkColors.gray2,
-    modalElementBackground: darkColors.gray3,
+    modalElementBackground: darkColors.gray4,
     modalFilterContainerBorder: darkColors.gray5,
 
     successModalBackground: darkColors.green3,
