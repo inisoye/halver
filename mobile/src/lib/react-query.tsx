@@ -79,6 +79,7 @@ export const allStaticQueryKeys = {
  */
 const persistedQueriesList: QueryKey[] = [
   allStaticQueryKeys.getBanks,
+  allStaticQueryKeys.getCards,
   allStaticQueryKeys.getRegisteredContacts,
   allStaticQueryKeys.getUserDetails,
 ];

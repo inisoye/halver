@@ -1,4 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
 
 import { Text } from '@/components';
@@ -9,15 +10,15 @@ import {
   NewBill as NewBillIcon,
   Transactions as TransactionsIcon,
 } from '@/icons';
+import { Theme } from '@/lib/restyle';
 import {
   AccountStackNavigator,
   BillsStackNavigator,
+  FinancialsStackNavigator,
   HomeStackNavigator,
-  TransactionsStackNavigator,
 } from '@/navigation/stacks';
 import { BillDetailsPlaceholder } from '@/screens';
-import { colors } from '@/theme';
-import { isIOS, useIsDarkMode } from '@/utils';
+import { isIOS } from '@/utils';
 
 interface BottomTabTextProps {
   label: string | undefined;
@@ -46,7 +47,7 @@ export type TabParamList = {
   HomeStackNavigator: undefined;
   BillsStackNavigator: undefined;
   BillDetailsPlaceholder: undefined;
-  TransactionsStackNavigator: undefined;
+  FinancialsStackNavigator: undefined;
   AccountStackNavigator: undefined;
 };
 
@@ -77,9 +78,9 @@ export const tabs: TabType[] = [
     icon: NewBillIcon,
   },
   {
-    name: 'TransactionsStackNavigator',
-    component: TransactionsStackNavigator,
-    label: 'Transactions',
+    name: 'FinancialsStackNavigator',
+    component: FinancialsStackNavigator,
+    label: 'Financials',
     icon: TransactionsIcon,
   },
   {
@@ -93,7 +94,7 @@ export const tabs: TabType[] = [
 const Tab = createBottomTabNavigator<TabParamList>();
 
 export const BottomTabNavigator = () => {
-  const isDarkMode = useIsDarkMode();
+  const { colors } = useTheme<Theme>();
 
   return (
     <Tab.Navigator
@@ -102,19 +103,12 @@ export const BottomTabNavigator = () => {
         tabBarStyle: {
           flex: isIOS() ? 0.07 : 0.08,
           elevation: 0,
-          backgroundColor: isDarkMode
-            ? colors['grey-dark'][50]
-            : colors['main-bg-light'],
-          borderTopColor: isDarkMode
-            ? colors['grey-dark'][700]
-            : colors['grey-light'][700],
+          backgroundColor: colors.bottomTabBackground,
+          borderTopColor: colors.bottomTabBorder,
         },
         tabBarItemStyle: {
           height: 46,
           flexDirection: 'column',
-        },
-        tabBarLabelStyle: {
-          color: isDarkMode ? colors['grey-dark'][1000] : colors['grey-light'][1000],
         },
       }}
     >

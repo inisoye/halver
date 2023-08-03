@@ -36,9 +36,10 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
   const screenInfo = React.useMemo(() => {
     const peculiarScreenNames = {
       Home: `Hello ${userDetails?.firstName}`,
+      Financials: 'Select an option',
     };
 
-    const isScreenNamePeculiar = Object.keys(peculiarScreenNames).includes(name);
+    const isScreenNamePeculiar = peculiarScreenNames[name] !== undefined;
     const screenName = isScreenNamePeculiar ? peculiarScreenNames[name] : name;
     const hasBackButton = !screensWithNoBackButton.includes(name);
     const hasLightHeading = screensWithLightHeading.includes(name);

@@ -433,6 +433,9 @@ const theme = createTheme({
 
     borderDefault: lightColors.gray7,
 
+    bottomTabBackground: lightColors.mainBgLight,
+    bottomTabBorder: lightColors.gray8,
+
     textDefault: lightColors.gray12,
     textInverse: lightColors.gray1,
     textWhite: lightColors.gray1,
@@ -627,6 +630,9 @@ const darkTheme: Theme = {
     elementBackground: darkColors.gray3,
 
     borderDefault: darkColors.gray5,
+
+    bottomTabBackground: darkColors.gray1,
+    bottomTabBorder: darkColors.gray8,
 
     textDefault: darkColors.gray12,
     textInverse: darkColors.gray1,

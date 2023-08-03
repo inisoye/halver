@@ -1,3 +1,5 @@
+import Decimal from 'decimal.js';
+
 import {
   DefinedRegisteredParticipant,
   DefinedUnregisteredParticipant,
@@ -11,28 +13,39 @@ import {
  * @param numberOfParticipants - The number of participants.
  * @returns An array of even contributions for each participant.
  */
+/**
+ * Calculates even amounts for each participant based on the bill amount and number of participants.
+ * @param billAmount - The total bill amount.
+ * @param numberOfParticipants - The number of participants.
+ * @returns An array of even contributions for each participant.
+ */
 export function calculateEvenAmounts(
   billAmount: number,
   numberOfParticipants: number,
 ): number[] {
-  const MULTIPLIER = 100; // Used for convert amounts from decimal and back.
+  const MULTIPLIER = new Decimal(100); // Used to convert amounts from decimal and back.
 
-  const evenContribution = Math.floor((billAmount * MULTIPLIER) / numberOfParticipants);
+  const evenContribution = new Decimal(billAmount)
+    .times(MULTIPLIER)
+    .dividedBy(numberOfParticipants)
+    .floor();
 
-  const remainingAmount = (billAmount * MULTIPLIER) % numberOfParticipants;
+  const remainingAmount = new Decimal(billAmount)
+    .times(MULTIPLIER)
+    .modulo(numberOfParticipants);
 
-  const contributions: number[] = [];
+  const contributions: Decimal[] = [];
 
   for (let i = 0; i < numberOfParticipants; i++) {
     contributions.push(evenContribution);
   }
 
-  let remaining = remainingAmount;
+  let remaining = remainingAmount.toNumber();
   let index = 0;
 
   // Distribute the remaining amount among participants
   while (remaining > 0) {
-    contributions[index]++;
+    contributions[index] = contributions[index].plus(1);
 
     remaining--;
 
@@ -40,7 +53,9 @@ export function calculateEvenAmounts(
     index = (index + 1) % numberOfParticipants;
   }
 
-  return contributions.map(contribution => contribution / MULTIPLIER);
+  return contributions.map(contribution =>
+    contribution.dividedBy(MULTIPLIER).toNumber(),
+  );
 }
 
 export function removeDuplicateParticipants(

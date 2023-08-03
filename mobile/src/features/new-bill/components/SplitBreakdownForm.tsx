@@ -402,7 +402,7 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
             </Box>
 
             <DynamicText color="textLight" textAlign="center" variant="sm">
-              allocated out of {convertNumberToNaira(Number(totalAmountDue))}.
+              allocated out of {convertNumberToNaira(Number(totalAmountDue))}
             </DynamicText>
           </>
         )}

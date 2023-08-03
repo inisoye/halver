@@ -37,6 +37,11 @@ const styles = StyleSheet.create({
 
 type BillDetailsProps = NativeStackScreenProps<AppRootStackParamList, 'Bill Details'>;
 
+const validateDecimalPlaces = (value: number) => {
+  const pattern = /^\d+(\.\d{1,2})?$/; // 2dp
+  return pattern.test(String(value));
+};
+
 const BillDetailsFormSchema = z.object({
   totalAmountDue: z.coerce
     .number({
@@ -47,6 +52,9 @@ const BillDetailsFormSchema = z.object({
       message: `The total bill amount must be at least ${convertNumberToNaira(
         MINIMUM_BILL_AMOUNT,
       )}.`,
+    })
+    .refine(val => validateDecimalPlaces(val), {
+      message: 'The bill amount must have a maximum of 2 decimal places.',
     })
     .transform(amount => amount.toString()),
   name: z

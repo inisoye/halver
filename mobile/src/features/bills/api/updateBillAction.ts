@@ -41,6 +41,9 @@ export const useUpdateBillAction = () => {
       queryClient.invalidateQueries({
         queryKey: allStaticQueryKeys.getBillTransactions,
       });
+      queryClient.invalidateQueries({
+        queryKey: allStaticQueryKeys.getActionStatusCounts,
+      });
     },
   });
 };
