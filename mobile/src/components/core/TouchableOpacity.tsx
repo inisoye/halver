@@ -9,6 +9,7 @@ import {
 } from '@shopify/restyle';
 import { TouchableOpacityProps as RNTouchableOpacityProps } from 'react-native';
 import { TouchableOpacity as RNGHTouchableOpacity } from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
 
 import { Theme } from '@/lib/restyle';
 
@@ -21,3 +22,6 @@ export const TouchableOpacity = createRestyleComponent<TouchableOpacityProps, Th
   [spacing, visible],
   createBox<Theme>(RNGHTouchableOpacity),
 );
+
+export const AnimatedTouchableOpacity =
+  Animated.createAnimatedComponent(TouchableOpacity);

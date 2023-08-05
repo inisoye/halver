@@ -17,3 +17,4 @@ export * from './SmallClose';
 export * from './SuccessTick';
 export * from './ThreeUsersCluster';
 export * from './UserFolder';
+export * from './RightArrow';
