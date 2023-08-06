@@ -36,7 +36,7 @@ module.exports = {
       eas: {
         projectId: 'ba971ccb-f80a-490c-8db7-cfd2cd57c5b4',
       },
-      apiUrl: process.env.API_URL ?? 'http://127.0.0.1:8000',
+      apiURL: process.env.API_URL ?? 'http://127.0.0.1:8000',
       androidClientId: IS_DEV
         ? process.env.DEV_GOOGLE_OAUTH_ANDROID_CLIENT_ID
         : process.env.GOOGLE_OAUTH_ANDROID_CLIENT_ID,
@@ -44,6 +44,9 @@ module.exports = {
         ? process.env.DEV_GOOGLE_OAUTH_IOS_CLIENT_ID
         : process.env.GOOGLE_OAUTH_IOS_CLIENT_ID,
       webClientId: process.env.GOOGLE_OAUTH_WEB_CLIENT_ID,
+      sentryDSN: process.env.SENTRY_DSN,
+      isDevelopment: process.env.APP_VARIANT === 'development',
+      isPreview: process.env.APP_VARIANT === 'preview',
     },
     plugins: [
       ['sentry-expo'],

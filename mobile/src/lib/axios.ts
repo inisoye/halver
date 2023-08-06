@@ -1,13 +1,12 @@
 import axios, { AxiosInstance } from 'axios';
-import Constants from 'expo-constants';
 
 export const tokenlessApiClient = axios.create({
-  baseURL: Constants.expoConfig?.extra?.apiUrl,
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
 });
 
 // API client will have token on app startup.
 export const apiClient = axios.create({
-  baseURL: Constants.expoConfig?.extra?.apiUrl,
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
 });
 
 export const setAxiosDefaultToken = (token: string, _apiClient: AxiosInstance) => {

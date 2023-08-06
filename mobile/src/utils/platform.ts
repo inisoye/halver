@@ -27,4 +27,6 @@ export const useIsLightMode = (): boolean => {
 };
 
 export const IS_DEV_OR_PREVIEW =
-  process.env.APP_VARIANT === 'development' || process.env.APP_VARIANT === 'preview';
+  process.env.EXPO_PUBLIC_APP_VARIANT === 'development' ||
+  process.env.EXPO_PUBLIC_APP_VARIANT === 'preview';
+export const IS_DEV = process.env.EXPO_PUBLIC_APP_VARIANT === 'development';
