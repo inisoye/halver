@@ -9,6 +9,9 @@
       "ios": {
         "resourceClass": "m-medium",
         "simulator": true
+      },
+      "env": {
+        "APP_VARIANT": "development"
       }
     },
     "preview": {
@@ -16,6 +19,9 @@
       "ios": {
         "resourceClass": "m-medium",
         "simulator": true
+      },
+      "env": {
+        "API_URL": "https://api.halverapp.com/api/v1"
       }
     },
     "production": {

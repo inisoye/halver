@@ -25,3 +25,6 @@ export const useIsLightMode = (): boolean => {
   const colorScheme = useColorScheme();
   return colorScheme === 'light';
 };
+
+export const IS_DEV_OR_PREVIEW =
+  process.env.APP_VARIANT === 'development' || process.env.APP_VARIANT === 'preview';

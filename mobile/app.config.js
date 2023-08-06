@@ -1,9 +1,11 @@
 // dotenv use inspired by: https://stackoverflow.com/a/70014657
 import 'dotenv/config';
 
+const IS_DEV = process.env.APP_VARIANT === 'development';
+
 module.exports = {
   expo: {
-    name: 'Halver',
+    name: IS_DEV ? 'Halver (Dev)' : 'Halver',
     slug: 'mobile',
     version: '1.0.0',
     orientation: 'portrait',
@@ -16,15 +18,15 @@ module.exports = {
     },
     assetBundlePatterns: ['**/*'],
     ios: {
-      supportsTablet: true,
-      bundleIdentifier: 'com.halver.mobile',
+      supportsTablet: false,
+      bundleIdentifier: IS_DEV ? 'com.halver.dev' : 'com.halver',
     },
     android: {
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff',
       },
-      package: 'com.halver.mobile',
+      package: IS_DEV ? 'com.halver.dev' : 'com.halver',
     },
     web: {
       favicon: './assets/favicon.png',
@@ -35,11 +37,16 @@ module.exports = {
         projectId: 'ba971ccb-f80a-490c-8db7-cfd2cd57c5b4',
       },
       apiUrl: process.env.API_URL ?? 'http://127.0.0.1:8000',
-      androidClientId: process.env.GOOGLE_OAUTH_ANDROID_CLIENT_ID,
-      iosClientId: process.env.GOOGLE_OAUTH_IOS_CLIENT_ID,
+      androidClientId: IS_DEV
+        ? process.env.DEV_GOOGLE_OAUTH_ANDROID_CLIENT_ID
+        : process.env.GOOGLE_OAUTH_ANDROID_CLIENT_ID,
+      iosClientId: IS_DEV
+        ? process.env.DEV_GOOGLE_OAUTH_IOS_CLIENT_ID
+        : process.env.GOOGLE_OAUTH_IOS_CLIENT_ID,
       webClientId: process.env.GOOGLE_OAUTH_WEB_CLIENT_ID,
     },
     plugins: [
+      ['sentry-expo'],
       [
         'expo-build-properties',
         {
@@ -58,5 +65,16 @@ module.exports = {
         },
       ],
     ],
+    hooks: {
+      postPublish: [
+        {
+          file: 'sentry-expo/upload-sourcemaps',
+          config: {
+            organization: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_PROJECT,
+          },
+        },
+      ],
+    },
   },
 };

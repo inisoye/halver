@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
+    "dev": "APP_VARIANT=development npx expo start -c --dev-client",
     "start": "npx expo start -c --dev-client",
     "start-prod": "npx expo start --dev-client --no-dev --minify",
     "android": "expo start --android",
@@ -11,6 +12,7 @@
     "install-ios": "eas build:run -p ios",
     "install-android": "eas build:run -p android",
     "build-dev": "eas build -p all --profile development",
+    "build-prev": "eas build -p all --profile preview",
     "build-dev-android": "eas build -p android --profile development"
   },
   "dependencies": {
@@ -67,7 +69,11 @@
     "react-native-svg": "13.9.0",
     "react-native-web": "~0.19.6",
     "react-native-webview": "13.2.2",
-    "zod": "^3.21.4"
+    "zod": "^3.21.4",
+    "sentry-expo": "~7.0.0",
+    "expo-application": "~5.3.0",
+    "expo-updates": "~0.18.11",
+    "@sentry/react-native": "5.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
