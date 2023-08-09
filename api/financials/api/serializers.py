@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from bills.api.serializers import NestedCustomUserSerializer
 from bills.models import BillAction
+from financials.data.logos import bank_logo_index
 from financials.models import PaystackTransfer, TransferRecipient, UserCard
 from financials.utils.validation import validate_new_recipient_data
 
@@ -126,6 +127,7 @@ class PaystackTransferRecipientListSerializer(serializers.Serializer):
 
 class TransferRecipientListSerializer(serializers.ModelSerializer):
     recipient_type = serializers.SerializerMethodField()
+    bank_logo = serializers.SerializerMethodField()
 
     def get_recipient_type(self, obj) -> str:
         """
@@ -141,7 +143,14 @@ class TransferRecipientListSerializer(serializers.ModelSerializer):
 
         return obj.get_recipient_type_display()
 
-    # TODO: It appears that fetching the cards here cause an N+1 issue.
+    def get_bank_logo(self, obj):
+        if obj.recipient_type == TransferRecipient.RecipientChoices.ACCOUNT:
+            bank_code = obj.bank_code
+            if bank_code:
+                return bank_logo_index.get(bank_code, None)
+
+        return None
+
     class Meta:
         model = TransferRecipient
         fields = (
@@ -149,6 +158,7 @@ class TransferRecipientListSerializer(serializers.ModelSerializer):
             "associated_card",
             "authorization_code",
             "bank_code",
+            "bank_logo",
             "bank_name",
             "created",
             "email",
