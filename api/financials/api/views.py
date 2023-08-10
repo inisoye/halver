@@ -291,7 +291,10 @@ class TransferRecipientListCreateAPIView(APIView):
             with a status code of 200.
         """
 
-        recipients = self.queryset.filter(user=self.request.user)
+        recipients = self.queryset.filter(
+            user=self.request.user,
+            recipient_type=TransferRecipient.RecipientChoices.ACCOUNT,
+        )
         serializer = self.list_serializer_class(recipients, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
