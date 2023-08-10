@@ -93,18 +93,22 @@ export const DefaultCardSelectorModal: React.FunctionComponent = () => {
                     <CardIcon type={cardType} />
 
                     <DynamicText
-                      color="textLight"
                       fontFamily="Halver-Semibold"
                       marginLeft="1"
+                      variant="sm"
+                    >
+                      •••• {last4}
+                    </DynamicText>
+
+                    <DynamicText
+                      color="textLight"
+                      fontFamily="Halver-Semibold"
                       maxWidth="65%"
                       numberOfLines={1}
                       variant="sm"
                     >
                       {!!bank && convertKebabAndSnakeToTitleCase(bank)}
                     </DynamicText>
-                    <Text fontFamily="Halver-Semibold" variant="sm">
-                      •••• {last4}
-                    </Text>
                   </Box>
 
                   {isDefault && <SelectTick height={16} width={16} />}

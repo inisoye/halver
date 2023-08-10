@@ -72,18 +72,18 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
             backgroundColor={item.logo ? 'white' : 'bankImageBackground'}
             borderRadius="lg"
             contentFit="contain"
-            height={40}
+            height={32}
             source={item.logo}
-            width={40}
+            width={32}
           />
         ) : (
           <Box
             alignItems="center"
             backgroundColor="white"
             borderRadius="lg"
-            height={40}
+            height={32}
             justifyContent="center"
-            width={40}
+            width={32}
           >
             <Text color="textBlack" fontFamily="Halver-Semibold" variant="sm">
               {initials}
@@ -226,13 +226,18 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
         isModalOpen={isModalOpen}
         hasLargeHeading
       >
-        <Box backgroundColor="modalBackground" flex={1} paddingVertical="3">
+        <Box
+          backgroundColor="modalBackground"
+          flex={1}
+          paddingTop="1.5"
+          paddingVertical="3"
+        >
           <Box paddingHorizontal="6">
             <Box
               borderBottomColor="modalFilterContainerBorder"
               borderBottomWidth={1}
               opacity={areBanksLoading ? 0 : 1}
-              paddingBottom="5"
+              paddingBottom="3"
             >
               <TextField
                 control={controlForSelectFilter}

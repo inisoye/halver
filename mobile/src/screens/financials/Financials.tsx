@@ -1,3 +1,4 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { FadeInDown, StretchInY } from 'react-native-reanimated';
 
@@ -8,8 +9,23 @@ import {
   Coin as CoinIcon,
   RightArrow,
 } from '@/icons';
+import { FinancialsStackParamList } from '@/navigation';
 
-export const Financials: React.FunctionComponent = () => {
+type FinancialsProps = NativeStackScreenProps<FinancialsStackParamList, 'Financials'>;
+
+export const Financials: React.FunctionComponent<FinancialsProps> = ({
+  navigation,
+}) => {
+  const goToCards = () => {
+    navigation.navigate('Cards');
+  };
+  const goToTransferRecipients = () => {
+    navigation.navigate('Transfer recipients');
+  };
+  const goToTransactions = () => {
+    navigation.navigate('Transactions');
+  };
+
   return (
     <Screen>
       <Box flex={1} gap="4" paddingHorizontal="6" paddingVertical="2">
@@ -27,6 +43,7 @@ export const Financials: React.FunctionComponent = () => {
           }}
           shadowOpacity={0.2}
           shadowRadius={0.3}
+          onPress={goToCards}
         >
           <CardIcon />
 
@@ -62,12 +79,13 @@ export const Financials: React.FunctionComponent = () => {
           }}
           shadowOpacity={0.2}
           shadowRadius={0.3}
+          onPress={goToTransferRecipients}
         >
           <Box alignItems="center" flexDirection="row" gap="3">
             <BankIcon />
 
             <Text color="buttonTextNeutral" fontFamily="Halver-Semibold">
-              Transfer Recipients
+              Transfer recipients
             </Text>
           </Box>
 
@@ -92,6 +110,7 @@ export const Financials: React.FunctionComponent = () => {
           }}
           shadowOpacity={0.2}
           shadowRadius={0.3}
+          onPress={goToTransactions}
         >
           <Box alignItems="center" flexDirection="row" gap="3">
             <CoinIcon />

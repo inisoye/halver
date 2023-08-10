@@ -144,7 +144,7 @@ export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps>
         <ScrollView keyboardShouldPersistTaps="handled">
           <PaddedScreenHeader
             heading="Your bank account details"
-            subHeading="This will be where you'll get paid on Halver. We call them recipients. You can always change it or add more later."
+            subHeading="This will be where you'll get paid on Halver. We call them payment receivers. You can always change it or add more later."
             hasExtraPadding
           />
 
