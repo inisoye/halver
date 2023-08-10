@@ -7,6 +7,26 @@ import { Theme } from '@/lib/restyle';
 
 type SearchProps = ISvgProps;
 
+export const SmallSearch: React.FunctionComponent<SearchProps> = ({ ...props }) => {
+  const { colors } = useTheme<Theme>();
+
+  return (
+    <Svg
+      fill="none"
+      height={16}
+      viewBox="0 0 16 16"
+      width={16}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <Path
+        d="m14.356 13.644-2.706-2.7a5.762 5.762 0 1 0-.707.706l2.7 2.706a.512.512 0 0 0 .713 0 .507.507 0 0 0 0-.712ZM2.5 7.25A4.75 4.75 0 1 1 7.25 12 4.757 4.757 0 0 1 2.5 7.25Z"
+        fill={colors.gray9}
+      />
+    </Svg>
+  );
+};
+
 export const Search: React.FunctionComponent<SearchProps> = ({ ...props }) => {
   const { colors } = useTheme<Theme>();
 

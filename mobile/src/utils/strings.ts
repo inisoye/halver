@@ -97,7 +97,7 @@ export const convertKebabAndSnakeToTitleCase = (string: string | undefined) => {
  * @param oneLetter Boolean flag to determine whether to return one-letter initials or not.
  * @returns The initials of the user.
  */
-export const getInitials = (name: string | undefined, oneLetter = false) => {
+export const getInitials = (name: string | undefined | null, oneLetter = false) => {
   if (!name) {
     return '';
   }

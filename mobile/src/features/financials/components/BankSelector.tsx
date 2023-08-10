@@ -70,7 +70,7 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
         {item.logo ? (
           <Image
             backgroundColor={item.logo ? 'white' : 'bankImageBackground'}
-            borderRadius="lg"
+            borderRadius="md"
             contentFit="contain"
             height={32}
             source={item.logo}
@@ -80,7 +80,7 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
           <Box
             alignItems="center"
             backgroundColor="white"
-            borderRadius="lg"
+            borderRadius="md"
             height={32}
             justifyContent="center"
             width={32}
@@ -174,7 +174,7 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
         disabled={!banks}
         marginTop="1.5"
         paddingHorizontal="4"
-        paddingVertical={isIOS() ? '2.5' : '3'}
+        paddingVertical={isIOS() ? '3' : '3.5'}
         onPress={openModal}
       >
         {!!selectedBank && (
@@ -182,7 +182,7 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
             {selectedBank.logo ? (
               <Image
                 backgroundColor="white"
-                borderRadius="lg"
+                borderRadius="md"
                 contentFit="contain"
                 height={24}
                 key={selectedBank.name}
@@ -193,7 +193,7 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
               <Box
                 alignItems="center"
                 backgroundColor="white"
-                borderRadius="lg"
+                borderRadius="md"
                 height={24}
                 justifyContent="center"
                 width={24}
@@ -242,10 +242,11 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
               <TextField
                 control={controlForSelectFilter}
                 name="bankFilter"
+                paddingBottom={isIOS() ? '2' : '1'}
                 paddingHorizontal="3"
-                paddingVertical={isIOS() ? '2' : '1'}
+                paddingTop={isIOS() ? '2' : '1'}
                 placeholder="Search"
-                prefixComponent={<Search />}
+                prefixComponent={<Search height={18} width={18} />}
                 autoFocus
                 isDarker
               />

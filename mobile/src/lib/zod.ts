@@ -461,11 +461,12 @@ export const UserCard = z.object({
   uuid: z.string().uuid(),
 });
 
-export const TransferRecipientList = z.object({
+export const TransferRecipient = z.object({
   accountNumber: z.string().max(10).nullish(),
   associatedCard: z.number().int().nullish(),
   authorizationCode: z.string().max(100).nullish(),
   bankCode: z.string().max(10).nullish(),
+  bankLogo: z.string().nullish(),
   bankName: z.string().max(100).nullish(),
   created: z.string().datetime(),
   email: z.string().max(254).email().nullish(),
@@ -475,6 +476,8 @@ export const TransferRecipientList = z.object({
   recipientType: z.string(),
   uuid: z.string().uuid(),
 });
+
+export const TransferRecipientList = z.array(TransferRecipient);
 
 export const TransferRecipientCreate = z.object({
   accountNumber: z.string().min(10).max(10).optional(),

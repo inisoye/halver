@@ -71,6 +71,7 @@ export const allStaticQueryKeys = {
   getCardAdditionURL: ['card-addition-url'],
   getCards: ['cards'],
   getRegisteredContacts: ['registered-contacts'],
+  getTransferRecipients: ['transfer-recipients'],
   getUserDetails: ['user-details'],
 };
 
@@ -81,6 +82,7 @@ const persistedQueriesList: QueryKey[] = [
   allStaticQueryKeys.getBanks,
   allStaticQueryKeys.getCards,
   allStaticQueryKeys.getRegisteredContacts,
+  allStaticQueryKeys.getTransferRecipients,
   allStaticQueryKeys.getUserDetails,
 ];
 

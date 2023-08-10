@@ -500,6 +500,8 @@ const theme = createTheme({
 
     billScreenBackground: brandColors.pharlap2,
     billMeterBackground: brandColors.pharlap7,
+
+    defaultItemTagBg: brandColors.casal6,
   },
   spacing: tailwindSpacing,
   breakpoints: {
@@ -694,6 +696,8 @@ const darkTheme: Theme = {
 
     billScreenBackground: neutralColors.blackish,
     billMeterBackground: brandColors.pharlap6,
+
+    defaultItemTagBg: brandColors.casal7,
   },
 };
 
