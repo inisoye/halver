@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import * as React from 'react';
 
-import { Box, Button, DynamicText, Modal, Text } from '@/components';
+import { Box, Button, Modal, Text } from '@/components';
 import {
   convertKebabAndSnakeToTitleCase,
   generateRedactedCardDigits,
@@ -20,7 +20,8 @@ interface SelectedCardModalProps {
 
 export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> =
   React.memo(({ selectedCard, closeModal, isModalOpen }) => {
-    const { bank, accountName, cardType, first6, last4 } = selectedCard || {};
+    const { bank, accountName, cardType, first6, last4, isDefault } =
+      selectedCard || {};
     const bankName = convertKebabAndSnakeToTitleCase(bank);
 
     const cardDigits = React.useMemo(
@@ -74,11 +75,32 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
           maxHeight="81%"
           opacity={isSetDefaultCardLoading || isDeleteCardLoading ? 0.6 : 1}
           paddingBottom="8"
-          paddingTop="5"
           pointerEvents={
             isSetDefaultCardLoading || isDeleteCardLoading ? 'none' : undefined
           }
         >
+          {isDefault && (
+            <Box
+              alignItems="center"
+              backgroundColor="buttonPharlap"
+              columnGap="3"
+              flexDirection="row"
+              marginBottom="5"
+              opacity={0.8}
+              paddingHorizontal="6"
+              paddingVertical="2"
+            >
+              <Text
+                color="textInverse"
+                fontFamily="Halver-Semibold"
+                textAlign="center"
+                variant="xs"
+              >
+                This is currently your default card.
+              </Text>
+            </Box>
+          )}
+
           <Box
             columnGap="6"
             flexDirection="row"
@@ -121,15 +143,6 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
             </Box>
           </Box>
 
-          <DynamicText
-            color="textLight"
-            marginBottom="0.75"
-            numberOfLines={1}
-            paddingHorizontal="6"
-            variant="xs"
-          >
-            Card number
-          </DynamicText>
           <Box
             alignItems="center"
             backgroundColor="grayA11"
@@ -138,7 +151,7 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
             justifyContent="space-between"
             marginBottom="6"
             paddingHorizontal="6"
-            paddingVertical="2.5"
+            paddingVertical="2"
           >
             <Box columnGap="3" flexDirection="row" maxWidth="80%">
               {cardDigits.map(digits => {
@@ -167,7 +180,7 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
 
             <Button
               backgroundColor="buttonCasal"
-              disabled={isSetDefaultCardLoading || isDeleteCardLoading}
+              disabled={isSetDefaultCardLoading || isDeleteCardLoading || isDefault}
               flex={1}
               onPress={onSetDefaultCardSubmit}
             >

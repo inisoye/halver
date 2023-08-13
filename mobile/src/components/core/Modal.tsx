@@ -17,6 +17,7 @@ interface ModalProps {
   isLoaderOpen: boolean;
   isModalOpen: boolean;
   headingText?: string;
+  headingComponent?: React.ReactNode;
   hasLargeHeading?: boolean;
   hasCloseButton?: boolean;
 }
@@ -27,6 +28,7 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
   isLoaderOpen = false,
   isModalOpen,
   headingText,
+  headingComponent,
   hasLargeHeading,
   hasCloseButton = true,
 }) => {
@@ -49,9 +51,16 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
           style={[{ marginTop: isIOS() ? Constants.statusBarHeight : undefined }]}
         >
           <Box marginLeft="6" maxWidth="70%" width="100%">
-            <Text fontFamily="Halver-Semibold" variant={hasLargeHeading ? '2xl' : 'xl'}>
-              {headingText}
-            </Text>
+            {!!headingText && (
+              <Text
+                fontFamily="Halver-Semibold"
+                variant={hasLargeHeading ? '2xl' : 'xl'}
+              >
+                {headingText}
+              </Text>
+            )}
+
+            {headingComponent}
           </Box>
 
           {hasCloseButton && (
