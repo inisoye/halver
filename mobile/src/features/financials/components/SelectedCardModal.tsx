@@ -32,6 +32,18 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
     const { mutate: setDefaultCard, isLoading: isSetDefaultCardLoading } =
       useSetDefaultCard();
 
+    const onDeleteCard = () => {
+      deleteCard(selectedCard?.uuid || '', {
+        onSuccess: () => {
+          closeModal();
+        },
+
+        onError: error => {
+          handleAxiosErrorAlertAndHaptics('Error deleting card', error as AxiosError);
+        },
+      });
+    };
+
     const onSetDefaultCardSubmit = () => {
       setDefaultCard(selectedCard?.uuid || '', {
         onSuccess: () => {
@@ -43,18 +55,6 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
             'Error setting card as default',
             error as AxiosError,
           );
-        },
-      });
-    };
-
-    const onDeleteCard = () => {
-      deleteCard(selectedCard?.uuid || '', {
-        onSuccess: () => {
-          closeModal();
-        },
-
-        onError: error => {
-          handleAxiosErrorAlertAndHaptics('Error deleting card', error as AxiosError);
         },
       });
     };
@@ -72,8 +72,12 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
         <Box
           backgroundColor="modalBackground"
           maxHeight="81%"
+          opacity={isSetDefaultCardLoading || isDeleteCardLoading ? 0.6 : 1}
           paddingBottom="8"
           paddingTop="3.5"
+          pointerEvents={
+            isSetDefaultCardLoading || isDeleteCardLoading ? 'none' : undefined
+          }
         >
           <Box
             columnGap="6"

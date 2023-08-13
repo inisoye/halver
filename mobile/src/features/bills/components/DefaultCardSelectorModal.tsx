@@ -1,3 +1,5 @@
+import { UseMutateFunction } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import * as React from 'react';
 
 import {
@@ -9,10 +11,79 @@ import {
   Text,
   TouchableOpacity,
 } from '@/components';
-import { CardIcon, useCards } from '@/features/financials';
+import { CardIcon, useCards, useSetDefaultCard } from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
 import { CirclePlus, CreditCard, SelectInactiveItem, SelectTick } from '@/icons';
-import { convertKebabAndSnakeToTitleCase } from '@/utils';
+import {
+  convertKebabAndSnakeToTitleCase,
+  handleAxiosErrorAlertAndHaptics,
+} from '@/utils';
+
+interface CardItemProps {
+  isDefault: boolean | undefined;
+  bank: string;
+  uuid: string;
+  last4: string;
+  cardType: string;
+  closeCardsModal: () => void;
+  setDefaultCard: UseMutateFunction<unknown, unknown, string, unknown>;
+}
+
+const CardItem: React.FunctionComponent<CardItemProps> = React.memo(
+  ({ cardType, last4, uuid, bank, isDefault, closeCardsModal, setDefaultCard }) => {
+    const onSetDefaultCardSubmit = () => {
+      setDefaultCard(uuid || '', {
+        onSuccess: () => {
+          closeCardsModal();
+        },
+
+        onError: error => {
+          handleAxiosErrorAlertAndHaptics(
+            'Error setting card as default',
+            error as AxiosError,
+          );
+        },
+      });
+    };
+
+    return (
+      <TouchableOpacity
+        alignItems="center"
+        backgroundColor="modalElementBackground"
+        borderRadius="base"
+        columnGap="3"
+        flexDirection="row"
+        justifyContent="space-between"
+        key={uuid}
+        marginBottom="2.5"
+        paddingHorizontal="4"
+        paddingVertical="2.5"
+        onPress={onSetDefaultCardSubmit}
+      >
+        <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">
+          <CardIcon type={cardType} />
+
+          <DynamicText fontFamily="Halver-Semibold" marginLeft="1" variant="sm">
+            •••• {last4}
+          </DynamicText>
+
+          <DynamicText
+            color="textLight"
+            fontFamily="Halver-Semibold"
+            maxWidth="65%"
+            numberOfLines={1}
+            variant="sm"
+          >
+            {!!bank && convertKebabAndSnakeToTitleCase(bank)}
+          </DynamicText>
+        </Box>
+
+        {isDefault && <SelectTick height={16} width={16} />}
+        {!isDefault && <SelectInactiveItem height={16} width={16} />}
+      </TouchableOpacity>
+    );
+  },
+);
 
 export const DefaultCardSelectorModal: React.FunctionComponent = () => {
   const { data: cardsResponse, isLoading: areCardsLoading } = useCards();
@@ -34,6 +105,9 @@ export const DefaultCardSelectorModal: React.FunctionComponent = () => {
 
   const onlyOneCardAvailable = sortedCards?.length === 1;
 
+  const { mutate: setDefaultCard, isLoading: isSetDefaultCardLoading } =
+    useSetDefaultCard();
+
   return (
     <>
       <Button
@@ -52,16 +126,18 @@ export const DefaultCardSelectorModal: React.FunctionComponent = () => {
         headingText={
           onlyOneCardAvailable ? 'Add a new card' : 'Change your default card'
         }
-        isLoaderOpen={areCardsLoading}
+        isLoaderOpen={areCardsLoading || isSetDefaultCardLoading}
         isModalOpen={isCardsModalOpen}
         hasLargeHeading
       >
         <Box
           backgroundColor="modalBackground"
           maxHeight="81%"
+          opacity={isSetDefaultCardLoading ? 0.6 : 1}
           paddingBottom="8"
           paddingHorizontal="6"
           paddingTop="6"
+          pointerEvents={isSetDefaultCardLoading ? 'none' : undefined}
         >
           <DynamicText color="textLight" marginBottom="4" maxWidth="85%" variant="sm">
             {onlyOneCardAvailable
@@ -72,48 +148,16 @@ export const DefaultCardSelectorModal: React.FunctionComponent = () => {
           <ScrollView>
             {sortedCards?.map(({ cardType, last4, uuid, bank, isDefault }) => {
               return (
-                <TouchableOpacity
-                  alignItems="center"
-                  backgroundColor="modalElementBackground"
-                  borderRadius="base"
-                  columnGap="3"
-                  flexDirection="row"
-                  justifyContent="space-between"
+                <CardItem
+                  bank={bank}
+                  cardType={cardType}
+                  closeCardsModal={closeCardsModal}
+                  isDefault={isDefault}
                   key={uuid}
-                  marginBottom="2.5"
-                  paddingHorizontal="4"
-                  paddingVertical="2.5"
-                >
-                  <Box
-                    alignItems="center"
-                    columnGap="2"
-                    flexDirection="row"
-                    width="70%"
-                  >
-                    <CardIcon type={cardType} />
-
-                    <DynamicText
-                      fontFamily="Halver-Semibold"
-                      marginLeft="1"
-                      variant="sm"
-                    >
-                      •••• {last4}
-                    </DynamicText>
-
-                    <DynamicText
-                      color="textLight"
-                      fontFamily="Halver-Semibold"
-                      maxWidth="65%"
-                      numberOfLines={1}
-                      variant="sm"
-                    >
-                      {!!bank && convertKebabAndSnakeToTitleCase(bank)}
-                    </DynamicText>
-                  </Box>
-
-                  {isDefault && <SelectTick height={16} width={16} />}
-                  {!isDefault && <SelectInactiveItem height={16} width={16} />}
-                </TouchableOpacity>
+                  last4={last4}
+                  setDefaultCard={setDefaultCard}
+                  uuid={uuid}
+                />
               );
             })}
           </ScrollView>
