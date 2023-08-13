@@ -74,7 +74,7 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
           maxHeight="81%"
           opacity={isSetDefaultCardLoading || isDeleteCardLoading ? 0.6 : 1}
           paddingBottom="8"
-          paddingTop="3.5"
+          paddingTop="5"
           pointerEvents={
             isSetDefaultCardLoading || isDeleteCardLoading ? 'none' : undefined
           }

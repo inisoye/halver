@@ -1,3 +1,4 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import {
@@ -16,9 +17,12 @@ import {
 } from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
 import { CirclePlus, CreditCard } from '@/icons';
+import { FinancialsStackParamList } from '@/navigation';
 import { gapStyles } from '@/theme';
 
-export const Cards: React.FunctionComponent = () => {
+type CardsProps = NativeStackScreenProps<FinancialsStackParamList, 'Cards'>;
+
+export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
   const {
     state: isModalOpen,
     setTrue: openModal,
@@ -44,6 +48,10 @@ export const Cards: React.FunctionComponent = () => {
 
   const areThereCards = !areCardsLoading && !!sortedCards && sortedCards?.length > 0;
   const onlyOneCardAvailable = sortedCards?.length === 1;
+
+  const goToAddCard = () => {
+    navigation.navigate('Add your card');
+  };
 
   return (
     <>
@@ -105,6 +113,7 @@ export const Cards: React.FunctionComponent = () => {
               mb="1"
               paddingHorizontal="4"
               paddingVertical="2.5"
+              onPress={goToAddCard}
             >
               <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">
                 <CreditCard />

@@ -1,11 +1,18 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
-import { Cards, Financials, Transactions, TransferRecipients } from '@/screens';
+import {
+  AddCard,
+  Cards,
+  Financials,
+  Transactions,
+  TransferRecipients,
+} from '@/screens';
 
 export type FinancialsStackParamList = {
   Financials: undefined;
   Cards: undefined;
+  'Add your card': undefined;
   'Transfer recipients': undefined;
   Transactions: undefined;
 };
@@ -26,6 +33,14 @@ export const FinancialsStackNavigator: React.FunctionComponent = () => {
       <FinancialsStack.Screen
         component={Cards}
         name="Cards"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <FinancialsStack.Screen
+        component={AddCard}
+        name="Add your card"
         options={{
           headerShown: false,
         }}

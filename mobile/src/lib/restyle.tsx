@@ -503,7 +503,7 @@ const theme = createTheme({
     billScreenBackground: brandColors.pharlap2,
     billMeterBackground: brandColors.pharlap7,
 
-    defaultItemTagBg: brandColors.casal6,
+    defaultItemTagBg: brandColors.casal7,
 
     cardStripBg: brandColors.pharlap7,
   },
