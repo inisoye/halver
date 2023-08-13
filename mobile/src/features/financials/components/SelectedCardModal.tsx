@@ -75,6 +75,7 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
           maxHeight="81%"
           opacity={isSetDefaultCardLoading || isDeleteCardLoading ? 0.6 : 1}
           paddingBottom="8"
+          paddingTop={isDefault ? undefined : '5'}
           pointerEvents={
             isSetDefaultCardLoading || isDeleteCardLoading ? 'none' : undefined
           }
@@ -88,7 +89,7 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
               marginBottom="5"
               opacity={0.8}
               paddingHorizontal="6"
-              paddingVertical="2"
+              paddingVertical="1.5"
             >
               <Text
                 color="textInverse"
@@ -145,7 +146,7 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
 
           <Box
             alignItems="center"
-            backgroundColor="grayA11"
+            backgroundColor="grayA8"
             columnGap="3"
             flexDirection="row"
             justifyContent="space-between"
@@ -156,7 +157,7 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
             <Box columnGap="3" flexDirection="row" maxWidth="80%">
               {cardDigits.map(digits => {
                 return (
-                  <Text color="textInverse" fontFamily="Halver-Semibold" key={digits}>
+                  <Text fontFamily="Halver-Semibold" key={digits}>
                     {digits}
                   </Text>
                 );

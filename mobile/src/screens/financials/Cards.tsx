@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import {
@@ -17,7 +17,7 @@ import {
 } from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
 import { CirclePlus, CreditCard } from '@/icons';
-import { FinancialsStackParamList } from '@/navigation';
+import type { FinancialsStackParamList } from '@/navigation';
 import { gapStyles } from '@/theme';
 
 type CardsProps = NativeStackScreenProps<FinancialsStackParamList, 'Cards'>;

@@ -4,20 +4,18 @@ import { WebViewNavigation } from 'react-native-webview';
 
 import {
   Box,
-  Button,
   DynamicText,
   KeyboardStickyButton,
   PaddedScreenHeader,
   Screen,
   Text,
 } from '@/components';
-import {
-  PaystackCardAdditionModal,
-  useGetCardAdditionURL,
-} from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
 import { allStaticQueryKeys } from '@/lib/react-query';
 import { showToast } from '@/lib/root-toast';
+
+import { useGetCardAdditionURL } from '../api';
+import { PaystackCardAdditionModal } from './PaystackCardAdditionModal';
 
 interface AddCardFormProps {
   onComplete: () => void;
@@ -114,29 +112,15 @@ export const AddCardForm: React.FunctionComponent<AddCardFormProps> = React.memo
             </DynamicText>
           </Box>
 
-          {isOnboarding ? (
-            <KeyboardStickyButton
-              backgroundColor="buttonCasal"
-              disabled={isAddCardButtonDisabled}
-              onPress={openModal}
-            >
-              <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
-                {isAddCardButtonDisabled ? 'Loading...' : 'Add card'}
-              </Text>
-            </KeyboardStickyButton>
-          ) : (
-            <Box backgroundColor="background" paddingHorizontal="6" paddingVertical="3">
-              <Button
-                backgroundColor="buttonCasal"
-                disabled={isAddCardButtonDisabled}
-                onPress={openModal}
-              >
-                <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
-                  {isAddCardButtonDisabled ? 'Loading...' : 'Add card'}
-                </Text>
-              </Button>
-            </Box>
-          )}
+          <KeyboardStickyButton
+            backgroundColor="buttonCasal"
+            disabled={isAddCardButtonDisabled}
+            onPress={openModal}
+          >
+            <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
+              {isAddCardButtonDisabled ? 'Loading...' : 'Add card'}
+            </Text>
+          </KeyboardStickyButton>
         </Screen>
 
         {!!authorizationUrl && (

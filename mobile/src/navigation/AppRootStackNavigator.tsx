@@ -3,6 +3,8 @@ import * as React from 'react';
 
 import type { BillActionStatus } from '@/features/bills';
 import {
+  AddCard,
+  AddTransferRecipient,
   BillDetails,
   BillParticipants,
   BillPayment,
@@ -44,6 +46,8 @@ export type AppRootStackParamList = {
     firstChargeDate: string | null | undefined;
     name: string;
   };
+  'Add your card': undefined;
+  'Add a recipient': undefined;
 };
 
 const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
@@ -68,6 +72,23 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
         <AppRootStack.Screen
           component={BillPayment}
           name="Bill Payment"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </AppRootStack.Group>
+
+      <AppRootStack.Group screenOptions={{ headerShown: false }}>
+        <AppRootStack.Screen
+          component={AddCard}
+          name="Add your card"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <AppRootStack.Screen
+          component={AddTransferRecipient}
+          name="Add a recipient"
           options={{
             headerShown: false,
           }}

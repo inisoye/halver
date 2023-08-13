@@ -120,6 +120,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
               : 1
           }
           paddingBottom="8"
+          paddingTop={isDefault ? undefined : '5'}
           pointerEvents={
             isSetDefaultTransferRecipientLoading || isDeleteTransferRecipientLoading
               ? 'none'
@@ -135,7 +136,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
               marginBottom="5"
               opacity={0.8}
               paddingHorizontal="6"
-              paddingVertical="2"
+              paddingVertical="1.5"
             >
               <Text
                 color="textInverse"

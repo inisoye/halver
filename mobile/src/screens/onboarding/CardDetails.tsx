@@ -2,7 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import { AddCardForm } from '@/features/financials';
-import { OnboardingStackParamList } from '@/navigation';
+import type { OnboardingStackParamList } from '@/navigation';
 
 type CardDetailsProps = NativeStackScreenProps<OnboardingStackParamList, 'CardDetails'>;
 

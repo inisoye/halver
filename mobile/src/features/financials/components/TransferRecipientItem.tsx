@@ -53,7 +53,7 @@ export const TransferRecipientItem: React.FunctionComponent<TransferRecipientIte
           {bankLogo ? (
             <Image
               backgroundColor={bankLogo ? 'white' : 'bankImageBackground'}
-              borderRadius="md"
+              borderRadius="base"
               contentFit="contain"
               height={24}
               source={bankLogo}
@@ -63,7 +63,7 @@ export const TransferRecipientItem: React.FunctionComponent<TransferRecipientIte
             <Box
               alignItems="center"
               backgroundColor="white"
-              borderRadius="md"
+              borderRadius="base"
               height={24}
               justifyContent="center"
               width={24}

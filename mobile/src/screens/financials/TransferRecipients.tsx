@@ -1,3 +1,4 @@
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import {
@@ -16,9 +17,17 @@ import {
 } from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
 import { BankEmoji, CirclePlus } from '@/icons';
+import type { FinancialsStackParamList } from '@/navigation';
 import { gapStyles } from '@/theme';
 
-export const TransferRecipients: React.FunctionComponent = () => {
+type TransferRecipientsProps = NativeStackScreenProps<
+  FinancialsStackParamList,
+  'Transfer recipients'
+>;
+
+export const TransferRecipients: React.FunctionComponent<TransferRecipientsProps> = ({
+  navigation,
+}) => {
   const {
     state: isModalOpen,
     setTrue: openModal,
@@ -53,6 +62,10 @@ export const TransferRecipients: React.FunctionComponent = () => {
     !!sortedTransferRecipients &&
     sortedTransferRecipients?.length > 0;
   const onlyOneRecipientAvailable = sortedTransferRecipients?.length === 1;
+
+  const goToAddTransferRecipient = () => {
+    navigation.navigate('Add a recipient');
+  };
 
   return (
     <>
@@ -117,6 +130,7 @@ export const TransferRecipients: React.FunctionComponent = () => {
               mb="1"
               paddingHorizontal="4"
               paddingVertical="2.5"
+              onPress={goToAddTransferRecipient}
             >
               <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">
                 <BankEmoji height={24} width={24} />
