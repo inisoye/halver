@@ -191,14 +191,16 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
               <Text color="textLight" variant="sm">
                 To
               </Text>
-              <Text variant="sm">{creditorName}</Text>
+              <Text fontFamily="Halver-Semibold" variant="sm">
+                {creditorName}
+              </Text>
             </Box>
 
             <Box flexDirection="row" gap="4" justifyContent="space-between">
               <Text color="textLight" variant="sm">
                 Your contribution
               </Text>
-              <Text variant="sm">
+              <Text fontFamily="Halver-Semibold" variant="sm">
                 {contribution ? convertNumberToNaira(Number(contribution)) : undefined}
               </Text>
             </Box>
@@ -207,7 +209,7 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
               <Text color="textLight" variant="sm">
                 Fee
               </Text>
-              <Text variant="sm">
+              <Text fontFamily="Halver-Semibold" variant="sm">
                 {fee ? convertNumberToNaira(Number(fee)) : undefined}
               </Text>
             </Box>
@@ -216,7 +218,7 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
               <Text color="textLight" variant="sm">
                 Deduction pattern
               </Text>
-              <Text variant="sm">
+              <Text fontFamily="Halver-Semibold" variant="sm">
                 {deductionPattern === 'None'
                   ? 'One time'
                   : convertKebabAndSnakeToTitleCase(deductionPattern)}
@@ -227,7 +229,7 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
               <Text color="textLight" variant="sm">
                 Deadline
               </Text>
-              <Text variant="sm">
+              <Text fontFamily="Halver-Semibold" variant="sm">
                 {deadline ? new Date(deadline).toDateString() : undefined}
               </Text>
             </Box>

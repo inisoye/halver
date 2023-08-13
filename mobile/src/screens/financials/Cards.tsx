@@ -8,12 +8,29 @@ import {
   ScrollView,
   TouchableOpacity,
 } from '@/components';
-import { CardIcon, useCards } from '@/features/financials';
+import {
+  CardItem,
+  SelectedCardModal,
+  useCards,
+  type Card,
+} from '@/features/financials';
+import { useBooleanStateControl } from '@/hooks';
 import { CirclePlus, CreditCard } from '@/icons';
 import { gapStyles } from '@/theme';
-import { convertKebabAndSnakeToTitleCase } from '@/utils';
 
 export const Cards: React.FunctionComponent = () => {
+  const {
+    state: isModalOpen,
+    setTrue: openModal,
+    setFalse: closeModal,
+  } = useBooleanStateControl();
+
+  const [selectedCard, _setSelectedCard] = React.useState<Card | undefined>(undefined);
+
+  const setSelectedCard = React.useCallback((card: Card) => {
+    _setSelectedCard(card);
+  }, []);
+
   const { data: cardsResponse, isLoading: areCardsLoading } = useCards();
 
   const { results: cards } = cardsResponse || {};
@@ -29,117 +46,86 @@ export const Cards: React.FunctionComponent = () => {
   const onlyOneCardAvailable = sortedCards?.length === 1;
 
   return (
-    <Screen>
-      <FullScreenLoader isVisible={areCardsLoading} message="Loading your cards..." />
+    <>
+      <SelectedCardModal
+        closeModal={closeModal}
+        isModalOpen={isModalOpen}
+        selectedCard={selectedCard}
+      />
 
-      {!areCardsLoading && (
-        <Box flex={1} paddingHorizontal="6" paddingVertical="2">
-          {areThereCards ? (
-            <DynamicText color="textLight" marginBottom="4" maxWidth="90%" variant="sm">
-              {onlyOneCardAvailable
-                ? 'Cards are used to make contributions on Halver. You have only one card added.'
-                : 'Cards are used to make contributions on Halver. Select a card below to delete it or make it your default.'}
-            </DynamicText>
-          ) : (
-            <DynamicText color="textLight" marginBottom="4" maxWidth="90%" variant="sm">
-              Cards are used to make contributions on Halver. You currently have none
-              added.
-            </DynamicText>
-          )}
+      <Screen>
+        <FullScreenLoader isVisible={areCardsLoading} message="Loading your cards..." />
 
-          <ScrollView contentContainerStyle={gapStyles[12]} flexGrow={0}>
-            {sortedCards?.map(({ cardType, last4, uuid, bank, isDefault }) => {
-              return (
-                <TouchableOpacity
-                  alignItems="center"
-                  backgroundColor="elementBackground"
-                  borderRadius="base"
-                  columnGap="3"
-                  flexDirection="row"
-                  justifyContent="space-between"
-                  key={uuid}
-                  paddingHorizontal="4"
-                  paddingVertical="2.5"
-                >
-                  <Box
-                    alignItems="center"
-                    columnGap="2"
-                    flexDirection="row"
-                    width="70%"
-                  >
-                    <CardIcon type={cardType} />
-
-                    <DynamicText
-                      fontFamily="Halver-Semibold"
-                      marginLeft="1"
-                      variant="sm"
-                    >
-                      •••• {last4}
-                    </DynamicText>
-
-                    <DynamicText
-                      color="textLight"
-                      fontFamily="Halver-Semibold"
-                      maxWidth="65%"
-                      numberOfLines={1}
-                      variant="sm"
-                    >
-                      {!!bank && convertKebabAndSnakeToTitleCase(bank)}
-                    </DynamicText>
-                  </Box>
-
-                  {isDefault && (
-                    <Box
-                      backgroundColor="defaultItemTagBg"
-                      borderRadius="base"
-                      px="2"
-                      py="1"
-                    >
-                      <DynamicText
-                        color="textWhite"
-                        fontFamily="Halver-Semibold"
-                        variant="xxs"
-                      >
-                        Default
-                      </DynamicText>
-                    </Box>
-                  )}
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-
-          <TouchableOpacity
-            alignItems="center"
-            backgroundColor="elementBackground"
-            borderRadius="base"
-            columnGap="3"
-            flexDirection="row"
-            justifyContent="space-between"
-            marginTop="3"
-            mb="1"
-            paddingHorizontal="4"
-            paddingVertical="2.5"
-          >
-            <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">
-              <CreditCard />
-
+        {!areCardsLoading && (
+          <Box flex={1} paddingHorizontal="6" paddingVertical="2">
+            {areThereCards ? (
               <DynamicText
                 color="textLight"
-                fontFamily="Halver-Semibold"
-                marginLeft="1"
-                maxWidth="65%"
-                numberOfLines={1}
+                marginBottom="4"
+                maxWidth="90%"
                 variant="sm"
               >
-                Add a new card
+                {onlyOneCardAvailable
+                  ? 'Cards are used to make contributions on Halver. You have only one card added.'
+                  : 'Cards are used to make contributions on Halver. Select a card below to delete it or make it your default.'}
               </DynamicText>
-            </Box>
+            ) : (
+              <DynamicText
+                color="textLight"
+                marginBottom="4"
+                maxWidth="90%"
+                variant="sm"
+              >
+                Cards are used to make contributions on Halver. You currently have none
+                added.
+              </DynamicText>
+            )}
 
-            <CirclePlus />
-          </TouchableOpacity>
-        </Box>
-      )}
-    </Screen>
+            <ScrollView contentContainerStyle={gapStyles[12]} flexGrow={0}>
+              {sortedCards?.map(card => {
+                return (
+                  <CardItem
+                    card={card}
+                    key={card.uuid}
+                    openModal={openModal}
+                    setSelectedCard={setSelectedCard}
+                  />
+                );
+              })}
+            </ScrollView>
+
+            <TouchableOpacity
+              alignItems="center"
+              backgroundColor="elementBackground"
+              borderRadius="base"
+              columnGap="3"
+              flexDirection="row"
+              justifyContent="space-between"
+              marginTop="3"
+              mb="1"
+              paddingHorizontal="4"
+              paddingVertical="2.5"
+            >
+              <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">
+                <CreditCard />
+
+                <DynamicText
+                  color="textLight"
+                  fontFamily="Halver-Semibold"
+                  marginLeft="1"
+                  maxWidth="65%"
+                  numberOfLines={1}
+                  variant="sm"
+                >
+                  Add a new card
+                </DynamicText>
+              </Box>
+
+              <CirclePlus />
+            </TouchableOpacity>
+          </Box>
+        )}
+      </Screen>
+    </>
   );
 };

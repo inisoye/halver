@@ -46,17 +46,6 @@ export const Home = ({ navigation }: HomeProps) => {
             </Button>
           </Box>
         </Card>
-
-        <Button
-          backgroundColor="buttonPharlap"
-          onPress={() => {
-            navigation.navigate('Bill Summary');
-          }}
-        >
-          <Text color="buttonTextPharlap" fontFamily="Halver-Semibold" variant="sm">
-            Just go
-          </Text>
-        </Button>
       </Box>
     </Screen>
   );

@@ -452,12 +452,14 @@ const theme = createTheme({
     buttonCasal: brandColors.casal7,
     buttonPharlap: brandColors.pharlap7,
     buttonNeutral: lightColors.gray2,
+    buttonDangerLighter: lightColors.red4,
     buttonNeutralDarker: lightColors.gray5,
 
     buttonTextApricot: lightColors.gray1,
     buttonTextCasal: lightColors.gray1,
     buttonTextPharlap: lightColors.gray1,
     buttonTextNeutral: lightColors.gray12,
+    buttonTextDanger: lightColors.red11,
 
     radioButtonBackgroundDefault: lightColors.gray1,
     radioButtonBackgroundSelected: brandColors.apricot8,
@@ -502,6 +504,8 @@ const theme = createTheme({
     billMeterBackground: brandColors.pharlap7,
 
     defaultItemTagBg: brandColors.casal6,
+
+    cardStripBg: brandColors.pharlap7,
   },
   spacing: tailwindSpacing,
   breakpoints: {
@@ -649,12 +653,14 @@ const darkTheme: Theme = {
     buttonCasal: brandColors.casal7,
     buttonPharlap: brandColors.pharlap6,
     buttonNeutral: darkColors.gray3,
+    buttonDangerLighter: darkColors.red3,
     buttonNeutralDarker: darkColors.gray3,
 
     buttonTextApricot: darkColors.gray1,
     buttonTextCasal: darkColors.gray12,
     buttonTextPharlap: darkColors.gray1,
     buttonTextNeutral: darkColors.gray12,
+    buttonTextDanger: darkColors.red11,
 
     radioButtonBackgroundDefault: darkColors.gray4,
     radioButtonBackgroundSelected: brandColors.apricot6,
@@ -698,6 +704,8 @@ const darkTheme: Theme = {
     billMeterBackground: brandColors.pharlap6,
 
     defaultItemTagBg: brandColors.casal7,
+
+    cardStripBg: brandColors.pharlap6,
   },
 };
 
