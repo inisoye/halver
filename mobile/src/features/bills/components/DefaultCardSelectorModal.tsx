@@ -1,3 +1,5 @@
+import type { CompositeNavigationProp } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { UseMutateFunction } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import * as React from 'react';
@@ -14,6 +16,7 @@ import {
 import { CardIcon, useCards, useSetDefaultCard } from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
 import { CirclePlus, CreditCard, SelectInactiveItem, SelectTick } from '@/icons';
+import type { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 import {
   convertKebabAndSnakeToTitleCase,
   handleAxiosErrorAlertAndHaptics,
@@ -85,7 +88,16 @@ const CardItem: React.FunctionComponent<CardItemProps> = React.memo(
   },
 );
 
-export const DefaultCardSelectorModal: React.FunctionComponent = () => {
+interface DefaultCardSelectorModalProps {
+  navigation: CompositeNavigationProp<
+    NativeStackNavigationProp<BillsStackParamList, 'Bill Payment', undefined>,
+    NativeStackNavigationProp<AppRootStackParamList, 'Bill Payment', undefined>
+  >;
+}
+
+export const DefaultCardSelectorModal: React.FunctionComponent<
+  DefaultCardSelectorModalProps
+> = ({ navigation }) => {
   const { data: cardsResponse, isLoading: areCardsLoading } = useCards();
 
   const { results: cards } = cardsResponse || {};
@@ -107,6 +119,11 @@ export const DefaultCardSelectorModal: React.FunctionComponent = () => {
 
   const { mutate: setDefaultCard, isLoading: isSetDefaultCardLoading } =
     useSetDefaultCard();
+
+  const goToAddCard = () => {
+    closeCardsModal();
+    navigation.navigate('Add your card');
+  };
 
   return (
     <>
@@ -171,6 +188,7 @@ export const DefaultCardSelectorModal: React.FunctionComponent = () => {
             justifyContent="space-between"
             paddingHorizontal="4"
             paddingVertical="2.5"
+            onPress={goToAddCard}
           >
             <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">
               <CreditCard />

@@ -8,28 +8,23 @@ import { useIsDarkMode } from '@/utils';
 
 type NewBillProps = ISvgProps;
 
-export const NewBill: React.FunctionComponent<NewBillProps> = ({ ...otherProps }) => {
+export const NewBill: React.FunctionComponent<NewBillProps> = ({ ...props }) => {
   const isDarkMode = useIsDarkMode();
   const { colors } = useTheme<Theme>();
 
   return (
     <Svg
       fill="none"
-      height={44}
-      viewBox="0 0 44 44"
-      width={44}
+      height={40}
+      viewBox="0 0 40 40"
+      width={40}
       xmlns="http://www.w3.org/2000/svg"
-      {...otherProps}
+      {...props}
     >
-      <Rect
-        fill={isDarkMode ? colors.apricot6 : '#F3C1B9'}
-        height={44}
-        rx={8}
-        width={44}
-      />
+      <Rect fill={colors.apricot6} height={40} rx={8} width={40} />
       <Path
-        d="M34 22a1 1 0 0 1-1 1H23v10a1 1 0 0 1-2 0V23H11a1 1 0 0 1 0-2h10V11a1 1 0 0 1 2 0v10h10a1 1 0 0 1 1 1Z"
-        fill={isDarkMode ? colors.gray1 : '#844439'}
+        d="M31.666 20a.972.972 0 0 1-.972.972h-9.722v9.722a.972.972 0 1 1-1.945 0v-9.722H9.306a.972.972 0 1 1 0-1.944h9.723V9.305a.972.972 0 1 1 1.944 0v9.723h9.722a.972.972 0 0 1 .972.972Z"
+        fill={isDarkMode ? colors.gray1 : colors.gray1}
       />
     </Svg>
   );

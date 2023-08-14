@@ -234,9 +234,19 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
           >
             <Box
               backgroundColor="modalBackground"
+              opacity={
+                isValidateAccountDetailsLoading || isCreateTransferRecipientLoading
+                  ? 0.6
+                  : 1
+              }
               paddingBottom="10"
               paddingHorizontal="6"
               paddingTop="6"
+              pointerEvents={
+                isValidateAccountDetailsLoading || isCreateTransferRecipientLoading
+                  ? 'none'
+                  : undefined
+              }
             >
               <Text fontFamily="Halver-Semibold" marginBottom="3">
                 Is this you?
@@ -249,6 +259,9 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
               <Box flexDirection="row" gap="3">
                 <Button
                   backgroundColor="buttonNeutralDarker"
+                  disabled={
+                    isValidateAccountDetailsLoading || isCreateTransferRecipientLoading
+                  }
                   flex={1}
                   onPress={closeConfirmationModal}
                 >
@@ -256,7 +269,9 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
                 </Button>
                 <Button
                   backgroundColor="buttonCasal"
-                  disabled={isCreateTransferRecipientLoading}
+                  disabled={
+                    isValidateAccountDetailsLoading || isCreateTransferRecipientLoading
+                  }
                   flex={1}
                   onPress={onCreateTransferRecipientSubmit}
                 >

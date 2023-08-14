@@ -259,7 +259,7 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
             </Text>
           </Box>
 
-          <DefaultCardSelectorModal />
+          <DefaultCardSelectorModal navigation={navigation} />
         </AnimatedBox>
       )}
 

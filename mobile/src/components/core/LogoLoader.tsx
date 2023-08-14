@@ -7,7 +7,7 @@ import {
   withSpring,
   withTiming,
   ZoomInLeft,
-  ZoomOutRight,
+  ZoomOutLeft,
 } from 'react-native-reanimated';
 
 import { AnimatedBox } from './Box';
@@ -52,7 +52,7 @@ export const LogoLoader: React.FunctionComponent = () => {
   return (
     <AnimatedBox
       entering={ZoomInLeft.duration(600)}
-      exiting={ZoomOutRight.duration(600)}
+      exiting={ZoomOutLeft.duration(600)}
       flexDirection="row"
       zIndex="10"
     >

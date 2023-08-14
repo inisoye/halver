@@ -87,6 +87,7 @@ export const AddCardForm: React.FunctionComponent<AddCardFormProps> = React.memo
 
             <Text
               color="textLight"
+              lineHeight={19}
               marginTop="1"
               paddingHorizontal="6"
               paddingVertical="2"

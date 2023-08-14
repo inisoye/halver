@@ -172,8 +172,16 @@ const ContactOption: React.FunctionComponent<ContactOptionProps> = ({
           item={item}
         />
 
-        {isSelected && <SelectTick style={{ marginRight: iconMargin }} />}
-        {!isSelected && <SelectInactiveItem style={{ marginRight: iconMargin }} />}
+        {isSelected && (
+          <SelectTick height={18} style={{ marginRight: iconMargin }} width={18} />
+        )}
+        {!isSelected && (
+          <SelectInactiveItem
+            height={18}
+            style={{ marginRight: iconMargin }}
+            width={18}
+          />
+        )}
       </Box>
     </RectButton>
   );

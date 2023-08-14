@@ -73,6 +73,7 @@ export const allStaticQueryKeys = {
   getRegisteredContacts: ['registered-contacts'],
   getTransferRecipients: ['transfer-recipients'],
   getUserDetails: ['user-details'],
+  getUserTransactions: ['user-transactions'],
 };
 
 /**

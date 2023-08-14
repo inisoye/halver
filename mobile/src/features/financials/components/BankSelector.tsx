@@ -20,11 +20,11 @@ import { useBooleanStateControl } from '@/hooks';
 import { Search, SelectCaret, SelectInactiveItem, SelectTick } from '@/icons';
 import { Theme } from '@/lib/restyle';
 import { PaystackBank } from '@/lib/zod';
-import { BankDetailsFormValues } from '@/screens';
 import { marginAutoStyles } from '@/theme';
 import { getInitials, isIOS } from '@/utils';
 
 import { BanksList } from '../api';
+import type { BankDetailsFormValues } from './AddTransferRecipientForm';
 
 type SelectedBank = z.infer<typeof PaystackBank>;
 
@@ -96,8 +96,16 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
         </DynamicText>
       </Box>
 
-      {isSelected && <SelectTick style={{ marginRight: spacing[6] }} />}
-      {!isSelected && <SelectInactiveItem style={{ marginRight: spacing[6] }} />}
+      {isSelected && (
+        <SelectTick height={18} style={{ marginRight: spacing[6] }} width={18} />
+      )}
+      {!isSelected && (
+        <SelectInactiveItem
+          height={18}
+          style={{ marginRight: spacing[6] }}
+          width={18}
+        />
+      )}
     </Pressable>
   );
 };
@@ -170,7 +178,7 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
     <>
       <TextFieldLabel label="Your bank" />
       <Button
-        backgroundColor="buttonNeutral"
+        backgroundColor="inputBackground"
         disabled={!banks}
         marginTop="1.5"
         paddingHorizontal="4"
@@ -182,21 +190,21 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
             {selectedBank.logo ? (
               <Image
                 backgroundColor="white"
-                borderRadius="md"
+                borderRadius="base"
                 contentFit="contain"
-                height={24}
+                height={18}
                 key={selectedBank.name}
                 source={selectedBank.logo}
-                width={24}
+                width={18}
               />
             ) : (
               <Box
                 alignItems="center"
                 backgroundColor="white"
-                borderRadius="md"
-                height={24}
+                borderRadius="base"
+                height={18}
                 justifyContent="center"
-                width={24}
+                width={18}
               >
                 <Text color="textBlack" fontFamily="Halver-Semibold" variant="xxs">
                   {selectedInitials}

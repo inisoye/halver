@@ -4,6 +4,7 @@ export * from './deleteTransferRecipient';
 export * from './getBanks';
 export * from './getCards';
 export * from './getTransferRecipients';
+export * from './getUserTransactions';
 export * from './initializeCardAddition';
 export * from './setDefaultCard';
 export * from './setDefaultTransferRecipient';
