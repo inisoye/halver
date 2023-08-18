@@ -42,6 +42,9 @@ export const useUpdateBillAction = () => {
         queryKey: allStaticQueryKeys.getBillTransactions,
       });
       queryClient.invalidateQueries({
+        queryKey: allStaticQueryKeys.getUserTransactions,
+      });
+      queryClient.invalidateQueries({
         queryKey: allStaticQueryKeys.getActionStatusCounts,
       });
     },
