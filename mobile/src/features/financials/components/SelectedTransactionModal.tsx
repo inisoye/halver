@@ -185,7 +185,7 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
                   Go to bill
                 </Text>
 
-                <GoToArrow />
+                <GoToArrow isLight />
               </Box>
             </Button>
           </Box>
