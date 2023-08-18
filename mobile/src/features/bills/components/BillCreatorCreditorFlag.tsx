@@ -27,7 +27,7 @@ export const BillCreatorCreditorFlag: React.FunctionComponent<BillCreatorCredito
         justifyContent="space-between"
         opacity={0.8}
         paddingHorizontal="2.5"
-        paddingVertical="2"
+        paddingVertical="1.5"
         width="48%"
       >
         <Box width="70%">

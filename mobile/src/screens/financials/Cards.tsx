@@ -65,12 +65,13 @@ export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
         <FullScreenLoader isVisible={areCardsLoading} message="Loading your cards..." />
 
         {!areCardsLoading && (
-          <Box flex={1} paddingHorizontal="6" paddingVertical="2">
+          <Box flex={1} paddingVertical="2">
             {areThereCards ? (
               <DynamicText
                 color="textLight"
                 marginBottom="4"
                 maxWidth="90%"
+                paddingHorizontal="6"
                 variant="sm"
               >
                 {onlyOneCardAvailable
@@ -82,6 +83,7 @@ export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
                 color="textLight"
                 marginBottom="4"
                 maxWidth="90%"
+                paddingHorizontal="6"
                 variant="sm"
               >
                 Cards are used to make contributions on Halver. You currently have none
@@ -89,7 +91,12 @@ export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
               </DynamicText>
             )}
 
-            <ScrollView contentContainerStyle={gapStyles[12]} flexGrow={0}>
+            <ScrollView
+              contentContainerStyle={gapStyles[12]}
+              flexGrow={0}
+              paddingBottom="0.5"
+              paddingHorizontal="6"
+            >
               {sortedCards?.map(card => {
                 return (
                   <CardItem
@@ -102,36 +109,38 @@ export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
               })}
             </ScrollView>
 
-            <TouchableOpacity
-              alignItems="center"
-              backgroundColor="elementBackground"
-              borderRadius="base"
-              columnGap="3"
-              flexDirection="row"
-              justifyContent="space-between"
-              marginTop="3"
-              mb="1"
-              paddingHorizontal="4"
-              paddingVertical="2.5"
-              onPress={goToAddCard}
-            >
-              <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">
-                <CreditCard />
+            <Box paddingHorizontal="6">
+              <TouchableOpacity
+                alignItems="center"
+                backgroundColor="inputBackground"
+                borderRadius="md"
+                columnGap="3"
+                flexDirection="row"
+                justifyContent="space-between"
+                marginTop="3"
+                mb="1"
+                paddingHorizontal="4"
+                paddingVertical="2.5"
+                onPress={goToAddCard}
+              >
+                <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">
+                  <CreditCard />
 
-                <DynamicText
-                  color="textLight"
-                  fontFamily="Halver-Semibold"
-                  marginLeft="1"
-                  maxWidth="65%"
-                  numberOfLines={1}
-                  variant="sm"
-                >
-                  Add a new card
-                </DynamicText>
-              </Box>
+                  <DynamicText
+                    color="textLight"
+                    fontFamily="Halver-Semibold"
+                    marginLeft="1"
+                    maxWidth="65%"
+                    numberOfLines={1}
+                    variant="sm"
+                  >
+                    Add a new card
+                  </DynamicText>
+                </Box>
 
-              <CirclePlus />
-            </TouchableOpacity>
+                <CirclePlus />
+              </TouchableOpacity>
+            </Box>
           </Box>
         )}
       </Screen>

@@ -64,8 +64,6 @@ const BillRecentContributionItem: React.FunctionComponent<
   );
 };
 
-export default BillRecentContributionItem;
-
 const hitSlop = {
   top: 10,
   right: 40,

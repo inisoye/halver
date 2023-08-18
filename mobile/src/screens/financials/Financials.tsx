@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { FadeInDown, StretchInY } from 'react-native-reanimated';
+import { FadeInDown } from 'react-native-reanimated';
 
 import { AnimatedTouchableOpacity, Box, Screen, Text } from '@/components';
 import {
@@ -30,16 +30,15 @@ export const Financials: React.FunctionComponent<FinancialsProps> = ({
     <Screen>
       <Box flex={1} gap="4" paddingHorizontal="6" paddingVertical="2">
         <AnimatedTouchableOpacity
-          backgroundColor="buttonNeutral"
-          borderRadius="lg"
+          backgroundColor="inputBackground"
+          borderRadius="md"
           elevation={1}
-          entering={StretchInY.springify()}
           gap="16"
           padding="4"
           shadowColor="black"
           shadowOffset={{
-            width: 0.1,
-            height: 0.3,
+            width: 0,
+            height: 0.5,
           }}
           shadowOpacity={0.2}
           shadowRadius={0.3}
@@ -63,10 +62,10 @@ export const Financials: React.FunctionComponent<FinancialsProps> = ({
 
         <AnimatedTouchableOpacity
           alignItems="center"
-          backgroundColor="buttonNeutral"
-          borderRadius="lg"
+          backgroundColor="inputBackground"
+          borderRadius="md"
           elevation={1}
-          entering={FadeInDown.springify().delay(400)}
+          entering={FadeInDown.springify().delay(100)}
           flexDirection="row"
           gap="4"
           justifyContent="space-between"
@@ -74,7 +73,7 @@ export const Financials: React.FunctionComponent<FinancialsProps> = ({
           paddingVertical="2.5"
           shadowColor="black"
           shadowOffset={{
-            width: 0.1,
+            width: 0,
             height: 0.3,
           }}
           shadowOpacity={0.2}
@@ -94,10 +93,10 @@ export const Financials: React.FunctionComponent<FinancialsProps> = ({
 
         <AnimatedTouchableOpacity
           alignItems="center"
-          backgroundColor="buttonNeutral"
-          borderRadius="lg"
+          backgroundColor="inputBackground"
+          borderRadius="md"
           elevation={1}
-          entering={FadeInDown.springify().delay(750)}
+          entering={FadeInDown.springify().delay(200)}
           flexDirection="row"
           gap="4"
           justifyContent="space-between"
@@ -105,7 +104,7 @@ export const Financials: React.FunctionComponent<FinancialsProps> = ({
           paddingVertical="2.5"
           shadowColor="black"
           shadowOffset={{
-            width: 0.1,
+            width: 0,
             height: 0.3,
           }}
           shadowOpacity={0.2}

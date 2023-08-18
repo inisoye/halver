@@ -467,7 +467,7 @@ const theme = createTheme({
     imageBackground: neutralColors.white,
     missingImageBackground: lightColors.gray7,
 
-    inputBackground: lightColors.gray2,
+    inputBackground: lightColors.gray1,
     inputBackgroundDarker: lightColors.gray4,
     inputText: lightColors.gray12,
     inputErrorBackground: darkColors.red8,

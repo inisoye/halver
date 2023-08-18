@@ -82,12 +82,13 @@ export const TransferRecipients: React.FunctionComponent<TransferRecipientsProps
         />
 
         {!areTransferRecipientsLoading && (
-          <Box flex={1} paddingHorizontal="6" paddingVertical="2">
+          <Box flex={1} paddingVertical="2">
             {areThereRecipients ? (
               <DynamicText
                 color="textLight"
                 marginBottom="4"
                 maxWidth="90%"
+                paddingHorizontal="6"
                 variant="sm"
               >
                 {onlyOneRecipientAvailable
@@ -99,6 +100,7 @@ export const TransferRecipients: React.FunctionComponent<TransferRecipientsProps
                 color="textLight"
                 marginBottom="4"
                 maxWidth="90%"
+                paddingHorizontal="6"
                 variant="sm"
               >
                 Transfer recipients are bank accounts used to receive payments on
@@ -106,7 +108,11 @@ export const TransferRecipients: React.FunctionComponent<TransferRecipientsProps
               </DynamicText>
             )}
 
-            <ScrollView contentContainerStyle={gapStyles[12]} flexGrow={0}>
+            <ScrollView
+              contentContainerStyle={gapStyles[12]}
+              flexGrow={0}
+              paddingHorizontal="6"
+            >
               {sortedTransferRecipients?.map(recipient => {
                 return (
                   <TransferRecipientItem
@@ -119,36 +125,38 @@ export const TransferRecipients: React.FunctionComponent<TransferRecipientsProps
               })}
             </ScrollView>
 
-            <TouchableOpacity
-              alignItems="center"
-              backgroundColor="elementBackground"
-              borderRadius="base"
-              columnGap="3"
-              flexDirection="row"
-              justifyContent="space-between"
-              marginTop="3"
-              mb="1"
-              paddingHorizontal="4"
-              paddingVertical="2.5"
-              onPress={goToAddTransferRecipient}
-            >
-              <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">
-                <BankEmoji height={24} width={24} />
+            <Box paddingHorizontal="6">
+              <TouchableOpacity
+                alignItems="center"
+                backgroundColor="inputBackground"
+                borderRadius="base"
+                columnGap="3"
+                flexDirection="row"
+                justifyContent="space-between"
+                marginTop="3"
+                mb="1"
+                paddingHorizontal="4"
+                paddingVertical="2.5"
+                onPress={goToAddTransferRecipient}
+              >
+                <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">
+                  <BankEmoji height={24} width={24} />
 
-                <DynamicText
-                  color="textLight"
-                  fontFamily="Halver-Semibold"
-                  marginLeft="1"
-                  numberOfLines={1}
-                  variant="sm"
-                  width="90%"
-                >
-                  Add a new transfer recipient
-                </DynamicText>
-              </Box>
+                  <DynamicText
+                    color="textLight"
+                    fontFamily="Halver-Semibold"
+                    marginLeft="1"
+                    numberOfLines={1}
+                    variant="sm"
+                    width="90%"
+                  >
+                    Add a new transfer recipient
+                  </DynamicText>
+                </Box>
 
-              <CirclePlus />
-            </TouchableOpacity>
+                <CirclePlus />
+              </TouchableOpacity>
+            </Box>
           </Box>
         )}
       </Screen>

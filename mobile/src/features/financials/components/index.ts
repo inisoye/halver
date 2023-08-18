@@ -7,3 +7,4 @@ export * from './SelectedCardModal';
 export * from './TransferRecipientItem';
 export * from './SelectedTransferRecipientModal';
 export * from './AddTransferRecipientForm';
+export * from './SelectedTransactionModal';

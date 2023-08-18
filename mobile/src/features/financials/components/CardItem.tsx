@@ -27,8 +27,8 @@ export const CardItem: React.FunctionComponent<CardItemProps> = React.memo(
     return (
       <TouchableOpacity
         alignItems="center"
-        backgroundColor="elementBackground"
-        borderRadius="base"
+        backgroundColor="inputBackground"
+        borderRadius="md"
         columnGap="3"
         flexDirection="row"
         justifyContent="space-between"

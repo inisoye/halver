@@ -22,7 +22,7 @@ const RadioButton: React.FunctionComponent<RadioButtonProps> = React.memo(
       <TouchableOpacity
         alignItems="center"
         backgroundColor={
-          isSelected ? 'radioButtonBackgroundSelected' : 'radioButtonBackgroundDefault'
+          isSelected ? 'radioButtonBackgroundSelected' : 'inputBackground'
         }
         borderRadius="md"
         flexDirection="row"

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "dev": "APP_VARIANT=development EXPO_PUBLIC_APP_VARIANT=development npx expo start -c --dev-client",
+    "dev": "APP_VARIANT=development EXPO_PUBLIC_APP_VARIANT=development npx expo start --dev-client",
     "dev-prod": "APP_VARIANT=development EXPO_PUBLIC_APP_VARIANT=development APP_VARIANT=development EXPO_PUBLIC_APP_VARIANT=development npx expo start -c --dev-client",
     "start": "npx expo start -c --dev-client",
     "start-prod": "npx expo start --dev-client --no-dev --minify",

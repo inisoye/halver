@@ -39,7 +39,7 @@ export const BillDeadlineSelector: React.FunctionComponent<
       <TextFieldLabel label="Select a deadline" />
 
       <Button
-        backgroundColor="buttonNeutral"
+        backgroundColor="inputBackground"
         marginTop="1.5"
         paddingHorizontal="4"
         paddingVertical={isIOS() ? '3' : '3.5'}

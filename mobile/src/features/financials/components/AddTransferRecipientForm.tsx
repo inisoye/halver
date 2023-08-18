@@ -192,6 +192,7 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
                   control={control}
                   keyboardType="number-pad"
                   name="accountNumber"
+                  placeholder="Your 10 digit account number"
                   rules={{
                     required: true,
                   }}
