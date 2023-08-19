@@ -42,49 +42,61 @@ const validateDecimalPlaces = (value: number) => {
   return pattern.test(String(value));
 };
 
-const BillDetailsFormSchema = z.object({
-  totalAmountDue: z.coerce
-    .number({
-      required_error: 'A bill amount is required.',
-      invalid_type_error: 'The bill amount is required and must be a number.',
-    })
-    .min(MINIMUM_BILL_AMOUNT, {
-      message: `The total bill amount must be at least ${convertNumberToNaira(
-        MINIMUM_BILL_AMOUNT,
-      )}.`,
-    })
-    .refine(val => validateDecimalPlaces(val), {
-      message: 'The bill amount must have a maximum of 2 decimal places.',
-    })
-    .transform(amount => amount.toString()),
-  name: z
-    .string({ required_error: 'A bill name is required.' })
-    .max(100, { message: 'Your bill name should be less than 100 characters.' }),
-  deadline: z.coerce
-    .date({
-      required_error: "The bill's deadline is required.",
-      invalid_type_error: 'The deadline must be a valid date.',
-    })
-    .refine(data => data > new Date(), {
-      message: "Your bill's deadline must be in the future.",
-    }),
-  interval: IntervalEnum,
-  firstChargeDate: z.coerce
-    .date({
-      required_error: "The bill's first charge date is required.",
-      invalid_type_error: 'The first charge date must be a valid date.',
-    })
-    .refine(data => data > new Date(), {
-      message: "Your bill's first charge date must be in the future.",
-    })
-    .optional(),
-  notes: z
-    .string()
-    .max(100, {
-      message: 'Please ensure your description less than 500 characters',
-    })
-    .optional(),
-});
+const BillDetailsFormSchema = z
+  .object({
+    totalAmountDue: z.coerce
+      .number({
+        required_error: 'A bill amount is required.',
+        invalid_type_error: 'The bill amount is required and must be a number.',
+      })
+      .min(MINIMUM_BILL_AMOUNT, {
+        message: `The total bill amount must be at least ${convertNumberToNaira(
+          MINIMUM_BILL_AMOUNT,
+        )}.`,
+      })
+      .refine(val => validateDecimalPlaces(val), {
+        message: 'The bill amount must have a maximum of 2 decimal places.',
+      })
+      .transform(amount => amount.toString()),
+    name: z
+      .string({ required_error: 'A bill name is required.' })
+      .max(100, { message: 'Your bill name should be less than 100 characters.' }),
+    deadline: z.coerce
+      .date({
+        required_error: "The bill's deadline is required.",
+        invalid_type_error: 'The deadline must be a valid date.',
+      })
+      .refine(data => data > new Date(), {
+        message: "Your bill's deadline must be in the future.",
+      }),
+    interval: IntervalEnum,
+    firstChargeDate: z.coerce
+      .date({
+        required_error: "The bill's first charge date is required.",
+        invalid_type_error: 'The first charge date must be a valid date.',
+      })
+      .refine(data => data > new Date(), {
+        message: "Your bill's first charge date must be in the future.",
+      })
+      .optional(),
+    notes: z
+      .string()
+      .max(100, {
+        message: 'Please ensure your description less than 500 characters',
+      })
+      .optional(),
+  })
+  .refine(
+    // Refine method on schema to ensure recurring bills have first charge date entered.
+    schema => {
+      return schema.interval !== 'none' && schema.firstChargeDate === undefined
+        ? false
+        : true;
+    },
+    {
+      message: "The bill's first charge date is required.",
+    },
+  );
 
 export type BillDetailsFormValues = z.infer<typeof BillDetailsFormSchema>;
 
@@ -110,8 +122,9 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
 
   const {
     control,
-    handleSubmit,
     formState: { errors },
+    handleSubmit,
+    setValue,
   } = useForm<BillDetailsFormValues>({
     defaultValues: {
       totalAmountDue: newBillPayload?.totalAmountDue || undefined,
@@ -131,6 +144,7 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
   const intervalValue = useWatch({ control, name: 'interval' });
   const isRecurringBill = intervalValue !== 'none';
 
+  // Added for because error on first charge date field might be invisible.
   React.useEffect(() => {
     if (errors.firstChargeDate) {
       showToast(
@@ -139,6 +153,20 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
       );
     }
   }, [errors.firstChargeDate]);
+
+  // Added to catch and errors in schema's refine method.
+  React.useEffect(() => {
+    if (errors['']) {
+      showToast(errors['']?.message, 'error');
+    }
+  }, [errors]);
+
+  // Reset the first charge date when the bill is one-time.
+  React.useEffect(() => {
+    if (!isRecurringBill) {
+      setValue('firstChargeDate', undefined);
+    }
+  }, [isRecurringBill, setValue]);
 
   const onBillDetailsSubmit = (submittedData: BillDetailsFormValues) => {
     const { firstChargeDate: _firstChargeDate, ...dataWithoutFirstChargeDate } =
