@@ -2,11 +2,18 @@ import { CompositeNavigationProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as React from 'react';
 
-import { Box, Button, Modal, Text } from '@/components';
+import { Box, Button, Image, Modal, Text } from '@/components';
 import type { BillTransaction } from '@/features/bills';
 import { GoToArrow } from '@/icons';
 import type { AppRootStackParamList, FinancialsStackParamList } from '@/navigation';
-import { convertNumberToNaira } from '@/utils';
+import {
+  convertNumberToNaira,
+  getDarkColorFromString,
+  getInitials,
+  getLightColorFromString,
+  isAndroid,
+  useIsDarkMode,
+} from '@/utils';
 
 interface SelectedTransactionModalProps {
   closeModal: () => void;
@@ -20,15 +27,10 @@ interface SelectedTransactionModalProps {
 
 export const SelectedTransactionModal: React.FunctionComponent<SelectedTransactionModalProps> =
   React.memo(({ closeModal, isModalOpen, selectedTransaction, navigation }) => {
-    const {
-      bill,
-      created,
-      contribution,
-      totalPayment,
-      payingUser,
-      receivingUser,
-      isCredit,
-    } = selectedTransaction || {};
+    const isDarkMode = useIsDarkMode();
+
+    const { bill, created, contribution, totalPayment, payingUser, receivingUser } =
+      selectedTransaction || {};
     const { name: billName, uuid: billId } = bill || {};
 
     const handleGoToBill = () => {
@@ -46,10 +48,85 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
       });
     };
 
+    const payingUserImage = React.useMemo(() => {
+      const initials = getInitials(payingUser?.fullName);
+
+      const avatarBackground = isDarkMode
+        ? getLightColorFromString(payingUser?.fullName)
+        : getDarkColorFromString(payingUser?.fullName);
+
+      return payingUser?.profileImageUrl ? (
+        <Image
+          borderRadius="lg"
+          contentFit="contain"
+          height={36}
+          placeholder={payingUser?.profileImageHash}
+          source={payingUser?.profileImageUrl}
+          width={36}
+        />
+      ) : (
+        <Box
+          alignItems="center"
+          borderRadius="lg"
+          height={36}
+          justifyContent="center"
+          style={{ backgroundColor: avatarBackground }}
+          width={36}
+        >
+          <Text color="textInverse" fontFamily="Halver-Semibold" variant="sm">
+            {initials}
+          </Text>
+        </Box>
+      );
+    }, [isDarkMode, payingUser]);
+
+    const receivingUserImage = React.useMemo(() => {
+      const initials = getInitials(receivingUser?.fullName);
+
+      const avatarBackground = isDarkMode
+        ? getLightColorFromString(receivingUser?.fullName)
+        : getDarkColorFromString(receivingUser?.fullName);
+
+      return receivingUser?.profileImageUrl ? (
+        <Image
+          borderRadius="lg"
+          contentFit="contain"
+          height={36}
+          placeholder={receivingUser?.profileImageHash}
+          source={receivingUser?.profileImageUrl}
+          width={36}
+        />
+      ) : (
+        <Box
+          alignItems="center"
+          borderRadius="lg"
+          height={36}
+          justifyContent="center"
+          style={{ backgroundColor: avatarBackground }}
+          width={36}
+        >
+          <Text color="textInverse" fontFamily="Halver-Semibold" variant="sm">
+            {initials}
+          </Text>
+        </Box>
+      );
+    }, [isDarkMode, receivingUser]);
+
+    const finalHeading = React.useMemo(
+      () => (
+        <Box alignItems="center" flexDirection="row" gap="3">
+          {payingUserImage}
+          <Text>to</Text>
+          {receivingUserImage}
+        </Box>
+      ),
+      [payingUserImage, receivingUserImage],
+    );
+
     return (
       <Modal
         closeModal={closeModal}
-        headingText={`${isCredit ? 'Credit' : 'Debit'} transaction`}
+        headingComponent={finalHeading}
         isLoaderOpen={false}
         isModalOpen={isModalOpen}
         hasLargeHeading
@@ -57,7 +134,7 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
         <Box
           backgroundColor="modalBackground"
           maxHeight="81%"
-          paddingBottom="8"
+          paddingBottom={isAndroid() ? '2' : '8'}
           paddingTop="5"
         >
           <Box
