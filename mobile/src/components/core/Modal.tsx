@@ -1,12 +1,13 @@
 import Constants from 'expo-constants';
 import * as React from 'react';
 import { Modal as RNModal } from 'react-native';
+import { FadeInDown } from 'react-native-reanimated';
 
 import { CloseModal } from '@/icons';
 import { isIOS, useIsDarkMode } from '@/utils';
 
 import { AfterInteractions } from './AfterInteractions';
-import { Box } from './Box';
+import { AnimatedBox, Box } from './Box';
 import { LogoLoader } from './LogoLoader';
 import { Pressable } from './Pressable';
 import { Text } from './Text';
@@ -50,7 +51,12 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
           paddingTop="4"
           style={[{ marginTop: isIOS() ? Constants.statusBarHeight : undefined }]}
         >
-          <Box marginLeft="6" maxWidth="70%" width="100%">
+          <AnimatedBox
+            entering={FadeInDown.duration(50).springify().delay(200)}
+            marginLeft="6"
+            maxWidth="70%"
+            width="100%"
+          >
             {!!headingText && (
               <Text
                 fontFamily="Halver-Semibold"
@@ -61,7 +67,7 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
             )}
 
             {headingComponent}
-          </Box>
+          </AnimatedBox>
 
           {hasCloseButton && (
             <Pressable marginRight="6" onPress={closeModal}>
