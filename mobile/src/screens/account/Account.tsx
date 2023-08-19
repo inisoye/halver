@@ -13,6 +13,7 @@ import {
 import {
   AccountAvatarButton,
   DisplayModeSelectorModal,
+  LogoutButton,
   ProfileNameAndUsername,
   useUserDetails,
 } from '@/features/account';
@@ -126,28 +127,7 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
             <DisplayModeSelectorModal />
           </Box>
 
-          <TouchableOpacity
-            alignItems="center"
-            backgroundColor="elementBackground"
-            borderColor="borderDefault"
-            borderRadius="md"
-            borderTopWidth={true ? undefined : 1}
-            flexDirection="row"
-            gap="4"
-            justifyContent="space-between"
-            padding="4"
-            paddingVertical="3"
-          >
-            <DynamicText
-              fontFamily="Halver-Semibold"
-              maxWidth="60%"
-              numberOfLines={1}
-              textAlign="right"
-              variant="sm"
-            >
-              Log out
-            </DynamicText>
-          </TouchableOpacity>
+          <LogoutButton />
 
           <CraftedLogo
             containerProps={{

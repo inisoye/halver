@@ -4,3 +4,4 @@ export * from './ProfileNameAndUsername';
 export * from './AccountAvatarButton';
 export * from './EditPhoneNumberForm';
 export * from './DisplayModeSelectorModal';
+export * from './LogoutButton';
