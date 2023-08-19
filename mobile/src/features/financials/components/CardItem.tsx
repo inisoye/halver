@@ -30,11 +30,19 @@ export const CardItem: React.FunctionComponent<CardItemProps> = React.memo(
         backgroundColor="inputBackground"
         borderRadius="md"
         columnGap="3"
+        elevation={1}
         flexDirection="row"
         justifyContent="space-between"
         key={uuid}
         paddingHorizontal="4"
         paddingVertical="2.5"
+        shadowColor="black"
+        shadowOffset={{
+          width: 0.1,
+          height: 0.3,
+        }}
+        shadowOpacity={0.2}
+        shadowRadius={0.3}
         onPress={openCardDetails}
       >
         <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">

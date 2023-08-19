@@ -115,12 +115,20 @@ export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
                 backgroundColor="inputBackground"
                 borderRadius="md"
                 columnGap="3"
+                elevation={1}
                 flexDirection="row"
                 justifyContent="space-between"
                 marginTop="3"
                 mb="1"
                 paddingHorizontal="4"
                 paddingVertical="2.5"
+                shadowColor="black"
+                shadowOffset={{
+                  width: 0.1,
+                  height: 0.3,
+                }}
+                shadowOpacity={0.2}
+                shadowRadius={0.3}
                 onPress={goToAddCard}
               >
                 <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">

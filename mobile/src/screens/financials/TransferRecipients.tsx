@@ -131,12 +131,20 @@ export const TransferRecipients: React.FunctionComponent<TransferRecipientsProps
                 backgroundColor="inputBackground"
                 borderRadius="base"
                 columnGap="3"
+                elevation={1}
                 flexDirection="row"
                 justifyContent="space-between"
                 marginTop="3"
                 mb="1"
                 paddingHorizontal="4"
                 paddingVertical="2.5"
+                shadowColor="black"
+                shadowOffset={{
+                  width: 0.1,
+                  height: 0.3,
+                }}
+                shadowOpacity={0.2}
+                shadowRadius={0.3}
                 onPress={goToAddTransferRecipient}
               >
                 <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">

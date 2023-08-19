@@ -39,9 +39,17 @@ export const TransferRecipientItem: React.FunctionComponent<TransferRecipientIte
       <TouchableOpacity
         backgroundColor="inputBackground"
         borderRadius="base"
+        elevation={1}
         key={uuid}
         paddingHorizontal="4"
         paddingVertical="4"
+        shadowColor="black"
+        shadowOffset={{
+          width: 0.1,
+          height: 0.3,
+        }}
+        shadowOpacity={0.2}
+        shadowRadius={0.3}
         onPress={openRecipientDetails}
       >
         <Box
