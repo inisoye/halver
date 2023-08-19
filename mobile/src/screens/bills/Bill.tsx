@@ -196,7 +196,9 @@ export const Bill = ({ navigation, route }: BillProps) => {
                         'No contributions yet'
                       ) : (
                         <>
-                          <Text color="textLight">₦</Text>
+                          <Text color="textLight" fontFamily="Halver-Naira">
+                            ₦
+                          </Text>
                           {`${formatNumberWithCommas(
                             totalAmountPaid,
                           )} contributed since bill creation`}
@@ -274,7 +276,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
             )}
           </Box>
 
-          <Box gap="8" paddingBottom="2" paddingHorizontal="6" paddingTop="7">
+          <Box gap="8" paddingBottom="2" paddingHorizontal="6" paddingTop="10">
             {!!notes && (
               <Box gap="3">
                 <Text color="textLight" variant="sm">
