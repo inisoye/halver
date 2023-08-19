@@ -29,6 +29,11 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleGoToEditPhoneNumber = React.useCallback(() => {
+    navigation.navigate('Edit phone number');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Screen>
       <ScrollView>
@@ -88,6 +93,7 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
               hitSlop={{ top: 5, bottom: 24, left: 24, right: 24 }}
               justifyContent="space-between"
               paddingTop="4"
+              onPress={handleGoToEditPhoneNumber}
             >
               <DynamicText
                 color="textLight"

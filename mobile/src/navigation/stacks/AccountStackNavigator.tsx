@@ -6,6 +6,7 @@ import { Account } from '@/screens';
 export type AccountStackParamList = {
   Account: undefined;
   'Edit profile image': undefined;
+  'Edit phone number': undefined;
 };
 
 const AccountStack = createNativeStackNavigator<AccountStackParamList>();
