@@ -5,3 +5,4 @@ export * from './logos';
 export * from './home-summary';
 export * from './card-types';
 export * from './financials-options';
+export * from './account';

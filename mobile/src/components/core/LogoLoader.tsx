@@ -66,7 +66,7 @@ export const LogoLoader: React.FunctionComponent = () => {
         backgroundColor="logoCasal"
         height={6}
         marginLeft="-2"
-        marginTop="2"
+        marginTop="1.5"
         style={[animatedStyleRight]}
       />
     </AnimatedBox>

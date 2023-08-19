@@ -37,6 +37,7 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
     const peculiarScreenNames = {
       Home: `Hello ${userDetails?.firstName}`,
       Financials: 'Select an option',
+      Account: 'Your account',
     };
 
     const isScreenNamePeculiar = peculiarScreenNames[name] !== undefined;

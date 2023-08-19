@@ -241,7 +241,7 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ navigation }) => {
       }
       hasNoIOSBottomInset
     >
-      <Box backgroundColor="transparent" height={16}>
+      <Box backgroundColor="transparent" height={12}>
         {areBillsLoading && <LogoLoader />}
       </Box>
 

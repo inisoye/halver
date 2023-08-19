@@ -21,10 +21,15 @@ export const NewBill: React.FunctionComponent<NewBillProps> = ({ ...props }) => 
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <Rect fill={colors.apricot6} height={40} rx={8} width={40} />
+      <Rect
+        fill={isDarkMode ? colors.apricot6 : colors.apricot7}
+        height={40}
+        rx={8}
+        width={40}
+      />
       <Path
         d="M31.666 20a.972.972 0 0 1-.972.972h-9.722v9.722a.972.972 0 1 1-1.945 0v-9.722H9.306a.972.972 0 1 1 0-1.944h9.723V9.305a.972.972 0 1 1 1.944 0v9.723h9.722a.972.972 0 0 1 .972.972Z"
-        fill={isDarkMode ? colors.gray1 : colors.gray1}
+        fill={colors.gray1}
       />
     </Svg>
   );

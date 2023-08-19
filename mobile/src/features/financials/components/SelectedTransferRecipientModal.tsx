@@ -120,7 +120,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
               ? 0.6
               : 1
           }
-          paddingBottom={isAndroid() ? '2' : '8'}
+          paddingBottom={isAndroid() ? '2' : '6'}
           paddingTop={isDefault ? undefined : '5'}
           pointerEvents={
             isSetDefaultTransferRecipientLoading || isDeleteTransferRecipientLoading

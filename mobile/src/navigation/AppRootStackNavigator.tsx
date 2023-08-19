@@ -10,6 +10,7 @@ import {
   BillPayment,
   BillsByStatus,
   BillSummary,
+  EditProfileImage,
   SplitBreakdown,
 } from '@/screens';
 
@@ -48,6 +49,7 @@ export type AppRootStackParamList = {
   };
   'Add your card': undefined;
   'Add a recipient': undefined;
+  'Edit profile image': undefined;
 };
 
 const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
@@ -72,6 +74,16 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
         <AppRootStack.Screen
           component={BillPayment}
           name="Bill Payment"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </AppRootStack.Group>
+
+      <AppRootStack.Group screenOptions={{ headerShown: false }}>
+        <AppRootStack.Screen
+          component={EditProfileImage}
+          name="Edit profile image"
           options={{
             headerShown: false,
           }}

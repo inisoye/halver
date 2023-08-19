@@ -15,8 +15,8 @@ import {
 } from '../types';
 
 interface EvenSplitParticipantItemProps {
-  name: string;
-  subtext: string;
+  name: string | undefined;
+  subtext: string | undefined;
   contribution: string;
   profileImageHash?: string | null | undefined;
   profileImageUrl?: string | null | undefined;

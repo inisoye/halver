@@ -160,7 +160,7 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
       />
 
       <Screen headerProps={{ paddingBottom: '1' }}>
-        <Box backgroundColor="transparent" height={16}>
+        <Box backgroundColor="transparent" height={12}>
           {areTransactionsLoading && <LogoLoader />}
         </Box>
 

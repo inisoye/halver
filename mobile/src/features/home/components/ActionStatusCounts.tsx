@@ -2,9 +2,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as React from 'react';
 import type { ISvgProps } from 'svg.types';
 
-import { Box, Pressable, Text } from '@/components';
+import { Box, CraftedLogoSmall, Pressable, Text } from '@/components';
 import {
-  HalverTiny as HalverTinyIcon,
   NewBillSmall as NewBillSmallIcon,
   Overdue as OverdueIcon,
   Pending as PendingIcon,
@@ -143,7 +142,7 @@ export const ActionStatusCounts: React.FunctionComponent<ActionStatusCountsProps
           Here's a summary of your bills.
         </Text>
 
-        <HalverTinyIcon />
+        <CraftedLogoSmall />
       </Box>
 
       <Box flexDirection="row" flexWrap="wrap" gap="3" marginBottom="10">

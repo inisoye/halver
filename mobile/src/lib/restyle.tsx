@@ -442,6 +442,7 @@ const theme = createTheme({
     textBlack: lightColors.gray12,
     textLight: lightColors.gray11,
     textLighter: lightColors.gray10,
+    textApricot: brandColors.apricot11,
 
     textIntroMarqueeDark: lightColors.gray1,
     textIntroMarqueeLight: darkColors.gray3,
@@ -564,12 +565,12 @@ const theme = createTheme({
     },
     '2xl': {
       fontSize: 24,
-      lineHeight: 30,
+      lineHeight: 26,
       letterSpacing: -0.96,
     },
     '3xl': {
       fontSize: 28,
-      lineHeight: 42,
+      lineHeight: 30,
       letterSpacing: -0.96,
     },
     '4xl': {
@@ -646,6 +647,7 @@ const darkTheme: Theme = {
     textBlack: darkColors.gray1,
     textLight: darkColors.gray11,
     textLighter: darkColors.gray10,
+    textApricot: brandColors.apricot6,
 
     bottomTabText: darkColors.gray9,
 

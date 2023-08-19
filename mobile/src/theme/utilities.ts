@@ -7,6 +7,9 @@ export const gapStyles = StyleSheet.create({
   8: {
     gap: 8,
   },
+  10: {
+    gap: 10,
+  },
   12: {
     gap: 12,
   },

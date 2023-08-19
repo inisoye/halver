@@ -47,7 +47,7 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
           flexDirection="row"
           gap="4"
           justifyContent="space-between"
-          paddingBottom={isLoaderOpen ? undefined : '3.5'}
+          paddingBottom={isLoaderOpen ? undefined : '3'}
           paddingTop="4"
           style={[{ marginTop: isIOS() ? Constants.statusBarHeight : undefined }]}
         >

@@ -3,6 +3,7 @@ export * from './AlertModal';
 export * from './Box';
 export * from './Button';
 export * from './Card';
+export * from './CraftedLogos';
 export * from './DatePicker';
 export * from './FullScreenLoader';
 export * from './Image';

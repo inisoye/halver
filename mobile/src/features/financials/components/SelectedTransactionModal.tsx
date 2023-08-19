@@ -134,7 +134,7 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
         <Box
           backgroundColor="modalBackground"
           maxHeight="81%"
-          paddingBottom={isAndroid() ? '2' : '8'}
+          paddingBottom={isAndroid() ? '2' : '6'}
           paddingTop="5"
         >
           <Box
