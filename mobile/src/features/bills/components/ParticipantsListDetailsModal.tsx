@@ -9,7 +9,11 @@ import {
   TouchableOpacity,
 } from '@/components';
 import { RightCaret } from '@/icons';
-import { convertKebabAndSnakeToTitleCase, convertNumberToNaira } from '@/utils';
+import {
+  convertKebabAndSnakeToTitleCase,
+  convertNumberToNaira,
+  isAndroid,
+} from '@/utils';
 
 import { BillDetailAction } from '../types';
 import { statusColorIndex } from '../utils';
@@ -69,7 +73,7 @@ export const ParticipantsListDetailsModal: React.FunctionComponent<
         <Box
           backgroundColor="modalBackground"
           maxHeight="81%"
-          paddingBottom="8"
+          paddingBottom={isAndroid() ? '6' : '8'}
           paddingHorizontal="6"
           paddingTop="6"
         >

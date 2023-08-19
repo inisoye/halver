@@ -6,6 +6,7 @@ import {
   convertKebabAndSnakeToTitleCase,
   generateRedactedCardDigits,
   handleAxiosErrorAlertAndHaptics,
+  isAndroid,
 } from '@/utils';
 
 import { useDeleteCard, useSetDefaultCard } from '../api';
@@ -74,7 +75,7 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
           backgroundColor="modalBackground"
           maxHeight="81%"
           opacity={isSetDefaultCardLoading || isDeleteCardLoading ? 0.6 : 1}
-          paddingBottom="8"
+          paddingBottom={isAndroid() ? '2' : '8'}
           paddingTop={isDefault ? undefined : '5'}
           pointerEvents={
             isSetDefaultCardLoading || isDeleteCardLoading ? 'none' : undefined

@@ -6,6 +6,7 @@ import {
   convertKebabAndSnakeToTitleCase,
   getInitials,
   handleAxiosErrorAlertAndHaptics,
+  isAndroid,
 } from '@/utils';
 
 import { useDeleteTransferRecipient, useSetDefaultTransferRecipient } from '../api';
@@ -119,7 +120,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
               ? 0.6
               : 1
           }
-          paddingBottom="8"
+          paddingBottom={isAndroid() ? '2' : '8'}
           paddingTop={isDefault ? undefined : '5'}
           pointerEvents={
             isSetDefaultTransferRecipientLoading || isDeleteTransferRecipientLoading
