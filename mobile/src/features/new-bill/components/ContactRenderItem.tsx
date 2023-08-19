@@ -14,7 +14,7 @@ import {
   getDarkColorFromString,
   getInitials,
   getLightColorFromString,
-  useIsDarkMode,
+  useIsDarkModeSelected,
 } from '@/utils';
 
 export type RegisteredContact = RegisteredContactsList[number];
@@ -198,7 +198,7 @@ export const ContactRenderItem = ({
   const itemIsObject = typeof item === 'object';
 
   const { spacing, colors } = useTheme<Theme>();
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
 
   const [newBillPayload, setNewBillPayload] = useMMKVObject<BillCreationMMKVPayload>(
     allMMKVKeys.newBillPayload,

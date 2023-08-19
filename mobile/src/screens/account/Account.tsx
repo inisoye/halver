@@ -12,6 +12,7 @@ import {
 } from '@/components';
 import {
   AccountAvatarButton,
+  DisplayModeSelectorModal,
   ProfileNameAndUsername,
   useUserDetails,
 } from '@/features/account';
@@ -122,36 +123,7 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
               Appearance
             </Text>
 
-            <TouchableOpacity
-              alignItems="center"
-              borderColor="borderDefault"
-              borderTopWidth={true ? undefined : 1}
-              flexDirection="row"
-              gap="4"
-              hitSlop={{ top: 5, bottom: 24, left: 24, right: 24 }}
-              justifyContent="space-between"
-              paddingTop="4"
-            >
-              <DynamicText
-                color="textLight"
-                fontFamily="Halver-Semibold"
-                numberOfLines={1}
-                variant="sm"
-                width="40%"
-              >
-                Display mode
-              </DynamicText>
-
-              <DynamicText
-                fontFamily="Halver-Semibold"
-                maxWidth="60%"
-                numberOfLines={1}
-                textAlign="right"
-                variant="sm"
-              >
-                Dark ✏️
-              </DynamicText>
-            </TouchableOpacity>
+            <DisplayModeSelectorModal />
           </Box>
 
           <TouchableOpacity

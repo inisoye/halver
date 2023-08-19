@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Modal as RNModal } from 'react-native';
 
 import { SuccessTick } from '@/icons';
-import { isIOS, useIsDarkMode } from '@/utils';
+import { isIOS, useIsDarkModeSelected } from '@/utils';
 
 import { Box } from './Box';
 import { LogoLoader } from './LogoLoader';
@@ -26,7 +26,7 @@ export const SuccessModal: React.FunctionComponent<AlertModalProps> = ({
   headingText,
   hasLargeHeading,
 }) => {
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
 
   return (
     <RNModal animationType="fade" transparent={true} visible={isModalOpen}>

@@ -7,7 +7,7 @@ import {
   getInitials,
   getLightColorFromString,
   isIOS,
-  useIsDarkMode,
+  useIsDarkModeSelected,
 } from '@/utils';
 
 import { DefinedRegisteredParticipant, DefinedUnregisteredParticipant } from '../types';
@@ -22,7 +22,7 @@ interface ParticipantAvatarAndNameProps {
 
 const ParticipantAvatarAndName: React.FunctionComponent<ParticipantAvatarAndNameProps> =
   React.memo(({ isCreditor, name, profileImageHash, profileImageUrl, subtext }) => {
-    const isDarkMode = useIsDarkMode();
+    const isDarkMode = useIsDarkModeSelected();
 
     const initials = React.useMemo(() => getInitials(name), [name]);
 

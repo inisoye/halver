@@ -8,7 +8,7 @@ import * as Sentry from 'sentry-expo';
 import { storage } from '@/lib/mmkv';
 import { NavigationContainer } from '@/navigation';
 import { Providers } from '@/providers';
-import { isIOS } from '@/utils';
+import { isIOS, useIsDarkModeSelected } from '@/utils';
 
 if (__DEV__) {
   initializeMMKVFlipper({ default: storage });
@@ -44,13 +44,15 @@ export default function App() {
     'Halver-Semibold': require('./assets/fonts/HalverSansSemibold.otf'),
   });
 
+  const isDarkMode = useIsDarkModeSelected();
+
   if (!fontsLoaded) {
     return null;
   }
 
   return (
     <Providers>
-      <StatusBar style="auto" />
+      <StatusBar style={isDarkMode ? 'light' : 'dark'} />
       <NavigationContainer />
     </Providers>
   );

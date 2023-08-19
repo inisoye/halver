@@ -1,4 +1,7 @@
 import { Appearance, Platform, useColorScheme } from 'react-native';
+import { useMMKVString } from 'react-native-mmkv';
+
+import { allMMKVKeys } from '@/lib/mmkv';
 
 export const isAndroid = (): boolean => Platform.OS === 'android';
 
@@ -16,14 +19,17 @@ export const isLightMode = (): boolean => {
   return colorScheme === 'light';
 };
 
-export const useIsDarkMode = (): boolean => {
-  const colorScheme = useColorScheme();
-  return colorScheme === 'dark';
-};
+export const useIsDarkModeSelected = () => {
+  const [displayMode = 'dark'] = useMMKVString(allMMKVKeys.displayMode);
 
-export const useIsLightMode = (): boolean => {
   const colorScheme = useColorScheme();
-  return colorScheme === 'light';
+  const isSystemDarkMode = displayMode === 'system' && colorScheme === 'dark';
+
+  if (displayMode === 'dark' || isSystemDarkMode) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 export const IS_DEV_OR_PREVIEW =

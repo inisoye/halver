@@ -17,7 +17,7 @@ import {
   getDarkColorFromString,
   getInitials,
   getLightColorFromString,
-  useIsDarkMode,
+  useIsDarkModeSelected,
 } from '@/utils';
 
 type SplitBreakdownProps = NativeStackScreenProps<
@@ -29,7 +29,7 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = ({
   navigation,
 }) => {
   const { data: creatorDetails } = useUserDetails();
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
 
   const {
     newBillPayload,

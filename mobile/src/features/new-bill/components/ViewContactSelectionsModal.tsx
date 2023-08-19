@@ -20,7 +20,7 @@ import {
   getDarkColorWithBackgroundFromString,
   getInitials,
   getLightColorWithBackgroundFromString,
-  useIsDarkMode,
+  useIsDarkModeSelected,
 } from '@/utils';
 
 import { useBillPayloadWithSelectionDetails } from '../hooks';
@@ -115,7 +115,7 @@ const SelectionItem: React.FunctionComponent<SelectionItemProps> = ({
   uuid,
   handleSelectionRemoval,
 }) => {
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
 
   const avatarBackground = React.useMemo(
     () =>

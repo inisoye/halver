@@ -14,14 +14,14 @@ import { useFullScreenLoader } from '@/hooks';
 import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys } from '@/lib/mmkv';
 import { LoginStackNavigator, OnboardingStackNavigator } from '@/navigation/stacks';
-import { useIsDarkMode } from '@/utils';
+import { useIsDarkModeSelected } from '@/utils';
 
 import { AppRootStackNavigator } from './AppRootStackNavigator';
 
 export const NavigationContainer: React.FunctionComponent = () => {
   const [token] = useMMKVString(allMMKVKeys.token);
   const { data: userDetails, isLoading, isFetching } = useUserDetails();
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
 
   const navigationRef = useNavigationContainerRef();
   useFlipper(navigationRef);

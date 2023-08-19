@@ -9,7 +9,7 @@ import {
   getDarkColorFromString,
   getInitials,
   getLightColorFromString,
-  useIsDarkMode,
+  useIsDarkModeSelected,
 } from '@/utils';
 
 import { BillDetailAction } from '../types';
@@ -26,7 +26,7 @@ const BillParticipantItem: React.FunctionComponent<BillParticipantItemProps> =
   React.memo(({ action, handleItemSelection, isDiscreet }) => {
     const { status: actionStatus, participant, unregisteredParticipant, uuid } = action;
 
-    const isDarkMode = useIsDarkMode();
+    const isDarkMode = useIsDarkModeSelected();
 
     const formattedStatus = convertKebabAndSnakeToTitleCase(actionStatus);
     const actionStatusColor = actionStatus ? statusColorIndex[actionStatus] : undefined;

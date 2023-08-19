@@ -4,12 +4,12 @@ import Svg, { Path, Rect } from 'react-native-svg';
 import { ISvgProps } from 'svg.types';
 
 import { Theme } from '@/lib/restyle';
-import { useIsDarkMode } from '@/utils';
+import { useIsDarkModeSelected } from '@/utils';
 
 type MastercardProps = ISvgProps;
 
 export const Mastercard: React.FunctionComponent<MastercardProps> = ({ ...props }) => {
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
   const { colors } = useTheme<Theme>();
 
   return (

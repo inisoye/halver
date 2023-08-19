@@ -6,7 +6,7 @@ import {
   getDarkColorFromString,
   getInitials,
   getLightColorFromString,
-  useIsDarkMode,
+  useIsDarkModeSelected,
 } from '@/utils';
 
 import {
@@ -33,7 +33,7 @@ const EvenSplitParticipantItem: React.FunctionComponent<
   profileImageHash,
   profileImageUrl,
 }) => {
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
 
   const initials = React.useMemo(() => getInitials(name), [name]);
 

@@ -4,7 +4,7 @@ import { Modal as RNModal } from 'react-native';
 import { FadeInDown } from 'react-native-reanimated';
 
 import { CloseModal } from '@/icons';
-import { isIOS, useIsDarkMode } from '@/utils';
+import { isIOS, useIsDarkModeSelected } from '@/utils';
 
 import { AfterInteractions } from './AfterInteractions';
 import { AnimatedBox, Box } from './Box';
@@ -33,7 +33,7 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
   hasLargeHeading,
   hasCloseButton = true,
 }) => {
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
 
   return (
     <RNModal animationType="slide" transparent={true} visible={isModalOpen}>

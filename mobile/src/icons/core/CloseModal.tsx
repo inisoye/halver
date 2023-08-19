@@ -4,12 +4,12 @@ import Svg, { Circle, Path } from 'react-native-svg';
 import { ISvgProps } from 'svg.types';
 
 import { Theme } from '@/lib/restyle';
-import { useIsDarkMode } from '@/utils';
+import { useIsDarkModeSelected } from '@/utils';
 
 type CloseModalProps = ISvgProps;
 
 export const CloseModal: React.FunctionComponent<CloseModalProps> = ({ ...props }) => {
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
   const { colors } = useTheme<Theme>();
 
   return (

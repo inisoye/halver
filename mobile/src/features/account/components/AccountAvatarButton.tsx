@@ -7,7 +7,7 @@ import {
   getDarkColorFromString,
   getInitials,
   getLightColorFromString,
-  useIsDarkMode,
+  useIsDarkModeSelected,
 } from '@/utils';
 
 const styles = StyleSheet.create({
@@ -28,7 +28,7 @@ interface AccountAvatarButtonProps {
 export const AccountAvatarButton: React.FunctionComponent<AccountAvatarButtonProps> =
   React.memo(
     ({ fullName, profileImageHash, profileImageUrl, handleGoToEditProfileImage }) => {
-      const isDarkMode = useIsDarkMode();
+      const isDarkMode = useIsDarkModeSelected();
 
       const initials = React.useMemo(() => getInitials(fullName), [fullName]);
 

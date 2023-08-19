@@ -4,14 +4,14 @@ import Svg, { Rect } from 'react-native-svg';
 import { ISvgProps } from 'svg.types';
 
 import { Theme } from '@/lib/restyle';
-import { useIsDarkMode } from '@/utils';
+import { useIsDarkModeSelected } from '@/utils';
 
 type HalverMillipedeProps = ISvgProps;
 
 export const HalverMillipede: React.FunctionComponent<HalverMillipedeProps> = ({
   ...otherProps
 }) => {
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
   const { colors } = useTheme<Theme>();
 
   return (

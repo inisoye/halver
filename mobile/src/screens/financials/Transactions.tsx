@@ -17,7 +17,7 @@ import { SelectedTransactionModal, useUserTransactions } from '@/features/financ
 import { useBooleanStateControl } from '@/hooks';
 import { RightCaret, Search } from '@/icons';
 import { AppRootStackParamList, FinancialsStackParamList } from '@/navigation';
-import { formatNumberWithCommas, useIsDarkMode } from '@/utils';
+import { formatNumberWithCommas, useIsDarkModeSelected } from '@/utils';
 
 interface TransactionItemProps {
   handleTransactionSelection: (transaction: BillTransaction | undefined) => void;
@@ -30,7 +30,7 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
   index,
   item,
 }) => {
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
 
   const { contribution, created, isCredit, payingUser, bill, receivingUser } =
     item || {};

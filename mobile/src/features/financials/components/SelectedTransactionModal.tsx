@@ -12,7 +12,7 @@ import {
   getInitials,
   getLightColorFromString,
   isAndroid,
-  useIsDarkMode,
+  useIsDarkModeSelected,
 } from '@/utils';
 
 interface SelectedTransactionModalProps {
@@ -27,7 +27,7 @@ interface SelectedTransactionModalProps {
 
 export const SelectedTransactionModal: React.FunctionComponent<SelectedTransactionModalProps> =
   React.memo(({ closeModal, isModalOpen, selectedTransaction, navigation }) => {
-    const isDarkMode = useIsDarkMode();
+    const isDarkMode = useIsDarkModeSelected();
 
     const { bill, created, contribution, totalPayment, payingUser, receivingUser } =
       selectedTransaction || {};

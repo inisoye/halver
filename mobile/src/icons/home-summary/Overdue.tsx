@@ -2,12 +2,12 @@ import * as React from 'react';
 import Svg, { Path } from 'react-native-svg';
 import { ISvgProps } from 'svg.types';
 
-import { useIsDarkMode } from '@/utils';
+import { useIsDarkModeSelected } from '@/utils';
 
 type OverdueProps = ISvgProps;
 
 export const Overdue: React.FunctionComponent<OverdueProps> = ({ ...props }) => {
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
 
   return (
     <Svg

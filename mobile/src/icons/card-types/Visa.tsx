@@ -12,12 +12,12 @@ import Svg, {
 import { ISvgProps } from 'svg.types';
 
 import { Theme } from '@/lib/restyle';
-import { useIsDarkMode } from '@/utils';
+import { useIsDarkModeSelected } from '@/utils';
 
 type VisaProps = ISvgProps;
 
 export const Visa: React.FunctionComponent<VisaProps> = ({ ...props }) => {
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
   const { colors } = useTheme<Theme>();
 
   return (

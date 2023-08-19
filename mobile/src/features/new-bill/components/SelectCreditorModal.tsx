@@ -18,7 +18,7 @@ import {
   getDarkColorFromString,
   getInitials,
   getLightColorFromString,
-  useIsDarkMode,
+  useIsDarkModeSelected,
 } from '@/utils';
 
 import { DefinedRegisteredParticipant } from '../types';
@@ -37,7 +37,7 @@ const SelectCreditorOption: React.FunctionComponent<SelectCreditorOptionProps> =
   setCreditor,
 }) => {
   const { name, profileImageHash, profileImageUrl } = participant;
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
 
   const { avatarBackground, firstName, initials } = React.useMemo(() => {
     return {

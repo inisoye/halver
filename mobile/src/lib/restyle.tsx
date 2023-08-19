@@ -1,6 +1,7 @@
 import { createTheme, ThemeProvider } from '@shopify/restyle';
 import * as React from 'react';
-import { useColorScheme } from 'react-native';
+
+import { useIsDarkModeSelected } from '@/utils';
 
 export const brandColors = {
   apricot1: '#FEF5F3',
@@ -718,11 +719,9 @@ interface RestyleProviderProps {
 export const RestyleProvider: React.FunctionComponent<RestyleProviderProps> = ({
   children,
 }) => {
-  const scheme = useColorScheme();
+  const isDarkMode = useIsDarkModeSelected();
 
   return (
-    <ThemeProvider theme={scheme === 'dark' ? darkTheme : theme}>
-      {children}
-    </ThemeProvider>
+    <ThemeProvider theme={isDarkMode ? darkTheme : theme}>{children}</ThemeProvider>
   );
 };

@@ -28,7 +28,7 @@ import {
 } from '@/features/bills';
 import { Plus, RightCaret, Search, ThreeUsersCluster } from '@/icons';
 import type { AppRootStackParamList, BillsStackParamList } from '@/navigation';
-import { useIsDarkMode } from '@/utils';
+import { useIsDarkModeSelected } from '@/utils';
 
 /**
  * TODO
@@ -94,7 +94,7 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
   index,
   navigation,
 }) => {
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
 
   const participantsAndUnregisteredParticipants = [
     ...(item?.participants || []),

@@ -1,10 +1,10 @@
 import * as React from 'react';
 
 import { Box, LinearGradient } from '@/components';
-import { useIsDarkMode } from '@/utils';
+import { useIsDarkModeSelected } from '@/utils';
 
 export const GradientOverlay: React.FunctionComponent = React.memo(() => {
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
 
   const gradientColors = isDarkMode
     ? ['rgba(0,0,0,0)', 'rgba(0,0,0,0.2)', 'rgba(0,0,0,0.5)', 'black']

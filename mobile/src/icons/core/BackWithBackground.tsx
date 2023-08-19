@@ -4,7 +4,7 @@ import Svg, { Circle, Path } from 'react-native-svg';
 import { ISvgProps } from 'svg.types';
 
 import { Theme } from '@/lib/restyle';
-import { useIsDarkMode } from '@/utils';
+import { useIsDarkModeSelected } from '@/utils';
 
 type BackWithBackgroundProps = ISvgProps;
 
@@ -12,7 +12,7 @@ export const BackWithBackground: React.FunctionComponent<BackWithBackgroundProps
   ...props
 }) => {
   const { colors } = useTheme<Theme>();
-  const isDarkMode = useIsDarkMode();
+  const isDarkMode = useIsDarkModeSelected();
 
   return (
     <Svg

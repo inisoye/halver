@@ -7,4 +7,5 @@ export const allMMKVKeys = {
   isFirstTime: 'IS_FIRST_TIME',
   newBillPayload: 'NEW_BILL_PAYLOAD',
   registeredContacts: 'REGISTERED_CONTACTS',
+  displayMode: 'DISPLAY_MODE',
 };
