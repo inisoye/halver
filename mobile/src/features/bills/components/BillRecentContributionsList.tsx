@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Box, Modal, Text, TouchableOpacity } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { RightCaret } from '@/icons';
-import { convertNumberToNaira } from '@/utils';
+import { convertNumberToNaira, isAndroid } from '@/utils';
 
 import { BillTransaction, useBillTransactions } from '../api';
 
@@ -13,11 +13,12 @@ interface BillRecentContributionItemProps {
     React.SetStateAction<BillTransaction | undefined>
   >;
   transaction: BillTransaction;
+  isFirstItem: boolean;
 }
 
 const BillRecentContributionItem: React.FunctionComponent<
   BillRecentContributionItemProps
-> = ({ openModal, setSelectedTransaction, transaction }) => {
+> = ({ openModal, setSelectedTransaction, transaction, isFirstItem }) => {
   const { contribution, payingUser, uuid, created } = transaction;
 
   const handleTransactionItemClick = () => {
@@ -27,22 +28,14 @@ const BillRecentContributionItem: React.FunctionComponent<
 
   return (
     <TouchableOpacity
-      backgroundColor="elementBackground"
-      borderRadius="lg"
-      elevation={1}
+      borderColor="borderDefault"
+      borderTopWidth={isFirstItem ? undefined : 1}
       flexDirection="row"
       gap="4"
       justifyContent="space-between"
       key={uuid}
-      paddingHorizontal="4"
-      paddingVertical="2.5"
-      shadowColor="black"
-      shadowOffset={{
-        width: 0.1,
-        height: 0.3,
-      }}
-      shadowOpacity={0.2}
-      shadowRadius={0.3}
+      paddingTop={isFirstItem ? '0' : undefined}
+      paddingVertical="3.5"
       onPress={handleTransactionItemClick}
     >
       <Box alignItems="center" flexDirection="row" gap="4">
@@ -117,7 +110,7 @@ export const BillRecentContributionsList: React.FunctionComponent<
           flexDirection="row"
           flexWrap="wrap"
           maxHeight="81%"
-          paddingBottom="8"
+          paddingBottom={isAndroid() ? '3' : '8'}
           paddingHorizontal="6"
           paddingTop="3.5"
           rowGap="1"
@@ -190,10 +183,11 @@ export const BillRecentContributionsList: React.FunctionComponent<
             </Box>
           )}
 
-          <Box gap="3">
-            {billTransactions?.map(transaction => {
+          <Box>
+            {billTransactions?.map((transaction, index) => {
               return (
                 <BillRecentContributionItem
+                  isFirstItem={index === 0}
                   key={transaction.uuid}
                   openModal={openModal}
                   setSelectedTransaction={setSelectedTransaction}
