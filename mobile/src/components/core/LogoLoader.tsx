@@ -58,13 +58,13 @@ export const LogoLoader: React.FunctionComponent = () => {
     >
       <AnimatedBox
         backgroundColor="logoApricot"
-        height={8}
+        height={6}
         marginRight="-2"
         style={[animatedStyleLeft]}
       />
       <AnimatedBox
         backgroundColor="logoCasal"
-        height={8}
+        height={6}
         marginLeft="-2"
         marginTop="2"
         style={[animatedStyleRight]}
