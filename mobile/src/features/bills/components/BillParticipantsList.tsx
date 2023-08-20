@@ -99,7 +99,12 @@ const BillParticipantItem: React.FunctionComponent<BillParticipantItemProps> =
         )}
 
         <Box>
-          <Text fontFamily="Halver-Semibold" marginBottom="0.75" variant="xs">
+          <Text
+            fontFamily="Halver-Semibold"
+            fontSize={13}
+            marginBottom="0.75"
+            variant="xs"
+          >
             {name}
           </Text>
           <Text color={actionStatusColor} fontFamily="Halver-Semibold" variant="xxs">

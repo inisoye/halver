@@ -35,7 +35,7 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
 
     const handleGoToBill = () => {
       closeModal();
-      navigation.navigate('Home', {
+      navigation.navigate('TabsRoot', {
         screen: 'BillsStackNavigator',
         params: {
           screen: 'Bill',

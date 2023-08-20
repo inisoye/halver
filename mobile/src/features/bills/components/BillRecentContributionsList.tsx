@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Box, Modal, Text, TouchableOpacity } from '@/components';
+import { Box, DynamicText, Modal, Text, TouchableOpacity } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { RightCaret } from '@/icons';
 import { convertNumberToNaira, isAndroid } from '@/utils';
@@ -28,19 +28,20 @@ const BillRecentContributionItem: React.FunctionComponent<
 
   return (
     <TouchableOpacity
+      backgroundColor="elementBackground"
       borderColor="borderDefault"
-      borderTopWidth={isFirstItem ? undefined : 1}
+      borderTopWidth={isFirstItem ? undefined : 0.5}
       flexDirection="row"
       gap="4"
       justifyContent="space-between"
       key={uuid}
-      paddingTop={isFirstItem ? '0' : undefined}
-      paddingVertical="3.5"
+      paddingVertical="2.5"
+      px="4"
       onPress={handleTransactionItemClick}
     >
       <Box alignItems="center" flexDirection="row" gap="4">
-        <Box gap="0.75">
-          <Text fontFamily="Halver-Semibold" variant="sm">
+        <Box gap="0.5">
+          <Text fontFamily="Halver-Semibold" fontSize={13} variant="sm">
             From {payingUser?.firstName}
           </Text>
 
@@ -50,18 +51,17 @@ const BillRecentContributionItem: React.FunctionComponent<
         </Box>
       </Box>
 
-      <Text color="textLight" fontFamily="Halver-Semibold" variant="xs">
+      <DynamicText
+        color="textLight"
+        fontFamily="Halver-Semibold"
+        textAlign="right"
+        variant="xs"
+        width="35%"
+      >
         {convertNumberToNaira(Number(contribution))}
-      </Text>
+      </DynamicText>
     </TouchableOpacity>
   );
-};
-
-const hitSlop = {
-  top: 10,
-  right: 40,
-  bottom: 10,
-  left: 40,
 };
 
 interface BillRecentContributionsListProps {
@@ -159,7 +159,6 @@ export const BillRecentContributionsList: React.FunctionComponent<
             alignItems="center"
             flexDirection="row"
             gap="4"
-            hitSlop={hitSlop}
             justifyContent="space-between"
             marginBottom="3"
           >
@@ -183,7 +182,7 @@ export const BillRecentContributionsList: React.FunctionComponent<
             </Box>
           )}
 
-          <Box>
+          <Box borderRadius="md" overflow="hidden">
             {billTransactions?.map((transaction, index) => {
               return (
                 <BillRecentContributionItem

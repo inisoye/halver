@@ -18,7 +18,7 @@ import {
 import { BottomTabNavigator } from './BottomTabNavigator';
 
 export type AppRootStackParamList = {
-  Home: // Arcane type added mainly for routing routing to bill after creation.
+  TabsRoot: // Arcane type added mainly for routing routing to bill after creation.
   | {
         screen: string;
         params: {
@@ -52,6 +52,7 @@ export type AppRootStackParamList = {
   'Add a recipient': undefined;
   'Edit profile image': undefined;
   'Edit phone number': undefined;
+  Home: undefined;
 };
 
 const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
@@ -61,7 +62,7 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
     <AppRootStack.Navigator>
       <AppRootStack.Screen
         component={BottomTabNavigator}
-        name="Home"
+        name="TabsRoot"
         options={{ headerShown: false }}
       />
 
@@ -90,7 +91,6 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
             headerShown: false,
           }}
         />
-
         <AppRootStack.Screen
           component={EditPhoneNumber}
           name="Edit phone number"

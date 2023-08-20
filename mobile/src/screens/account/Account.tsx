@@ -127,15 +127,15 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
             <DisplayModeSelectorModal />
           </Box>
 
-          <LogoutButton />
-
           <CraftedLogo
             containerProps={{
               alignSelf: 'center',
-              marginTop: '12',
+              marginVertical: '12',
             }}
             hasText
           />
+
+          <LogoutButton />
         </Box>
       </ScrollView>
     </Screen>

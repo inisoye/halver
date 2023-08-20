@@ -147,7 +147,7 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
   };
 
   const handleGoToBill = () => {
-    navigation.navigate('Home', {
+    navigation.navigate('TabsRoot', {
       screen: 'BillsStackNavigator',
       params: {
         screen: 'Bill',

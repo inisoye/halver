@@ -147,7 +147,7 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
 
           <Box
             alignItems="center"
-            backgroundColor="grayA8"
+            backgroundColor="grayA7"
             columnGap="3"
             flexDirection="row"
             justifyContent="space-between"

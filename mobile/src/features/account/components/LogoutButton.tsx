@@ -31,18 +31,20 @@ export const LogoutButton: React.FunctionComponent = () => {
   return (
     <TouchableOpacity
       alignItems="center"
+      alignSelf="center"
       backgroundColor="elementBackground"
       borderColor="borderDefault"
       borderRadius="md"
       borderTopWidth={true ? undefined : 1}
       flexDirection="row"
       gap="4"
-      justifyContent="space-between"
-      padding="4"
-      paddingVertical="3"
+      justifyContent="center"
+      paddingHorizontal="4"
+      paddingVertical="2"
       onPress={createTwoButtonAlert}
     >
       <DynamicText
+        color="red11"
         fontFamily="Halver-Semibold"
         maxWidth="60%"
         numberOfLines={1}
