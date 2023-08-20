@@ -62,7 +62,10 @@ export const Home = ({ navigation }: HomeProps) => {
             </Box>
           </Card>
 
-          <RecentTransactions goToAllTransactions={goToAllTransactions} />
+          <RecentTransactions
+            goToAllTransactions={goToAllTransactions}
+            navigation={navigation}
+          />
         </Box>
       </ScrollView>
     </Screen>
