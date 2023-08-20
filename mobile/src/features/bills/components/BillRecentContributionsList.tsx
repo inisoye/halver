@@ -182,18 +182,31 @@ export const BillRecentContributionsList: React.FunctionComponent<
             </Box>
           )}
 
-          <Box borderRadius="md" overflow="hidden">
-            {billTransactions?.map((transaction, index) => {
-              return (
-                <BillRecentContributionItem
-                  isFirstItem={index === 0}
-                  key={transaction.uuid}
-                  openModal={openModal}
-                  setSelectedTransaction={setSelectedTransaction}
-                  transaction={transaction}
-                />
-              );
-            })}
+          <Box
+            backgroundColor="elementBackground"
+            borderRadius="md"
+            elevation={1}
+            shadowColor="black"
+            shadowOffset={{
+              width: 0.1,
+              height: 0.3,
+            }}
+            shadowOpacity={0.2}
+            shadowRadius={0.3}
+          >
+            <Box borderRadius="md" overflow="hidden">
+              {billTransactions?.map((transaction, index) => {
+                return (
+                  <BillRecentContributionItem
+                    isFirstItem={index === 0}
+                    key={transaction.uuid}
+                    openModal={openModal}
+                    setSelectedTransaction={setSelectedTransaction}
+                    transaction={transaction}
+                  />
+                );
+              })}
+            </Box>
           </Box>
         </Box>
       )}

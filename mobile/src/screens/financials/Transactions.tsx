@@ -13,8 +13,11 @@ import {
   Text,
 } from '@/components';
 import type { BillTransaction } from '@/features/bills';
-import { SelectedTransactionModal, useUserTransactions } from '@/features/financials';
-import { useBooleanStateControl } from '@/hooks';
+import {
+  SelectedTransactionModal,
+  useInfiniteUserTransactions,
+} from '@/features/financials';
+import { useBooleanStateControl, useDebounce } from '@/hooks';
 import { RightCaret, Search } from '@/icons';
 import { AppRootStackParamList, FinancialsStackParamList } from '@/navigation';
 import { formatNumberWithCommas, useIsDarkModeSelected } from '@/utils';
@@ -123,14 +126,27 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
     control: controlForTransactionsFilter,
     name: 'transactionsFilter',
   });
+  const debouncedFilterValue = useDebounce(transactionsFilterValue, 500);
 
-  const { data: transactionsResponse, isLoading: areTransactionsLoading } =
-    useUserTransactions();
+  const {
+    data: transactionsResponse,
+    isLoading: areTransactionsLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetching: areTransactionsFetching,
+  } = useInfiniteUserTransactions(debouncedFilterValue);
 
-  const { results: transactions } = transactionsResponse ?? {};
+  const transactions = React.useMemo(
+    () => transactionsResponse?.pages.flatMap(page => page.results),
+    [transactionsResponse?.pages],
+  );
+  const loadMoreTransactions = () => hasNextPage && fetchNextPage();
 
   const noTransactionsFound =
     !areTransactionsLoading && (!transactions || transactions?.length < 1);
+
+  const isFooterLoaderDisplayed =
+    areTransactionsFetching && !areTransactionsLoading && !noTransactionsFound;
 
   const handleTransactionSelection = React.useCallback(
     (transaction: BillTransaction | undefined) => {
@@ -183,9 +199,13 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
         )}
 
         <FlashList
+          // eslint-disable-next-line react-native/no-inline-styles
+          contentContainerStyle={{ paddingBottom: isFooterLoaderDisplayed ? 0 : 12 }}
           data={transactions}
-          estimatedItemSize={200}
+          estimatedItemSize={70}
+          ListFooterComponent={isFooterLoaderDisplayed ? <LogoLoader /> : undefined}
           renderItem={renderItem}
+          onEndReached={loadMoreTransactions}
         />
       </Screen>
     </>

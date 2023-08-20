@@ -17,7 +17,7 @@ export const CraftedLogoSmall: React.FunctionComponent<CraftedLogoProps> = ({
 }) => {
   return (
     <Box alignItems="center" flexDirection="row" gap="2" {...containerProps}>
-      {hasText && <Text variant="2xl">halver</Text>}
+      {hasText && <Text>halver</Text>}
 
       <Box>
         <Box
@@ -51,7 +51,11 @@ export const CraftedLogo: React.FunctionComponent<CraftedLogoProps> = ({
 }) => {
   return (
     <Box alignItems="center" flexDirection="row" gap="3" {...containerProps}>
-      {hasText && <Text variant="3xl">halver</Text>}
+      {hasText && (
+        <Text fontSize={26} variant="3xl">
+          halver
+        </Text>
+      )}
 
       <Box>
         <Box backgroundColor="logoApricot" height={9.375} marginLeft="1" width={25} />

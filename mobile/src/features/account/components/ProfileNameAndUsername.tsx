@@ -36,7 +36,7 @@ export const ProfileNameAndUsername: React.FunctionComponent<
 
   const animate = () => {
     progress.value = withRepeat(
-      withTiming(1 - progress.value, { duration: 25000 }),
+      withTiming(1 - progress.value, { duration: 15000 }),
       -1,
       true,
     );
@@ -50,18 +50,17 @@ export const ProfileNameAndUsername: React.FunctionComponent<
     <AnimatedBox
       backgroundColor="buttonCasal"
       borderRadius="lg"
-      flexShrink={1}
-      gap="1.5"
+      flexGrow={1}
+      gap="3"
       justifyContent="space-between"
       padding="4"
-      paddingVertical="3"
       style={animatedStyle}
     >
       <DynamicText
         color="textWhite"
         fontFamily="Halver-Semibold"
         numberOfLines={2}
-        variant="2xl"
+        variant="xl"
       >
         {fullName}
       </DynamicText>

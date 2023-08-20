@@ -278,12 +278,26 @@ export const Bill = ({ navigation, route }: BillProps) => {
 
           <Box gap="8" paddingBottom="2" paddingHorizontal="6" paddingTop="10">
             {!!notes && (
-              <Box gap="3">
-                <Text color="textLight" variant="sm">
+              <Box
+                backgroundColor="elementBackground"
+                borderRadius="lg"
+                elevation={1}
+                gap="3"
+                paddingVertical="3"
+                px="4"
+                shadowColor="black"
+                shadowOffset={{
+                  width: 0.1,
+                  height: 0.3,
+                }}
+                shadowOpacity={0.2}
+                shadowRadius={0.3}
+              >
+                <Text color="textLight" fontSize={13} variant="sm">
                   {notes}
                 </Text>
 
-                <Text color="textLight" fontFamily="Halver-Semibold" variant="xs">
+                <Text color="textLight" fontSize={13} variant="sm">
                   — {creator?.firstName} (bill creator)
                 </Text>
               </Box>

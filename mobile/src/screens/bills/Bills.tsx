@@ -26,6 +26,7 @@ import {
   StatusInfo,
   useBills,
 } from '@/features/bills';
+import { useDebounce } from '@/hooks';
 import { Plus, RightCaret, Search, ThreeUsersCluster } from '@/icons';
 import type { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 import { useIsDarkModeSelected } from '@/utils';
@@ -215,12 +216,25 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ navigation }) => {
     control: controlForBillFilter,
     name: 'billFilter',
   });
+  const debouncedFilterValue = useDebounce(billFilterValue, 500);
 
-  const { data: billsResponse, isLoading: areBillsLoading } = useBills();
+  const {
+    data: billsResponse,
+    isLoading: areBillsLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetching: areBillsFetching,
+  } = useBills(debouncedFilterValue);
 
-  const { results: bills } = billsResponse ?? {};
+  const bills = React.useMemo(
+    () => billsResponse?.pages.flatMap(page => page.results),
+    [billsResponse?.pages],
+  );
+  const loadMoreBills = () => hasNextPage && fetchNextPage();
 
   const noBillsFound = !areBillsLoading && (!bills || bills?.length < 1);
+
+  const isFooterLoaderDisplayed = areBillsFetching && !areBillsLoading && !noBillsFound;
 
   const renderItem: ListRenderItem<BillListItem | undefined> = ({ item, index }) => {
     return <BillListRenderItem index={index} item={item} navigation={navigation} />;
@@ -252,7 +266,7 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ navigation }) => {
         name="billFilter"
         paddingHorizontal="0"
         paddingRight="6"
-        placeholder="Search for a bill"
+        placeholder="Search by bill name"
         prefixComponent={<Search />}
       />
 
@@ -264,11 +278,15 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ navigation }) => {
       )}
 
       <FlashList
+        // eslint-disable-next-line react-native/no-inline-styles
+        contentContainerStyle={{ paddingBottom: isFooterLoaderDisplayed ? 0 : 12 }}
         data={bills}
-        estimatedItemSize={90}
+        estimatedItemSize={70}
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
+        ListFooterComponent={isFooterLoaderDisplayed ? <LogoLoader /> : undefined}
         renderItem={renderItem}
+        onEndReached={loadMoreBills}
       />
     </Screen>
   );

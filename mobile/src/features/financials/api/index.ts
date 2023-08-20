@@ -9,3 +9,4 @@ export * from './initializeCardAddition';
 export * from './setDefaultCard';
 export * from './setDefaultTransferRecipient';
 export * from './validateAccountDetails';
+export * from './getInfiniteUserTransactions';
