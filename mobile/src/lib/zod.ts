@@ -514,3 +514,33 @@ export const BillActionStatusCount = z.object({
 });
 
 export const BillActionStatusCountList = z.array(BillActionStatusCount);
+
+export const NestedBillInActionStatusList = z.object({
+  name: z.string(),
+  uuid: z.string().uuid(),
+});
+
+export const BillActionStatusList = z.object({
+  contribution: z
+    .string()
+    .regex(/^-?\d{0,15}(?:\.\d{0,4})?$/)
+    .nullable(),
+  created: z.string().datetime({ offset: true }),
+  modified: z.string().datetime({ offset: true }),
+  status: BillActionStatusEnum,
+  totalPaymentDue: z
+    .string()
+    .regex(/^-?\d{0,15}(?:\.\d{0,4})?$/)
+    .nullable(),
+  uuid: z.string().uuid(),
+  bill: NestedBillInActionStatusList,
+});
+
+export const PaginatedBillActionStatusList = z
+  .object({
+    count: z.number().int(),
+    next: z.string().url().nullable(),
+    previous: z.string().url().nullable(),
+    results: z.array(BillActionStatusList),
+  })
+  .partial();

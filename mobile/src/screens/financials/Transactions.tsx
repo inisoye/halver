@@ -133,7 +133,7 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
     isLoading: areTransactionsLoading,
     fetchNextPage,
     hasNextPage,
-    isFetching: areTransactionsFetching,
+    isFetchingNextPage,
   } = useInfiniteUserTransactions(debouncedFilterValue);
 
   const transactions = React.useMemo(
@@ -144,9 +144,6 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
 
   const noTransactionsFound =
     !areTransactionsLoading && (!transactions || transactions?.length < 1);
-
-  const isFooterLoaderDisplayed =
-    areTransactionsFetching && !areTransactionsLoading && !noTransactionsFound;
 
   const handleTransactionSelection = React.useCallback(
     (transaction: BillTransaction | undefined) => {
@@ -200,10 +197,10 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
 
         <FlashList
           // eslint-disable-next-line react-native/no-inline-styles
-          contentContainerStyle={{ paddingBottom: isFooterLoaderDisplayed ? 0 : 12 }}
+          contentContainerStyle={{ paddingBottom: isFetchingNextPage ? 0 : 12 }}
           data={transactions}
           estimatedItemSize={70}
-          ListFooterComponent={isFooterLoaderDisplayed ? <LogoLoader /> : undefined}
+          ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
           renderItem={renderItem}
           onEndReached={loadMoreTransactions}
         />

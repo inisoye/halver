@@ -18,7 +18,7 @@ export const LogoutButton: React.FunctionComponent = () => {
   const createTwoButtonAlert = () =>
     Alert.alert(
       'Are you sure?',
-      'All your data and preferences on this phone will be deleted',
+      'All your data and preferences on this phone will be deleted.',
       [
         {
           text: 'Cancel',

@@ -20,8 +20,8 @@ interface DiplayModeItemProps {
 const DiplayModeItem: React.FunctionComponent<DiplayModeItemProps> = React.memo(
   ({ name, value, setDisplayMode, displayMode, closeDisplayModeModal }) => {
     const handleSelection = () => {
-      setDisplayMode(value);
       closeDisplayModeModal();
+      setDisplayMode(value);
     };
 
     const isSelected = displayMode === value;

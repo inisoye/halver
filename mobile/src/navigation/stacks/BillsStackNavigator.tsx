@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import { BillActionStatus } from '@/features/bills';
+import { actionStatusColors } from '@/features/home';
 import { Bill, Bills } from '@/screens';
 
 export type BillsStackParamList = {
@@ -19,6 +20,7 @@ export type BillsStackParamList = {
     firstChargeDate: string | null | undefined;
     name: string;
   };
+  'Bills By Status': { status: keyof typeof actionStatusColors };
 };
 
 const BillsStack = createNativeStackNavigator<BillsStackParamList>();

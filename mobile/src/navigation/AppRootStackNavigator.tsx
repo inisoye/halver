@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import type { BillActionStatus } from '@/features/bills';
+import { actionStatusColors } from '@/features/home';
 import {
   AddCard,
   AddTransferRecipient,
@@ -33,7 +34,7 @@ export type AppRootStackParamList = {
     | undefined;
   'Bill Details': undefined;
   'Select Participants': undefined;
-  'Bills By Status': { status: string };
+  'Bills By Status': { status: keyof typeof actionStatusColors };
   'Split Breakdown': undefined;
   'Bill Summary': undefined;
   'Bill Payment': {
@@ -117,7 +118,7 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
         />
       </AppRootStack.Group>
 
-      <AppRootStack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
+      <AppRootStack.Group screenOptions={{ headerShown: false }}>
         <AppRootStack.Screen component={BillsByStatus} name="Bills By Status" />
       </AppRootStack.Group>
     </AppRootStack.Navigator>

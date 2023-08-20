@@ -74,6 +74,7 @@ export const allStaticQueryKeys = {
   getTransferRecipients: ['transfer-recipients'],
   getUserDetails: ['user-details'],
   getUserTransactions: ['user-transactions'],
+  getUserActions: ['user-actions'],
 };
 
 /**

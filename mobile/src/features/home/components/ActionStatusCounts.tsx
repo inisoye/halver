@@ -14,17 +14,17 @@ import { isAndroid } from '@/utils';
 
 import { useActionStatusCounts } from '../api';
 
-const actionStatusColors = {
+export const actionStatusColors = {
   Pending: 'pendingActionStatusBackground',
   Overdue: 'overdueActionStatusBackground',
   Recurring: 'recurringActionStatusBackground',
-};
+} as const;
 
 interface ActionStatusButtonProps {
   count: number;
   icon: React.FunctionComponent<ISvgProps>;
   navigation: NativeStackNavigationProp<AppRootStackParamList, 'Home'>;
-  status: string;
+  status: keyof typeof actionStatusColors;
   disabled: boolean;
 }
 

@@ -31,12 +31,6 @@ import { Plus, RightCaret, Search, ThreeUsersCluster } from '@/icons';
 import type { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 import { useIsDarkModeSelected } from '@/utils';
 
-/**
- * TODO
- * Add filter for search, integrate with React Query and debounce.
- * Add memo where possible. Considering moving stuff to separate files.
- */
-
 interface BillParticipantAvatarProps {
   participant:
     | {
@@ -223,7 +217,7 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ navigation }) => {
     isLoading: areBillsLoading,
     fetchNextPage,
     hasNextPage,
-    isFetching: areBillsFetching,
+    isFetchingNextPage,
   } = useBills(debouncedFilterValue);
 
   const bills = React.useMemo(
@@ -233,8 +227,6 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ navigation }) => {
   const loadMoreBills = () => hasNextPage && fetchNextPage();
 
   const noBillsFound = !areBillsLoading && (!bills || bills?.length < 1);
-
-  const isFooterLoaderDisplayed = areBillsFetching && !areBillsLoading && !noBillsFound;
 
   const renderItem: ListRenderItem<BillListItem | undefined> = ({ item, index }) => {
     return <BillListRenderItem index={index} item={item} navigation={navigation} />;
@@ -279,12 +271,12 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ navigation }) => {
 
       <FlashList
         // eslint-disable-next-line react-native/no-inline-styles
-        contentContainerStyle={{ paddingBottom: isFooterLoaderDisplayed ? 0 : 12 }}
+        contentContainerStyle={{ paddingBottom: isFetchingNextPage ? 0 : 12 }}
         data={bills}
         estimatedItemSize={70}
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
-        ListFooterComponent={isFooterLoaderDisplayed ? <LogoLoader /> : undefined}
+        ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
         renderItem={renderItem}
         onEndReached={loadMoreBills}
       />
