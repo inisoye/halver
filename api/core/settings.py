@@ -239,7 +239,7 @@ REST_FRAMEWORK = {
         "core.parsers.CamelCaseFormParser",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": "core.pagination.CustomPageNumberPagination",
     "PAGE_SIZE": 10,
     "JSON_UNDERSCOREIZE": {
         # Prevent the conversion of these as they have uuid keys nested.
