@@ -4,7 +4,12 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import { Box, Button, Card, DynamicText, Screen, ScrollView, Text } from '@/components';
-import { ActionStatusCounts, RecentTransactions } from '@/features/home';
+import { useUserTransactions } from '@/features/financials';
+import {
+  ActionStatusCounts,
+  RecentTransactions,
+  useActionStatusCounts,
+} from '@/features/home';
 import { HalverMillipede } from '@/icons';
 import type { AppRootStackParamList, TabParamList } from '@/navigation';
 
@@ -17,6 +22,18 @@ export const Home = ({ navigation }: HomeProps) => {
   const goToAllTransactions = React.useCallback(() => {
     navigation.navigate('FinancialsStackNavigator', { screen: 'Transactions' });
   }, [navigation]);
+
+  const { refetch: refetchActionStatusCounts } = useActionStatusCounts();
+  const { refetch: refetchTransactions } = useUserTransactions();
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refetchActionStatusCounts();
+      refetchTransactions();
+    });
+
+    return unsubscribe;
+  }, [navigation, refetchActionStatusCounts, refetchTransactions]);
 
   return (
     <Screen hasNoIOSBottomInset>

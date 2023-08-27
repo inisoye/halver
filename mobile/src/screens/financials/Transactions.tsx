@@ -132,11 +132,20 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
 
   const {
     data: transactionsResponse,
-    isLoading: areTransactionsLoading,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading: areTransactionsLoading,
+    refetch: refetchTransactions,
   } = useInfiniteUserTransactions(debouncedFilterValue);
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refetchTransactions();
+    });
+
+    return unsubscribe;
+  }, [navigation, refetchTransactions]);
 
   const transactions = React.useMemo(
     () => transactionsResponse?.pages.flatMap(page => page.results),

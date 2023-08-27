@@ -22,6 +22,7 @@ import {
   BillCreatorCreditorFlag,
   BillParticipantsList,
   BillRecentContributionsList,
+  CancelSubscriptionModal,
   statusColorIndex,
   useBill,
   useBillTransactions,
@@ -99,6 +100,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
     currentUserActionStatus === 'completed' ||
     currentUserActionStatus === 'ongoing' ||
     currentUserActionStatus === 'opted_out' ||
+    currentUserActionStatus === 'pending_transfer' ||
     currentUserActionStatus === 'cancelled';
 
   const handleGoBack = () => {
@@ -116,6 +118,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
     fee: currentUserAction?.totalFee,
     firstChargeDate,
     name,
+    isOnRoot,
   };
 
   const handlePaymentNavigation = () => {
@@ -132,6 +135,9 @@ export const Bill = ({ navigation, route }: BillProps) => {
 
   const canMakeContribution =
     !isBillLoading && !isCreditor && !isCurrentUserStatusFinal;
+
+  const hasActiveSubscription =
+    !isBillLoading && currentUserActionStatus === 'ongoing' && !isCreditor;
 
   return (
     <Screen
@@ -328,7 +334,17 @@ export const Bill = ({ navigation, route }: BillProps) => {
               <BillParticipantsList actions={actions} isDiscreet={isDiscreet} />
             )}
 
-            <BillRecentContributionsList id={id} isDiscreet={isDiscreet} />
+            {!isBillLoading && (
+              <BillRecentContributionsList id={id} isDiscreet={isDiscreet} />
+            )}
+
+            {hasActiveSubscription && (
+              <CancelSubscriptionModal
+                actionId={currentUserAction?.uuid}
+                billId={id}
+                billName={name}
+              />
+            )}
           </Box>
         </ScrollView>
       </Box>

@@ -137,7 +137,9 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
     createBill(finalBillPayload, {
       onSuccess: ({ uuid, name }) => {
         setCreatedBill({ id: uuid, name });
-        openSuccessModal();
+        setTimeout(() => {
+          openSuccessModal();
+        }, 250);
       },
 
       onError: error => {

@@ -32,7 +32,7 @@ export function generateLongStatus({
     ? 'All'
     : `${mostCommonStatusCount}`;
 
-  const statusCountIsPlural = mostCommonStatusCount > 1;
+  const statusCountIsPlural = mostCommonStatusCount > 1 || areAllStatusesSame;
   const pluralSuffix = statusCountIsPlural ? 's' : '';
 
   const statusMessageIndex: StatusMessageIndex = {

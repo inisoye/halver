@@ -9,13 +9,6 @@ export type BillActionResponsePayload = z.infer<
   typeof PatchedBillActionResponseUpdateSchema
 >;
 
-export interface BillCreationResponse {
-  created: string;
-  modified: string;
-  name: string;
-  uuid: string;
-}
-
 export const updateBillAction = async ({
   id,
   billActionResponseDto,
@@ -27,7 +20,7 @@ export const updateBillAction = async ({
     `/bills/actions/${id}/`,
     billActionResponseDto,
   );
-  return response.data as BillCreationResponse;
+  return response.data;
 };
 
 export const useUpdateBillAction = () => {

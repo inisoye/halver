@@ -43,6 +43,7 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
     deadline,
     deductionPattern,
     fee,
+    isOnRoot,
   } = route.params;
 
   const isBillOverdue = status === 'overdue';
@@ -68,11 +69,21 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
   };
 
   const handleGoToBillWithUpdate = () => {
-    navigation.navigate('Bill', {
-      id: billId || '',
-      name: billName || '',
-      shouldUpdate: true,
+    navigation.navigate('TabsRoot', {
+      screen: 'BillsStackNavigator',
+      params: {
+        screen: 'Bill',
+        initial: false,
+        params: {
+          id: billId || '',
+          name: billName || '',
+          shouldUpdate: true,
+          isOnRoot,
+        },
+      },
     });
+    closeSuccessModal();
+    closeOptOutConfirmationModal();
   };
 
   const handleBillPayment = () => {
@@ -85,7 +96,9 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
       },
       {
         onSuccess: () => {
-          openSuccessModal();
+          setTimeout(() => {
+            openSuccessModal();
+          }, 200);
         },
 
         onError: error => {
@@ -105,7 +118,9 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
       },
       {
         onSuccess: () => {
-          openOptOutConfirmationModal();
+          setTimeout(() => {
+            openOptOutConfirmationModal();
+          }, 200);
         },
 
         onError: error => {
@@ -117,6 +132,7 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
 
   useFullScreenLoader({
     isLoading: isBillUpdateLoading,
+    message: 'Processing your payment...',
   });
 
   const { data: userDetails } = useUserDetails();
@@ -316,7 +332,7 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
             color="green12"
             fontFamily="Halver-Semibold"
             marginBottom="6"
-            maxWidth="60%"
+            width="75%"
           >
             {isBillRecurring
               ? 'We will notify you after every successful charge.'

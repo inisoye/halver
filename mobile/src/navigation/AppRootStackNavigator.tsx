@@ -29,6 +29,8 @@ export type AppRootStackParamList = {
           params: {
             id: string;
             name: string;
+            shouldUpdate?: boolean;
+            isOnRoot?: boolean;
           };
         };
       }
@@ -50,6 +52,7 @@ export type AppRootStackParamList = {
     fee: string | null | undefined;
     firstChargeDate: string | null | undefined;
     name: string;
+    isOnRoot?: boolean;
   };
   'Add your card': undefined;
   'Add a recipient': undefined;
@@ -74,16 +77,6 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
         <AppRootStack.Screen component={BillParticipants} name="Select Participants" />
         <AppRootStack.Screen component={SplitBreakdown} name="Split Breakdown" />
         <AppRootStack.Screen component={BillSummary} name="Bill Summary" />
-      </AppRootStack.Group>
-
-      <AppRootStack.Group screenOptions={{ headerShown: false }}>
-        <AppRootStack.Screen
-          component={BillPayment}
-          name="Bill Payment"
-          options={{
-            headerShown: false,
-          }}
-        />
       </AppRootStack.Group>
 
       <AppRootStack.Group screenOptions={{ headerShown: false }}>
@@ -123,6 +116,7 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
       <AppRootStack.Group screenOptions={{ headerShown: false }}>
         <AppRootStack.Screen component={BillsByStatus} name="Bills By Status" />
         <AppRootStack.Screen component={Bill} name="Bill" />
+        <AppRootStack.Screen component={BillPayment} name="Bill Payment" />
       </AppRootStack.Group>
     </AppRootStack.Navigator>
   );

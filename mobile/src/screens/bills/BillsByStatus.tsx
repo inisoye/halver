@@ -38,12 +38,14 @@ interface BillListRenderItemProps {
     NativeStackNavigationProp<BillsStackParamList, 'Bills By Status', undefined>,
     NativeStackNavigationProp<AppRootStackParamList, 'Bills By Status', undefined>
   >;
+  isLastItem: boolean;
 }
 
 const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
   item,
   index,
   navigation,
+  isLastItem,
 }) => {
   const isDarkMode = useIsDarkModeSelected();
 
@@ -58,6 +60,7 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
   return (
     <RectButton
       activeOpacity={0.05}
+      marginBottom={isLastItem ? '4' : undefined}
       marginTop={index === 0 ? '4' : undefined}
       underlayColor={isDarkMode ? 'white' : 'black'}
       onPress={handleGoToBill}
@@ -127,12 +130,21 @@ export const BillsByStatus = ({ route, navigation }: BillsByStatusProps) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    refetch: refetchActions,
   } = useUserActionsByStatus(
     debouncedFilterValue,
     status.toLowerCase() === 'recurring'
       ? 'ongoing'
       : (status.toLowerCase() as BillActionStatus),
   );
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refetchActions();
+    });
+
+    return unsubscribe;
+  }, [navigation, refetchActions]);
 
   const bills = React.useMemo(
     () => billsResponse?.pages.flatMap(page => page.results),
@@ -146,7 +158,15 @@ export const BillsByStatus = ({ route, navigation }: BillsByStatusProps) => {
     item,
     index,
   }) => {
-    return <BillListRenderItem index={index} item={item} navigation={navigation} />;
+    const isLastItem = !!bills && bills?.length === index - 1;
+    return (
+      <BillListRenderItem
+        index={index}
+        isLastItem={isLastItem}
+        item={item}
+        navigation={navigation}
+      />
+    );
   };
 
   const handleGoToCreateBill = React.useCallback(() => {

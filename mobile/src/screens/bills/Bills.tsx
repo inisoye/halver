@@ -220,7 +220,16 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ navigation }) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    refetch: refetchBills,
   } = useBills(debouncedFilterValue);
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refetchBills();
+    });
+
+    return unsubscribe;
+  }, [navigation, refetchBills]);
 
   const bills = React.useMemo(
     () => billsResponse?.pages.flatMap(page => page.results),

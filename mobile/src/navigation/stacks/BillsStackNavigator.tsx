@@ -19,6 +19,7 @@ export type BillsStackParamList = {
     fee: string | null | undefined;
     firstChargeDate: string | null | undefined;
     name: string;
+    isOnRoot?: boolean;
   };
   'Bills By Status': { status: keyof typeof actionStatusColors };
 };
