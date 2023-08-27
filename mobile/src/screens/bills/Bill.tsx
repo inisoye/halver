@@ -22,6 +22,7 @@ import {
   BillCreatorCreditorFlag,
   BillParticipantsList,
   BillRecentContributionsList,
+  CancelBillModal,
   CancelSubscriptionModal,
   statusColorIndex,
   useBill,
@@ -139,6 +140,8 @@ export const Bill = ({ navigation, route }: BillProps) => {
   const hasActiveSubscription =
     !isBillLoading && currentUserActionStatus === 'ongoing' && !isCreditor;
 
+  const canCancelBill = isCreator && status?.short !== 'cancelled';
+
   return (
     <Screen
       backgroundColor="billScreenBackground"
@@ -163,7 +166,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
           <BackWithBackground />
         </TouchableOpacity>
 
-        {isCreator && (
+        {isCreator && false && (
           <TouchableOpacity>
             <Gear />
           </TouchableOpacity>
@@ -345,6 +348,8 @@ export const Bill = ({ navigation, route }: BillProps) => {
                 billName={name}
               />
             )}
+
+            {canCancelBill && <CancelBillModal billId={id} />}
           </Box>
         </ScrollView>
       </Box>
