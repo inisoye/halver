@@ -13,7 +13,7 @@ import {
 import {
   AccountAvatarButton,
   DisplayModeSelectorModal,
-  LogoutButton,
+  LogOutModal,
   ProfileNameAndUsername,
   useUserDetails,
 } from '@/features/account';
@@ -146,7 +146,7 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
             hasText
           />
 
-          <LogoutButton />
+          <LogOutModal />
         </Box>
       </ScrollView>
     </Screen>
