@@ -341,7 +341,7 @@ def generate_long_status_index(all_actions_are_one_type, most_common_status_coun
     )
 
     # Check if the status count is plural
-    status_count_is_plural = most_common_status_count > 1
+    status_count_is_plural = most_common_status_count > 1 or all_actions_are_one_type
     plural_suffix = "s" if status_count_is_plural else ""
 
     # Map status codes to messages
