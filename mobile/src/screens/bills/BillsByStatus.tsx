@@ -188,7 +188,8 @@ export const BillsByStatus = ({ route, navigation }: BillsByStatusProps) => {
         </Text>
       )}
 
-      <GestureHandlerRootView style={flexStyles[1]}>
+      {/* eslint-disable-next-line react-native/no-inline-styles */}
+      <GestureHandlerRootView style={[flexStyles[1], { marginBottom: 24 }]}>
         <FlashList
           // eslint-disable-next-line react-native/no-inline-styles
           contentContainerStyle={{ paddingBottom: isFetchingNextPage ? 0 : 12 }}

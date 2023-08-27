@@ -180,7 +180,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
               flexDirection="row"
               gap="2"
               justifyContent="space-between"
-              marginBottom="8"
+              marginBottom="12"
             >
               <DynamicText
                 fontFamily="Halver-Semibold"
