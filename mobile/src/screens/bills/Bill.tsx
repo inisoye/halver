@@ -140,7 +140,11 @@ export const Bill = ({ navigation, route }: BillProps) => {
   const hasActiveSubscription =
     !isBillLoading && currentUserActionStatus === 'ongoing' && !isCreditor;
 
-  const canCancelBill = isCreator && status?.short !== 'cancelled';
+  const canCancelBill =
+    isCreator &&
+    status?.short !== 'cancelled' &&
+    status?.short !== 'completed' &&
+    status?.short !== 'opted_out';
 
   return (
     <Screen
@@ -341,15 +345,19 @@ export const Bill = ({ navigation, route }: BillProps) => {
               <BillRecentContributionsList id={id} isDiscreet={isDiscreet} />
             )}
 
-            {hasActiveSubscription && (
-              <CancelSubscriptionModal
-                actionId={currentUserAction?.uuid}
-                billId={id}
-                billName={name}
-              />
-            )}
+            {(hasActiveSubscription || canCancelBill) && (
+              <Box gap="10" marginBottom="10" marginTop="60">
+                {hasActiveSubscription && (
+                  <CancelSubscriptionModal
+                    actionId={currentUserAction?.uuid}
+                    billId={id}
+                    billName={name}
+                  />
+                )}
 
-            {canCancelBill && <CancelBillModal billId={id} />}
+                {canCancelBill && <CancelBillModal billId={id} />}
+              </Box>
+            )}
           </Box>
         </ScrollView>
       </Box>

@@ -70,8 +70,6 @@ export const CancelSubscriptionModal: React.FunctionComponent<
         flexDirection="row"
         gap="4"
         justifyContent="center"
-        marginBottom="10"
-        marginTop="60"
         paddingHorizontal="4"
         paddingVertical="2"
         onPress={handleButtonPress}
