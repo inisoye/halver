@@ -240,6 +240,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
                 isSetDefaultTransferRecipientLoading || isDeleteTransferRecipientLoading
               }
               flex={1}
+              paddingVertical="2.5"
               onPress={onDeleteCard}
             >
               <Text color="buttonTextDanger" fontFamily="Halver-Semibold">
@@ -255,6 +256,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
                 isDefault
               }
               flex={1}
+              paddingVertical="2.5"
               onPress={onSetDefaultCardSubmit}
             >
               <Text color="buttonTextCasal" fontFamily="Halver-Semibold">

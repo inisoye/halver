@@ -1,9 +1,10 @@
 import { BoxProps } from '@shopify/restyle';
 import * as React from 'react';
+import { FadeInLeft, FadeInRight } from 'react-native-reanimated';
 
 import { Theme } from '@/lib/restyle';
 
-import { Box } from './Box';
+import { AnimatedBox, Box } from './Box';
 import { Text } from './Text';
 
 interface CraftedLogoProps {
@@ -20,14 +21,16 @@ export const CraftedLogoSmall: React.FunctionComponent<CraftedLogoProps> = ({
       {hasText && <Text>halver</Text>}
 
       <Box>
-        <Box
+        <AnimatedBox
           backgroundColor="logoApricot"
+          entering={FadeInRight}
           height={6.25}
           marginLeft="0.75"
           width={16.67}
         />
-        <Box
+        <AnimatedBox
           backgroundColor="logoCasal"
+          entering={FadeInLeft}
           height={6.25}
           marginLeft="1.5"
           marginTop="px"
@@ -58,9 +61,16 @@ export const CraftedLogo: React.FunctionComponent<CraftedLogoProps> = ({
       )}
 
       <Box>
-        <Box backgroundColor="logoApricot" height={9.375} marginLeft="1" width={25} />
-        <Box
+        <AnimatedBox
+          backgroundColor="logoApricot"
+          entering={FadeInRight}
+          height={9.375}
+          marginLeft="1"
+          width={25}
+        />
+        <AnimatedBox
           backgroundColor="logoCasal"
+          entering={FadeInLeft}
           height={9.375}
           marginLeft="2"
           marginTop="px.5"
@@ -91,9 +101,16 @@ export const CraftedLogoLarge: React.FunctionComponent<CraftedLogoProps> = ({
       )}
 
       <Box>
-        <Box backgroundColor="logoApricot" height={18.75} marginLeft="2" width={50} />
-        <Box
+        <AnimatedBox
+          backgroundColor="logoApricot"
+          entering={FadeInRight}
+          height={18.75}
+          marginLeft="2"
+          width={50}
+        />
+        <AnimatedBox
           backgroundColor="logoCasal"
+          entering={FadeInLeft}
           height={18.75}
           marginLeft="4"
           marginTop="0.75"

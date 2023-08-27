@@ -3,6 +3,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FlashList, type ListRenderItem } from '@shopify/flash-list';
 import * as React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import {
   Box,
@@ -20,6 +21,7 @@ import {
 import { useBooleanStateControl, useDebounce } from '@/hooks';
 import { RightCaret, Search } from '@/icons';
 import { AppRootStackParamList, FinancialsStackParamList } from '@/navigation';
+import { flexStyles } from '@/theme';
 import { formatNumberWithCommas, useIsDarkModeSelected } from '@/utils';
 
 interface TransactionItemProps {
@@ -195,15 +197,17 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
           </Text>
         )}
 
-        <FlashList
-          // eslint-disable-next-line react-native/no-inline-styles
-          contentContainerStyle={{ paddingBottom: isFetchingNextPage ? 0 : 12 }}
-          data={transactions}
-          estimatedItemSize={70}
-          ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
-          renderItem={renderItem}
-          onEndReached={loadMoreTransactions}
-        />
+        <GestureHandlerRootView style={flexStyles[1]}>
+          <FlashList
+            // eslint-disable-next-line react-native/no-inline-styles
+            contentContainerStyle={{ paddingBottom: isFetchingNextPage ? 0 : 12 }}
+            data={transactions}
+            estimatedItemSize={70}
+            ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
+            renderItem={renderItem}
+            onEndReached={loadMoreTransactions}
+          />
+        </GestureHandlerRootView>
       </Screen>
     </>
   );

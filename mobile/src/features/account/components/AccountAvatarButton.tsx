@@ -49,19 +49,19 @@ export const AccountAvatarButton: React.FunctionComponent<AccountAvatarButtonPro
             <Image
               borderRadius="lg"
               contentFit="contain"
-              height={100}
+              height={88}
               placeholder={profileImageHash}
               source={profileImageUrl}
-              width={100}
+              width={88}
             />
           ) : (
             <Box
               alignItems="center"
               borderRadius="lg"
-              height={100}
+              height={88}
               justifyContent="center"
               style={{ backgroundColor: avatarBackground }}
-              width={100}
+              width={88}
             >
               <Text color="textInverse" fontFamily="Halver-Semibold" variant="3xl">
                 {initials}

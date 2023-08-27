@@ -3,9 +3,11 @@ import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import * as Contacts from 'expo-contacts';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 import * as React from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { AbsoluteKeyboardStickyButton, Text } from '@/components';
 import { AppRootStackParamList } from '@/navigation';
+import { flexStyles } from '@/theme';
 import {
   handleGenericErrorAlertAndHaptics,
   isMobilePhone,
@@ -140,17 +142,19 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
         </Text>
       )}
 
-      <FlashList
-        data={contactsWithHeadings}
-        estimatedItemSize={90}
-        getItemType={item => {
-          return typeof item === 'string' ? 'sectionHeader' : 'row';
-        }}
-        keyboardDismissMode="on-drag"
-        keyboardShouldPersistTaps="handled"
-        renderItem={renderItem}
-        stickyHeaderIndices={stickyHeaderIndices}
-      />
+      <GestureHandlerRootView style={flexStyles[1]}>
+        <FlashList
+          data={contactsWithHeadings}
+          estimatedItemSize={90}
+          getItemType={item => {
+            return typeof item === 'string' ? 'sectionHeader' : 'row';
+          }}
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="handled"
+          renderItem={renderItem}
+          stickyHeaderIndices={stickyHeaderIndices}
+        />
+      </GestureHandlerRootView>
     </>
   );
 }

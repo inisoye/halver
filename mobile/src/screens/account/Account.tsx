@@ -17,6 +17,7 @@ import {
   ProfileNameAndUsername,
   useUserDetails,
 } from '@/features/account';
+import { EditPencil } from '@/icons';
 import type { AccountStackParamList } from '@/navigation';
 
 type AccountProps = NativeStackScreenProps<AccountStackParamList, 'Account'>;
@@ -107,15 +108,25 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
                 Phone
               </DynamicText>
 
-              <DynamicText
-                fontFamily="Halver-Semibold"
-                maxWidth="60%"
-                numberOfLines={1}
-                textAlign="right"
-                variant="sm"
+              <Box
+                alignItems="center"
+                flexDirection="row"
+                gap="2.5"
+                justifyContent="flex-end"
+                width="50%"
               >
-                {phone} ✏️
-              </DynamicText>
+                <DynamicText
+                  fontFamily="Halver-Semibold"
+                  numberOfLines={1}
+                  textAlign="right"
+                  variant="sm"
+                  width="80%"
+                >
+                  {phone}
+                </DynamicText>
+
+                <EditPencil />
+              </Box>
             </TouchableOpacity>
           </Box>
 

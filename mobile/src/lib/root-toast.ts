@@ -44,10 +44,11 @@ export const showToast = (
   type = 'neutral' as keyof typeof textVariantStyles,
   duration = 1000,
   backgroundColor?: string,
+  position?: number,
 ) => {
   Toast.show(message, {
     duration: duration,
-    position: isIOS() ? -95 : -102,
+    position: position ?? isIOS() ? -95 : -102,
     shadow: false,
     animation: true,
     opacity: 1,

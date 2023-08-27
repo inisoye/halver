@@ -3,9 +3,9 @@ import { useMMKVString } from 'react-native-mmkv';
 
 import { Box, DynamicText, Modal, ScrollView, TouchableOpacity } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
-import { SelectInactiveItem, SelectTick } from '@/icons';
+import { EditPencil, SelectInactiveItem, SelectTick } from '@/icons';
 import { allMMKVKeys } from '@/lib/mmkv';
-import { convertKebabAndSnakeToTitleCase } from '@/utils';
+import { convertKebabAndSnakeToTitleCase, isAndroid } from '@/utils';
 
 interface DiplayModeItemProps {
   name: string;
@@ -90,15 +90,25 @@ export const DisplayModeSelectorModal: React.FunctionComponent = () => {
           Display mode
         </DynamicText>
 
-        <DynamicText
-          fontFamily="Halver-Semibold"
-          maxWidth="60%"
-          numberOfLines={1}
-          textAlign="right"
-          variant="sm"
+        <Box
+          alignItems="center"
+          flexDirection="row"
+          gap="2.5"
+          justifyContent="flex-end"
+          width="50%"
         >
-          {convertKebabAndSnakeToTitleCase(displayMode)} ✏️
-        </DynamicText>
+          <DynamicText
+            fontFamily="Halver-Semibold"
+            numberOfLines={1}
+            textAlign="right"
+            variant="sm"
+            width="80%"
+          >
+            {convertKebabAndSnakeToTitleCase(displayMode)}
+          </DynamicText>
+
+          <EditPencil />
+        </Box>
       </TouchableOpacity>
 
       <Modal
@@ -111,7 +121,7 @@ export const DisplayModeSelectorModal: React.FunctionComponent = () => {
         <Box
           backgroundColor="modalBackground"
           maxHeight="81%"
-          paddingBottom="8"
+          paddingBottom={isAndroid() ? '2' : '6'}
           paddingHorizontal="6"
           paddingTop="6"
         >

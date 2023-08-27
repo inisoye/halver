@@ -76,7 +76,7 @@ const BillDetailsFormSchema = z
         invalid_type_error: 'The first charge date must be a valid date.',
       })
       .refine(data => data > new Date(), {
-        message: "Your bill's first charge date must be in the future.",
+        message: 'The first charge date must be in the future.',
       })
       .optional(),
     notes: z
@@ -95,6 +95,7 @@ const BillDetailsFormSchema = z
     },
     {
       message: "The bill's first charge date is required.",
+      path: ['firstChargeDate'],
     },
   );
 
@@ -154,7 +155,7 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
     }
   }, [errors.firstChargeDate]);
 
-  // Added to catch and errors in schema's refine method.
+  // Added to catch errors in schema's refine method.
   React.useEffect(() => {
     if (errors['']) {
       showToast(errors['']?.message, 'error');
@@ -194,7 +195,10 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
 
   return (
     <Screen hasNoIOSBottomInset>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+      >
         <Box gap="7" paddingBottom="20" paddingHorizontal="6" paddingTop="4">
           <Box>
             <TextFieldLabel label="How much is the bill?" />
@@ -308,7 +312,6 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
 
       <KeyboardStickyButton
         backgroundColor="buttonCasal"
-        marginTop="1.5"
         onPress={handleSubmit(onBillDetailsSubmit)}
       >
         <Text color="buttonTextCasal" fontFamily="Halver-Semibold">

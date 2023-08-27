@@ -28,7 +28,7 @@ import {
 } from '@/features/bills';
 import { BackWithBackground, Gear } from '@/icons';
 import { AppRootStackParamList, BillsStackParamList } from '@/navigation';
-import { convertNumberToNaira, formatNumberWithCommas } from '@/utils';
+import { convertNumberToNaira, formatNumberWithCommas, isIOS } from '@/utils';
 
 type BillProps = CompositeScreenProps<
   NativeStackScreenProps<BillsStackParamList, 'Bill'>,
@@ -36,7 +36,7 @@ type BillProps = CompositeScreenProps<
 >;
 
 export const Bill = ({ navigation, route }: BillProps) => {
-  const { id, name, shouldUpdate } = route.params;
+  const { id, name, shouldUpdate, isOnRoot } = route.params;
 
   const { data: userDetails } = useUserDetails();
   const { uuid: currentUserUUID } = userDetails || {};
@@ -58,6 +58,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
     firstChargeDate,
     interval,
     isCreditor,
+    isCreator,
     isDiscreet,
     notes,
     status,
@@ -121,6 +122,17 @@ export const Bill = ({ navigation, route }: BillProps) => {
     navigation.navigate('Bill Payment', billPaymentScreenPayload);
   };
 
+  const getButtonBottomMargin = () => {
+    if (isOnRoot) {
+      return isIOS() ? '10' : '7';
+    } else {
+      return '3';
+    }
+  };
+
+  const canMakeContribution =
+    !isBillLoading && !isCreditor && !isCurrentUserStatusFinal;
+
   return (
     <Screen
       backgroundColor="billScreenBackground"
@@ -145,7 +157,11 @@ export const Bill = ({ navigation, route }: BillProps) => {
           <BackWithBackground />
         </TouchableOpacity>
 
-        <Gear />
+        {isCreator && (
+          <TouchableOpacity>
+            <Gear />
+          </TouchableOpacity>
+        )}
       </Box>
 
       <Box backgroundColor="transparent" height={16}>
@@ -201,7 +217,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
                           </Text>
                           {`${formatNumberWithCommas(
                             totalAmountPaid,
-                          )} contributed since bill creation`}
+                          )} contributed since bill creation.`}
                         </>
                       )}
                     </Text>
@@ -276,12 +292,17 @@ export const Bill = ({ navigation, route }: BillProps) => {
             )}
           </Box>
 
-          <Box gap="8" paddingBottom="2" paddingHorizontal="6" paddingTop="10">
+          <Box
+            gap="8"
+            paddingBottom={canMakeContribution ? '2' : '8'}
+            paddingHorizontal="6"
+            paddingTop="10"
+          >
             {!!notes && (
               <Box
                 backgroundColor="elementBackground"
                 borderRadius="lg"
-                elevation={1}
+                elevation={0.5}
                 gap="3"
                 paddingVertical="3"
                 px="4"
@@ -312,8 +333,13 @@ export const Bill = ({ navigation, route }: BillProps) => {
         </ScrollView>
       </Box>
 
-      {!isBillLoading && !isCreditor && !isCurrentUserStatusFinal && (
-        <Box backgroundColor="background" paddingHorizontal="6" paddingVertical="3">
+      {canMakeContribution && (
+        <Box
+          backgroundColor="background"
+          paddingBottom={getButtonBottomMargin()}
+          paddingHorizontal="6"
+          paddingTop="3"
+        >
           <Button
             backgroundColor="buttonCasal"
             disabled={isBillLoading || isBillForceUpdating}

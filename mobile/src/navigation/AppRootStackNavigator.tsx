@@ -6,6 +6,7 @@ import { actionStatusColors } from '@/features/home';
 import {
   AddCard,
   AddTransferRecipient,
+  Bill,
   BillDetails,
   BillParticipants,
   BillPayment,
@@ -35,6 +36,7 @@ export type AppRootStackParamList = {
   'Bill Details': undefined;
   'Select Participants': undefined;
   'Bills By Status': { status: keyof typeof actionStatusColors };
+  Bill: { id: string; name: string; shouldUpdate?: boolean; isOnRoot?: boolean };
   'Split Breakdown': undefined;
   'Bill Summary': undefined;
   'Bill Payment': {
@@ -56,7 +58,7 @@ export type AppRootStackParamList = {
   Home: undefined;
 };
 
-const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
+export const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
 
 export const AppRootStackNavigator: React.FunctionComponent = () => {
   return (
@@ -120,6 +122,7 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
 
       <AppRootStack.Group screenOptions={{ headerShown: false }}>
         <AppRootStack.Screen component={BillsByStatus} name="Bills By Status" />
+        <AppRootStack.Screen component={Bill} name="Bill" />
       </AppRootStack.Group>
     </AppRootStack.Navigator>
   );

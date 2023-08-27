@@ -185,7 +185,7 @@ export const BillRecentContributionsList: React.FunctionComponent<
           <Box
             backgroundColor="elementBackground"
             borderRadius="md"
-            elevation={1}
+            elevation={0.5}
             shadowColor="black"
             shadowOffset={{
               width: 0.1,

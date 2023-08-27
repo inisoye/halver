@@ -16,10 +16,7 @@ export const EditPhoto: React.FunctionComponent<EditPhotoProps> = ({ ...props })
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <Path
-        d="M0 6a6 6 0 0 1 6-6h16a6 6 0 0 1 6 6v14a8 8 0 0 1-8 8H6a6 6 0 0 1-6-6V6Z"
-        fill={darkColors.gray12}
-      />
+      <Path d="M0 6a6 6 0 0 1 6-6h22v20a8 8 0 0 1-8 8H0V6Z" fill={darkColors.gray12} />
       <Path
         d="M21.172 11.307 18.8 13.68 14.32 9.2l2.373-2.372a.64.64 0 0 1 .905 0l3.575 3.572a.64.64 0 0 1 0 .907Z"
         fill={darkColors.gray11}

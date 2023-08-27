@@ -4,7 +4,8 @@
  */
 
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useEffect, useRef, useState } from 'react';
+import _debounce from 'lodash.debounce';
+import * as React from 'react';
 import {
   Dimensions,
   NativeScrollEvent,
@@ -12,32 +13,14 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  useColorScheme,
   View,
   type DimensionValue,
 } from 'react-native';
 
+import { useIsDarkModeSelected } from '@/utils';
+
 import { Box } from './Box';
 import { DynamicText, Text } from './Text';
-
-const hex2rgba = (hex: string, alpha: number): string => {
-  hex = hex.replace('#', '');
-
-  const r: number = parseInt(
-    hex.length === 3 ? hex.slice(0, 1).repeat(2) : hex.slice(0, 2),
-    16,
-  );
-  const g: number = parseInt(
-    hex.length === 3 ? hex.slice(1, 2).repeat(2) : hex.slice(2, 4),
-    16,
-  );
-  const b: number = parseInt(
-    hex.length === 3 ? hex.slice(2, 3).repeat(2) : hex.slice(4, 6),
-    16,
-  );
-
-  return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
-};
 
 const monthsIndex: { [key: number]: string } = {
   1: 'Jan',
@@ -82,23 +65,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export interface DatePickerProps {
-  value: Date | null | undefined;
-  height?: number;
-  width?: number | string;
-  fontSize?: number;
-  textColor?: string;
-  startYear?: number;
-  endYear?: number;
-  markColor?: string;
-  markHeight?: number;
-  markWidth?: number | string;
-  fadeColor?: string;
-  format?: string;
-
-  onChange(value: Date): void;
-}
-
 export interface DateBlockProps {
   digits: number[];
   value: number;
@@ -121,11 +87,8 @@ const DateBlock: React.FC<DateBlockProps> = ({
   height,
   markHeight,
   markWidth,
-  fadeColor,
 }) => {
-  const colorScheme = useColorScheme();
-
-  const isDarkMode = colorScheme === 'dark';
+  const isDarkMode = useIsDarkModeSelected();
 
   const dHeight: number = Math.round(height / 4);
 
@@ -134,16 +97,10 @@ const DateBlock: React.FC<DateBlockProps> = ({
 
   const offsets = digits.map((_: number, index: number) => index * dHeight);
 
-  const fadeFilled: string = hex2rgba(
-    fadeColor || isDarkMode ? '#161616' : '#FCFCFC',
-    1,
-  );
-  const fadeTransparent: string = hex2rgba(
-    fadeColor || isDarkMode ? '#161616' : '#FCFCFC',
-    0,
-  );
+  const fadeFilled = isDarkMode ? 'rgba(22, 22, 22, 1)' : 'rgba(252, 252, 252,1)';
+  const fadeTransparent = isDarkMode ? 'rgba(22, 22, 22, 0)' : 'rgba(252, 252, 252,0)';
 
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = React.useRef<ScrollView>(null);
 
   const snapScrollToIndex = (index: number) => {
     scrollRef?.current?.scrollTo({ y: dHeight * index, animated: true });
@@ -153,16 +110,23 @@ const DateBlock: React.FC<DateBlockProps> = ({
     snapScrollToIndex(value - digits[0]);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     scrollToSelections();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrollRef.current]);
+  }, []);
+
+  // Add debounce to prevent effects of momentum scroll end overfiring on Android (and causing rerenders)
+  const debouncedOnChange = React.useRef(
+    _debounce((_type: string, digit: number) => {
+      onChange(_type, digit);
+    }, 100), // Adjust the debounce delay as needed
+  ).current;
 
   const handleMomentumScrollEnd = ({
     nativeEvent,
   }: NativeSyntheticEvent<NativeScrollEvent>) => {
     const digit = Math.round(nativeEvent.contentOffset.y / dHeight + digits[0]);
-    onChange(type, digit);
+    debouncedOnChange(type, digit);
   };
 
   return (
@@ -180,11 +144,11 @@ const DateBlock: React.FC<DateBlockProps> = ({
       />
       <ScrollView
         ref={scrollRef}
-        scrollEventThrottle={0}
+        scrollEventThrottle={500}
         showsVerticalScrollIndicator={false}
         snapToOffsets={offsets}
         style={styles.scroll}
-        onLayout={scrollToSelections}
+        onLayout={scrollToSelections} // Causes two more rerenders on IOS
         onMomentumScrollEnd={handleMomentumScrollEnd}
       >
         {/* eslint-disable-next-line @typescript-eslint/no-shadow */}
@@ -218,13 +182,13 @@ const DateBlock: React.FC<DateBlockProps> = ({
       </ScrollView>
       <LinearGradient
         colors={[fadeTransparent, fadeFilled]}
-        pointerEvents={'none'}
+        pointerEvents="none"
         // eslint-disable-next-line react-native/no-inline-styles
         style={[styles.gradient, { bottom: 0, height: height / 4 }]}
       />
       <LinearGradient
         colors={[fadeFilled, fadeTransparent]}
-        pointerEvents={'none'}
+        pointerEvents="none"
         // eslint-disable-next-line react-native/no-inline-styles
         style={[styles.gradient, { top: 0, height: height / 4 }]}
       />
@@ -232,10 +196,29 @@ const DateBlock: React.FC<DateBlockProps> = ({
   );
 };
 
+export interface DatePickerProps {
+  value: Date | null | undefined;
+  height?: number;
+  width?: number | string;
+  fontSize?: number;
+  textColor?: string;
+  startYear?: number;
+  endYear?: number;
+  markColor?: string;
+  markHeight?: number;
+  markWidth?: number | string;
+  fadeColor?: string;
+  format?: string;
+
+  onChange(value: Date): void;
+}
+
 const formatAsText = ['Year', 'Month', 'Day'];
+const days = Array.from({ length: 31 }, (_, index) => index + 1);
+const months = Array.from({ length: 12 }, (_, index) => index + 1);
 
 export const DatePicker: React.FC<DatePickerProps> = ({
-  value,
+  value: propValue,
   onChange,
   height,
   width,
@@ -249,73 +232,72 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   fadeColor,
   format = 'yyyy-mm-dd',
 }) => {
-  const [days, setDays] = useState<number[]>([]);
-  const [months, setMonths] = useState<number[]>([]);
-  const [years, setYears] = useState<number[]>([]);
+  const value = React.useMemo(() => propValue || new Date(), [propValue]);
 
-  useEffect(() => {
+  const years = React.useMemo(() => {
     const end = endYear || new Date().getFullYear();
     const start = !startYear || startYear > end ? end - 100 : startYear;
-
-    const _days = [...Array(31)].map((_, index) => index + 1);
-    const _months = [...Array(12)].map((_, index) => index + 1);
-    const _years = [...Array(end - start + 1)].map((_, index) => start + index);
-
-    setDays(_days);
-    setMonths(_months);
-    setYears(_years);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+  }, [startYear, endYear]);
 
   const pickerHeight: number = Math.round(
     height || Dimensions.get('window').height / 3.5,
   );
   const pickerWidth = (width || '100%') as DimensionValue;
 
-  const unexpectedDate: Date = new Date(years[0], 0, 1);
-  const date = new Date(value || unexpectedDate);
+  const date = React.useMemo(() => {
+    const unexpectedDate: Date = new Date(years[0], 0, 1);
+    return new Date(value || unexpectedDate);
+  }, [value, years]);
 
-  const changeHandle = (type: string, digit: number): void => {
-    switch (type) {
-      case 'day':
-        date.setDate(digit);
-        break;
-      case 'month':
-        date.setMonth(digit - 1);
-        break;
-      case 'year':
-        date.setFullYear(digit);
-        break;
-    }
+  const changeHandle = React.useCallback(
+    (type: string, digit: number): void => {
+      const newDate = new Date(date);
 
-    // Set to Midnigght UTC
-    date.setUTCHours(0, 0, 0, 0);
-
-    onChange(date);
-  };
-
-  const getOrder = () => {
-    return (format || 'dd-mm-yyyy').split('-').map((type, index) => {
       switch (type) {
-        case 'dd':
-          return { name: 'day', digits: days, value: date.getDate() };
-        case 'mm':
-          return { name: 'month', digits: months, value: date.getMonth() + 1 };
-        case 'yyyy':
-          return { name: 'year', digits: years, value: date.getFullYear() };
-        default:
-          // eslint-disable-next-line no-console
-          console.warn(
-            `Invalid date picker format prop: found "${type}" in ${format}. Please read documentation!`,
-          );
-          return {
-            name: ['day', 'month', 'year'][index],
-            digits: [days, months, years][index],
-            value: [date.getDate(), date.getMonth() + 1, date.getFullYear()][index],
-          };
+        case 'day':
+          newDate.setDate(digit);
+          break;
+        case 'month':
+          newDate.setMonth(digit - 1);
+          break;
+        case 'year':
+          newDate.setFullYear(digit);
+          break;
       }
-    });
-  };
+
+      // Set to Midnight UTC
+      newDate.setUTCHours(0, 0, 0, 0);
+
+      onChange(newDate);
+    },
+    [date, onChange],
+  );
+
+  const order = React.useMemo(
+    () =>
+      (format || 'dd-mm-yyyy').split('-').map((type, index) => {
+        switch (type) {
+          case 'dd':
+            return { name: 'day', digits: days, value: date.getDate() };
+          case 'mm':
+            return { name: 'month', digits: months, value: date.getMonth() + 1 };
+          case 'yyyy':
+            return { name: 'year', digits: years, value: date.getFullYear() };
+          default:
+            // eslint-disable-next-line no-console
+            console.warn(
+              `Invalid date picker format prop: found "${type}" in ${format}. Please read documentation!`,
+            );
+            return {
+              name: ['day', 'month', 'year'][index],
+              digits: [days, months, years][index],
+              value: [date.getDate(), date.getMonth() + 1, date.getFullYear()][index],
+            };
+        }
+      }),
+    [date, format, years],
+  );
 
   return (
     <>
@@ -334,7 +316,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       </Box>
 
       <View style={[styles.picker, { height: pickerHeight, width: pickerWidth }]}>
-        {getOrder().map(el => {
+        {order.map(el => {
           return (
             <DateBlock
               digits={el.digits}

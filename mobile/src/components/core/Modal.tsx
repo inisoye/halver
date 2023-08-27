@@ -1,13 +1,12 @@
 import Constants from 'expo-constants';
 import * as React from 'react';
 import { Modal as RNModal } from 'react-native';
-import { FadeInDown } from 'react-native-reanimated';
 
 import { CloseModal } from '@/icons';
-import { isIOS, useIsDarkModeSelected } from '@/utils';
+import { useIsDarkModeSelected } from '@/utils';
 
 import { AfterInteractions } from './AfterInteractions';
-import { AnimatedBox, Box } from './Box';
+import { Box } from './Box';
 import { LogoLoader } from './LogoLoader';
 import { Pressable } from './Pressable';
 import { Text } from './Text';
@@ -36,7 +35,12 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
   const isDarkMode = useIsDarkModeSelected();
 
   return (
-    <RNModal animationType="slide" transparent={true} visible={isModalOpen}>
+    <RNModal
+      animationType="slide"
+      transparent={true}
+      visible={isModalOpen}
+      statusBarTranslucent
+    >
       <Box
         backgroundColor={isDarkMode ? 'blackish' : 'gray6'}
         flex={1}
@@ -49,14 +53,9 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
           justifyContent="space-between"
           paddingBottom={isLoaderOpen ? undefined : '3'}
           paddingTop="4"
-          style={[{ marginTop: isIOS() ? Constants.statusBarHeight : undefined }]}
+          style={[{ marginTop: Constants.statusBarHeight }]}
         >
-          <AnimatedBox
-            entering={FadeInDown.duration(50).springify().delay(200)}
-            marginLeft="6"
-            maxWidth="70%"
-            width="100%"
-          >
+          <Box marginLeft="6" maxWidth="70%" width="100%">
             {!!headingText && (
               <Text
                 fontFamily="Halver-Semibold"
@@ -67,7 +66,7 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
             )}
 
             {headingComponent}
-          </AnimatedBox>
+          </Box>
 
           {hasCloseButton && (
             <Pressable marginRight="6" onPress={closeModal}>

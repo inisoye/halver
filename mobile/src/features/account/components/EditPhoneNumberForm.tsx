@@ -16,9 +16,10 @@ import {
   TextFieldError,
   TextFieldLabel,
 } from '@/components';
-import { useUpdateSingleUserDetail } from '@/features/account';
 import { showToast } from '@/lib/root-toast';
 import { handleAxiosErrorAlertAndHaptics, isMobilePhone } from '@/utils';
+
+import { useUpdateSingleUserDetail } from '../api';
 
 interface EditPhoneNumberFormProps {
   isOnboarding?: boolean;

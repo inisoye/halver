@@ -9,6 +9,7 @@ import type {
 import { FlashList, type ListRenderItem } from '@shopify/flash-list';
 import * as React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import {
   Box,
@@ -29,6 +30,7 @@ import {
 import { useDebounce } from '@/hooks';
 import { Plus, RightCaret, Search, ThreeUsersCluster } from '@/icons';
 import type { AppRootStackParamList, BillsStackParamList } from '@/navigation';
+import { flexStyles } from '@/theme';
 import { useIsDarkModeSelected } from '@/utils';
 
 interface BillParticipantAvatarProps {
@@ -269,17 +271,19 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ navigation }) => {
         </Text>
       )}
 
-      <FlashList
-        // eslint-disable-next-line react-native/no-inline-styles
-        contentContainerStyle={{ paddingBottom: isFetchingNextPage ? 0 : 12 }}
-        data={bills}
-        estimatedItemSize={70}
-        keyboardDismissMode="on-drag"
-        keyboardShouldPersistTaps="handled"
-        ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
-        renderItem={renderItem}
-        onEndReached={loadMoreBills}
-      />
+      <GestureHandlerRootView style={flexStyles[1]}>
+        <FlashList
+          // eslint-disable-next-line react-native/no-inline-styles
+          contentContainerStyle={{ paddingBottom: isFetchingNextPage ? 0 : 12 }}
+          data={bills}
+          estimatedItemSize={70}
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="handled"
+          ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
+          renderItem={renderItem}
+          onEndReached={loadMoreBills}
+        />
+      </GestureHandlerRootView>
     </Screen>
   );
 };

@@ -14,7 +14,6 @@ import {
   Screen,
   Text,
 } from '@/components';
-import { useUpdateProfileImage } from '@/features/account';
 import { ProfileImage as ProfileImageIcon, UserFolder } from '@/icons';
 import { showToast } from '@/lib/root-toast';
 import { marginAutoStyles } from '@/theme';
@@ -22,6 +21,8 @@ import {
   handleAxiosErrorAlertAndHaptics,
   handleGenericErrorAlertAndHaptics,
 } from '@/utils';
+
+import { useUpdateProfileImage } from '../api';
 
 const createFormData = (
   formDataKey: string,

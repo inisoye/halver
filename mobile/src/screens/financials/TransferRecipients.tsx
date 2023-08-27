@@ -109,7 +109,8 @@ export const TransferRecipients: React.FunctionComponent<TransferRecipientsProps
             )}
 
             <ScrollView
-              contentContainerStyle={gapStyles[12]}
+              // eslint-disable-next-line react-native/no-inline-styles
+              contentContainerStyle={[gapStyles[12], { paddingBottom: 4 }]}
               flexGrow={0}
               paddingHorizontal="6"
             >
@@ -131,7 +132,7 @@ export const TransferRecipients: React.FunctionComponent<TransferRecipientsProps
                 backgroundColor="inputBackground"
                 borderRadius="base"
                 columnGap="3"
-                elevation={1}
+                elevation={0.5}
                 flexDirection="row"
                 justifyContent="space-between"
                 marginTop="3"

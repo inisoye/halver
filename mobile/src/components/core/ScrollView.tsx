@@ -7,8 +7,10 @@ import {
   type SpacingProps,
   type VisibleProps,
 } from '@shopify/restyle';
-import { ScrollViewProps as RNScrollViewProps } from 'react-native';
-import { ScrollView as RNGHScrollView } from 'react-native-gesture-handler';
+import {
+  ScrollView as RNScrollView,
+  ScrollViewProps as RNScrollViewProps,
+} from 'react-native';
 
 import { Theme } from '@/lib/restyle';
 
@@ -19,5 +21,5 @@ export type ScrollViewProps = BoxProps<Theme> &
 
 export const ScrollView = createRestyleComponent<ScrollViewProps, Theme>(
   [spacing, visible],
-  createBox<Theme>(RNGHScrollView),
+  createBox<Theme>(RNScrollView),
 );

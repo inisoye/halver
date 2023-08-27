@@ -16,7 +16,13 @@ export const FullScreenLoader: React.FunctionComponent<FullScreenLoaderProps> = 
   message = 'Loading...',
 }) => {
   return (
-    <Modal animationType="fade" key={message} transparent={true} visible={isVisible}>
+    <Modal
+      animationType="fade"
+      key={message}
+      transparent={true}
+      visible={isVisible}
+      statusBarTranslucent
+    >
       <Box
         alignItems="center"
         backgroundColor="modalOverlay"

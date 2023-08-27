@@ -3,12 +3,19 @@ import * as Network from 'expo-network';
 import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
 import { initializeMMKVFlipper } from 'react-native-mmkv-flipper-plugin';
+import { enableLayoutAnimations } from 'react-native-reanimated';
 import * as Sentry from 'sentry-expo';
 
 import { storage } from '@/lib/mmkv';
 import { NavigationContainer } from '@/navigation';
 import { Providers } from '@/providers';
-import { isIOS, useIsDarkModeSelected } from '@/utils';
+import { isAndroid, isIOS, useIsDarkModeSelected } from '@/utils';
+
+if (isAndroid()) {
+  // Disable layout animations on Android because is causes hidden bits of UI that never animate in.
+  // A major issue.
+  enableLayoutAnimations(false);
+}
 
 if (__DEV__) {
   initializeMMKVFlipper({ default: storage });

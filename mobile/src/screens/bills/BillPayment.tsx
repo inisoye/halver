@@ -63,8 +63,8 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
   const { mutate: updateBillAction, isLoading: isBillUpdateLoading } =
     useUpdateBillAction();
 
-  const handleGoToBill = () => {
-    navigation.navigate('Bill', { id: billId || '', name: billName || '' });
+  const handleGoBack = () => {
+    navigation.goBack();
   };
 
   const handleGoToBillWithUpdate = () => {
@@ -178,7 +178,7 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
             <Button
               backgroundColor="inputNestedButtonBackground"
               variant="xs"
-              onPress={handleGoToBill}
+              onPress={handleGoBack}
             >
               <Text fontFamily="Halver-Semibold" variant="xs">
                 Review bill

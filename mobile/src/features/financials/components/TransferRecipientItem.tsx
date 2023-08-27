@@ -39,7 +39,7 @@ export const TransferRecipientItem: React.FunctionComponent<TransferRecipientIte
       <TouchableOpacity
         backgroundColor="inputBackground"
         borderRadius="base"
-        elevation={1}
+        elevation={0.5}
         key={uuid}
         paddingHorizontal="4"
         paddingVertical="4"

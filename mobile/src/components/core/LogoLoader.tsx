@@ -10,6 +10,8 @@ import {
   ZoomOutLeft,
 } from 'react-native-reanimated';
 
+import { isIOS } from '@/utils';
+
 import { AnimatedBox } from './Box';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -52,7 +54,8 @@ export const LogoLoader: React.FunctionComponent = () => {
   return (
     <AnimatedBox
       entering={ZoomInLeft.duration(600)}
-      exiting={ZoomOutLeft.duration(600)}
+      // Exiting animation causes issues with modals on Android: https://github.com/software-mansion/react-native-reanimated/issues/4422#issuecomment-1580890555
+      exiting={isIOS() ? ZoomOutLeft.duration(300) : undefined}
       flexDirection="row"
       zIndex="10"
     >

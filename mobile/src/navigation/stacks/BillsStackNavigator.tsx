@@ -7,7 +7,7 @@ import { Bill, Bills } from '@/screens';
 
 export type BillsStackParamList = {
   Bills: undefined;
-  Bill: { id: string; name: string; shouldUpdate?: boolean };
+  Bill: { id: string; name: string; shouldUpdate?: boolean; isOnRoot?: boolean };
   'Bill Payment': {
     actionId: string | undefined;
     status: BillActionStatus | undefined;
@@ -23,11 +23,11 @@ export type BillsStackParamList = {
   'Bills By Status': { status: keyof typeof actionStatusColors };
 };
 
-const BillsStack = createNativeStackNavigator<BillsStackParamList>();
+export const BillsStack = createNativeStackNavigator<BillsStackParamList>();
 
 export const BillsStackNavigator: React.FunctionComponent = () => {
   return (
-    <BillsStack.Navigator>
+    <BillsStack.Navigator initialRouteName="Bills">
       <BillsStack.Screen
         component={Bills}
         name="Bills"

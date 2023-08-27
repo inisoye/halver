@@ -92,7 +92,8 @@ export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
             )}
 
             <ScrollView
-              contentContainerStyle={gapStyles[12]}
+              // eslint-disable-next-line react-native/no-inline-styles
+              contentContainerStyle={[gapStyles[12], { paddingBottom: 4 }]}
               flexGrow={0}
               paddingBottom="0.5"
               paddingHorizontal="6"
@@ -115,7 +116,7 @@ export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
                 backgroundColor="inputBackground"
                 borderRadius="md"
                 columnGap="3"
-                elevation={1}
+                elevation={0.5}
                 flexDirection="row"
                 justifyContent="space-between"
                 marginTop="3"

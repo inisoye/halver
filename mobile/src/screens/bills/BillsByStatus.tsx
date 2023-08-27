@@ -9,6 +9,7 @@ import {
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import * as React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import {
   Box,
@@ -27,6 +28,7 @@ import {
 import { useDebounce } from '@/hooks';
 import { Plus, RightCaret, Search } from '@/icons';
 import { AppRootStackParamList, BillsStackParamList } from '@/navigation';
+import { flexStyles } from '@/theme';
 import { convertNumberToNaira, useIsDarkModeSelected } from '@/utils';
 
 interface BillListRenderItemProps {
@@ -46,16 +48,10 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
   const isDarkMode = useIsDarkModeSelected();
 
   const handleGoToBill = () => {
-    navigation.navigate('TabsRoot', {
-      screen: 'BillsStackNavigator',
-      params: {
-        screen: 'Bill',
-        initial: false,
-        params: {
-          id: item?.bill.uuid || '',
-          name: item?.bill.name || '',
-        },
-      },
+    navigation.navigate('Bill', {
+      id: item?.bill.uuid || '',
+      name: item?.bill.name || '',
+      isOnRoot: true,
     });
   };
 
@@ -192,17 +188,19 @@ export const BillsByStatus = ({ route, navigation }: BillsByStatusProps) => {
         </Text>
       )}
 
-      <FlashList
-        // eslint-disable-next-line react-native/no-inline-styles
-        contentContainerStyle={{ paddingBottom: isFetchingNextPage ? 0 : 12 }}
-        data={bills}
-        estimatedItemSize={70}
-        keyboardDismissMode="on-drag"
-        keyboardShouldPersistTaps="handled"
-        ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
-        renderItem={renderItem}
-        onEndReached={loadMoreBills}
-      />
+      <GestureHandlerRootView style={flexStyles[1]}>
+        <FlashList
+          // eslint-disable-next-line react-native/no-inline-styles
+          contentContainerStyle={{ paddingBottom: isFetchingNextPage ? 0 : 12 }}
+          data={bills}
+          estimatedItemSize={70}
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="handled"
+          ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
+          renderItem={renderItem}
+          onEndReached={loadMoreBills}
+        />
+      </GestureHandlerRootView>
     </Screen>
   );
 };

@@ -24,8 +24,8 @@ export const ProfileNameAndUsername: React.FunctionComponent<
     return {
       backgroundColor: interpolateColor(
         progress.value,
-        [0, 0.45, 1],
-        [brandColors.casal8, brandColors.pharlap8, brandColors.apricot7],
+        [0, 1],
+        [brandColors.casal8, brandColors.pharlap8],
         'HSV',
         {
           useCorrectedHSVInterpolation: true,
@@ -36,7 +36,7 @@ export const ProfileNameAndUsername: React.FunctionComponent<
 
   const animate = () => {
     progress.value = withRepeat(
-      withTiming(1 - progress.value, { duration: 15000 }),
+      withTiming(1 - progress.value, { duration: 10000 }),
       -1,
       true,
     );

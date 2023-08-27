@@ -39,7 +39,7 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
     <TouchableOpacity
       backgroundColor="elementBackground"
       borderRadius="md"
-      elevation={1}
+      elevation={0.5}
       flexDirection="row"
       gap="2"
       justifyContent="space-between"
