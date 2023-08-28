@@ -143,7 +143,7 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
       },
 
       onError: error => {
-        handleAxiosErrorAlertAndHaptics('Error Creating Bill', error as AxiosError);
+        handleAxiosErrorAlertAndHaptics('Error creating bill', error as AxiosError);
       },
     });
   };

@@ -67,7 +67,7 @@ export const useRegisteredContacts = ({
         },
         onError: error => {
           handleAxiosErrorAlertAndHaptics(
-            'Error Fetching Registered Contacts',
+            'Error fetching registered contacts',
             error as AxiosError,
           );
         },

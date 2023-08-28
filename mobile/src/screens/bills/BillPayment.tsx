@@ -102,7 +102,7 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
         },
 
         onError: error => {
-          handleAxiosErrorAlertAndHaptics('Error Creating Bill', error as AxiosError);
+          handleAxiosErrorAlertAndHaptics('Error in bill payment', error as AxiosError);
         },
       },
     );
@@ -124,7 +124,10 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
         },
 
         onError: error => {
-          handleAxiosErrorAlertAndHaptics('Error Creating Bill', error as AxiosError);
+          handleAxiosErrorAlertAndHaptics(
+            'Error in opting out of bill',
+            error as AxiosError,
+          );
         },
       },
     );

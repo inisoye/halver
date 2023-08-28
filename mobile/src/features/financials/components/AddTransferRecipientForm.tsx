@@ -108,7 +108,7 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
 
           onError: error => {
             handleAxiosErrorAlertAndHaptics(
-              'Error Validating Account Details',
+              'Error validating account details',
               error as AxiosError,
             );
           },
@@ -126,7 +126,7 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
 
         onError: error => {
           handleAxiosErrorAlertAndHaptics(
-            'Error Adding New Recipient',
+            'Error adding new recipient',
             error as AxiosError,
           );
         },

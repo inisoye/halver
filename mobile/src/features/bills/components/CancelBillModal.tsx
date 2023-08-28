@@ -46,10 +46,7 @@ export const CancelBillModal: React.FunctionComponent<CancelBillModalProps> = ({
         },
 
         onError: error => {
-          handleAxiosErrorAlertAndHaptics(
-            'Error cancelling subscription',
-            error as AxiosError,
-          );
+          handleAxiosErrorAlertAndHaptics('Error cancelling bill', error as AxiosError);
         },
       },
     );

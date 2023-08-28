@@ -58,7 +58,7 @@ export const EditPhoneNumberForm: React.FunctionComponent<EditPhoneNumberFormPro
 
       onError: error => {
         handleAxiosErrorAlertAndHaptics(
-          'Error Adding Phone Number',
+          'Error adding phone number',
           error as AxiosError,
         );
       },
