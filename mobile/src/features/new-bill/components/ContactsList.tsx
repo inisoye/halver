@@ -1,6 +1,5 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import * as Contacts from 'expo-contacts';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 import * as React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -15,7 +14,7 @@ import {
 } from '@/utils';
 
 import { useRegisteredContacts } from '../api';
-import { useBillPayloadWithSelectionDetails } from '../hooks';
+import { useBillPayloadWithSelectionDetails, usePhoneContacts } from '../hooks';
 import { ContactRenderItem } from './ContactRenderItem';
 
 interface ContactsListProps {
@@ -23,23 +22,7 @@ interface ContactsListProps {
 }
 
 export function ContactsList({ contactsFilterValue }: ContactsListProps) {
-  const [contacts, setContacts] = React.useState<Contacts.Contact[]>([]);
-
-  React.useEffect(() => {
-    (async () => {
-      const { status } = await Contacts.requestPermissionsAsync();
-
-      if (status === 'granted') {
-        const { data } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.PhoneNumbers],
-        });
-
-        if (data.length > 0) {
-          setContacts(data);
-        }
-      }
-    })();
-  }, []);
+  const { data: contacts = [] } = usePhoneContacts();
 
   const allContacts = React.useMemo(() => {
     const namesAndNumbers = contacts

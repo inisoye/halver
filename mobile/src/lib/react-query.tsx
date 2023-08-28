@@ -75,6 +75,7 @@ export const allStaticQueryKeys = {
   getUserDetails: ['user-details'],
   getUserTransactions: ['user-transactions'],
   getUserActions: ['user-actions'],
+  getPhoneContacts: ['phone-contacts'],
 };
 
 /**
