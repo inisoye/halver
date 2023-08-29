@@ -20,7 +20,7 @@ import {
 import { BottomTabNavigator } from './BottomTabNavigator';
 
 export type AppRootStackParamList = {
-  TabsRoot: // Arcane type added mainly for routing routing to bill after creation.
+  TabsRoot: // Arcane type added mainly for routing to bill after creation.
   | {
         screen: string;
         params: {
@@ -80,37 +80,10 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
       </AppRootStack.Group>
 
       <AppRootStack.Group screenOptions={{ headerShown: false }}>
-        <AppRootStack.Screen
-          component={EditProfileImage}
-          name="Edit profile image"
-          options={{
-            headerShown: false,
-          }}
-        />
-        <AppRootStack.Screen
-          component={EditPhoneNumber}
-          name="Edit phone number"
-          options={{
-            headerShown: false,
-          }}
-        />
-      </AppRootStack.Group>
-
-      <AppRootStack.Group screenOptions={{ headerShown: false }}>
-        <AppRootStack.Screen
-          component={AddCard}
-          name="Add your card"
-          options={{
-            headerShown: false,
-          }}
-        />
-        <AppRootStack.Screen
-          component={AddTransferRecipient}
-          name="Add a recipient"
-          options={{
-            headerShown: false,
-          }}
-        />
+        <AppRootStack.Screen component={EditProfileImage} name="Edit profile image" />
+        <AppRootStack.Screen component={EditPhoneNumber} name="Edit phone number" />
+        <AppRootStack.Screen component={AddCard} name="Add your card" />
+        <AppRootStack.Screen component={AddTransferRecipient} name="Add a recipient" />
       </AppRootStack.Group>
 
       <AppRootStack.Group screenOptions={{ headerShown: false }}>
