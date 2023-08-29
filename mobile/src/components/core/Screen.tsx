@@ -20,7 +20,7 @@ interface ScreenHeaderProps {
   rightComponent?: React.ReactNode;
 }
 
-const screensWithNoBackButton = ['Home', 'Bills', 'Financials', 'Account'];
+const screensWithNoBackButton = ['Home'];
 const screensWithLightHeading = [''];
 
 const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
@@ -80,6 +80,7 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
           <DynamicText
             color={screenInfo.hasLightHeading ? 'textLight' : 'textDefault'}
             fontFamily="Halver-Semibold"
+            lineHeight={29}
             maxWidth="100%"
             numberOfLines={1}
             variant="2xl"

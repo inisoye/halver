@@ -126,11 +126,11 @@ export const EditPhoneNumberForm: React.FunctionComponent<EditPhoneNumberFormPro
         </ScrollView>
 
         <KeyboardStickyButton
-          backgroundColor="buttonApricot"
+          backgroundColor="buttonCasal"
           disabled={isUserDetailsUpdateLoading}
           onPress={handleSubmit(onSubmit)}
         >
-          <Text color="buttonTextApricot" fontFamily="Halver-Semibold">
+          <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
             {isUserDetailsUpdateLoading ? 'Loading...' : 'Continue'}
           </Text>
         </KeyboardStickyButton>

@@ -175,7 +175,6 @@ def create_local_and_remote_transfer_recipient(paystack_payload, user) -> Respon
     if response["status"]:
         user = user
 
-        # TODO add paystack payloads to all relevant models.
         is_recipient_new, readable_recipient_type = create_transfer_recipient_object(
             paystack_response=response,
             user=user,
@@ -185,7 +184,7 @@ def create_local_and_remote_transfer_recipient(paystack_payload, user) -> Respon
             return format_exception(
                 message=(
                     f"This {readable_recipient_type} has been previously"
-                    " added to your account on Halver."
+                    " added to an account on Halver."
                 ),
                 status=status.HTTP_409_CONFLICT,
             )
