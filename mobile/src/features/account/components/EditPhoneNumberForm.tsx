@@ -16,6 +16,7 @@ import {
   TextFieldError,
   TextFieldLabel,
 } from '@/components';
+import { useTransferUnregisteredParticipantData } from '@/features/bills';
 import { showToast } from '@/lib/root-toast';
 import { handleAxiosErrorAlertAndHaptics, isMobilePhone } from '@/utils';
 
@@ -49,9 +50,17 @@ export const EditPhoneNumberForm: React.FunctionComponent<EditPhoneNumberFormPro
   const { mutate: updateSingleUserDetail, isLoading: isUserDetailsUpdateLoading } =
     useUpdateSingleUserDetail();
 
+  const { mutate: transferUnregisteredParticipantData } =
+    useTransferUnregisteredParticipantData();
+
   const onSubmit = (data: PhoneFormValues) => {
     updateSingleUserDetail(data, {
       onSuccess: () => {
+        // Perform transfer of data once phone number becomes available on the backend.
+        if (isOnboarding) {
+          transferUnregisteredParticipantData();
+        }
+
         showToast('Phone number added successfully.');
         onComplete();
       },
