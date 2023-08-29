@@ -107,8 +107,8 @@ def transfer_unregistered_participant_data(
             # -------------------------------------
 
             # The transfer of the bills is more complex than it is for the other models.
-            # This is due to the fact that participants and unregistered particpants have
-            # a many-to-many-relation with the bill model.
+            # This is due to the fact that participants and unregistered participants
+            # have a many-to-many-relationship with the bill model.
 
             # Adding and removing in a loop has been avoided due to n+1.
 
