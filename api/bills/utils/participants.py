@@ -39,7 +39,6 @@ def transfer_unregistered_participant_data(
     if unregistered_participant_phone is None:
         unregistered_participant_phone = participant.phone
 
-    # TODO Add an index to the unregistered participant phone field.
     unregistered_participant_to_transfer = (
         BillUnregisteredParticipant.objects.get(phone=unregistered_participant_phone)
         if unregistered_participant_phone

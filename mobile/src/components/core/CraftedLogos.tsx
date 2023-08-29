@@ -23,14 +23,14 @@ export const CraftedLogoSmall: React.FunctionComponent<CraftedLogoProps> = ({
       <Box>
         <AnimatedBox
           backgroundColor="logoApricot"
-          entering={FadeInRight}
+          entering={FadeInRight.springify().duration(2000)}
           height={6.25}
           marginLeft="0.75"
           width={16.67}
         />
         <AnimatedBox
           backgroundColor="logoCasal"
-          entering={FadeInLeft}
+          entering={FadeInLeft.springify().duration(2000)}
           height={6.25}
           marginLeft="1.5"
           marginTop="px"
@@ -63,14 +63,14 @@ export const CraftedLogo: React.FunctionComponent<CraftedLogoProps> = ({
       <Box>
         <AnimatedBox
           backgroundColor="logoApricot"
-          entering={FadeInRight}
+          entering={FadeInRight.springify().duration(2000)}
           height={9.375}
           marginLeft="1"
           width={25}
         />
         <AnimatedBox
           backgroundColor="logoCasal"
-          entering={FadeInLeft}
+          entering={FadeInLeft.springify().duration(2000)}
           height={9.375}
           marginLeft="2"
           marginTop="px.5"
@@ -103,14 +103,14 @@ export const CraftedLogoLarge: React.FunctionComponent<CraftedLogoProps> = ({
       <Box>
         <AnimatedBox
           backgroundColor="logoApricot"
-          entering={FadeInRight}
+          entering={FadeInRight.springify().duration(2000)}
           height={18.75}
           marginLeft="2"
           width={50}
         />
         <AnimatedBox
           backgroundColor="logoCasal"
-          entering={FadeInLeft}
+          entering={FadeInLeft.springify().duration(2000)}
           height={18.75}
           marginLeft="4"
           marginTop="0.75"

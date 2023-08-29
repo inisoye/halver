@@ -119,7 +119,7 @@ export const RecentTransactions: React.FunctionComponent<RecentTransactionsProps
 
   const { results: transactions } = transactionsResponse || {};
 
-  const noTransactions = !!transactions && transactions.length < 1;
+  const transactionsExist = !!transactions && transactions.length > 1;
 
   const handleTransactionSelection = React.useCallback(
     (transaction: BillTransaction | undefined) => {
@@ -138,7 +138,7 @@ export const RecentTransactions: React.FunctionComponent<RecentTransactionsProps
         selectedTransaction={selectedTransaction}
       />
 
-      {!areTransactionsLoading && (
+      {!areTransactionsLoading && transactionsExist && (
         <Box>
           <TouchableOpacity
             alignItems="center"
@@ -156,7 +156,7 @@ export const RecentTransactions: React.FunctionComponent<RecentTransactionsProps
             <RightCaret isDark />
           </TouchableOpacity>
 
-          {noTransactions && (
+          {!transactionsExist && (
             <Box
               backgroundColor="elementBackground"
               borderRadius="lg"

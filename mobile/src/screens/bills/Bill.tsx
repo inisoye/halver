@@ -56,6 +56,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
     actions,
     creator,
     creditor,
+    created,
     deadline,
     firstChargeDate,
     interval,
@@ -345,8 +346,8 @@ export const Bill = ({ navigation, route }: BillProps) => {
               <BillRecentContributionsList id={id} isDiscreet={isDiscreet} />
             )}
 
-            {(hasActiveSubscription || canCancelBill) && (
-              <Box gap="10" marginBottom="10" marginTop="60">
+            {!isBillLoading && (
+              <Box gap="6" marginBottom="10" marginTop="60">
                 {hasActiveSubscription && (
                   <CancelSubscriptionModal
                     actionId={currentUserAction?.uuid}
@@ -356,6 +357,10 @@ export const Bill = ({ navigation, route }: BillProps) => {
                 )}
 
                 {canCancelBill && <CancelBillModal billId={id} />}
+
+                <DynamicText color="textLight" textAlign="center" variant="xs">
+                  Bill created on {!!created && new Date(created).toDateString()}
+                </DynamicText>
               </Box>
             )}
           </Box>

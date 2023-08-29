@@ -108,7 +108,9 @@ export const CancelBillModal: React.FunctionComponent<CancelBillModalProps> = ({
               flex={1}
               onPress={closeCancellationModal}
             >
-              <Text fontFamily="Halver-Semibold">No</Text>
+              <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
+                No
+              </Text>
             </Button>
 
             <Button
