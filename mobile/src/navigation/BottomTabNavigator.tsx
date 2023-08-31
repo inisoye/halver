@@ -100,6 +100,7 @@ export const BottomTabNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           flex: isIOS() ? 0.07 : 0.08,
           elevation: 0,
