@@ -56,6 +56,7 @@ export const useRegisteredContacts = ({
     );
   }, [contactsFilterValue, creatorDetails?.uuid, registeredContacts]);
 
+  // A mutation/POST request is used because a large amount of data (contacts) is sent over the wire.
   const { mutate: requestRegisteredContacts, isLoading: areRegisteredContactsLoading } =
     useRegisteredContactsRequest();
 
