@@ -15,7 +15,7 @@ const textVariantStyles = {
     color: 'white',
   },
   neutral: {
-    backgroundColor: isDarkMode() ? darkColors.gray6 : lightColors.gray10,
+    backgroundColor: isDarkMode() ? darkColors.gray7 : lightColors.gray10,
     color: 'white',
   },
   pharlap: {
