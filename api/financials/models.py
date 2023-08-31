@@ -46,7 +46,6 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
     reusable = models.BooleanField()
     signature = models.CharField(
         max_length=100,
-        unique=True,
     )
     account_name = models.CharField(
         max_length=100,
@@ -69,6 +68,12 @@ class UserCard(AbstractTimeStampedUUIDModel, models.Model):
     )
 
     class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "signature"],
+                name="user_signature_uniqueness",
+            )
+        ]
         indexes = [models.Index(fields=["signature"])]
         verbose_name = "User card"
         verbose_name_plural = "User cards"
@@ -107,7 +112,6 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
     )
     recipient_code = models.CharField(
         max_length=100,
-        unique=True,
     )
     recipient_type = models.CharField(
         max_length=50,
@@ -144,13 +148,11 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
         max_length=100,
         blank=True,
         null=True,
-        unique=True,
     )
     associated_card = models.OneToOneField(
         UserCard,
         on_delete=models.CASCADE,
         null=True,
-        unique=True,
         related_name="associated_transfer_recipient",
     )
     complete_paystack_response = models.JSONField(
@@ -158,6 +160,16 @@ class TransferRecipient(AbstractTimeStampedUUIDModel, models.Model):
     )
 
     class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "recipient_code"],
+                name="user_recipient_code_uniqueness",
+            ),
+            models.UniqueConstraint(
+                fields=["user", "authorization_code", "associated_card"],
+                name="user_authorization_code_associated_card_uniqueness",
+            ),
+        ]
         indexes = [models.Index(fields=["recipient_code"])]
         verbose_name = "User transfer recipient"
         verbose_name_plural = "User transfer recipients"

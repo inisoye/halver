@@ -147,10 +147,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                 name="user_username_email_ci_uniqueness",
             ),
         ]
+        # Order of indexes intentionally determined for optimized filtering
+        # https://stackoverflow.com/a/45329852
         indexes = [
             models.Index(fields=["uuid"]),
             models.Index(
-                fields=["phone", "email", "first_name", "last_name", "username"]
+                fields=[
+                    "phone",
+                    "email",
+                    "first_name",
+                    "last_name",
+                    "username",
+                ]
             ),
         ]
         verbose_name = _("user")

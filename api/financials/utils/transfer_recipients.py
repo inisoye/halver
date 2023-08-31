@@ -135,10 +135,8 @@ def create_transfer_recipient_object(
 
     recipient, created = TransferRecipient.objects.get_or_create(
         recipient_code=recipient_code,
-        defaults={
-            **defaults,
-            "user": user,
-        },
+        user=user,
+        defaults=defaults,
     )
 
     if recipient_type == TransferRecipient.RecipientChoices.CARD:
@@ -184,7 +182,7 @@ def create_local_and_remote_transfer_recipient(paystack_payload, user) -> Respon
             return format_exception(
                 message=(
                     f"This {readable_recipient_type} has been previously"
-                    " added to an account on Halver."
+                    " added to your account on Halver."
                 ),
                 status=status.HTTP_409_CONFLICT,
             )
@@ -229,15 +227,13 @@ def create_card_recipient_from_webhook(
         response,
     )
 
-    # TODO add paystack payloads to all relevant models.
     if response["status"]:
         recipient, created = TransferRecipient.objects.get_or_create(
             recipient_code=recipient_code,
-            defaults={
-                **defaults,
-                "user": user,
-                "associated_card": new_card,
-            },
+            user=user,
+            associated_card=new_card,
+            authorization_code=authorization.get("authorization_code"),
+            defaults=defaults,
         )
 
         return recipient

@@ -98,12 +98,13 @@ def create_card_object_from_webhook(authorization, customer, user) -> UserCard:
         "reusable": authorization.get("reusable"),
         "account_name": authorization.get("account_name"),
         "email": customer.get("email"),
-        "user": user,
         "complete_paystack_response": authorization,
     }
 
     new_card, created = UserCard.objects.get_or_create(
-        signature=signature, defaults=defaults
+        signature=signature,
+        user=user,
+        defaults=defaults,
     )
 
     return new_card
