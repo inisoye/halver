@@ -89,7 +89,7 @@ export const CancelBillModal: React.FunctionComponent<CancelBillModalProps> = ({
         <Box
           backgroundColor="modalBackground"
           opacity={isCancellationLoading ? 0.6 : 1}
-          paddingBottom="10"
+          paddingBottom="6"
           paddingHorizontal="6"
           paddingTop="6"
           pointerEvents={isCancellationLoading ? 'none' : undefined}

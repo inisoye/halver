@@ -62,7 +62,7 @@ export const LogOutModal: React.FunctionComponent = () => {
       >
         <Box
           backgroundColor="modalBackground"
-          paddingBottom="10"
+          paddingBottom="6"
           paddingHorizontal="6"
           paddingTop="6"
         >
