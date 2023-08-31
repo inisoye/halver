@@ -14,7 +14,7 @@ import { useBooleanStateControl } from '@/hooks';
 import { SelectCaret } from '@/icons';
 import { BillDetailsFormValues } from '@/screens';
 import { marginAutoStyles } from '@/theme';
-import { isAndroid, isIOS } from '@/utils';
+import { isAndroid } from '@/utils';
 
 interface FirstChargeDateSelectorButtonProps {
   openModal: () => void;
@@ -31,7 +31,7 @@ const FirstChargeDateSelectorButton: React.FunctionComponent<
       backgroundColor="inputBackground"
       marginTop="1.5"
       paddingHorizontal="4"
-      paddingVertical={isIOS() ? '3' : '3.5'}
+      paddingVertical="3"
       onPress={openModal}
     >
       <Box alignItems="center" flexDirection="row" gap="2">

@@ -32,7 +32,7 @@ const DeadlineSelectorButton: React.FunctionComponent<DeadlineSelectorButtonProp
       backgroundColor="inputBackground"
       marginTop="1.5"
       paddingHorizontal="4"
-      paddingVertical={isIOS() ? '3' : '3.5'}
+      paddingVertical={isIOS() ? '3' : '3'}
       onPress={openModal}
     >
       <Box alignItems="center" flexDirection="row" gap="2">
