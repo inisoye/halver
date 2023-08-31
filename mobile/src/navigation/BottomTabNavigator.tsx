@@ -33,7 +33,7 @@ export const BottomTabText: React.FunctionComponent<BottomTabTextProps> = ({
 }) => {
   return (
     <Text
-      color={focused ? 'gray12' : 'gray9'}
+      color={focused ? 'gray12' : 'gray10'}
       fontFamily="Halver-Semibold"
       variant="xxs"
       visible={!isMiddleItem}
