@@ -88,16 +88,28 @@ export const AddCardForm: React.FunctionComponent<AddCardFormProps> = React.memo
             <Text
               color="textLight"
               lineHeight={19}
+              marginBottom="6"
               marginTop="1"
               paddingHorizontal="6"
               paddingVertical="2"
               variant="sm"
             >
-              Adding your card is easy. Click the button below and follow Paystack's
-              instructions. We'll need to charge you 60 Naira (NGN) to get it done, but
-              don't worry - we'll attempt to refund* most of it right after your card is
-              successfully added.
+              Adding your card is easy. Just click the button below, follow Paystack's
+              steps, and pay a 60 Naira fee. We'll process a refund* after your card is
+              added.
             </Text>
+
+            <Box
+              backgroundColor="buttonPharlap"
+              borderRadius="md"
+              marginHorizontal="6"
+              padding="4"
+            >
+              <Text color="buttonTextPharlap" lineHeight={18} variant="sm">
+                Card additions may take a moment. Please wait briefly before trying
+                again.
+              </Text>
+            </Box>
 
             <DynamicText
               color="textLight"
@@ -108,8 +120,7 @@ export const AddCardForm: React.FunctionComponent<AddCardFormProps> = React.memo
               paddingVertical="2"
               variant="xs"
             >
-              *The refund excludes transaction charges and totals to about 38 Naira. All
-              sensitive financial details are handled and stored by Paystack.
+              *The refund excludes transaction charges and totals to about 38 Naira.
             </DynamicText>
           </Box>
 
