@@ -6,6 +6,7 @@ import { Box, Button, DynamicText, Modal, Text, TouchableOpacity } from '@/compo
 import { useBooleanStateControl } from '@/hooks';
 import { deleteAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys, storage } from '@/lib/mmkv';
+import { isAndroid } from '@/utils';
 
 export const LogOutModal: React.FunctionComponent = () => {
   const [_token, setToken] = useMMKVString(allMMKVKeys.token);
@@ -62,7 +63,7 @@ export const LogOutModal: React.FunctionComponent = () => {
       >
         <Box
           backgroundColor="modalBackground"
-          paddingBottom="6"
+          paddingBottom={isAndroid() ? '6' : '8'}
           paddingHorizontal="6"
           paddingTop="6"
         >

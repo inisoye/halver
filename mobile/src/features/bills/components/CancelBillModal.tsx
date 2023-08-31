@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { Box, Button, DynamicText, Modal, Text, TouchableOpacity } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
-import { handleAxiosErrorAlertAndHaptics } from '@/utils';
+import { handleAxiosErrorAlertAndHaptics, isAndroid } from '@/utils';
 
 import { useBill, useCancelBill } from '../api';
 
@@ -89,7 +89,7 @@ export const CancelBillModal: React.FunctionComponent<CancelBillModalProps> = ({
         <Box
           backgroundColor="modalBackground"
           opacity={isCancellationLoading ? 0.6 : 1}
-          paddingBottom="6"
+          paddingBottom={isAndroid() ? '6' : '8'}
           paddingHorizontal="6"
           paddingTop="6"
           pointerEvents={isCancellationLoading ? 'none' : undefined}
