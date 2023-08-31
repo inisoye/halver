@@ -4,7 +4,7 @@ import parsePhoneNumberFromString from 'libphonenumber-js';
 import * as React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { AbsoluteKeyboardStickyButton, Text } from '@/components';
+import { AbsoluteKeyboardStickyButton, Box, Text } from '@/components';
 import { AppRootStackParamList } from '@/navigation';
 import { flexStyles } from '@/theme';
 import {
@@ -47,7 +47,11 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
     return { namesAndNumbers, phoneNumbers };
   }, [contacts]);
 
-  const { registeredContacts, filteredRegisteredContacts } = useRegisteredContacts({
+  const {
+    registeredContacts,
+    filteredRegisteredContacts,
+    areRegisteredContactsLoading,
+  } = useRegisteredContacts({
     allContacts,
     contactsFilterValue,
   });
@@ -117,7 +121,11 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
   };
 
   return (
-    <>
+    <Box
+      flex={1}
+      opacity={areRegisteredContactsLoading ? 0.4 : 1}
+      pointerEvents={areRegisteredContactsLoading ? 'none' : 'auto'}
+    >
       {noContactsFound && (
         <Text color="textLight" padding="6">
           We found no contacts
@@ -138,7 +146,7 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
           stickyHeaderIndices={stickyHeaderIndices}
         />
       </GestureHandlerRootView>
-    </>
+    </Box>
   );
 }
 
