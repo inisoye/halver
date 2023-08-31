@@ -10,8 +10,6 @@ import {
   ZoomOutLeft,
 } from 'react-native-reanimated';
 
-import { isIOS } from '@/utils';
-
 import { AnimatedBox } from './Box';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -33,6 +31,15 @@ export const LogoLoader: React.FunctionComponent = () => {
     widthRight.value = withRepeat(withSpring(20), -1, true);
   };
 
+  /**
+   * TS errors are ignored in the following lines due to type mismatch issues from Reanimated.
+   * https://github.com/software-mansion/react-native-reanimated/issues/4548
+   * https://github.com/software-mansion/react-native-reanimated/issues/4645
+   * Review later if fixes are made.
+   */
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const animatedStyleLeft = useAnimatedStyle(() => {
     return {
       transform: [{ translateX: -translateX.value }],
@@ -40,6 +47,8 @@ export const LogoLoader: React.FunctionComponent = () => {
     };
   });
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const animatedStyleRight = useAnimatedStyle(() => {
     return {
       transform: [{ translateX: -translateX.value }],
@@ -55,7 +64,7 @@ export const LogoLoader: React.FunctionComponent = () => {
     <AnimatedBox
       entering={ZoomInLeft.duration(600)}
       // Exiting animation causes issues with modals on Android: https://github.com/software-mansion/react-native-reanimated/issues/4422#issuecomment-1580890555
-      exiting={isIOS() ? ZoomOutLeft.duration(300) : undefined}
+      exiting={ZoomOutLeft.duration(300)}
       flexDirection="row"
       zIndex="10"
     >
