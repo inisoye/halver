@@ -232,6 +232,11 @@ class UserCardRetrieveDestroyAPIView(RetrieveDestroyAPIView):
     queryset = UserCard.objects.all().defer("complete_paystack_response")
     serializer_class = UserCardSerializer
 
+    def perform_destroy(self, instance):
+        """Deletes a card."""
+
+        instance.delete_and_set_newest_as_default()
+
 
 class PaystackTransferRecipientListAPIView(APIView):
     """View for obtaining a specified user's transfer recipients directly from
@@ -334,8 +339,13 @@ class TransferRecipientsDestroyAPIView(DestroyAPIView):
 
     lookup_field = "recipient_code"
     permission_classes = (IsOwner,)
-    queryset = TransferRecipient.objects.all().defer("complete_paystack_response")
     serializer_class = TransferRecipientUpdateDeleteSerializer
+
+    def get_queryset(self):
+        # Filter the queryset to include only recipients belonging to the current user
+        return TransferRecipient.objects.filter(user=self.request.user).defer(
+            "complete_paystack_response"
+        )
 
     def perform_destroy(self, instance):
         """Deletes a transfer recipient."""

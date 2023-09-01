@@ -61,4 +61,8 @@ def delete_and_set_newest_as_default(self, model_name: str) -> None:
 
     if self.is_default and are_any_instances_left:
         next_newest = model_manager.latest("created")
-        next_newest.set_as_default_recipient()
+
+        if model_name == "transfer_recipient":
+            next_newest.set_as_default_recipient()
+        elif model_name == "user_card":
+            next_newest.set_as_default_card()
