@@ -3,6 +3,7 @@ import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
 import { useForm, UseFormSetValue, useWatch } from 'react-hook-form';
 import { Keyboard } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { z } from 'zod';
 
 import {
@@ -11,7 +12,7 @@ import {
   DynamicText,
   Image,
   Modal,
-  Pressable,
+  RectButton,
   Text,
   TextField,
   TextFieldLabel,
@@ -20,8 +21,8 @@ import { useBooleanStateControl } from '@/hooks';
 import { Search, SelectCaret, SelectInactiveItem, SelectTick } from '@/icons';
 import { Theme } from '@/lib/restyle';
 import { PaystackBank } from '@/lib/zod';
-import { marginAutoStyles } from '@/theme';
-import { getInitials, isIOS } from '@/utils';
+import { flexStyles, marginAutoStyles } from '@/theme';
+import { getInitials, isIOS, useIsDarkModeSelected } from '@/utils';
 
 import { BanksList } from '../api';
 import type { BankDetailsFormValues } from './AddTransferRecipientForm';
@@ -39,6 +40,8 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
   handleItemClick,
   item,
 }) => {
+  const isDarkMode = useIsDarkModeSelected();
+
   const isSelected = React.useMemo(
     () => selectedBank?.id === item.id,
     [selectedBank?.id, item.id],
@@ -46,10 +49,11 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
 
   const initials = React.useMemo(() => getInitials(item.name), [item.name]);
 
-  const { spacing } = useTheme<Theme>();
+  const { spacing, colors } = useTheme<Theme>();
 
   return (
-    <Pressable
+    <RectButton
+      activeOpacity={0.07}
       alignItems="center"
       backgroundColor={isSelected ? 'selectedItemBackground' : 'transparent'}
       flex={1}
@@ -57,6 +61,8 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
       gap="3"
       justifyContent="space-between"
       paddingVertical="4"
+      rippleColor={colors.selectedItemBackground}
+      underlayColor={isDarkMode ? 'white' : 'black'}
       onPress={() => handleItemClick(item)}
     >
       <Box
@@ -67,29 +73,42 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
         maxWidth="80%"
         width="100%"
       >
-        {item.logo ? (
-          <Image
-            backgroundColor={item.logo ? 'white' : 'bankImageBackground'}
-            borderRadius="md"
-            contentFit="contain"
-            height={32}
-            source={item.logo}
-            width={32}
-          />
-        ) : (
-          <Box
-            alignItems="center"
-            backgroundColor="white"
-            borderRadius="md"
-            height={32}
-            justifyContent="center"
-            width={32}
-          >
-            <Text color="textBlack" fontFamily="Halver-Semibold" variant="sm">
-              {initials}
-            </Text>
-          </Box>
-        )}
+        <Box
+          backgroundColor="elementBackground"
+          borderRadius="md"
+          elevation={1}
+          shadowColor="black"
+          shadowOffset={{
+            width: 0.1,
+            height: 0.3,
+          }}
+          shadowOpacity={0.2}
+          shadowRadius={0.4}
+        >
+          {item.logo ? (
+            <Image
+              backgroundColor={item.logo ? 'white' : 'bankImageBackground'}
+              borderRadius="md"
+              contentFit="contain"
+              height={32}
+              source={item.logo}
+              width={32}
+            />
+          ) : (
+            <Box
+              alignItems="center"
+              backgroundColor="white"
+              borderRadius="md"
+              height={32}
+              justifyContent="center"
+              width={32}
+            >
+              <Text color="textBlack" fontFamily="Halver-Semibold" variant="sm">
+                {initials}
+              </Text>
+            </Box>
+          )}
+        </Box>
 
         <DynamicText flexShrink={1} lineHeight={20} numberOfLines={1}>
           {item.name}
@@ -106,7 +125,7 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
           width={18}
         />
       )}
-    </Pressable>
+    </RectButton>
   );
 };
 
@@ -267,13 +286,15 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
             </Text>
           )}
 
-          <FlashList
-            data={filteredBanks}
-            estimatedItemSize={90}
-            keyboardShouldPersistTaps="handled"
-            renderItem={renderItem}
-            onScrollBeginDrag={dismissKeyboard}
-          />
+          <GestureHandlerRootView style={flexStyles[1]}>
+            <FlashList
+              data={filteredBanks}
+              estimatedItemSize={90}
+              keyboardShouldPersistTaps="handled"
+              renderItem={renderItem}
+              onScrollBeginDrag={dismissKeyboard}
+            />
+          </GestureHandlerRootView>
         </Box>
       </Modal>
     </>
