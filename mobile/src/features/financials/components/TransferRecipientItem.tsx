@@ -58,29 +58,42 @@ export const TransferRecipientItem: React.FunctionComponent<TransferRecipientIte
           justifyContent="space-between"
           mb="3"
         >
-          {bankLogo ? (
-            <Image
-              backgroundColor={bankLogo ? 'white' : 'bankImageBackground'}
-              borderRadius="base"
-              contentFit="contain"
-              height={24}
-              source={bankLogo}
-              width={24}
-            />
-          ) : (
-            <Box
-              alignItems="center"
-              backgroundColor="white"
-              borderRadius="base"
-              height={24}
-              justifyContent="center"
-              width={24}
-            >
-              <Text color="textBlack" fontFamily="Halver-Semibold" variant="sm">
-                {initials}
-              </Text>
-            </Box>
-          )}
+          <Box
+            backgroundColor="elementBackground"
+            borderRadius="base"
+            elevation={1}
+            shadowColor="black"
+            shadowOffset={{
+              width: 0.1,
+              height: 0.3,
+            }}
+            shadowOpacity={0.3}
+            shadowRadius={0.2}
+          >
+            {bankLogo ? (
+              <Image
+                backgroundColor={bankLogo ? 'white' : 'bankImageBackground'}
+                borderRadius="base"
+                contentFit="contain"
+                height={24}
+                source={bankLogo}
+                width={24}
+              />
+            ) : (
+              <Box
+                alignItems="center"
+                backgroundColor="white"
+                borderRadius="base"
+                height={24}
+                justifyContent="center"
+                width={24}
+              >
+                <Text color="textBlack" fontFamily="Halver-Semibold" variant="sm">
+                  {initials}
+                </Text>
+              </Box>
+            )}
+          </Box>
 
           {isDefault && (
             <Box backgroundColor="defaultItemTagBg" borderRadius="base" px="2" py="1">
