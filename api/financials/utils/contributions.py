@@ -246,7 +246,10 @@ def create_contribution_transaction_object(
     amount_in_naira = convert_to_naira(amount)
 
     authorization_signature = data.get("authorization").get("signature")
-    card = UserCard.objects.get(signature=authorization_signature)
+    card = UserCard.objects.get(
+        signature=authorization_signature,
+        user=participant,
+    )
 
     paystack_transaction_object = {
         "amount": amount,
@@ -414,7 +417,11 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
     amount = data.get("amount")
 
     action_id = extract_uuidv4s_from_string(reason, position=1)
-    action = BillAction.objects.select_related("participant").get(uuid=action_id)
+    action = BillAction.objects.select_related(
+        "participant",
+        "bill__creditor",
+    ).get(uuid=action_id)
+    receiving_user = action.bill.creditor
 
     # The action is effectively complete or ongoing as the transfer has been successful.
     if final_action_status == BillAction.StatusChoices.COMPLETED:
@@ -424,10 +431,10 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
         action.mark_as_ongoing()
 
     recipient_code = data.get("recipient").get("recipient_code")
-    recipient = TransferRecipient.objects.select_related("user").get(
-        recipient_code=recipient_code
+    recipient = TransferRecipient.objects.get(
+        recipient_code=recipient_code,
+        user=receiving_user,
     )
-    receiving_user = recipient.user
 
     paystack_transfer_object = create_paystack_transfer_object(
         request_data=request_data,

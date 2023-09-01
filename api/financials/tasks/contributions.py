@@ -62,14 +62,17 @@ def record_contribution_transfer_object(request_data, transfer_outcome):
     reason = data.get("reason")
 
     action_id = extract_uuidv4s_from_string(reason, position=1)
-    action = BillAction.objects.select_related("participant").get(uuid=action_id)
+    action = BillAction.objects.select_related("participant", "bill__creditor").get(
+        uuid=action_id
+    )
+    receiving_user = action.bill.creditor
     paying_user = action.participant
 
     recipient_code = data.get("recipient").get("recipient_code")
-    recipient = TransferRecipient.objects.select_related("user").get(
-        recipient_code=recipient_code
+    recipient = TransferRecipient.objects.get(
+        recipient_code=recipient_code,
+        user=receiving_user,
     )
-    receiving_user = recipient.user
 
     if transfer_outcome == PaystackTransfer.TransferOutcomeChoices.FAILED:
         action.mark_as_failed_transfer()

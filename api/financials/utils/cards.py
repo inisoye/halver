@@ -154,12 +154,13 @@ def create_card_addition_paystack_transaction_object(
 def initiate_card_addition_charge_refund(
     refundable_amount,
     refund_recipient_code,
+    user_id,
 ) -> None:
     paystack_transfer_payload = {
         "source": "balance",
         "amount": refundable_amount,
         "recipient": refund_recipient_code,
-        "reason": "Refund for card creation",
+        "reason": f"Refund for card creation for user:{user_id}",
         "reference": str(uuid.uuid4()),
     }
 

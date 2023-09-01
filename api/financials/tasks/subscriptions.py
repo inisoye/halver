@@ -37,14 +37,17 @@ def process_subscription_creation(request_data):
 
     plan_description = plan.get("description")
 
-    card = UserCard.objects.get(signature=authorization_signature)
-
     _, _, action_uuid, _ = extract_uuids_from_plan_description(plan_description)
 
     action = BillAction.objects.get(uuid=action_uuid)
     plan_object = action.paystack_plan
     participant = action.participant
     start_date = action.bill.first_charge_date
+
+    card = UserCard.objects.get(
+        signature=authorization_signature,
+        user=participant,
+    )
 
     # TODO this should be get or create for idempotency.
     # Prevent drawbacks of duplicate messages. Get by paystack sub code, maybe?

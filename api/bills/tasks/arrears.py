@@ -96,17 +96,20 @@ def record_arrear_contribution_transfer_object(request_data, transfer_outcome):
 
     arrear_id = extract_uuidv4s_from_string(reason, position=1)
     arrear = BillArrear.objects.get(uuid=arrear_id).select_related(
-        "action", "participant"
+        "action",
+        "participant",
+        "bill__creditor",
     )
 
     action = arrear.action
     paying_user = arrear.participant
+    receiving_user = arrear.bill.creditor
 
     recipient_code = data.get("recipient").get("recipient_code")
-    recipient = TransferRecipient.objects.select_related("user").get(
-        recipient_code=recipient_code
+    recipient = TransferRecipient.objects.get(
+        recipient_code=recipient_code,
+        user=receiving_user,
     )
-    receiving_user = recipient.user
 
     create_paystack_transfer_object(
         request_data=request_data,
@@ -148,19 +151,22 @@ def finalize_arrear_contribution(
 
     arrear_id = extract_uuidv4s_from_string(reason, position=1)
     arrear = BillArrear.objects.get(uuid=arrear_id).select_related(
-        "action", "participant"
+        "action",
+        "participant",
+        "bill__creditor",
     )
 
     action = arrear.action
+    receiving_user = arrear.bill.creditor
 
     arrear.mark_as_completed()
     action.mark_as_ongoing()
 
     recipient_code = data.get("recipient").get("recipient_code")
-    recipient = TransferRecipient.objects.select_related("user").get(
-        recipient_code=recipient_code
+    recipient = TransferRecipient.objects.get(
+        recipient_code=recipient_code,
+        user=receiving_user,
     )
-    receiving_user = recipient.user
 
     paystack_transfer_object = create_paystack_transfer_object(
         request_data=request_data,

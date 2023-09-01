@@ -1,7 +1,9 @@
 from celery import shared_task
 from celery.utils.log import get_task_logger
 
+from accounts.models import CustomUser
 from core.utils.currency import convert_to_kobo_integer
+from core.utils.strings import extract_uuidv4s_from_string
 from core.utils.users import get_user_by_id
 from financials.models import PaystackTransfer, TransferRecipient
 from financials.utils.cards import (
@@ -67,7 +69,7 @@ def process_card_creation_and_refund(request_data):
     refund_recipient_code = new_card_recipient.recipient_code
 
     initiate_card_addition_charge_refund(
-        refundable_amount_in_kobo, refund_recipient_code
+        refundable_amount_in_kobo, refund_recipient_code, user_id
     )
 
 
@@ -120,13 +122,15 @@ def record_card_addition_transfer_object(request_data, transfer_outcome):
 
     data = request_data.get("data")
 
-    recipient_code = data.get("recipient").get("recipient_code")
-    recipient = TransferRecipient.objects.select_related("user").get(
-        recipient_code=recipient_code
-    )
-    receiving_user = recipient.user
-
     reason = data.get("reason")
+    user_id = extract_uuidv4s_from_string(reason, position=0)
+    receiving_user = CustomUser.objects.get(uuid=user_id)
+
+    recipient_code = data.get("recipient").get("recipient_code")
+    recipient = TransferRecipient.objects.get(
+        recipient_code=recipient_code,
+        user=receiving_user,
+    )
 
     create_paystack_transfer_object(
         request_data=request_data,

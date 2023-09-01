@@ -231,9 +231,10 @@ def create_card_recipient_from_webhook(
         recipient, created = TransferRecipient.objects.get_or_create(
             recipient_code=recipient_code,
             user=user,
-            associated_card=new_card,
-            authorization_code=authorization.get("authorization_code"),
-            defaults=defaults,
+            defaults={
+                **defaults,
+                "associated_card": new_card,
+            },
         )
 
         return recipient

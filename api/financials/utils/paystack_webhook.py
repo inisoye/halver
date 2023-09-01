@@ -90,7 +90,7 @@ def handle_paystack_webhook_response(request_data):
     if event == "transfer.success":
         reason = data.get("reason")
 
-        is_card_addition_refund = reason == "Refund for card creation"
+        is_card_addition_refund = reason.startswith("Refund for card creation")
         is_one_time_contribution_transfer = reason.startswith(
             f"{one_time_contribution_label} transfer for action"
         )
@@ -119,7 +119,7 @@ def handle_paystack_webhook_response(request_data):
     if event == "transfer.failed":
         reason = data.get("reason")
 
-        is_card_addition_refund = reason == "Refund for card creation"
+        is_card_addition_refund = reason.startswith("Refund for card creation")
         is_one_time_contribution_transfer = reason.startswith(
             f"{one_time_contribution_label} transfer for action"
         )
@@ -157,7 +157,7 @@ def handle_paystack_webhook_response(request_data):
     if event == "transfer.reversed":
         reason = data.get("reason")
 
-        is_card_addition_refund = reason == "Refund for card creation"
+        is_card_addition_refund = reason.startswith("Refund for card creation")
         is_one_time_contribution_transfer = reason.startswith(
             f"{one_time_contribution_label} transfer for action"
         )
