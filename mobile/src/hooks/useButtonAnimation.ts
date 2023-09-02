@@ -19,6 +19,15 @@ export const useButtonAnimation = ({
   const offset = useSharedValue(0);
   const opacity = useSharedValue(1);
 
+  /**
+   * TS errors are ignored in the following lines due to type mismatch issues from Reanimated.
+   * https://github.com/software-mansion/react-native-reanimated/issues/4548
+   * https://github.com/software-mansion/react-native-reanimated/issues/4645
+   * Review later if fixes are made.
+   */
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
