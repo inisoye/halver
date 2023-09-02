@@ -219,7 +219,7 @@ export const FullWidthTextField: React.FunctionComponent<FullWidthTextFieldProps
             inputAccessoryViewID={inputAccessoryViewID}
             keyboardType={keyboardType}
             paddingHorizontal="6"
-            paddingVertical={isIOS() ? '3.5' : '3'}
+            paddingVertical={isIOS() ? '3.5' : '2.5'}
             placeholder={placeholder}
             placeholderTextColor={colors.inputPlaceholder}
             ref={ref}
