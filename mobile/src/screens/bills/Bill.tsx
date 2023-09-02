@@ -2,12 +2,23 @@ import type { CompositeScreenProps } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { ResponsiveValue } from '@shopify/restyle';
 import * as React from 'react';
-import type { DimensionValue } from 'react-native';
-import { FadeInDown } from 'react-native-reanimated';
+import type {
+  DimensionValue,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+} from 'react-native';
+import {
+  FadeInDown,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 
 import {
   AfterInteractions,
   AnimatedBox,
+  AnimatedText,
   Box,
   Button,
   DynamicText,
@@ -38,6 +49,32 @@ type BillProps = CompositeScreenProps<
 >;
 
 export const Bill = ({ navigation, route }: BillProps) => {
+  const scrollY = useSharedValue(0);
+  const threshold = 70; // Adjust this threshold value
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    scrollY.value = event.nativeEvent.contentOffset.y;
+  };
+
+  /**
+   * TS errors are ignored in the following lines due to type mismatch issues from Reanimated.
+   * https://github.com/software-mansion/react-native-reanimated/issues/4548
+   * https://github.com/software-mansion/react-native-reanimated/issues/4645
+   * Review later if fixes are made.
+   */
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const headerTitleAnimatedStyle = useAnimatedStyle(() => {
+    const opacity = withTiming(scrollY.value >= threshold ? 1 : 0);
+    const translateY = withSpring(scrollY.value >= threshold ? 0 : 30);
+
+    return {
+      opacity,
+      transform: [{ translateY: translateY }],
+    };
+  });
+
   const { id, name, shouldUpdate, isOnRoot } = route.params;
 
   const { data: userDetails } = useUserDetails();
@@ -162,14 +199,36 @@ export const Bill = ({ navigation, route }: BillProps) => {
         justifyContent="space-between"
         paddingBottom="1"
         paddingHorizontal="6"
-        paddingTop="5"
+        paddingTop={isIOS() ? '5' : '8'}
       >
-        <TouchableOpacity
-          hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}
-          onPress={handleGoBack}
-        >
-          <BackWithBackground />
-        </TouchableOpacity>
+        <Box alignItems="center" flexDirection="row" maxWidth="60%">
+          <TouchableOpacity
+            hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}
+            marginRight="4"
+            onPress={handleGoBack}
+          >
+            <BackWithBackground />
+          </TouchableOpacity>
+
+          <AnimatedText
+            fontFamily="Halver-Semibold"
+            lineHeight={32}
+            marginRight="2"
+            numberOfLines={1}
+            style={headerTitleAnimatedStyle}
+            variant="2xl"
+          >
+            {name}
+          </AnimatedText>
+
+          <AnimatedBox
+            backgroundColor={billStatusColor}
+            borderRadius="sm"
+            height={6}
+            style={headerTitleAnimatedStyle}
+            width={6}
+          />
+        </Box>
 
         {isCreator && false && (
           <TouchableOpacity>
@@ -183,7 +242,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
       </Box>
 
       <Box backgroundColor="background" flex={1}>
-        <ScrollView>
+        <ScrollView scrollEventThrottle={200} onScroll={handleScroll}>
           <Box
             backgroundColor="billScreenBackground"
             borderBottomEndRadius="2xl"
