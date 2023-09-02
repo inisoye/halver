@@ -20,7 +20,10 @@ type HomeProps = CompositeScreenProps<
 
 export const Home = ({ navigation }: HomeProps) => {
   const goToAllTransactions = React.useCallback(() => {
-    navigation.navigate('FinancialsStackNavigator', { screen: 'Transactions' });
+    navigation.navigate('FinancialsStackNavigator', {
+      screen: 'Transactions',
+      initial: false,
+    });
   }, [navigation]);
 
   const { refetch: refetchActionStatusCounts } = useActionStatusCounts();
