@@ -493,6 +493,7 @@ const theme = createTheme({
     newBillActionStatusBackground: brandColors.apricot1,
 
     selectedItemBackground: lightColors.green5,
+    defaultListRippleBackground: lightColors.gray8,
 
     bankImageBackground: lightColors.gray7,
 
@@ -694,6 +695,7 @@ const darkTheme: Theme = {
     newBillActionStatusBackground: darkColors.gray3,
 
     selectedItemBackground: darkColors.green3,
+    defaultListRippleBackground: darkColors.gray4,
 
     bankImageBackground: darkColors.gray12,
 

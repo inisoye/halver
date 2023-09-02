@@ -1,6 +1,7 @@
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FlashList, type ListRenderItem } from '@shopify/flash-list';
+import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -20,6 +21,7 @@ import {
 } from '@/features/financials';
 import { useBooleanStateControl, useDebounce } from '@/hooks';
 import { RightCaret, Search } from '@/icons';
+import { Theme } from '@/lib/restyle';
 import { AppRootStackParamList, FinancialsStackParamList } from '@/navigation';
 import { flexStyles } from '@/theme';
 import { formatNumberWithCommas, useIsDarkModeSelected } from '@/utils';
@@ -36,6 +38,7 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
   item,
 }) => {
   const isDarkMode = useIsDarkModeSelected();
+  const { colors } = useTheme<Theme>();
 
   const { contribution, created, isCredit, payingUser, bill, receivingUser } =
     item || {};
@@ -51,6 +54,7 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
     <RectButton
       activeOpacity={0.05}
       marginTop={index === 0 ? '4' : '1'}
+      rippleColor={colors.defaultListRippleBackground}
       underlayColor={isDarkMode ? 'white' : 'black'}
       onPress={onPress}
     >
@@ -212,6 +216,8 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
             contentContainerStyle={{ paddingBottom: isFetchingNextPage ? 0 : 12 }}
             data={transactions}
             estimatedItemSize={70}
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="handled"
             ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
             renderItem={renderItem}
             onEndReached={loadMoreTransactions}

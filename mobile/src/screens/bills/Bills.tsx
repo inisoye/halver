@@ -7,6 +7,7 @@ import type {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import { FlashList, type ListRenderItem } from '@shopify/flash-list';
+import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -29,6 +30,7 @@ import {
 } from '@/features/bills';
 import { useDebounce } from '@/hooks';
 import { Plus, RightCaret, Search, ThreeUsersCluster } from '@/icons';
+import { Theme } from '@/lib/restyle';
 import type { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 import { flexStyles } from '@/theme';
 import { useIsDarkModeSelected } from '@/utils';
@@ -92,6 +94,7 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
   navigation,
 }) => {
   const isDarkMode = useIsDarkModeSelected();
+  const { colors } = useTheme<Theme>();
 
   const participantsAndUnregisteredParticipants = [
     ...(item?.participants || []),
@@ -117,6 +120,7 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
     <RectButton
       activeOpacity={0.05}
       marginTop={index === 0 ? '4' : undefined}
+      rippleColor={colors.defaultListRippleBackground}
       underlayColor={isDarkMode ? 'white' : 'black'}
       onPress={handleBillNavigation}
     >
