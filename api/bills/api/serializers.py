@@ -472,3 +472,13 @@ class BillTransactionSerializer(serializers.ModelSerializer):
             "uuid",
         )
         read_only_fields = fields
+
+
+class BillDailyTransactionSerializer(serializers.Serializer):
+    day = serializers.DateField()
+    transactions = BillTransactionSerializer(many=True)
+
+
+class BillDailyContributionSerializer(serializers.Serializer):
+    day = serializers.DateField()
+    total_contribution = serializers.DecimalField(max_digits=19, decimal_places=4)

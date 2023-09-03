@@ -1,4 +1,6 @@
 import asyncio
+from datetime import datetime
+from itertools import groupby
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -26,6 +28,8 @@ from bills.api.serializers import (
     BillArrearResponseUpdateSerializer,
     BillCreateResponseSerializer,
     BillCreateSerializer,
+    BillDailyContributionSerializer,
+    BillDailyTransactionSerializer,
     BillDetailSerializer,
     BillDetailsUpdateSerializer,
     BillListSerializer,
@@ -574,6 +578,87 @@ class BillTransactionListAPIView(ListAPIView):
         bill_uuid = self.kwargs.get("uuid")
 
         return BillTransaction.get_bill_transactions(bill_uuid)
+
+
+class BillDailyTransactionListAPIView(ListAPIView):
+    """View for listing complete (Halver) transactions on a bill grouped
+    by day of creation.
+
+    Accepts GET requests.
+    """
+
+    permission_classes = (IsParticipantOrCreditor,)
+    serializer_class = BillDailyTransactionSerializer
+
+    def get_queryset(self):
+        bill_uuid = self.kwargs.get("uuid")
+        return BillTransaction.get_daily_transactions(bill_uuid)
+
+    def list(self, request, *args, **kwargs):
+        # Get the queryset based on the URL parameters and filters
+        queryset = self.filter_queryset(self.get_queryset())
+
+        self.paginate_queryset(queryset)
+
+        # Initialize a list to store grouped transactions
+        grouped_transactions = []
+
+        # Group the transactions by transaction day
+        for day, transactions in groupby(queryset, key=lambda x: x.day):
+            grouped_transactions.append(
+                {
+                    "day": day,
+                    "transactions": list(transactions),
+                }
+            )
+
+        # Serialize the grouped transactions with pagination metadata
+        serializer = self.get_serializer(grouped_transactions, many=True)
+        return self.get_paginated_response(serializer.data)
+
+
+class BillTransactionsOnDayAPIView(ListAPIView):
+    """View for listing transactions on a specific day for a bill.
+
+    Accepts GET requests with a 'day' parameter in the format 'YYYY-MM-DD'.
+    """
+
+    permission_classes = (IsParticipantOrCreditor,)
+    serializer_class = BillTransactionSerializer
+
+    def get_queryset(self):
+        bill_uuid = self.kwargs.get("uuid")
+
+        day_str = self.request.query_params.get("day")
+
+        try:
+            # Convert the 'day' string to a date object
+            day_date = datetime.strptime(day_str, "%Y-%m-%d").date()
+        except ValueError:
+            # Handle invalid date format if necessary
+            return BillTransaction.objects.none()
+
+        # Retrieve transactions for the specified day (ignoring time component)
+        queryset = BillTransaction.get_bill_transactions_on_day(bill_uuid, day_date)
+
+        return queryset
+
+
+class BillDailyContributionListAPIView(ListAPIView):
+    """View for listing total contributions on a bill grouped by day of creation.
+
+    Accepts GET requests.
+    """
+
+    permission_classes = (IsParticipantOrCreditor,)
+    serializer_class = BillDailyContributionSerializer
+
+    def get_queryset(self):
+        bill_uuid = self.kwargs.get("uuid")
+
+        queryset = BillTransaction.get_daily_contributions(bill_uuid)
+
+        return queryset
 
 
 class UserBillTransactionListAPIView(ListAPIView):

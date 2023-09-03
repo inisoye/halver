@@ -7,6 +7,8 @@ from bills.api.views import (
     BillArrearListAPIView,
     BillArrearResponseUpdateAPIView,
     BillCancellationAPIView,
+    BillDailyContributionListAPIView,
+    BillDailyTransactionListAPIView,
     BillListCreateAPIView,
     BillRetrieveUpdateAPIView,
     BillSubscriptionCancellationAPIView,
@@ -43,6 +45,21 @@ urlpatterns = [
         route="<uuid:uuid>/transactions/",
         view=BillTransactionListAPIView.as_view(),
         name="bill-transactions",
+    ),
+    path(
+        route="<uuid:uuid>/transactions/grouped/",
+        view=BillDailyTransactionListAPIView.as_view(),
+        name="bill-grouped-transactions",
+    ),
+    path(
+        route="<uuid:uuid>/transactions/day/",
+        view=BillDailyTransactionListAPIView.as_view(),
+        name="bill-transactions-on-day",
+    ),
+    path(
+        route="<uuid:uuid>/transactions/contributions/",
+        view=BillDailyContributionListAPIView.as_view(),
+        name="bill-daily-contributions",
     ),
     path(
         route="<uuid:uuid>/arrears/",

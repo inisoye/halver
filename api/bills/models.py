@@ -2,7 +2,17 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import Count, Exists, OuterRef, Prefetch, Q, Subquery
+from django.db.models import (
+    Count,
+    DateField,
+    Exists,
+    OuterRef,
+    Prefetch,
+    Q,
+    Subquery,
+    Sum,
+)
+from django.db.models.functions import TruncDate
 from phonenumber_field.modelfields import PhoneNumberField
 
 from accounts.models import CustomUser
@@ -609,6 +619,35 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
             "receiving_user",
         ).filter(
             bill__uuid=bill_uuid,
+        )
+
+    @classmethod
+    def get_bill_transactions_on_day(cls, bill_uuid, day):
+        """Returns a queryset of transactions on a specified day for a bill."""
+
+        return cls.get_bill_transactions(bill_uuid).filter(created__date=day)
+
+    @classmethod
+    def get_daily_transactions(cls, bill_uuid):
+        """Returns a queryset of daily transactions for a specified bill."""
+
+        return (
+            cls.get_bill_transactions(bill_uuid)
+            .annotate(day=TruncDate("created", output_field=DateField()))
+            .order_by("day")
+        )
+
+    @classmethod
+    def get_daily_contributions(cls, bill_uuid):
+        """Returns a queryset of daily contributions for a specified bill."""
+
+        return (
+            cls.objects.only("created", "contribution")
+            .filter(bill__uuid=bill_uuid)
+            .annotate(day=TruncDate("created", output_field=DateField()))
+            .values("day")
+            .annotate(total_contribution=Sum("contribution"))
+            .order_by("-day")
         )
 
 
