@@ -119,10 +119,6 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
 }) => {
   const scrollViewRef = React.useRef<RNScrollView>(null);
 
-  const handleScrollToEndOfScrollView = () => {
-    scrollViewRef?.current?.scrollToEnd({ animated: true });
-  };
-
   const [newBillPayload, setNewBillPayload] = useMMKVObject<BillCreationMMKVPayload>(
     allMMKVKeys.newBillPayload,
   );
@@ -150,6 +146,17 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
 
   const intervalValue = useWatch({ control, name: 'interval' });
   const isRecurringBill = intervalValue !== 'none';
+
+  const firstChargeDateValue = useWatch({ control, name: 'firstChargeDate' });
+  const hasNonFirstChargeDateErrors = Object.keys(errors).some(
+    fieldName => fieldName !== 'firstChargeDate',
+  );
+  const shoulScrollToEnd =
+    !firstChargeDateValue && isRecurringBill && !hasNonFirstChargeDateErrors;
+
+  const handleScrollToEndOfScrollView = () => {
+    if (shoulScrollToEnd) scrollViewRef?.current?.scrollToEnd({ animated: true });
+  };
 
   // Added for because error on first charge date field might be invisible.
   React.useEffect(() => {
