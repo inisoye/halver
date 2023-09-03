@@ -18,6 +18,10 @@ interface RadioButtonProps {
 
 const RadioButton: React.FunctionComponent<RadioButtonProps> = React.memo(
   ({ isSelected, handleSelect, item }) => {
+    const onButtonPress = () => {
+      handleSelect(item.value);
+    };
+
     return (
       <TouchableOpacity
         alignItems="center"
@@ -31,7 +35,7 @@ const RadioButton: React.FunctionComponent<RadioButtonProps> = React.memo(
         key={item.value}
         paddingHorizontal="4"
         paddingVertical="2"
-        onPress={() => handleSelect(item.value)}
+        onPress={onButtonPress}
       >
         <Text
           color={isSelected ? 'textInverse' : 'textLight'}
@@ -60,15 +64,20 @@ interface RadioSelectorProps {
     | readonly { readonly value: string; readonly name: string }[];
   setOption(value: string): void;
   option: string;
+  customEventHander?: () => void;
 }
 
-export const RadioSelector = ({ data, setOption, option }: RadioSelectorProps) => {
-  const handleSelect = React.useCallback(
-    (value: string) => {
-      setOption(value);
-    },
-    [setOption],
-  );
+export const RadioSelector = ({
+  data,
+  setOption,
+  option,
+  customEventHander,
+}: RadioSelectorProps) => {
+  const handleSelect = React.useCallback((value: string) => {
+    setOption(value);
+    customEventHander?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const options = data.map((item: { value: string; name: string }) => {
     const isSelected = item.value === option;
