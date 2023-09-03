@@ -179,6 +179,8 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
   React.useEffect(() => {
     if (!isRecurringBill) {
       setValue('firstChargeDate', undefined);
+    } else {
+      setValue('firstChargeDate', oneDayFromNow);
     }
   }, [isRecurringBill, setValue]);
 
