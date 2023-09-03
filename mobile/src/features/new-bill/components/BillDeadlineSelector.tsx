@@ -36,7 +36,7 @@ const DeadlineSelectorButton: React.FunctionComponent<DeadlineSelectorButtonProp
       onPress={openModal}
     >
       <Box alignItems="center" flexDirection="row" gap="2">
-        <DynamicText flexShrink={1} fontSize={15} numberOfLines={1} width={192}>
+        <DynamicText flexShrink={1} fontSize={14.5} numberOfLines={1} width={192}>
           {deadline ? deadline.toDateString() : 'Select a date'}
         </DynamicText>
       </Box>

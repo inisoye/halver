@@ -35,7 +35,7 @@ const FirstChargeDateSelectorButton: React.FunctionComponent<
       onPress={openModal}
     >
       <Box alignItems="center" flexDirection="row" gap="2">
-        <DynamicText flexShrink={1} fontSize={15} numberOfLines={1} width={192}>
+        <DynamicText flexShrink={1} fontSize={14.5} numberOfLines={1} width={192}>
           {firstChargeDate ? firstChargeDate.toDateString() : 'Select a date'}
         </DynamicText>
       </Box>
