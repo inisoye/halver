@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { StyleSheet } from 'react-native';
+import { ScrollView as RNScrollView, StyleSheet } from 'react-native';
 import { useMMKVObject } from 'react-native-mmkv';
 import { FadeInUp, FadeOutDown } from 'react-native-reanimated';
 import { z } from 'zod';
@@ -117,6 +117,12 @@ const twoDaysFromNow = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
 export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
   navigation,
 }) => {
+  const scrollViewRef = React.useRef<RNScrollView>(null);
+
+  const handleScrollToEndOfScrollView = () => {
+    scrollViewRef?.current?.scrollToEnd({ animated: true });
+  };
+
   const [newBillPayload, setNewBillPayload] = useMMKVObject<BillCreationMMKVPayload>(
     allMMKVKeys.newBillPayload,
   );
@@ -198,6 +204,8 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
+        ref={scrollViewRef}
+        onContentSizeChange={handleScrollToEndOfScrollView}
       >
         <Box gap="7" paddingBottom="20" paddingHorizontal="6" paddingTop="4">
           <Box>
