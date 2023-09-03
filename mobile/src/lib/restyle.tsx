@@ -705,7 +705,7 @@ const darkTheme: Theme = {
     datePickerCategoryLabelText: darkColors.gray10,
 
     logoApricot: brandColors.apricot8,
-    logoCasal: brandColors.casal8,
+    logoCasal: brandColors.casal7,
 
     billScreenBackground: neutralColors.blackish,
     billMeterBackground: brandColors.pharlap6,

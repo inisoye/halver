@@ -46,9 +46,9 @@ export const NavigationContainer: React.FunctionComponent = () => {
         ref={navigationRef}
         theme={isDarkMode ? DarkTheme : DefaultTheme}
       >
-        {!token || isLoading ? (
+        {!token ? (
           <LoginStackNavigator />
-        ) : areUserDetailsIncomplete ? (
+        ) : !isLoading && areUserDetailsIncomplete ? (
           <OnboardingStackNavigator />
         ) : (
           <AppRootStackNavigator />

@@ -11,22 +11,37 @@ module.exports = {
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'automatic',
-    splash: {
-      image: './assets/splash.png',
-      resizeMode: 'contain',
-      backgroundColor: '#ffffff',
-    },
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: false,
       bundleIdentifier: IS_DEV ? 'com.halver.dev' : 'com.halver',
+      splash: {
+        image: './assets/splash-light.png',
+        resizeMode: 'contain',
+        backgroundColor: '#ededed',
+        dark: {
+          image: './assets/splash.png',
+          resizeMode: 'contain',
+          backgroundColor: '#161616',
+        },
+      },
     },
     android: {
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#161616',
       },
       package: IS_DEV ? 'com.halver.dev' : 'com.halver',
+      splash: {
+        image: './assets/splash-light.png',
+        resizeMode: 'contain',
+        backgroundColor: '#ededed',
+        dark: {
+          image: './assets/splash.png',
+          resizeMode: 'contain',
+          backgroundColor: '#161616',
+        },
+      },
     },
     web: {
       favicon: './assets/favicon.png',

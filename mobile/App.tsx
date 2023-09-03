@@ -1,10 +1,13 @@
 import { useFonts } from 'expo-font';
 import * as Network from 'expo-network';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
 import { initializeMMKVFlipper } from 'react-native-mmkv-flipper-plugin';
 import * as Sentry from 'sentry-expo';
 
+import { Box } from '@/components';
+import { useUserDetails } from '@/features/account';
 import { storage } from '@/lib/mmkv';
 import { NavigationContainer } from '@/navigation';
 import { Providers } from '@/providers';
@@ -37,6 +40,24 @@ Sentry.init({
   ],
 });
 
+SplashScreen.preventAutoHideAsync();
+
+function MainContent() {
+  const { isLoading: areUserDetailsLoading } = useUserDetails();
+
+  const onLayoutRootView = React.useCallback(async () => {
+    if (!areUserDetailsLoading) {
+      await SplashScreen.hideAsync();
+    }
+  }, [areUserDetailsLoading]);
+
+  return (
+    <Box flex={1} onLayout={onLayoutRootView}>
+      <NavigationContainer />
+    </Box>
+  );
+}
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     'Halver-Naira': require('./assets/fonts/HalverNairaMedium.otf'),
@@ -53,7 +74,7 @@ export default function App() {
   return (
     <Providers>
       <StatusBar style={isDarkMode ? 'light' : 'dark'} />
-      <NavigationContainer />
+      <MainContent />
     </Providers>
   );
 }
