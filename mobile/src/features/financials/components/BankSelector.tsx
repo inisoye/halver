@@ -66,6 +66,7 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
       onPress={() => handleItemClick(item)}
     >
       <Box
+        accessibilityRole="button"
         alignItems="center"
         flexDirection="row"
         gap="3"

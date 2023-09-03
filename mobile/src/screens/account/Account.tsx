@@ -90,7 +90,7 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
             <TouchableOpacity
               alignItems="center"
               borderColor="borderDefault"
-              borderTopWidth={1}
+              borderTopWidth={0.5}
               flexDirection="row"
               gap="4"
               hitSlop={{ top: 5, bottom: 24, left: 24, right: 24 }}

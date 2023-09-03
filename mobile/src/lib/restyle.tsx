@@ -438,6 +438,7 @@ const theme = createTheme({
 
     bottomTabBackground: lightColors.mainBgLight,
     bottomTabBorder: lightColors.gray8,
+    bottomTabText: lightColors.gray9,
 
     textDefault: lightColors.gray12,
     textInverse: lightColors.gray1,
@@ -449,8 +450,6 @@ const theme = createTheme({
 
     textIntroMarqueeDark: lightColors.gray1,
     textIntroMarqueeLight: darkColors.gray3,
-
-    bottomTabText: lightColors.gray9,
 
     buttonApricot: brandColors.apricot7,
     buttonCasal: brandColors.casal7,
@@ -644,6 +643,7 @@ const darkTheme: Theme = {
 
     bottomTabBackground: darkColors.gray1,
     bottomTabBorder: darkColors.gray8,
+    bottomTabText: darkColors.gray9,
 
     textDefault: darkColors.gray12,
     textInverse: darkColors.gray1,
@@ -652,8 +652,6 @@ const darkTheme: Theme = {
     textLight: darkColors.gray11,
     textLighter: darkColors.gray10,
     textApricot: brandColors.apricot6,
-
-    bottomTabText: darkColors.gray9,
 
     buttonApricot: brandColors.apricot6,
     buttonCasal: brandColors.casal7,

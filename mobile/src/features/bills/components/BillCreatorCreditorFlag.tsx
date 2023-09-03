@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { FadeInUp } from 'react-native-reanimated';
 
 import { AnimatedBox, Box, Image, Text } from '@/components';
 
@@ -12,28 +11,27 @@ interface BillCreatorCreditorFlagProps {
 }
 
 export const BillCreatorCreditorFlag: React.FunctionComponent<BillCreatorCreditorFlagProps> =
-  React.memo(({ creatorOrCreditor, hasDelay, isCreditor }) => {
+  React.memo(({ creatorOrCreditor, isCreditor }) => {
     return (
       <AnimatedBox
         alignItems="center"
         borderColor="borderDefault"
         borderRadius="lg"
         borderWidth={1}
-        entering={FadeInUp.springify().delay(hasDelay ? 200 : 0)}
         flexDirection="row"
         gap="2"
         justifyContent="space-between"
-        opacity={0.8}
+        opacity={0.9}
         paddingHorizontal="2.5"
         paddingVertical="1.5"
-        width="48%"
+        width="40%"
       >
         <Box width="70%">
           <Text color="textLight" marginBottom="0.75" numberOfLines={1} variant="xxs">
             {isCreditor ? 'Bill creditor' : 'Created by'}
           </Text>
           <Text fontFamily="Halver-Semibold" numberOfLines={1} variant="xs">
-            {creatorOrCreditor?.fullName}
+            {creatorOrCreditor?.firstName}
           </Text>
         </Box>
 

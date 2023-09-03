@@ -8,3 +8,4 @@ export * from './useIsFirstTime';
 export * from './useKeyboardStickyButtonAnimation';
 export * from './useRefreshOnFocus';
 export * from './useThrottle';
+export * from './useBorderlessTabBar';
