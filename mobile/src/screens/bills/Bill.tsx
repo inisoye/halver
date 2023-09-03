@@ -164,13 +164,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
     navigation.navigate('Bill Payment', billPaymentScreenPayload);
   };
 
-  const getButtonBottomMargin = () => {
-    if (isOnRoot) {
-      return isIOS() ? '10' : '7';
-    } else {
-      return '3';
-    }
-  };
+  const buttonBottomMargin = isOnRoot ? (isIOS() ? '10' : '7') : '3';
 
   const canMakeContribution =
     !isBillLoading && !isCreditor && !isCurrentUserStatusFinal;
@@ -429,7 +423,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
       {canMakeContribution && (
         <Box
           backgroundColor="background"
-          paddingBottom={getButtonBottomMargin()}
+          paddingBottom={buttonBottomMargin}
           paddingHorizontal="6"
           paddingTop="3"
         >
