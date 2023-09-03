@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Dimensions } from 'react-native';
 import {
+  StretchOutY,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
   withSpring,
   withTiming,
   ZoomInLeft,
-  ZoomOutLeft,
 } from 'react-native-reanimated';
 
 import { AnimatedBox } from './Box';
@@ -64,7 +64,7 @@ export const LogoLoader: React.FunctionComponent = () => {
     <AnimatedBox
       entering={ZoomInLeft.duration(600)}
       // Exiting animation causes issues with modals on Android: https://github.com/software-mansion/react-native-reanimated/issues/4422#issuecomment-1580890555
-      exiting={ZoomOutLeft.duration(300)}
+      exiting={StretchOutY}
       flexDirection="row"
       zIndex="10"
     >
