@@ -279,6 +279,34 @@ export const PaginatedBillTransactionList = z
   })
   .partial();
 
+export const BillDailyContribution = z.object({
+  day: z.string(),
+  totalContribution: z.string().regex(/^-?\d{0,15}(?:\.\d{0,4})?$/),
+});
+
+export const PaginatedBillDailyContributionList = z
+  .object({
+    count: z.number().int(),
+    next: z.string().url().nullable(),
+    previous: z.string().url().nullable(),
+    results: z.array(BillDailyContribution),
+  })
+  .partial();
+
+const BillDailyTransaction = z.object({
+  day: z.string(),
+  transactions: z.array(BillTransaction),
+});
+
+export const PaginatedBillDailyTransactionList = z
+  .object({
+    count: z.number().int(),
+    next: z.string().url().nullable(),
+    previous: z.string().url().nullable(),
+    results: z.array(BillDailyTransaction),
+  })
+  .partial();
+
 export const BillUnregisteredParticipantList = z.object({
   created: z.string().datetime(),
   modified: z.string().datetime(),

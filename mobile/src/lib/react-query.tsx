@@ -66,16 +66,17 @@ export const allStaticQueryKeys = {
   getActionStatusCounts: ['action-status-counts'],
   getBanks: ['banks'],
   getBill: ['bill'],
-  getBillTransactions: ['bill-transactions'],
+  getBillContributionsByDay: ['bill-contributions-by-day'],
   getBills: ['bills'],
+  getBillTransactions: ['bill-transactions'],
   getCardAdditionURL: ['card-addition-url'],
   getCards: ['cards'],
+  getPhoneContacts: ['phone-contacts'],
   getRegisteredContacts: ['registered-contacts'],
   getTransferRecipients: ['transfer-recipients'],
+  getUserActions: ['user-actions'],
   getUserDetails: ['user-details'],
   getUserTransactions: ['user-transactions'],
-  getUserActions: ['user-actions'],
-  getPhoneContacts: ['phone-contacts'],
 };
 
 /**

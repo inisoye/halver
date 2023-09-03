@@ -1,12 +1,7 @@
 import type { CompositeScreenProps } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { ResponsiveValue } from '@shopify/restyle';
 import * as React from 'react';
-import type {
-  DimensionValue,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-} from 'react-native';
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import {
   FadeInDown,
   useAnimatedStyle,
@@ -30,6 +25,7 @@ import {
 } from '@/components';
 import { useUserDetails } from '@/features/account';
 import {
+  BillContributionMeter,
   BillCreatorCreditorFlag,
   BillParticipantsList,
   BillRecentContributionsList,
@@ -37,11 +33,12 @@ import {
   CancelSubscriptionModal,
   statusColorIndex,
   useBill,
+  useBillContributionsByDay,
   useBillTransactions,
 } from '@/features/bills';
 import { BackWithBackground, Gear } from '@/icons';
 import { AppRootStackParamList, BillsStackParamList } from '@/navigation';
-import { convertNumberToNaira, formatNumberWithCommas, isIOS } from '@/utils';
+import { formatNumberWithCommas, isIOS } from '@/utils';
 
 type BillProps = CompositeScreenProps<
   NativeStackScreenProps<BillsStackParamList, 'Bill'>,
@@ -111,25 +108,35 @@ export const Bill = ({ navigation, route }: BillProps) => {
   const totalAmountDue = Number(totalAmountDueString);
   const totalAmountPaid = Number(totalAmountPaidString);
 
-  const percentagePaid =
-    totalAmountDue > 0
-      ? Math.min(100, (totalAmountPaid / totalAmountDue) * 100).toFixed()
-      : 0;
-
   const billStatusColor = status?.short ? statusColorIndex[status?.short] : undefined;
 
   const { refetch: refetchBillTransactions } = useBillTransactions(id);
+  const { data: billContributionsByDay, refetch: refetchBillContributionsByDay } =
+    useBillContributionsByDay(id, isBillRecurring);
+
+  const {
+    day: dayOfLastContributionRound,
+    totalContribution: totalContributionOfLastRound,
+  } = billContributionsByDay?.results?.[0] || {};
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       if (shouldUpdate) {
         refetchBill();
         refetchBillTransactions();
+        if (isBillRecurring) refetchBillContributionsByDay();
       }
     });
 
     return unsubscribe;
-  }, [navigation, refetchBill, refetchBillTransactions, shouldUpdate]);
+  }, [
+    navigation,
+    refetchBill,
+    refetchBillTransactions,
+    refetchBillContributionsByDay,
+    shouldUpdate,
+    isBillRecurring,
+  ]);
 
   const currentUserAction = actions?.find(
     action => action?.participant?.uuid === currentUserUUID,
@@ -251,7 +258,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
             >
               <DynamicText
                 fontFamily="Halver-Semibold"
-                maxWidth="70%"
+                maxWidth="65%"
                 numberOfLines={2}
                 variant="4xl"
               >
@@ -274,97 +281,87 @@ export const Bill = ({ navigation, route }: BillProps) => {
               <AnimatedBox entering={FadeInDown.springify()}>
                 {isBillRecurring && (
                   <>
-                    <Text color="textLight" fontFamily="Halver-Semibold">
-                      {totalAmountPaid === 0 ? (
-                        'No contributions yet'
-                      ) : (
-                        <>
-                          <Text color="textLight" fontFamily="Halver-Naira">
-                            ₦
-                          </Text>
-                          {`${formatNumberWithCommas(
-                            totalAmountPaid,
-                          )} contributed since bill creation.`}
-                        </>
-                      )}
-                    </Text>
+                    {totalAmountPaid === 0 || !totalContributionOfLastRound ? (
+                      <DynamicText color="textLight" fontFamily="Halver-Semibold">
+                        No contributions yet.
+                      </DynamicText>
+                    ) : (
+                      <>
+                        <DynamicText
+                          color="textLight"
+                          fontFamily="Halver-Semibold"
+                          marginBottom="4"
+                        >
+                          Contribution round on{' '}
+                          {!!dayOfLastContributionRound &&
+                            new Date(dayOfLastContributionRound).toDateString()}
+                          .
+                        </DynamicText>
+
+                        <BillContributionMeter
+                          totalAmountDue={totalAmountDue}
+                          totalAmountPaid={Number(totalContributionOfLastRound)}
+                        />
+                      </>
+                    )}
+
+                    {false && (
+                      <DynamicText
+                        color="textLight"
+                        fontFamily="Halver-Semibold"
+                        marginTop="4"
+                        variant="sm"
+                      >
+                        {totalAmountPaid === 0 ? (
+                          'No contributions yet'
+                        ) : (
+                          <>
+                            <Text color="textLight" fontFamily="Halver-Naira">
+                              ₦
+                            </Text>
+                            {`${formatNumberWithCommas(
+                              totalAmountPaid,
+                            )} contributed since bill creation.`}
+                          </>
+                        )}
+                      </DynamicText>
+                    )}
                   </>
                 )}
 
                 {!isBillRecurring && (
-                  <>
-                    <Box
-                      flexDirection="row"
-                      gap="4"
-                      justifyContent="space-between"
-                      marginBottom="2"
-                    >
-                      <Text color="textLight" fontFamily="Halver-Semibold" variant="xs">
-                        {totalAmountPaid === 0
-                          ? 'No contributions yet'
-                          : `${percentagePaid}% contributed`}
-                      </Text>
-                      <DynamicText
-                        fontFamily="Halver-Semibold"
-                        maxWidth="64%"
-                        textAlign="right"
-                        variant="xs"
-                      >
-                        {convertNumberToNaira(totalAmountPaid)} out of{' '}
-                        {convertNumberToNaira(totalAmountDue)}
-                      </DynamicText>
-                    </Box>
-
-                    <Box
-                      backgroundColor="elementBackground"
-                      borderRadius="sm2"
-                      height={12}
-                    >
-                      <AnimatedBox
-                        backgroundColor="billMeterBackground"
-                        borderRadius="sm2"
-                        height={12}
-                        width={
-                          `${percentagePaid}%` as ResponsiveValue<
-                            DimensionValue | undefined,
-                            {
-                              phone: number;
-                              tablet: number;
-                            }
-                          >
-                        }
-                      />
-                    </Box>
-                  </>
+                  <BillContributionMeter
+                    totalAmountDue={totalAmountDue}
+                    totalAmountPaid={totalAmountPaid}
+                  />
                 )}
               </AnimatedBox>
             )}
           </Box>
 
           <Box
-            columnGap="2"
-            flexDirection="row"
-            flexWrap="wrap"
-            justifyContent="space-between"
-            paddingHorizontal="6"
-          >
-            {!!creator && <BillCreatorCreditorFlag creatorOrCreditor={creator} />}
-
-            {!!creditor && (
-              <BillCreatorCreditorFlag
-                creatorOrCreditor={creditor}
-                hasDelay
-                isCreditor
-              />
-            )}
-          </Box>
-
-          <Box
-            gap="8"
+            gap="10"
             paddingBottom={canMakeContribution ? '2' : '8'}
             paddingHorizontal="6"
-            paddingTop="10"
+            paddingTop="8"
           >
+            <Box
+              columnGap="2"
+              flexDirection="row"
+              flexWrap="wrap"
+              justifyContent="space-between"
+            >
+              {!!creator && <BillCreatorCreditorFlag creatorOrCreditor={creator} />}
+
+              {!!creditor && (
+                <BillCreatorCreditorFlag
+                  creatorOrCreditor={creditor}
+                  hasDelay
+                  isCreditor
+                />
+              )}
+            </Box>
+
             {!!notes && (
               <Box
                 backgroundColor="elementBackground"
@@ -423,6 +420,8 @@ export const Bill = ({ navigation, route }: BillProps) => {
       {canMakeContribution && (
         <Box
           backgroundColor="background"
+          borderTopColor="borderDefault"
+          borderTopWidth={0.5}
           paddingBottom={buttonBottomMargin}
           paddingHorizontal="6"
           paddingTop="3"

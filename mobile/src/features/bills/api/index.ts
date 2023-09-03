@@ -1,6 +1,7 @@
 export * from './cancelBill';
 export * from './cancelBillSubscription';
 export * from './getBill';
+export * from './getBillContributionsByDay';
 export * from './getBills';
 export * from './getBillTransactions';
 export * from './getUserActionsByStatus';

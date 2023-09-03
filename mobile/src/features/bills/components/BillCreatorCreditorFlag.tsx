@@ -16,10 +16,8 @@ export const BillCreatorCreditorFlag: React.FunctionComponent<BillCreatorCredito
     return (
       <AnimatedBox
         alignItems="center"
-        borderBottomLeftRadius="lg"
-        borderBottomRightRadius="lg"
         borderColor="borderDefault"
-        borderTopWidth={0}
+        borderRadius="lg"
         borderWidth={1}
         entering={FadeInUp.springify().delay(hasDelay ? 200 : 0)}
         flexDirection="row"
