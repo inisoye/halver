@@ -69,19 +69,13 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
   };
 
   const handleGoToBillWithUpdate = () => {
-    navigation.navigate('TabsRoot', {
-      screen: 'BillsStackNavigator',
-      params: {
-        screen: 'Bill',
-        initial: false,
-        params: {
-          id: billId || '',
-          name: billName || '',
-          shouldUpdate: true,
-          isOnRoot,
-        },
-      },
+    navigation.navigate('Bill', {
+      id: billId || '',
+      name: billName || '',
+      shouldUpdate: true,
+      isOnRoot,
     });
+
     closeSuccessModal();
     closeOptOutConfirmationModal();
   };

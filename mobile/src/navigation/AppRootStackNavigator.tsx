@@ -6,12 +6,11 @@ import { actionStatusColors } from '@/features/home';
 import {
   AddCard,
   AddTransferRecipient,
-  Bill,
   BillDetails,
   BillParticipants,
   BillPayment,
-  BillsByStatus,
   BillSummary,
+  ContributionsByDay,
   EditPhoneNumber,
   EditProfileImage,
   SplitBreakdown,
@@ -26,21 +25,24 @@ export type AppRootStackParamList = {
         params: {
           screen: string;
           initial: boolean;
-          params: {
-            id: string;
-            name: string;
+          params?: {
+            id?: string;
+            name?: string;
             shouldUpdate?: boolean;
             isOnRoot?: boolean;
           };
         };
       }
     | undefined;
+
+  Home: undefined;
+
   'Bill Details': undefined;
   'Select Participants': undefined;
-  'Bills By Status': { status: keyof typeof actionStatusColors };
-  Bill: { id: string; name: string; shouldUpdate?: boolean; isOnRoot?: boolean };
   'Split Breakdown': undefined;
   'Bill Summary': undefined;
+
+  'Bills by status': { status: keyof typeof actionStatusColors };
   'Bill Payment': {
     actionId: string | undefined;
     status: BillActionStatus | undefined;
@@ -54,11 +56,14 @@ export type AppRootStackParamList = {
     name: string;
     isOnRoot?: boolean;
   };
-  'Add your card': undefined;
-  'Add a recipient': undefined;
+  'Contributions by day': { id: string; totalAmountDue: number };
+
   'Edit profile image': undefined;
   'Edit phone number': undefined;
-  Home: undefined;
+  'Add your card': undefined;
+  'Add a recipient': undefined;
+
+  Transactions: undefined;
 };
 
 export const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
@@ -87,9 +92,11 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
       </AppRootStack.Group>
 
       <AppRootStack.Group screenOptions={{ headerShown: false }}>
-        <AppRootStack.Screen component={BillsByStatus} name="Bills By Status" />
-        <AppRootStack.Screen component={Bill} name="Bill" />
         <AppRootStack.Screen component={BillPayment} name="Bill Payment" />
+        <AppRootStack.Screen
+          component={ContributionsByDay}
+          name="Contributions by day"
+        />
       </AppRootStack.Group>
     </AppRootStack.Navigator>
   );

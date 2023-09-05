@@ -8,7 +8,7 @@ import { BillTransaction } from '@/features/bills';
 import { useUserTransactions } from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
 import { RightCaret } from '@/icons';
-import { AppRootStackParamList, TabParamList } from '@/navigation';
+import { AppRootStackParamList, HomeStackParamList, TabParamList } from '@/navigation';
 import { convertNumberToNaira } from '@/utils';
 
 import { SelectedTransactionModal } from './SelectedTransactionModal';
@@ -95,7 +95,10 @@ const hitSlop = {
 interface RecentTransactionsProps {
   navigation: CompositeNavigationProp<
     NativeStackNavigationProp<AppRootStackParamList, 'Home', undefined>,
-    BottomTabNavigationProp<TabParamList, 'HomeStackNavigator', undefined>
+    CompositeNavigationProp<
+      BottomTabNavigationProp<TabParamList, 'HomeStackNavigator', undefined>,
+      NativeStackNavigationProp<HomeStackParamList, 'Home', undefined>
+    >
   >;
   goToAllTransactions: () => void;
 }

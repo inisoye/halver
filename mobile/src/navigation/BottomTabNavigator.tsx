@@ -47,7 +47,7 @@ export type TabParamList = {
   HomeStackNavigator: undefined;
   BillsStackNavigator: undefined;
   BillDetailsPlaceholder: undefined;
-  FinancialsStackNavigator: { screen: string; initial: boolean };
+  FinancialsStackNavigator: { screen?: string; initial?: boolean };
   AccountStackNavigator: undefined;
 };
 

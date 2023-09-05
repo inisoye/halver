@@ -29,7 +29,11 @@ import {
 import { useDebounce } from '@/hooks';
 import { Plus, RightCaret, Search } from '@/icons';
 import { Theme } from '@/lib/restyle';
-import { AppRootStackParamList, BillsStackParamList } from '@/navigation';
+import {
+  AppRootStackParamList,
+  BillsStackParamList,
+  HomeStackParamList,
+} from '@/navigation';
 import { flexStyles } from '@/theme';
 import { convertNumberToNaira, useIsDarkModeSelected } from '@/utils';
 
@@ -37,8 +41,11 @@ interface BillListRenderItemProps {
   item: BillActionStatusItem | undefined;
   index: number;
   navigation: CompositeNavigationProp<
-    NativeStackNavigationProp<BillsStackParamList, 'Bills By Status', undefined>,
-    NativeStackNavigationProp<AppRootStackParamList, 'Bills By Status', undefined>
+    NativeStackNavigationProp<AppRootStackParamList, 'Bills by status', undefined>,
+    CompositeNavigationProp<
+      NativeStackNavigationProp<BillsStackParamList, 'Bills by status', undefined>,
+      NativeStackNavigationProp<HomeStackParamList, 'Bills by status', undefined>
+    >
   >;
   isLastItem: boolean;
 }
@@ -56,7 +63,6 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
     navigation.navigate('Bill', {
       id: item?.bill.uuid || '',
       name: item?.bill.name || '',
-      isOnRoot: true,
     });
   };
 
@@ -107,8 +113,11 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
 };
 
 type BillsByStatusProps = CompositeScreenProps<
-  NativeStackScreenProps<BillsStackParamList, 'Bills By Status'>,
-  NativeStackScreenProps<AppRootStackParamList, 'Bills By Status'>
+  NativeStackScreenProps<AppRootStackParamList, 'Bills by status'>,
+  CompositeScreenProps<
+    NativeStackScreenProps<BillsStackParamList, 'Bills by status'>,
+    NativeStackScreenProps<HomeStackParamList, 'Bills by status'>
+  >
 >;
 
 export const BillsByStatus = ({ route, navigation }: BillsByStatusProps) => {
@@ -180,6 +189,7 @@ export const BillsByStatus = ({ route, navigation }: BillsByStatusProps) => {
   return (
     <Screen
       customScreenName={`${status} bills`}
+      headerProps={{ paddingBottom: '1' }}
       headerRightComponent={
         <TouchableOpacity
           hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}

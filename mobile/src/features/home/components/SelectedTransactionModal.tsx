@@ -6,7 +6,11 @@ import * as React from 'react';
 import { Box, Button, Image, Modal, Text } from '@/components';
 import type { BillTransaction } from '@/features/bills';
 import { GoToArrow } from '@/icons';
-import type { AppRootStackParamList, TabParamList } from '@/navigation';
+import type {
+  AppRootStackParamList,
+  HomeStackParamList,
+  TabParamList,
+} from '@/navigation';
 import {
   convertNumberToNaira,
   getDarkColorFromString,
@@ -22,7 +26,10 @@ interface SelectedTransactionModalProps {
   selectedTransaction: BillTransaction | undefined;
   navigation: CompositeNavigationProp<
     NativeStackNavigationProp<AppRootStackParamList, 'Home', undefined>,
-    BottomTabNavigationProp<TabParamList, 'HomeStackNavigator', undefined>
+    CompositeNavigationProp<
+      BottomTabNavigationProp<TabParamList, 'HomeStackNavigator', undefined>,
+      NativeStackNavigationProp<HomeStackParamList, 'Home', undefined>
+    >
   >;
 }
 
@@ -36,16 +43,9 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
 
     const handleGoToBill = () => {
       closeModal();
-      navigation.navigate('TabsRoot', {
-        screen: 'BillsStackNavigator',
-        params: {
-          screen: 'Bill',
-          initial: false,
-          params: {
-            id: billId || '',
-            name: billName || '',
-          },
-        },
+      navigation.navigate('Bill', {
+        id: billId || '',
+        name: billName || '',
       });
     };
 

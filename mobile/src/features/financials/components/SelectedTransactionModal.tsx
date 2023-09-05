@@ -5,7 +5,11 @@ import * as React from 'react';
 import { Box, Button, Image, Modal, Text } from '@/components';
 import type { BillTransaction } from '@/features/bills';
 import { GoToArrow } from '@/icons';
-import type { AppRootStackParamList, FinancialsStackParamList } from '@/navigation';
+import type {
+  AppRootStackParamList,
+  FinancialsStackParamList,
+  HomeStackParamList,
+} from '@/navigation';
 import {
   convertNumberToNaira,
   getDarkColorFromString,
@@ -20,8 +24,11 @@ interface SelectedTransactionModalProps {
   isModalOpen: boolean;
   selectedTransaction: BillTransaction | undefined;
   navigation: CompositeNavigationProp<
-    NativeStackNavigationProp<FinancialsStackParamList, 'Transactions'>,
-    NativeStackNavigationProp<AppRootStackParamList>
+    NativeStackNavigationProp<AppRootStackParamList, 'Transactions', undefined>,
+    CompositeNavigationProp<
+      NativeStackNavigationProp<FinancialsStackParamList, 'Transactions', undefined>,
+      NativeStackNavigationProp<HomeStackParamList, 'Transactions', undefined>
+    >
   >;
 }
 
@@ -35,16 +42,9 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
 
     const handleGoToBill = () => {
       closeModal();
-      navigation.navigate('TabsRoot', {
-        screen: 'BillsStackNavigator',
-        params: {
-          screen: 'Bill',
-          initial: false,
-          params: {
-            id: billId || '',
-            name: billName || '',
-          },
-        },
+      navigation.navigate('Bill', {
+        id: billId || '',
+        name: billName || '',
       });
     };
 

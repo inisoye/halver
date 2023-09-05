@@ -1,3 +1,5 @@
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import type { CompositeNavigationProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as React from 'react';
 import type { ISvgProps } from 'svg.types';
@@ -9,7 +11,7 @@ import {
   Pending as PendingIcon,
   Recurring as RecurringIcon,
 } from '@/icons';
-import { AppRootStackParamList } from '@/navigation';
+import { AppRootStackParamList, HomeStackParamList, TabParamList } from '@/navigation';
 import { isAndroid } from '@/utils';
 
 import { useActionStatusCounts } from '../api';
@@ -23,7 +25,13 @@ export const actionStatusColors = {
 interface ActionStatusButtonProps {
   count: number;
   icon: React.FunctionComponent<ISvgProps>;
-  navigation: NativeStackNavigationProp<AppRootStackParamList, 'Home'>;
+  navigation: CompositeNavigationProp<
+    NativeStackNavigationProp<AppRootStackParamList, 'Home', undefined>,
+    CompositeNavigationProp<
+      BottomTabNavigationProp<TabParamList, 'HomeStackNavigator', undefined>,
+      NativeStackNavigationProp<HomeStackParamList, 'Home', undefined>
+    >
+  >;
   status: keyof typeof actionStatusColors;
   disabled: boolean;
 }
@@ -35,6 +43,12 @@ const ActionStatusButton: React.FunctionComponent<ActionStatusButtonProps> = ({
   navigation,
   status,
 }) => {
+  const goToBillsByStatus = () => {
+    navigation.navigate('Bills by status', {
+      status,
+    });
+  };
+
   return (
     <Pressable
       backgroundColor={actionStatusColors[status]}
@@ -54,7 +68,7 @@ const ActionStatusButton: React.FunctionComponent<ActionStatusButtonProps> = ({
       }}
       shadowOpacity={0.2}
       shadowRadius={0.3}
-      onPress={() => navigation.navigate('Bills By Status', { status })}
+      onPress={goToBillsByStatus}
     >
       <Text>
         <Text fontFamily="Halver-Semibold" variant="xl">
@@ -73,7 +87,13 @@ const ActionStatusButton: React.FunctionComponent<ActionStatusButtonProps> = ({
 };
 
 interface NewBillButtonProps {
-  navigation: NativeStackNavigationProp<AppRootStackParamList, 'Home'>;
+  navigation: CompositeNavigationProp<
+    NativeStackNavigationProp<AppRootStackParamList, 'Home', undefined>,
+    CompositeNavigationProp<
+      BottomTabNavigationProp<TabParamList, 'HomeStackNavigator', undefined>,
+      NativeStackNavigationProp<HomeStackParamList, 'Home', undefined>
+    >
+  >;
 }
 
 const NewBillButton: React.FunctionComponent<NewBillButtonProps> = ({ navigation }) => {
@@ -106,7 +126,13 @@ const NewBillButton: React.FunctionComponent<NewBillButtonProps> = ({ navigation
 };
 
 interface ActionStatusCountsProps {
-  navigation: NativeStackNavigationProp<AppRootStackParamList, 'Home'>;
+  navigation: CompositeNavigationProp<
+    NativeStackNavigationProp<AppRootStackParamList, 'Home', undefined>,
+    CompositeNavigationProp<
+      BottomTabNavigationProp<TabParamList, 'HomeStackNavigator', undefined>,
+      NativeStackNavigationProp<HomeStackParamList, 'Home', undefined>
+    >
+  >;
 }
 
 export const ActionStatusCounts: React.FunctionComponent<ActionStatusCountsProps> = ({

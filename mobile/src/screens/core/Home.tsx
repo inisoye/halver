@@ -11,19 +11,23 @@ import {
   useActionStatusCounts,
 } from '@/features/home';
 import { HalverMillipede } from '@/icons';
-import type { AppRootStackParamList, TabParamList } from '@/navigation';
+import type {
+  AppRootStackParamList,
+  HomeStackParamList,
+  TabParamList,
+} from '@/navigation';
 
 type HomeProps = CompositeScreenProps<
   NativeStackScreenProps<AppRootStackParamList, 'Home'>,
-  BottomTabScreenProps<TabParamList, 'HomeStackNavigator'>
+  CompositeScreenProps<
+    BottomTabScreenProps<TabParamList, 'HomeStackNavigator'>,
+    NativeStackScreenProps<HomeStackParamList, 'Home'>
+  >
 >;
 
 export const Home = ({ navigation }: HomeProps) => {
   const goToAllTransactions = React.useCallback(() => {
-    navigation.navigate('FinancialsStackNavigator', {
-      screen: 'Transactions',
-      initial: false,
-    });
+    navigation.navigate('Transactions');
   }, [navigation]);
 
   const { refetch: refetchActionStatusCounts } = useActionStatusCounts();

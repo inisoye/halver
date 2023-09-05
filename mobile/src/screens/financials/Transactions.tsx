@@ -22,7 +22,11 @@ import {
 import { useBooleanStateControl, useDebounce } from '@/hooks';
 import { RightCaret, Search } from '@/icons';
 import { Theme } from '@/lib/restyle';
-import { AppRootStackParamList, FinancialsStackParamList } from '@/navigation';
+import {
+  AppRootStackParamList,
+  FinancialsStackParamList,
+  HomeStackParamList,
+} from '@/navigation';
 import { flexStyles } from '@/theme';
 import { formatNumberWithCommas, useIsDarkModeSelected } from '@/utils';
 
@@ -103,8 +107,11 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
 };
 
 type TransactionsProps = CompositeScreenProps<
-  NativeStackScreenProps<FinancialsStackParamList, 'Transactions'>,
-  NativeStackScreenProps<AppRootStackParamList>
+  NativeStackScreenProps<AppRootStackParamList, 'Transactions'>,
+  CompositeScreenProps<
+    NativeStackScreenProps<FinancialsStackParamList, 'Transactions'>,
+    NativeStackScreenProps<HomeStackParamList, 'Transactions'>
+  >
 >;
 
 export const Transactions: React.FunctionComponent<TransactionsProps> = ({

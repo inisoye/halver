@@ -36,7 +36,7 @@ import {
   useBillContributionsByDay,
   useBillTransactions,
 } from '@/features/bills';
-import { BackWithBackground, Gear } from '@/icons';
+import { BackWithBackground, Gear, Rewind } from '@/icons';
 import { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 import { formatNumberWithCommas, isIOS } from '@/utils';
 
@@ -111,13 +111,20 @@ export const Bill = ({ navigation, route }: BillProps) => {
   const billStatusColor = status?.short ? statusColorIndex[status?.short] : undefined;
 
   const { refetch: refetchBillTransactions } = useBillTransactions(id);
-  const { data: billContributionsByDay, refetch: refetchBillContributionsByDay } =
-    useBillContributionsByDay(id, isBillRecurring);
+  const {
+    data: billContributionsByDayResponse,
+    refetch: refetchBillContributionsByDay,
+  } = useBillContributionsByDay(id, isBillRecurring);
+
+  const billContributionsByDay = React.useMemo(
+    () => billContributionsByDayResponse?.pages.flatMap(page => page.results),
+    [billContributionsByDayResponse?.pages],
+  );
 
   const {
     day: dayOfLastContributionRound,
     totalContribution: totalContributionOfLastRound,
-  } = billContributionsByDay?.results?.[0] || {};
+  } = billContributionsByDay?.[0] || {};
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -169,6 +176,10 @@ export const Bill = ({ navigation, route }: BillProps) => {
 
   const handlePaymentNavigation = () => {
     navigation.navigate('Bill Payment', billPaymentScreenPayload);
+  };
+
+  const handleContributionsNavigation = () => {
+    navigation.navigate('Contributions by day', { id, totalAmountDue });
   };
 
   const buttonBottomMargin = isOnRoot ? (isIOS() ? '10' : '7') : '3';
@@ -287,16 +298,32 @@ export const Bill = ({ navigation, route }: BillProps) => {
                       </DynamicText>
                     ) : (
                       <>
-                        <DynamicText
-                          color="textLight"
-                          fontFamily="Halver-Semibold"
+                        <Box
+                          alignItems="center"
+                          flexDirection="row"
+                          gap="4"
+                          justifyContent="space-between"
                           marginBottom="4"
                         >
-                          Contribution round on{' '}
-                          {!!dayOfLastContributionRound &&
-                            new Date(dayOfLastContributionRound).toDateString()}
-                          .
-                        </DynamicText>
+                          <DynamicText
+                            color="textLight"
+                            fontFamily="Halver-Semibold"
+                            maxWidth="85%"
+                            variant="sm"
+                          >
+                            Contribution round on{' '}
+                            {!!dayOfLastContributionRound &&
+                              new Date(dayOfLastContributionRound).toDateString()}
+                            .
+                          </DynamicText>
+
+                          <TouchableOpacity
+                            hitSlop={{ top: 40, bottom: 40, left: 40, right: 40 }}
+                            onPress={handleContributionsNavigation}
+                          >
+                            <Rewind />
+                          </TouchableOpacity>
+                        </Box>
 
                         <BillContributionMeter
                           totalAmountDue={totalAmountDue}
@@ -345,44 +372,18 @@ export const Bill = ({ navigation, route }: BillProps) => {
             paddingHorizontal="6"
             paddingTop="8"
           >
-            <Box
-              columnGap="2"
-              flexDirection="row"
-              flexWrap="wrap"
-              justifyContent="space-between"
-            >
-              {!!creator && <BillCreatorCreditorFlag creatorOrCreditor={creator} />}
-
-              {!!creditor && (
-                <BillCreatorCreditorFlag
-                  creatorOrCreditor={creditor}
-                  hasDelay
-                  isCreditor
-                />
-              )}
-            </Box>
-
             {!!notes && (
-              <Box
-                backgroundColor="elementBackground"
-                borderRadius="lg"
-                elevation={0.5}
-                gap="3"
-                paddingVertical="3"
-                px="4"
-                shadowColor="black"
-                shadowOffset={{
-                  width: 0.1,
-                  height: 0.3,
-                }}
-                shadowOpacity={0.2}
-                shadowRadius={0.3}
-              >
+              <Box gap="3">
                 <Text color="textLight" fontSize={13} variant="sm">
                   {notes}
                 </Text>
 
-                <Text color="textLight" fontSize={13} variant="sm">
+                <Text
+                  color="textLight"
+                  fontFamily="Halver-Semibold"
+                  fontSize={13}
+                  variant="sm"
+                >
                   — {creator?.firstName} (bill creator)
                 </Text>
               </Box>
@@ -398,6 +399,23 @@ export const Bill = ({ navigation, route }: BillProps) => {
 
             {!isBillLoading && (
               <Box gap="6" marginBottom="10" marginTop="60">
+                <Box
+                  columnGap="2"
+                  flexDirection="row"
+                  flexWrap="wrap"
+                  justifyContent="center"
+                >
+                  {!!creator && <BillCreatorCreditorFlag creatorOrCreditor={creator} />}
+
+                  {!!creditor && (
+                    <BillCreatorCreditorFlag
+                      creatorOrCreditor={creditor}
+                      hasDelay
+                      isCreditor
+                    />
+                  )}
+                </Box>
+
                 {hasActiveSubscription && (
                   <CancelSubscriptionModal
                     actionId={currentUserAction?.uuid}

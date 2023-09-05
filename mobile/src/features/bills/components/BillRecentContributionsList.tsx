@@ -154,7 +154,7 @@ export const BillRecentContributionsList: React.FunctionComponent<
       </Modal>
 
       {!areBillTransactionsLoading && (
-        <>
+        <Box>
           <Box
             alignItems="center"
             flexDirection="row"
@@ -208,7 +208,7 @@ export const BillRecentContributionsList: React.FunctionComponent<
               })}
             </Box>
           </Box>
-        </>
+        </Box>
       )}
     </>
   );

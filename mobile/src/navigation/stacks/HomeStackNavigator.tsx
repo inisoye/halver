@@ -1,10 +1,15 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
-import { Home } from '@/screens';
+import { actionStatusColors } from '@/features/home';
+import { Bill, BillsByStatus, ContributionsByDay, Home, Transactions } from '@/screens';
 
 export type HomeStackParamList = {
   Home: undefined;
+  Bill: { id: string; name: string; shouldUpdate?: boolean; isOnRoot?: boolean };
+  'Bills by status': { status: keyof typeof actionStatusColors };
+  'Contributions by day': { id: string; totalAmountDue: number };
+  Transactions: undefined;
 };
 
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
@@ -15,6 +20,38 @@ export const HomeStackNavigator: React.FunctionComponent = () => {
       <HomeStack.Screen
         component={Home}
         name="Home"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <HomeStack.Screen
+        component={Bill}
+        name="Bill"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <HomeStack.Screen
+        component={BillsByStatus}
+        name="Bills by status"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <HomeStack.Screen
+        component={ContributionsByDay}
+        name="Contributions by day"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <HomeStack.Screen
+        component={Transactions}
+        name="Transactions"
         options={{
           headerShown: false,
         }}

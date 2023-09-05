@@ -3,7 +3,7 @@ import * as React from 'react';
 
 import { BillActionStatus } from '@/features/bills';
 import { actionStatusColors } from '@/features/home';
-import { Bill, Bills } from '@/screens';
+import { Bill, Bills, BillsByStatus, ContributionsByDay } from '@/screens';
 
 export type BillsStackParamList = {
   Bills: undefined;
@@ -21,7 +21,8 @@ export type BillsStackParamList = {
     name: string;
     isOnRoot?: boolean;
   };
-  'Bills By Status': { status: keyof typeof actionStatusColors };
+  'Bills by status': { status: keyof typeof actionStatusColors };
+  'Contributions by day': { id: string; totalAmountDue: number };
 };
 
 export const BillsStack = createNativeStackNavigator<BillsStackParamList>();
@@ -40,6 +41,22 @@ export const BillsStackNavigator: React.FunctionComponent = () => {
       <BillsStack.Screen
         component={Bill}
         name="Bill"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <BillsStack.Screen
+        component={BillsByStatus}
+        name="Bills by status"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <BillsStack.Screen
+        component={ContributionsByDay}
+        name="Contributions by day"
         options={{
           headerShown: false,
         }}

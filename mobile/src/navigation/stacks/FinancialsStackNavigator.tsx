@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
-import { Cards, Financials, Transactions, TransferRecipients } from '@/screens';
+import { Bill, Cards, Financials, Transactions, TransferRecipients } from '@/screens';
 
 export type FinancialsStackParamList = {
   Financials: undefined;
@@ -10,6 +10,8 @@ export type FinancialsStackParamList = {
   'Transfer recipients': undefined;
   'Add a recipient': undefined;
   Transactions: undefined;
+
+  Bill: { id: string; name: string; shouldUpdate?: boolean; isOnRoot?: boolean };
 };
 
 const FinancialsStack = createNativeStackNavigator<FinancialsStackParamList>();
@@ -44,6 +46,14 @@ export const FinancialsStackNavigator: React.FunctionComponent = () => {
       <FinancialsStack.Screen
         component={Transactions}
         name="Transactions"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <FinancialsStack.Screen
+        component={Bill}
+        name="Bill"
         options={{
           headerShown: false,
         }}
