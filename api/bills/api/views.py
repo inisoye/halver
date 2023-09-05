@@ -562,7 +562,6 @@ class BillTransactionListAPIView(ListAPIView):
     serializer_class = BillTransactionSerializer
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = (
-        "bill__name",
         "paying_user__first_name",
         "paying_user__last_name",
         "receiving_user__first_name",
