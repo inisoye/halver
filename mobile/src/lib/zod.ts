@@ -293,7 +293,7 @@ export const PaginatedBillDailyContributionList = z
   })
   .partial();
 
-const BillDailyTransaction = z.object({
+export const BillDailyTransaction = z.object({
   day: z.string(),
   transactions: z.array(BillTransaction),
 });

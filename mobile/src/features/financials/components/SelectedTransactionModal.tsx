@@ -23,13 +23,37 @@ interface SelectedTransactionModalProps {
   closeModal: () => void;
   isModalOpen: boolean;
   selectedTransaction: BillTransaction | undefined;
-  navigation: CompositeNavigationProp<
-    NativeStackNavigationProp<AppRootStackParamList, 'Transactions', undefined>,
-    CompositeNavigationProp<
-      NativeStackNavigationProp<FinancialsStackParamList, 'Transactions', undefined>,
-      NativeStackNavigationProp<HomeStackParamList, 'Transactions', undefined>
-    >
-  >;
+  navigation:
+    | CompositeNavigationProp<
+        NativeStackNavigationProp<AppRootStackParamList, 'Transactions', undefined>,
+        CompositeNavigationProp<
+          NativeStackNavigationProp<
+            FinancialsStackParamList,
+            'Transactions',
+            undefined
+          >,
+          NativeStackNavigationProp<HomeStackParamList, 'Transactions', undefined>
+        >
+      >
+    | CompositeNavigationProp<
+        NativeStackNavigationProp<
+          AppRootStackParamList,
+          'Transactions in countribution round',
+          undefined
+        >,
+        CompositeNavigationProp<
+          NativeStackNavigationProp<
+            FinancialsStackParamList,
+            'Transactions in countribution round',
+            undefined
+          >,
+          NativeStackNavigationProp<
+            HomeStackParamList,
+            'Transactions in countribution round',
+            undefined
+          >
+        >
+      >;
 }
 
 export const SelectedTransactionModal: React.FunctionComponent<SelectedTransactionModalProps> =

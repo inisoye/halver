@@ -61,7 +61,7 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
 
         <Text color="textLight" variant="xs">
           <Text
-            color={isCredit ? 'green11' : 'brown11'}
+            color={isCredit ? 'green11' : 'textApricot'}
             fontFamily="Halver-Semibold"
             variant="xs"
           >

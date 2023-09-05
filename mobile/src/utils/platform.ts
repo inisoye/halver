@@ -19,7 +19,7 @@ export const isDarkMode = (): boolean => {
 };
 
 export const useIsDarkModeSelected = () => {
-  const [displayMode = 'dark'] = useMMKVString(allMMKVKeys.displayMode);
+  const [displayMode = 'system'] = useMMKVString(allMMKVKeys.displayMode);
 
   const colorScheme = useColorScheme();
   const isSystemDarkMode = displayMode === 'system' && colorScheme === 'dark';

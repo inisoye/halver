@@ -3,7 +3,13 @@ import * as React from 'react';
 
 import { BillActionStatus } from '@/features/bills';
 import { actionStatusColors } from '@/features/home';
-import { Bill, Bills, BillsByStatus, ContributionsByDay } from '@/screens';
+import {
+  Bill,
+  Bills,
+  BillsByStatus,
+  ContributionsByDay,
+  TransactionsInContributionRound,
+} from '@/screens';
 
 export type BillsStackParamList = {
   Bills: undefined;
@@ -27,6 +33,11 @@ export type BillsStackParamList = {
     totalAmountDue: number;
     name: string;
     totalAmountPaid: number;
+  };
+  'Transactions in countribution round': {
+    id: string;
+    day: string | undefined;
+    billName: string;
   };
 };
 
@@ -62,6 +73,14 @@ export const BillsStackNavigator: React.FunctionComponent = () => {
       <BillsStack.Screen
         component={ContributionsByDay}
         name="Contributions by day"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <BillsStack.Screen
+        component={TransactionsInContributionRound}
+        name="Transactions in countribution round"
         options={{
           headerShown: false,
         }}

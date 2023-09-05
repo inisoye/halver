@@ -41,8 +41,17 @@ export const AccountAvatarButton: React.FunctionComponent<AccountAvatarButtonPro
       return (
         <TouchableOpacity
           alignSelf="flex-start"
+          backgroundColor="elementBackground"
           borderColor="apricot9"
           borderRadius="lg"
+          elevation={0.8}
+          shadowColor="black"
+          shadowOffset={{
+            width: 0.1,
+            height: 0.5,
+          }}
+          shadowOpacity={0.2}
+          shadowRadius={0.5}
           onPress={handleGoToEditProfileImage}
         >
           {profileImageUrl ? (

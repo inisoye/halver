@@ -69,6 +69,7 @@ export const allStaticQueryKeys = {
   getBillContributionsByDay: ['bill-contributions-by-day'],
   getBills: ['bills'],
   getBillTransactions: ['bill-transactions'],
+  getBillTransactionsOnDay: ['bill-transactions-on-day'],
   getCardAdditionURL: ['card-addition-url'],
   getCards: ['cards'],
   getPhoneContacts: ['phone-contacts'],

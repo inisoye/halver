@@ -63,7 +63,12 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
       paddingTop={isIOS() ? '6' : '8'}
       {...headerProps}
     >
-      <Box alignItems="center" flexDirection="row" gap="4" maxWidth="60%">
+      <Box
+        alignItems="center"
+        flexDirection="row"
+        gap="4"
+        maxWidth={rightComponent ? '60%' : '85%'}
+      >
         {screenInfo.hasBackButton && (
           <TouchableOpacity
             hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}

@@ -1,18 +1,91 @@
-import type { CompositeScreenProps } from '@react-navigation/native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type {
+  CompositeNavigationProp,
+  CompositeScreenProps,
+} from '@react-navigation/native';
+import type {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 import { FlashList, type ListRenderItem } from '@shopify/flash-list';
 import * as React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { Box, DynamicText, LogoLoader, Screen, Text } from '@/components';
+import {
+  Box,
+  DynamicText,
+  LogoLoader,
+  Screen,
+  Text,
+  TouchableOpacity,
+} from '@/components';
 import {
   BillContributionMeter,
   useBillContributionsByDay,
   type BillDailyContribution,
 } from '@/features/bills';
+import { RightCaret } from '@/icons';
 import type { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 import { flexStyles } from '@/theme';
 import { convertNumberToNaira } from '@/utils';
+
+interface ContributionDayItemProps {
+  id: string;
+  billName: string;
+  item: BillDailyContribution | undefined;
+  index: number;
+  totalAmountDue: number;
+  navigation: CompositeNavigationProp<
+    NativeStackNavigationProp<BillsStackParamList, 'Contributions by day', undefined>,
+    NativeStackNavigationProp<AppRootStackParamList, 'Contributions by day', undefined>
+  >;
+}
+
+const ContributionDayItem: React.FunctionComponent<ContributionDayItemProps> = ({
+  id,
+  billName,
+  item,
+  index,
+  totalAmountDue,
+  navigation,
+}) => {
+  const handleGoToTransactions = () => {
+    navigation.navigate('Transactions in countribution round', {
+      id,
+      day: item?.day,
+      billName,
+    });
+  };
+
+  return (
+    <TouchableOpacity
+      borderTopColor="borderDefault"
+      borderTopWidth={index === 0 ? 0 : 0.5}
+      marginHorizontal="6"
+      paddingBottom="7"
+      paddingTop={index === 0 ? '5' : '7'}
+      onPress={handleGoToTransactions}
+    >
+      <Box
+        alignItems="center"
+        flexDirection="row"
+        gap="4"
+        justifyContent="space-between"
+        marginBottom="3"
+      >
+        <Text fontFamily="Halver-Semibold" variant="lg">
+          {!!item?.day && new Date(item?.day).toDateString()}
+        </Text>
+
+        {<RightCaret width={8} />}
+      </Box>
+
+      <BillContributionMeter
+        totalAmountDue={totalAmountDue}
+        totalAmountPaid={Number(item?.totalContribution)}
+      />
+    </TouchableOpacity>
+  );
+};
 
 type ContributionsByDayProps = CompositeScreenProps<
   NativeStackScreenProps<BillsStackParamList, 'Contributions by day'>,
@@ -21,6 +94,7 @@ type ContributionsByDayProps = CompositeScreenProps<
 
 export const ContributionsByDay: React.FunctionComponent<ContributionsByDayProps> = ({
   route,
+  navigation,
 }) => {
   const { id, totalAmountDue, name, totalAmountPaid } = route.params;
 
@@ -44,22 +118,14 @@ export const ContributionsByDay: React.FunctionComponent<ContributionsByDayProps
     index,
   }) => {
     return (
-      <Box
-        borderTopColor="borderDarker"
-        borderTopWidth={index === 0 ? 0 : 0.5}
-        marginHorizontal="6"
-        paddingBottom="7"
-        paddingTop={index === 0 ? '3' : '7'}
-      >
-        <Text fontFamily="Halver-Semibold" marginBottom="2.5" variant="lg">
-          {!!item?.day && new Date(item?.day).toDateString()}
-        </Text>
-
-        <BillContributionMeter
-          totalAmountDue={totalAmountDue}
-          totalAmountPaid={Number(item?.totalContribution)}
-        />
-      </Box>
+      <ContributionDayItem
+        billName={name}
+        id={id}
+        index={index}
+        item={item}
+        navigation={navigation}
+        totalAmountDue={totalAmountDue}
+      />
     );
   };
 
@@ -77,7 +143,11 @@ export const ContributionsByDay: React.FunctionComponent<ContributionsByDayProps
         paddingHorizontal="6"
         variant="sm"
       >
-        All the rounds so far on {name}.{' '}
+        All the rounds so far on{' '}
+        <Text color="textDefault" fontFamily="Halver-Semibold" variant="sm">
+          {name}
+        </Text>
+        .{' '}
         {`${convertNumberToNaira(
           totalAmountPaid,
         )} in total has been contributed since the bill was created.`}

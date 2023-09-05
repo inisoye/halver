@@ -3,24 +3,13 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FlashList, type ListRenderItem } from '@shopify/flash-list';
 import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
-import { useForm, useWatch } from 'react-hook-form';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import {
-  Box,
-  FullWidthTextField,
-  LogoLoader,
-  RectButton,
-  Screen,
-  Text,
-} from '@/components';
-import type { BillTransaction } from '@/features/bills';
-import {
-  SelectedTransactionModal,
-  useInfiniteUserTransactions,
-} from '@/features/financials';
-import { useBooleanStateControl, useDebounce } from '@/hooks';
-import { RightCaret, Search } from '@/icons';
+import { Box, DynamicText, LogoLoader, RectButton, Screen, Text } from '@/components';
+import { useBillTransactionsOnDay, type BillTransaction } from '@/features/bills';
+import { SelectedTransactionModal } from '@/features/financials';
+import { useBooleanStateControl } from '@/hooks';
+import { RightCaret } from '@/icons';
 import { Theme } from '@/lib/restyle';
 import {
   AppRootStackParamList,
@@ -38,17 +27,14 @@ interface TransactionItemProps {
 
 const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
   handleTransactionSelection,
-  index,
+
   item,
 }) => {
   const isDarkMode = useIsDarkModeSelected();
   const { colors } = useTheme<Theme>();
 
-  const { contribution, created, isCredit, payingUser, bill, receivingUser } =
-    item || {};
-  const { name: billName } = bill || {};
+  const { contribution, created, payingUser, transactionType } = item || {};
   const { firstName: payingUserName } = payingUser || {};
-  const { firstName: receivingUserName } = receivingUser || {};
 
   const onPress = () => {
     handleTransactionSelection(item);
@@ -57,7 +43,6 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
   return (
     <RectButton
       activeOpacity={0.05}
-      marginTop={index === 0 ? '4' : '1'}
       rippleColor={colors.defaultListRippleBackground}
       underlayColor={isDarkMode ? 'white' : 'black'}
       onPress={onPress}
@@ -75,7 +60,7 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
           <Box width="92%">
             <Text fontFamily="Halver-Semibold" marginBottom="0.75" numberOfLines={1}>
               <Text fontFamily="Halver-Naira">₦</Text>
-              {formatNumberWithCommas(Number(contribution))} on {billName}
+              {formatNumberWithCommas(Number(contribution))} by {payingUserName}
             </Text>
             <Text
               color="textLight"
@@ -84,15 +69,13 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
               variant="xs"
             >
               <Text
-                color={isCredit ? 'green11' : 'textApricot'}
+                color={transactionType === 'regular' ? 'green11' : 'textApricot'}
                 fontFamily="Halver-Semibold"
                 variant="xs"
               >
-                {isCredit ? 'Credit' : 'Debit'}
+                {transactionType === 'regular' ? 'Regular' : 'Arrear'}
               </Text>
               {' • '}
-              From {isCredit ? payingUserName : 'you'} to
-              {isCredit ? ' you • ' : ` ${receivingUserName} • `}
               <Text color="textLight" fontFamily="Halver-Semibold" variant="xs">
                 {!!created && new Date(created).toDateString()}
               </Text>
@@ -106,17 +89,22 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
   );
 };
 
-type TransactionsProps = CompositeScreenProps<
-  NativeStackScreenProps<AppRootStackParamList, 'Transactions'>,
+type TransactionsInContributionRoundProps = CompositeScreenProps<
+  NativeStackScreenProps<AppRootStackParamList, 'Transactions in countribution round'>,
   CompositeScreenProps<
-    NativeStackScreenProps<FinancialsStackParamList, 'Transactions'>,
-    NativeStackScreenProps<HomeStackParamList, 'Transactions'>
+    NativeStackScreenProps<
+      FinancialsStackParamList,
+      'Transactions in countribution round'
+    >,
+    NativeStackScreenProps<HomeStackParamList, 'Transactions in countribution round'>
   >
 >;
 
-export const Transactions: React.FunctionComponent<TransactionsProps> = ({
-  navigation,
-}) => {
+export const TransactionsInContributionRound: React.FunctionComponent<
+  TransactionsInContributionRoundProps
+> = ({ route, navigation }) => {
+  const { id, day, billName } = route.params;
+
   const {
     state: isModalOpen,
     setTrue: openModal,
@@ -127,20 +115,6 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
     BillTransaction | undefined
   >(undefined);
 
-  const { control: controlForTransactionsFilter } = useForm<{
-    transactionsFilter: string;
-  }>({
-    defaultValues: {
-      transactionsFilter: '',
-    },
-  });
-
-  const transactionsFilterValue = useWatch({
-    control: controlForTransactionsFilter,
-    name: 'transactionsFilter',
-  });
-  const debouncedFilterValue = useDebounce(transactionsFilterValue, 500);
-
   const {
     data: transactionsResponse,
     fetchNextPage,
@@ -148,7 +122,7 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
     isFetchingNextPage,
     isLoading: areTransactionsLoading,
     refetch: refetchTransactions,
-  } = useInfiniteUserTransactions(debouncedFilterValue);
+  } = useBillTransactionsOnDay(id, day ?? '');
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -166,7 +140,6 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
 
   const noTransactionsFound =
     !areTransactionsLoading && (!transactions || transactions?.length < 1);
-
   const handleTransactionSelection = React.useCallback(
     (transaction: BillTransaction | undefined) => {
       setSelectedTransaction(transaction);
@@ -194,26 +167,35 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
         selectedTransaction={selectedTransaction}
       />
 
-      <Screen headerProps={{ paddingBottom: '1' }}>
+      <Screen
+        customScreenName="Contributions on day"
+        headerProps={{ paddingBottom: '1' }}
+      >
         <Box backgroundColor="transparent" height={12}>
           {areTransactionsLoading && <LogoLoader />}
         </Box>
 
-        <FullWidthTextField
-          autoFocus={false}
-          containerProps={{ marginTop: '0' }}
-          control={controlForTransactionsFilter}
-          name="transactionsFilter"
-          paddingHorizontal="0"
-          paddingRight="6"
-          placeholder="Search by bill, participant or creditor"
-          prefixComponent={<Search />}
-        />
+        {!areTransactionsLoading && (
+          <DynamicText
+            color="textLight"
+            lineHeight={20}
+            marginBottom="3"
+            marginTop="2"
+            maxWidth="90%"
+            paddingHorizontal="6"
+            variant="sm"
+          >
+            Here are all the contributions made towards{' '}
+            <Text color="textDefault" fontFamily="Halver-Semibold" variant="sm">
+              {billName}
+            </Text>{' '}
+            on {!!day && new Date(day).toDateString()}.
+          </DynamicText>
+        )}
 
         {noTransactionsFound && (
           <Text color="textLight" padding="6">
             We found no transactions
-            {!!transactionsFilterValue && ` matching "${transactionsFilterValue}"`}
           </Text>
         )}
 

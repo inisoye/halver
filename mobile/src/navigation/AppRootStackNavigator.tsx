@@ -61,6 +61,11 @@ export type AppRootStackParamList = {
     name: string;
     totalAmountPaid: number;
   };
+  'Transactions in countribution round': {
+    id: string;
+    day: string | undefined;
+    billName: string;
+  };
 
   'Edit profile image': undefined;
   'Edit phone number': undefined;

@@ -448,6 +448,7 @@ const theme = createTheme({
     textLight: lightColors.gray11,
     textLighter: lightColors.gray10,
     textApricot: brandColors.apricot11,
+    textCasal: brandColors.casal7,
 
     textIntroMarqueeDark: lightColors.gray1,
     textIntroMarqueeLight: darkColors.gray3,
@@ -621,7 +622,7 @@ const theme = createTheme({
       shadowColor: 'black',
       shadowOffset: {
         width: 0,
-        height: 1,
+        height: 0.5,
       },
       shadowOpacity: 0.18,
       shadowRadius: 1.0,
@@ -655,6 +656,7 @@ const darkTheme: Theme = {
     textLight: darkColors.gray11,
     textLighter: darkColors.gray10,
     textApricot: brandColors.apricot6,
+    textCasal: brandColors.casal5,
 
     buttonApricot: brandColors.apricot6,
     buttonCasal: brandColors.casal7,

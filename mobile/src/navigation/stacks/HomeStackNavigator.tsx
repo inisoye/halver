@@ -2,7 +2,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import { actionStatusColors } from '@/features/home';
-import { Bill, BillsByStatus, ContributionsByDay, Home, Transactions } from '@/screens';
+import {
+  Bill,
+  BillsByStatus,
+  ContributionsByDay,
+  Home,
+  Transactions,
+  TransactionsInContributionRound,
+} from '@/screens';
 
 export type HomeStackParamList = {
   Home: undefined;
@@ -13,6 +20,11 @@ export type HomeStackParamList = {
     totalAmountDue: number;
     name: string;
     totalAmountPaid: number;
+  };
+  'Transactions in countribution round': {
+    id: string;
+    day: string | undefined;
+    billName: string;
   };
   Transactions: undefined;
 };
@@ -49,6 +61,14 @@ export const HomeStackNavigator: React.FunctionComponent = () => {
       <HomeStack.Screen
         component={ContributionsByDay}
         name="Contributions by day"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <HomeStack.Screen
+        component={TransactionsInContributionRound}
+        name="Transactions in countribution round"
         options={{
           headerShown: false,
         }}

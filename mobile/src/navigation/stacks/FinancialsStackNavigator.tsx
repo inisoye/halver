@@ -7,6 +7,7 @@ import {
   ContributionsByDay,
   Financials,
   Transactions,
+  TransactionsInContributionRound,
   TransferRecipients,
 } from '@/screens';
 
@@ -24,6 +25,11 @@ export type FinancialsStackParamList = {
     totalAmountDue: number;
     name: string;
     totalAmountPaid: number;
+  };
+  'Transactions in countribution round': {
+    id: string;
+    day: string | undefined;
+    billName: string;
   };
 };
 
@@ -75,6 +81,14 @@ export const FinancialsStackNavigator: React.FunctionComponent = () => {
       <FinancialsStack.Screen
         component={ContributionsByDay}
         name="Contributions by day"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <FinancialsStack.Screen
+        component={TransactionsInContributionRound}
+        name="Transactions in countribution round"
         options={{
           headerShown: false,
         }}
