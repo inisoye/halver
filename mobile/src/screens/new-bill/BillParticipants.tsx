@@ -35,7 +35,7 @@ export const BillParticipants = ({ navigation }: BillParticipantsProps) => {
   });
 
   return (
-    <Screen hasNoIOSBottomInset>
+    <Screen headerProps={{ paddingBottom: '2.5' }} hasNoIOSBottomInset>
       <Box backgroundColor="transparent" height={12}>
         {areContactsLoading && <LogoLoader />}
       </Box>

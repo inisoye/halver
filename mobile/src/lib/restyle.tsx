@@ -561,6 +561,7 @@ const theme = createTheme({
     lg: {
       fontSize: 18,
       lineHeight: 26,
+      letterSpacing: -0.6,
     },
     xl: {
       fontSize: 20,

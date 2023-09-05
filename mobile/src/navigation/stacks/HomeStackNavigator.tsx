@@ -8,7 +8,12 @@ export type HomeStackParamList = {
   Home: undefined;
   Bill: { id: string; name: string; shouldUpdate?: boolean; isOnRoot?: boolean };
   'Bills by status': { status: keyof typeof actionStatusColors };
-  'Contributions by day': { id: string; totalAmountDue: number };
+  'Contributions by day': {
+    id: string;
+    totalAmountDue: number;
+    name: string;
+    totalAmountPaid: number;
+  };
   Transactions: undefined;
 };
 

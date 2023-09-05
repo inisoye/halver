@@ -10,7 +10,6 @@ import {
   BillParticipants,
   BillPayment,
   BillSummary,
-  ContributionsByDay,
   EditPhoneNumber,
   EditProfileImage,
   SplitBreakdown,
@@ -56,7 +55,12 @@ export type AppRootStackParamList = {
     name: string;
     isOnRoot?: boolean;
   };
-  'Contributions by day': { id: string; totalAmountDue: number };
+  'Contributions by day': {
+    id: string;
+    totalAmountDue: number;
+    name: string;
+    totalAmountPaid: number;
+  };
 
   'Edit profile image': undefined;
   'Edit phone number': undefined;
@@ -93,10 +97,6 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
 
       <AppRootStack.Group screenOptions={{ headerShown: false }}>
         <AppRootStack.Screen component={BillPayment} name="Bill Payment" />
-        <AppRootStack.Screen
-          component={ContributionsByDay}
-          name="Contributions by day"
-        />
       </AppRootStack.Group>
     </AppRootStack.Navigator>
   );

@@ -4,7 +4,7 @@ import { FlashList, type ListRenderItem } from '@shopify/flash-list';
 import * as React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { Box, LogoLoader, Screen, Text } from '@/components';
+import { Box, DynamicText, LogoLoader, Screen, Text } from '@/components';
 import {
   BillContributionMeter,
   useBillContributionsByDay,
@@ -12,6 +12,7 @@ import {
 } from '@/features/bills';
 import type { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 import { flexStyles } from '@/theme';
+import { convertNumberToNaira } from '@/utils';
 
 type ContributionsByDayProps = CompositeScreenProps<
   NativeStackScreenProps<BillsStackParamList, 'Contributions by day'>,
@@ -21,7 +22,7 @@ type ContributionsByDayProps = CompositeScreenProps<
 export const ContributionsByDay: React.FunctionComponent<ContributionsByDayProps> = ({
   route,
 }) => {
-  const { id, totalAmountDue } = route.params;
+  const { id, totalAmountDue, name, totalAmountPaid } = route.params;
 
   const {
     data: billContributionsByDayResponse,
@@ -47,7 +48,8 @@ export const ContributionsByDay: React.FunctionComponent<ContributionsByDayProps
         borderTopColor="borderDarker"
         borderTopWidth={index === 0 ? 0 : 0.5}
         marginHorizontal="6"
-        paddingVertical="7"
+        paddingBottom="7"
+        paddingTop={index === 0 ? '3' : '7'}
       >
         <Text fontFamily="Halver-Semibold" marginBottom="2.5" variant="lg">
           {!!item?.day && new Date(item?.day).toDateString()}
@@ -62,14 +64,24 @@ export const ContributionsByDay: React.FunctionComponent<ContributionsByDayProps
   };
 
   return (
-    <Screen
-      backgroundColor="billScreenBackground"
-      customScreenName="Contribution rounds"
-      headerProps={{ paddingBottom: '1' }}
-    >
+    <Screen customScreenName="Contribution rounds" headerProps={{ paddingBottom: '1' }}>
       <Box backgroundColor="transparent" height={12}>
         {areBillContributionsByDayLoading && <LogoLoader />}
       </Box>
+
+      <DynamicText
+        color="textLight"
+        lineHeight={20}
+        marginBottom="3"
+        marginTop="2"
+        paddingHorizontal="6"
+        variant="sm"
+      >
+        All the rounds so far on {name}.{' '}
+        {`${convertNumberToNaira(
+          totalAmountPaid,
+        )} in total has been contributed since the bill was created.`}
+      </DynamicText>
 
       <GestureHandlerRootView style={[flexStyles[1]]}>
         <FlashList

@@ -179,7 +179,12 @@ export const Bill = ({ navigation, route }: BillProps) => {
   };
 
   const handleContributionsNavigation = () => {
-    navigation.navigate('Contributions by day', { id, totalAmountDue });
+    navigation.navigate('Contributions by day', {
+      id,
+      totalAmountDue,
+      name,
+      totalAmountPaid,
+    });
   };
 
   const buttonBottomMargin = isOnRoot ? (isIOS() ? '10' : '7') : '3';

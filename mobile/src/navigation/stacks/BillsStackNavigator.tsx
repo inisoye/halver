@@ -22,7 +22,12 @@ export type BillsStackParamList = {
     isOnRoot?: boolean;
   };
   'Bills by status': { status: keyof typeof actionStatusColors };
-  'Contributions by day': { id: string; totalAmountDue: number };
+  'Contributions by day': {
+    id: string;
+    totalAmountDue: number;
+    name: string;
+    totalAmountPaid: number;
+  };
 };
 
 export const BillsStack = createNativeStackNavigator<BillsStackParamList>();
