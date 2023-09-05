@@ -625,7 +625,11 @@ class BillTransaction(AbstractTimeStampedUUIDModel, models.Model):
     def get_bill_transactions_on_day(cls, bill_uuid, day):
         """Returns a queryset of transactions on a specified day for a bill."""
 
-        return cls.get_bill_transactions(bill_uuid).filter(created__date=day)
+        return (
+            cls.get_bill_transactions(bill_uuid)
+            .filter(created__date=day)
+            .order_by("created")
+        )
 
     @classmethod
     def get_daily_transactions(cls, bill_uuid):

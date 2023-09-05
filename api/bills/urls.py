@@ -13,6 +13,7 @@ from bills.api.views import (
     BillRetrieveUpdateAPIView,
     BillSubscriptionCancellationAPIView,
     BillTransactionListAPIView,
+    BillTransactionsOnDayAPIView,
     BillUnregisteredParticipantDataTransferAPIView,
     BillUnregisteredParticipantListAPIView,
     UserBillTransactionListAPIView,
@@ -53,7 +54,7 @@ urlpatterns = [
     ),
     path(
         route="<uuid:uuid>/transactions/day/",
-        view=BillDailyTransactionListAPIView.as_view(),
+        view=BillTransactionsOnDayAPIView.as_view(),
         name="bill-transactions-on-day",
     ),
     path(
