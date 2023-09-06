@@ -172,6 +172,7 @@ export const BillRecentContributionsList: React.FunctionComponent<
         <Box>
           <TouchableOpacity
             alignItems="center"
+            disabled={isDisabled}
             flexDirection="row"
             gap="4"
             justifyContent="space-between"

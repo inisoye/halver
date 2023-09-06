@@ -18,6 +18,7 @@ export * from './RectButton';
 export * from './Screen';
 export * from './ScrollView';
 export * from './SearchField';
+export * from './Skeleton';
 export * from './Text';
 export * from './TextField';
 export * from './TouchableOpacity';

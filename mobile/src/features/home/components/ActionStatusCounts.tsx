@@ -4,7 +4,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as React from 'react';
 import type { ISvgProps } from 'svg.types';
 
-import { Box, CraftedLogoSmall, Pressable, Text } from '@/components';
+import { Box, CraftedLogoSmall, Pressable, Skeleton, Text } from '@/components';
 import {
   NewBillSmall as NewBillSmallIcon,
   Overdue as OverdueIcon,
@@ -34,6 +34,7 @@ interface ActionStatusButtonProps {
   >;
   status: keyof typeof actionStatusColors;
   disabled: boolean;
+  isLoading: boolean;
 }
 
 const ActionStatusButton: React.FunctionComponent<ActionStatusButtonProps> = ({
@@ -42,12 +43,49 @@ const ActionStatusButton: React.FunctionComponent<ActionStatusButtonProps> = ({
   icon: Icon,
   navigation,
   status,
+  isLoading,
 }) => {
   const goToBillsByStatus = () => {
     navigation.navigate('Bills by status', {
       status,
     });
   };
+
+  if (isLoading) {
+    return (
+      <Skeleton
+        borderRadius="lg"
+        flexBasis="48.2%"
+        flexDirection="row"
+        flexGrow={1}
+        gap="4"
+        padding="4"
+      >
+        <Text
+          accessibilityElementsHidden={true}
+          importantForAccessibility="no-hide-descendants"
+          opacity={0}
+        >
+          <Text fontFamily="Halver-Semibold" variant="xl">
+            {count}
+            {'\n'}
+          </Text>
+
+          <Text color="textLighter" lineHeight={isAndroid() ? 20 : 16} variant="xs">
+            {status}
+          </Text>
+        </Text>
+
+        <Box
+          accessibilityElementsHidden={true}
+          importantForAccessibility="no-hide-descendants"
+          opacity={0}
+        >
+          <Icon />
+        </Box>
+      </Skeleton>
+    );
+  }
 
   return (
     <Pressable
@@ -138,7 +176,8 @@ interface ActionStatusCountsProps {
 export const ActionStatusCounts: React.FunctionComponent<ActionStatusCountsProps> = ({
   navigation,
 }) => {
-  const { data: statusCounts } = useActionStatusCounts();
+  const { data: statusCounts, isLoading: areStatusCountsLoading } =
+    useActionStatusCounts();
 
   const statusCountsObject = React.useMemo(() => {
     if (!statusCounts || statusCounts.length < 1) return {};
@@ -176,6 +215,7 @@ export const ActionStatusCounts: React.FunctionComponent<ActionStatusCountsProps
           count={overdue ?? 0}
           disabled={!overdue}
           icon={OverdueIcon}
+          isLoading={areStatusCountsLoading}
           navigation={navigation}
           status="Overdue"
         />
@@ -183,6 +223,7 @@ export const ActionStatusCounts: React.FunctionComponent<ActionStatusCountsProps
           count={pending ?? 0}
           disabled={!pending}
           icon={PendingIcon}
+          isLoading={areStatusCountsLoading}
           navigation={navigation}
           status="Pending"
         />
@@ -191,6 +232,7 @@ export const ActionStatusCounts: React.FunctionComponent<ActionStatusCountsProps
           count={ongoing ?? 0}
           disabled={!ongoing}
           icon={RecurringIcon}
+          isLoading={areStatusCountsLoading}
           navigation={navigation}
           status="Recurring"
         />
