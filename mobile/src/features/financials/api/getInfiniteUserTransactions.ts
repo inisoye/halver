@@ -15,7 +15,7 @@ export const getInfiniteUserTransactions = async ({
   return response.data as BillTransactionList;
 };
 
-export const useInfiniteUserTransactions = (search: string) => {
+export const useInfiniteUserTransactions = (search = '') => {
   return useInfiniteQuery({
     queryKey: [...allStaticQueryKeys.getUserTransactions, search],
     queryFn: ({ pageParam = 1 }) => getInfiniteUserTransactions({ search, pageParam }),

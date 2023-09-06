@@ -225,15 +225,17 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ navigation }) => {
     hasNextPage,
     isFetchingNextPage,
     refetch: refetchBills,
+    isStale: areBillsStale,
   } = useBills(debouncedFilterValue);
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      refetchBills();
+      if (areBillsStale) refetchBills();
     });
 
     return unsubscribe;
-  }, [navigation, refetchBills]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areBillsStale]);
 
   const bills = React.useMemo(
     () => billsResponse?.pages.flatMap(page => page.results),

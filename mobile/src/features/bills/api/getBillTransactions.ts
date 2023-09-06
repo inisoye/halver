@@ -18,7 +18,7 @@ export const getBillTransactions = async (id: string) => {
 
 export const useBillTransactions = (id: string) => {
   return useQuery({
-    queryKey: [id, allStaticQueryKeys.getBillTransactions],
+    queryKey: [...allStaticQueryKeys.getBillTransactions, id],
     queryFn: () => getBillTransactions(id),
   });
 };

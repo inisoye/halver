@@ -24,7 +24,7 @@ export const getBillContributionsByDay = async (
 
 export const useBillContributionsByDay = (id: string, enabled = true) => {
   return useInfiniteQuery({
-    queryKey: [id, allStaticQueryKeys.getBillContributionsByDay],
+    queryKey: [...allStaticQueryKeys.getBillContributionsByDay, id],
     queryFn: ({ pageParam = 1 }) => getBillContributionsByDay(id, { pageParam }),
     getNextPageParam: (lastPage, _pages) => lastPage.next,
     enabled,

@@ -3,13 +3,22 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FlashList, type ListRenderItem } from '@shopify/flash-list';
 import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { Box, DynamicText, LogoLoader, RectButton, Screen, Text } from '@/components';
-import { useBillTransactionsOnDay, type BillTransaction } from '@/features/bills';
+import {
+  Box,
+  DynamicText,
+  FullWidthTextField,
+  LogoLoader,
+  RectButton,
+  Screen,
+  Text,
+} from '@/components';
+import { useInfiniteBillTransactions, type BillTransaction } from '@/features/bills';
 import { SelectedTransactionModal } from '@/features/financials';
-import { useBooleanStateControl } from '@/hooks';
-import { RightCaret } from '@/icons';
+import { useBooleanStateControl, useDebounce } from '@/hooks';
+import { RightCaret, Search } from '@/icons';
 import { Theme } from '@/lib/restyle';
 import {
   AppRootStackParamList,
@@ -27,7 +36,7 @@ interface TransactionItemProps {
 
 const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
   handleTransactionSelection,
-
+  index,
   item,
 }) => {
   const isDarkMode = useIsDarkModeSelected();
@@ -43,6 +52,7 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
   return (
     <RectButton
       activeOpacity={0.05}
+      marginTop={index === 0 ? '4' : '1'}
       rippleColor={colors.defaultListRippleBackground}
       underlayColor={isDarkMode ? 'white' : 'black'}
       onPress={onPress}
@@ -77,7 +87,7 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
               </Text>
               {' • '}
               <Text color="textLight" fontFamily="Halver-Semibold" variant="xs">
-                {!!created && new Date(created).toDateString()}
+                On {!!created && new Date(created).toDateString()}
               </Text>
             </Text>
           </Box>
@@ -89,21 +99,19 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
   );
 };
 
-type TransactionsInContributionRoundProps = CompositeScreenProps<
-  NativeStackScreenProps<AppRootStackParamList, 'Transactions in countribution round'>,
+type BillTransactionsProps = CompositeScreenProps<
+  NativeStackScreenProps<AppRootStackParamList, 'Bill transactions'>,
   CompositeScreenProps<
-    NativeStackScreenProps<
-      FinancialsStackParamList,
-      'Transactions in countribution round'
-    >,
-    NativeStackScreenProps<HomeStackParamList, 'Transactions in countribution round'>
+    NativeStackScreenProps<FinancialsStackParamList, 'Bill transactions'>,
+    NativeStackScreenProps<HomeStackParamList, 'Bill transactions'>
   >
 >;
 
-export const TransactionsInContributionRound: React.FunctionComponent<
-  TransactionsInContributionRoundProps
-> = ({ route, navigation }) => {
-  const { id, day, billName } = route.params;
+export const BillTransactions: React.FunctionComponent<BillTransactionsProps> = ({
+  route,
+  navigation,
+}) => {
+  const { id, name } = route.params;
 
   const {
     state: isModalOpen,
@@ -115,6 +123,20 @@ export const TransactionsInContributionRound: React.FunctionComponent<
     BillTransaction | undefined
   >(undefined);
 
+  const { control: controlForTransactionsFilter } = useForm<{
+    transactionsFilter: string;
+  }>({
+    defaultValues: {
+      transactionsFilter: '',
+    },
+  });
+
+  const transactionsFilterValue = useWatch({
+    control: controlForTransactionsFilter,
+    name: 'transactionsFilter',
+  });
+  const debouncedFilterValue = useDebounce(transactionsFilterValue, 500);
+
   const {
     data: transactionsResponse,
     fetchNextPage,
@@ -122,17 +144,17 @@ export const TransactionsInContributionRound: React.FunctionComponent<
     isFetchingNextPage,
     isLoading: areTransactionsLoading,
     refetch: refetchTransactions,
-    isStale: areTransactionsOnDayStale,
-  } = useBillTransactionsOnDay(id, day ?? '');
+    isStale: areTransactionsStale,
+  } = useInfiniteBillTransactions(id, debouncedFilterValue);
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      if (areTransactionsOnDayStale) refetchTransactions();
+      if (areTransactionsStale) refetchTransactions();
     });
 
     return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areTransactionsOnDayStale]);
+  }, [areTransactionsStale]);
 
   const transactions = React.useMemo(
     () => transactionsResponse?.pages.flatMap(page => page.results),
@@ -142,6 +164,7 @@ export const TransactionsInContributionRound: React.FunctionComponent<
 
   const noTransactionsFound =
     !areTransactionsLoading && (!transactions || transactions?.length < 1);
+
   const handleTransactionSelection = React.useCallback(
     (transaction: BillTransaction | undefined) => {
       setSelectedTransaction(transaction);
@@ -169,35 +192,40 @@ export const TransactionsInContributionRound: React.FunctionComponent<
         selectedTransaction={selectedTransaction}
       />
 
-      <Screen
-        customScreenName="Contributions on day"
-        headerProps={{ paddingBottom: '1' }}
-      >
+      <Screen headerProps={{ paddingBottom: '1' }}>
+        <DynamicText
+          color="textLight"
+          lineHeight={20}
+          marginTop="4"
+          opacity={areTransactionsLoading ? 0 : undefined}
+          paddingHorizontal="6"
+          variant="sm"
+        >
+          All the contributions made towards{' '}
+          <Text color="textDefault" fontFamily="Halver-Semibold" variant="sm">
+            {name}
+          </Text>
+        </DynamicText>
+
         <Box backgroundColor="transparent" height={12}>
           {areTransactionsLoading && <LogoLoader />}
         </Box>
 
-        {!areTransactionsLoading && (
-          <DynamicText
-            color="textLight"
-            lineHeight={20}
-            marginBottom="3"
-            marginTop="2"
-            maxWidth="90%"
-            paddingHorizontal="6"
-            variant="sm"
-          >
-            Here are all the contributions made towards{' '}
-            <Text color="textDefault" fontFamily="Halver-Semibold" variant="sm">
-              {billName}
-            </Text>{' '}
-            on {!!day && new Date(day).toDateString()}.
-          </DynamicText>
-        )}
+        <FullWidthTextField
+          autoFocus={false}
+          containerProps={{ marginTop: '0' }}
+          control={controlForTransactionsFilter}
+          name="transactionsFilter"
+          paddingHorizontal="0"
+          paddingRight="6"
+          placeholder="Search by participant"
+          prefixComponent={<Search />}
+        />
 
         {noTransactionsFound && (
           <Text color="textLight" padding="6">
             We found no transactions
+            {!!transactionsFilterValue && ` matching "${transactionsFilterValue}"`}
           </Text>
         )}
 

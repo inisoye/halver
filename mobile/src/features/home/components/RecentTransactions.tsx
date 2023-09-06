@@ -5,7 +5,7 @@ import * as React from 'react';
 
 import { Box, DynamicText, Text, TouchableOpacity } from '@/components';
 import { BillTransaction } from '@/features/bills';
-import { useUserTransactions } from '@/features/financials';
+import { useInfiniteUserTransactions } from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
 import { RightCaret } from '@/icons';
 import { AppRootStackParamList, HomeStackParamList, TabParamList } from '@/navigation';
@@ -14,7 +14,7 @@ import { convertNumberToNaira } from '@/utils';
 import { SelectedTransactionModal } from './SelectedTransactionModal';
 
 interface TransactionItemProps {
-  transaction: BillTransaction;
+  transaction: BillTransaction | undefined;
   isFirstItem: boolean;
   handleTransactionSelection: (transaction: BillTransaction | undefined) => void;
 }
@@ -23,13 +23,7 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
   transaction,
   handleTransactionSelection,
 }) => {
-  const {
-    contribution,
-    isCredit,
-    uuid,
-    created,
-    bill: { name: billName },
-  } = transaction;
+  const { contribution, isCredit, uuid, created, bill } = transaction || {};
 
   const onPress = () => {
     handleTransactionSelection(transaction);
@@ -56,7 +50,7 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
     >
       <Box gap="0.75" width="60%">
         <DynamicText fontFamily="Halver-Semibold" numberOfLines={1} variant="sm">
-          {billName}
+          {bill?.name}
         </DynamicText>
 
         <Text color="textLight" variant="xs">
@@ -68,7 +62,7 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
             {isCredit ? 'Credit' : 'Debit'}
           </Text>
           {' • '}
-          {new Date(created).toDateString()}
+          {!!created && new Date(created).toDateString()}
         </Text>
       </Box>
 
@@ -118,9 +112,12 @@ export const RecentTransactions: React.FunctionComponent<RecentTransactionsProps
   >(undefined);
 
   const { data: transactionsResponse, isLoading: areTransactionsLoading } =
-    useUserTransactions();
+    useInfiniteUserTransactions();
 
-  const { results: transactions } = transactionsResponse || {};
+  const transactions = React.useMemo(
+    () => transactionsResponse?.pages.flatMap(page => page.results),
+    [transactionsResponse?.pages],
+  );
 
   const transactionsExist = !!transactions && transactions.length > 1;
 
@@ -178,7 +175,7 @@ export const RecentTransactions: React.FunctionComponent<RecentTransactionsProps
                 <TransactionItem
                   handleTransactionSelection={handleTransactionSelection}
                   isFirstItem={index === 0}
-                  key={transaction.uuid}
+                  key={transaction?.uuid}
                   transaction={transaction}
                 />
               );

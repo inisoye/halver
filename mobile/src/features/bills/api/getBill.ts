@@ -20,7 +20,7 @@ export const getBill = async (id: string) => {
 
 export const useBill = (id: string) => {
   return useQuery({
-    queryKey: [id, allStaticQueryKeys.getBill],
+    queryKey: [...allStaticQueryKeys.getBill, id],
     queryFn: () => getBill(id),
   });
 };

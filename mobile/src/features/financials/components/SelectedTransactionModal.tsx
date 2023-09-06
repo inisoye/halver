@@ -53,6 +53,21 @@ interface SelectedTransactionModalProps {
             undefined
           >
         >
+      >
+    | CompositeNavigationProp<
+        NativeStackNavigationProp<
+          AppRootStackParamList,
+          'Bill transactions',
+          undefined
+        >,
+        CompositeNavigationProp<
+          NativeStackNavigationProp<
+            FinancialsStackParamList,
+            'Bill transactions',
+            undefined
+          >,
+          NativeStackNavigationProp<HomeStackParamList, 'Bill transactions', undefined>
+        >
       >;
 }
 

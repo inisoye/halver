@@ -5,6 +5,7 @@ import { actionStatusColors } from '@/features/home';
 import {
   Bill,
   BillsByStatus,
+  BillTransactions,
   ContributionsByDay,
   Home,
   Transactions,
@@ -27,6 +28,7 @@ export type HomeStackParamList = {
     billName: string;
   };
   Transactions: undefined;
+  'Bill transactions': { id: string; name: string };
 };
 
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
@@ -77,6 +79,14 @@ export const HomeStackNavigator: React.FunctionComponent = () => {
       <HomeStack.Screen
         component={Transactions}
         name="Transactions"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <HomeStack.Screen
+        component={BillTransactions}
+        name="Bill transactions"
         options={{
           headerShown: false,
         }}

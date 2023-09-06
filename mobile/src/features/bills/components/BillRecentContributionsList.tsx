@@ -1,25 +1,28 @@
+import type { CompositeNavigationProp } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import { Box, DynamicText, Modal, Text, TouchableOpacity } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { RightCaret } from '@/icons';
+import type { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 import { convertNumberToNaira, isAndroid } from '@/utils';
 
-import { BillTransaction, useBillTransactions } from '../api';
+import { useInfiniteBillTransactions, type BillTransaction } from '../api';
 
 interface BillRecentContributionItemProps {
   openModal: () => void;
   setSelectedTransaction: React.Dispatch<
     React.SetStateAction<BillTransaction | undefined>
   >;
-  transaction: BillTransaction;
+  transaction: BillTransaction | undefined;
   isFirstItem: boolean;
 }
 
 const BillRecentContributionItem: React.FunctionComponent<
   BillRecentContributionItemProps
 > = ({ openModal, setSelectedTransaction, transaction, isFirstItem }) => {
-  const { contribution, payingUser, uuid, created } = transaction;
+  const { contribution, payingUser, uuid, created } = transaction || {};
 
   const handleTransactionItemClick = () => {
     openModal();
@@ -46,7 +49,7 @@ const BillRecentContributionItem: React.FunctionComponent<
           </Text>
 
           <Text color="textLight" variant="xs">
-            on {new Date(created).toDateString()}
+            on {!!created && new Date(created).toDateString()}
           </Text>
         </Box>
       </Box>
@@ -66,14 +69,19 @@ const BillRecentContributionItem: React.FunctionComponent<
 
 interface BillRecentContributionsListProps {
   id: string;
+  name: string;
   isDiscreet: boolean | undefined;
+  navigation: CompositeNavigationProp<
+    NativeStackNavigationProp<AppRootStackParamList, 'Bill', undefined>,
+    NativeStackNavigationProp<BillsStackParamList, 'Bill', undefined>
+  >;
 }
 
 export const BillRecentContributionsList: React.FunctionComponent<
   BillRecentContributionsListProps
-> = ({ id, isDiscreet }) => {
+> = ({ id, name, isDiscreet, navigation }) => {
   const { data: billTransactionsResponse, isLoading: areBillTransactionsLoading } =
-    useBillTransactions(id);
+    useInfiniteBillTransactions(id);
 
   const [selectedTransaction, setSelectedTransaction] = React.useState<
     BillTransaction | undefined
@@ -85,7 +93,10 @@ export const BillRecentContributionsList: React.FunctionComponent<
     setFalse: closeModal,
   } = useBooleanStateControl();
 
-  const { results: billTransactions } = billTransactionsResponse || {};
+  const billTransactions = React.useMemo(
+    () => billTransactionsResponse?.pages.flatMap(page => page.results),
+    [billTransactionsResponse?.pages],
+  );
 
   const noTransactions = !!billTransactions && billTransactions.length < 1;
   const isDisabled = isDiscreet || noTransactions || areBillTransactionsLoading;
@@ -94,6 +105,10 @@ export const BillRecentContributionsList: React.FunctionComponent<
     selectedTransaction || {};
 
   const modalHeading = `${payingUser?.firstName || 'Participant'}'s contribution`;
+
+  const handleGoToBillTransactions = () => {
+    navigation.navigate('Bill transactions', { id, name });
+  };
 
   return (
     <>
@@ -155,19 +170,20 @@ export const BillRecentContributionsList: React.FunctionComponent<
 
       {!areBillTransactionsLoading && (
         <Box>
-          <Box
+          <TouchableOpacity
             alignItems="center"
             flexDirection="row"
             gap="4"
             justifyContent="space-between"
-            marginBottom="3"
+            marginBottom="3.5"
+            onPress={handleGoToBillTransactions}
           >
             <Text fontFamily="Halver-Semibold" variant="xl">
               Recent contributions
             </Text>
 
-            {!isDisabled && false && <RightCaret isDark />}
-          </Box>
+            {!isDisabled && <RightCaret isDark />}
+          </TouchableOpacity>
 
           {noTransactions && (
             <Box
@@ -195,11 +211,11 @@ export const BillRecentContributionsList: React.FunctionComponent<
             shadowRadius={0.3}
           >
             <Box borderRadius="md" overflow="hidden">
-              {billTransactions?.map((transaction, index) => {
+              {billTransactions?.slice(0, 5).map((transaction, index) => {
                 return (
                   <BillRecentContributionItem
                     isFirstItem={index === 0}
-                    key={transaction.uuid}
+                    key={transaction?.uuid}
                     openModal={openModal}
                     setSelectedTransaction={setSelectedTransaction}
                     transaction={transaction}

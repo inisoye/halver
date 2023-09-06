@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import {
   Bill,
+  BillTransactions,
   Cards,
   ContributionsByDay,
   Financials,
@@ -31,6 +32,7 @@ export type FinancialsStackParamList = {
     day: string | undefined;
     billName: string;
   };
+  'Bill transactions': { id: string; name: string };
 };
 
 const FinancialsStack = createNativeStackNavigator<FinancialsStackParamList>();
@@ -89,6 +91,14 @@ export const FinancialsStackNavigator: React.FunctionComponent = () => {
       <FinancialsStack.Screen
         component={TransactionsInContributionRound}
         name="Transactions in countribution round"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <FinancialsStack.Screen
+        component={BillTransactions}
+        name="Bill transactions"
         options={{
           headerShown: false,
         }}

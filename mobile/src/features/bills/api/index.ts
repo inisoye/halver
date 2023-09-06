@@ -4,6 +4,7 @@ export * from './getBill';
 export * from './getBillContributionsByDay';
 export * from './getBills';
 export * from './getBillTransactions';
+export * from './getInfiniteBillTransactions';
 export * from './getBillTransactionsOnDay';
 export * from './getUserActionsByStatus';
 export * from './transferUnregisteredParticipantData';

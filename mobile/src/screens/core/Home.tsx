@@ -4,7 +4,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import { Box, Button, Card, DynamicText, Screen, ScrollView, Text } from '@/components';
-import { useUserTransactions } from '@/features/financials';
+import { useInfiniteUserTransactions } from '@/features/financials';
 import {
   ActionStatusCounts,
   RecentTransactions,
@@ -30,17 +30,20 @@ export const Home = ({ navigation }: HomeProps) => {
     navigation.navigate('Transactions');
   }, [navigation]);
 
-  const { refetch: refetchActionStatusCounts } = useActionStatusCounts();
-  const { refetch: refetchTransactions } = useUserTransactions();
+  const { refetch: refetchActionStatusCounts, isStale: areActionStatusCountsStale } =
+    useActionStatusCounts();
+  const { refetch: refetchTransactions, isStale: areTransactionsStale } =
+    useInfiniteUserTransactions();
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      refetchActionStatusCounts();
-      refetchTransactions();
+      if (areActionStatusCountsStale) refetchActionStatusCounts();
+      if (areTransactionsStale) refetchTransactions();
     });
 
     return unsubscribe;
-  }, [navigation, refetchActionStatusCounts, refetchTransactions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areActionStatusCountsStale, areTransactionsStale]);
 
   return (
     <Screen hasNoIOSBottomInset>

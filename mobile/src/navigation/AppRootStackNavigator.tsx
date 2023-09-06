@@ -41,6 +41,7 @@ export type AppRootStackParamList = {
   'Split Breakdown': undefined;
   'Bill Summary': undefined;
 
+  Bill: { id: string; name: string; shouldUpdate?: boolean; isOnRoot?: boolean };
   'Bills by status': { status: keyof typeof actionStatusColors };
   'Bill Payment': {
     actionId: string | undefined;
@@ -66,6 +67,7 @@ export type AppRootStackParamList = {
     day: string | undefined;
     billName: string;
   };
+  'Bill transactions': { id: string; name: string };
 
   'Edit profile image': undefined;
   'Edit phone number': undefined;

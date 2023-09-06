@@ -34,15 +34,15 @@ import {
   statusColorIndex,
   useBill,
   useBillContributionsByDay,
-  useBillTransactions,
+  useInfiniteBillTransactions,
 } from '@/features/bills';
 import { BackWithBackground, Gear, Rewind } from '@/icons';
 import { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 import { formatNumberWithCommas, isIOS } from '@/utils';
 
 type BillProps = CompositeScreenProps<
-  NativeStackScreenProps<BillsStackParamList, 'Bill'>,
-  NativeStackScreenProps<AppRootStackParamList>
+  NativeStackScreenProps<AppRootStackParamList, 'Bill'>,
+  NativeStackScreenProps<BillsStackParamList, 'Bill'>
 >;
 
 export const Bill = ({ navigation, route }: BillProps) => {
@@ -82,6 +82,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
     isLoading: isBillLoading,
     isRefetching: isBillRefetching,
     refetch: refetchBill,
+    isStale: isBillStale,
   } = useBill(id);
 
   const isBillForceUpdating = isBillRefetching && shouldUpdate;
@@ -110,10 +111,12 @@ export const Bill = ({ navigation, route }: BillProps) => {
 
   const billStatusColor = status?.short ? statusColorIndex[status?.short] : undefined;
 
-  const { refetch: refetchBillTransactions } = useBillTransactions(id);
+  const { refetch: refetchBillTransactions, isStale: areBillTransactionsStale } =
+    useInfiniteBillTransactions(id);
   const {
     data: billContributionsByDayResponse,
     refetch: refetchBillContributionsByDay,
+    isStale: areBillContributionsByDayStale,
   } = useBillContributionsByDay(id, isBillRecurring);
 
   const billContributionsByDay = React.useMemo(
@@ -128,21 +131,21 @@ export const Bill = ({ navigation, route }: BillProps) => {
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      if (shouldUpdate) {
-        refetchBill();
-        refetchBillTransactions();
-        if (isBillRecurring) refetchBillContributionsByDay();
+      if (isBillStale) refetchBill();
+      if (areBillTransactionsStale) refetchBillTransactions();
+      if (isBillRecurring && areBillContributionsByDayStale) {
+        refetchBillContributionsByDay();
       }
     });
 
     return unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    navigation,
-    refetchBill,
-    refetchBillTransactions,
-    refetchBillContributionsByDay,
     shouldUpdate,
     isBillRecurring,
+    areBillContributionsByDayStale,
+    areBillTransactionsStale,
+    isBillStale,
   ]);
 
   const currentUserAction = actions?.find(
@@ -399,7 +402,12 @@ export const Bill = ({ navigation, route }: BillProps) => {
             )}
 
             {!isBillLoading && (
-              <BillRecentContributionsList id={id} isDiscreet={isDiscreet} />
+              <BillRecentContributionsList
+                id={id}
+                isDiscreet={isDiscreet}
+                name={name}
+                navigation={navigation}
+              />
             )}
 
             {!isBillLoading && (

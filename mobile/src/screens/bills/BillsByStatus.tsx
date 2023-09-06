@@ -144,6 +144,7 @@ export const BillsByStatus = ({ route, navigation }: BillsByStatusProps) => {
     hasNextPage,
     isFetchingNextPage,
     refetch: refetchActions,
+    isStale: areActionsByStatusStale,
   } = useUserActionsByStatus(
     debouncedFilterValue,
     status.toLowerCase() === 'recurring'
@@ -153,11 +154,12 @@ export const BillsByStatus = ({ route, navigation }: BillsByStatusProps) => {
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      refetchActions();
+      if (areActionsByStatusStale) refetchActions();
     });
 
     return unsubscribe;
-  }, [navigation, refetchActions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areActionsByStatusStale]);
 
   const bills = React.useMemo(
     () => billsResponse?.pages.flatMap(page => page.results),

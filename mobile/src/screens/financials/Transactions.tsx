@@ -148,15 +148,17 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
     isFetchingNextPage,
     isLoading: areTransactionsLoading,
     refetch: refetchTransactions,
+    isStale: areTransactionsStale,
   } = useInfiniteUserTransactions(debouncedFilterValue);
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      refetchTransactions();
+      if (areTransactionsStale) refetchTransactions();
     });
 
     return unsubscribe;
-  }, [navigation, refetchTransactions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areTransactionsStale]);
 
   const transactions = React.useMemo(
     () => transactionsResponse?.pages.flatMap(page => page.results),
