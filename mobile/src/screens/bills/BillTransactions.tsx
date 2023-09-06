@@ -190,6 +190,7 @@ export const BillTransactions: React.FunctionComponent<BillTransactionsProps> = 
         isModalOpen={isModalOpen}
         navigation={navigation}
         selectedTransaction={selectedTransaction}
+        isBack
       />
 
       <Screen headerProps={{ paddingBottom: '1' }}>

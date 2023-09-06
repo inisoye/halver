@@ -3,6 +3,7 @@ export * from './BackWithBackground';
 export * from './CirclePlus';
 export * from './CloseModal';
 export * from './Gear';
+export * from './GoBackArrow';
 export * from './GoToArrow';
 export * from './Plus';
 export * from './RadioTick';

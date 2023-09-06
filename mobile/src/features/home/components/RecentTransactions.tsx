@@ -211,6 +211,7 @@ export const RecentTransactions: React.FunctionComponent<RecentTransactionsProps
       <Box>
         <TouchableOpacity
           alignItems="center"
+          disabled={areTransactionsLoading}
           flexDirection="row"
           gap="4"
           hitSlop={hitSlop}
@@ -222,7 +223,7 @@ export const RecentTransactions: React.FunctionComponent<RecentTransactionsProps
             Recent transactions
           </Text>
 
-          <RightCaret isDark />
+          {!areTransactionsLoading && <RightCaret isDark />}
         </TouchableOpacity>
 
         {!areTransactionsLoading && !transactionsExist && (

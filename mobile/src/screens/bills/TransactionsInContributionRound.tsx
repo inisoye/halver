@@ -167,6 +167,7 @@ export const TransactionsInContributionRound: React.FunctionComponent<
         isModalOpen={isModalOpen}
         navigation={navigation}
         selectedTransaction={selectedTransaction}
+        isBack
       />
 
       <Screen
