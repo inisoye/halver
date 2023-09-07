@@ -212,7 +212,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
               </Text>
             </Box>
 
-            <Box opacity={'accountName' ? 1 : 0.5} paddingVertical="2" width="46.3%">
+            <Box opacity={created ? 1 : 0.5} paddingVertical="2" width="46.3%">
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -223,7 +223,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
               </Text>
 
               <Text
-                color={'accountName' ? 'textDefault' : 'textLight'}
+                color={created ? 'textDefault' : 'textLight'}
                 fontFamily="Halver-Semibold"
                 numberOfLines={1}
                 variant="sm"

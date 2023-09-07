@@ -21,8 +21,7 @@ interface SelectedCardModalProps {
 
 export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> =
   React.memo(({ selectedCard, closeModal, isModalOpen }) => {
-    const { bank, accountName, cardType, first6, last4, isDefault } =
-      selectedCard || {};
+    const { bank, cardType, first6, last4, isDefault, created } = selectedCard || {};
     const bankName = convertKebabAndSnakeToTitleCase(bank);
 
     const cardDigits = React.useMemo(
@@ -124,23 +123,23 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
                 {bankName}
               </Text>
             </Box>
-            <Box opacity={accountName ? 1 : 0.5} paddingVertical="2" width="46.3%">
+            <Box opacity={created ? 1 : 0.5} paddingVertical="2" width="46.3%">
               <Text
                 color="textLight"
                 marginBottom="0.75"
                 numberOfLines={1}
                 variant="xs"
               >
-                Account name
+                Date added
               </Text>
 
               <Text
-                color={accountName ? 'textDefault' : 'textLight'}
+                color={created ? 'textDefault' : 'textLight'}
                 fontFamily="Halver-Semibold"
                 numberOfLines={1}
                 variant="sm"
               >
-                {accountName || 'Not recorded'}
+                {created ? new Date(created).toDateString() : 'Not recorded'}
               </Text>
             </Box>
           </Box>

@@ -300,7 +300,7 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
                   width="100%"
                 >
                   <Box alignItems="center" flexDirection="row" gap="4">
-                    {isBack && <GoBackArrow />}
+                    {isBack && <GoBackArrow isLight />}
 
                     <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
                       {isBack ? 'Back to bill' : 'Go to bill'}
