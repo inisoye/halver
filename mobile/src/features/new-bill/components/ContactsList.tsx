@@ -22,7 +22,8 @@ interface ContactsListProps {
 }
 
 export function ContactsList({ contactsFilterValue }: ContactsListProps) {
-  const { data: contacts = [] } = usePhoneContacts();
+  const { data: phoneContactsResponse } = usePhoneContacts();
+  const { contacts = [] } = phoneContactsResponse || {};
 
   const allContacts = React.useMemo(() => {
     const namesAndNumbers = contacts

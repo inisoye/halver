@@ -2,7 +2,14 @@ import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
 import { useMMKVObject } from 'react-native-mmkv';
 
-import { Box, DynamicText, Image, RectButton, Text } from '@/components';
+import {
+  Box,
+  CraftedLogoSmallest,
+  DynamicText,
+  Image,
+  RectButton,
+  Text,
+} from '@/components';
 import type {
   BillCreationMMKVPayload,
   RegisteredContactsList,
@@ -83,19 +90,11 @@ const ContactAvatarAndName: React.FunctionComponent<ContactAvatarAndNameProps> =
               borderRadius="base"
               left={-13}
               padding="0.75"
+              paddingLeft="0"
               position="absolute"
               top={-10}
             >
-              <Box backgroundColor="apricot6" height={5} marginBottom="px" width={14} />
-              <Box backgroundColor="casal7" height={5} marginLeft="0.75" width={14} />
-              <Box
-                backgroundColor="background"
-                height={12}
-                position="absolute"
-                right={9}
-                top={3}
-                width={1}
-              />
+              <CraftedLogoSmallest />
             </Box>
           )}
         </Box>
@@ -143,15 +142,17 @@ const ContactOption: React.FunctionComponent<ContactOptionProps> = ({
   selectedColor,
   iconMargin,
 }) => {
+  const handlePress = () => {
+    handleItemClick(item);
+  };
+
   return (
     <RectButton
       activeOpacity={0.07}
       marginBottom={isLastItem ? '40' : '0'}
       rippleColor={selectedColor}
       underlayColor="green"
-      onPress={() => {
-        handleItemClick(item);
-      }}
+      onPress={handlePress}
     >
       <Box
         accessibilityRole="button"

@@ -12,6 +12,42 @@ interface CraftedLogoProps {
   containerProps?: BoxProps<Theme>;
 }
 
+export const CraftedLogoSmallest: React.FunctionComponent<CraftedLogoProps> = ({
+  hasText,
+  containerProps,
+}) => {
+  return (
+    <Box alignItems="center" flexDirection="row" gap="2" {...containerProps}>
+      {hasText && <Text>halver</Text>}
+
+      <Box>
+        <AnimatedBox
+          backgroundColor="logoApricot"
+          entering={FadeInRight.springify().duration(2000)}
+          height={4.7}
+          marginLeft="0.75"
+          width={12.5}
+        />
+        <AnimatedBox
+          backgroundColor="logoCasal"
+          entering={FadeInLeft.springify().duration(2000)}
+          height={4.7}
+          marginLeft="1.5"
+          marginTop=".75"
+          width={12.5}
+        />
+        <Box
+          backgroundColor="background"
+          height="100%"
+          left={11}
+          position="absolute"
+          width={0.75}
+        />
+      </Box>
+    </Box>
+  );
+};
+
 export const CraftedLogoSmall: React.FunctionComponent<CraftedLogoProps> = ({
   hasText,
   containerProps,

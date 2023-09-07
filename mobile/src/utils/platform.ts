@@ -1,4 +1,4 @@
-import { Appearance, Platform, useColorScheme } from 'react-native';
+import { Appearance, Linking, Platform, useColorScheme } from 'react-native';
 import { useMMKVString } from 'react-native-mmkv';
 
 import { allMMKVKeys, storage } from '@/lib/mmkv';
@@ -25,4 +25,12 @@ export const useIsDarkModeSelected = () => {
   const isSystemDarkMode = displayMode === 'system' && colorScheme === 'dark';
 
   return displayMode === 'dark' || isSystemDarkMode;
+};
+
+export const openAppSettings = () => {
+  if (Platform.OS === 'ios') {
+    Linking.openURL('app-settings:');
+  } else {
+    Linking.openSettings();
+  }
 };

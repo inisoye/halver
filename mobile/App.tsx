@@ -67,6 +67,15 @@ export default function App() {
 
   const isDarkMode = useIsDarkModeSelected();
 
+  React.useEffect(() => {
+    async function hideSplash() {
+      if (fontsLoaded) {
+        await SplashScreen.hideAsync();
+      }
+    }
+    hideSplash();
+  }, [fontsLoaded]);
+
   if (!fontsLoaded) {
     return null;
   }

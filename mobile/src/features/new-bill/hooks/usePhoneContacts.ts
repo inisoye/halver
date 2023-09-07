@@ -11,17 +11,16 @@ const getPhoneContacts = async () => {
       fields: [Contacts.Fields.PhoneNumbers],
     });
 
-    return data || [];
+    return { status, contacts: data };
   }
 
-  return [];
+  return { status, contacts: [] };
 };
 
 export function usePhoneContacts() {
   return useQuery({
     queryKey: allStaticQueryKeys.getPhoneContacts,
     queryFn: getPhoneContacts,
-    staleTime: 10 * (60 * 1000), // 10 mins
     cacheTime: 15 * (60 * 1000), // 15 mins
   });
 }

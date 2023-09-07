@@ -382,6 +382,8 @@ export const darkColors = {
 export const tailwindSpacing = {
   auto: 'auto',
   '0': 0,
+  '.5': 0.5,
+  '.75': 0.75,
   px: 1,
   'px.5': 1.5,
   '0.5': 2,
