@@ -236,6 +236,7 @@ export const BillsByStatus = ({ route, navigation }: BillsByStatusProps) => {
           ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
           renderItem={renderItem}
           onEndReached={loadMoreBills}
+          onEndReachedThreshold={1.5}
         />
       </GestureHandlerRootView>
     </Screen>

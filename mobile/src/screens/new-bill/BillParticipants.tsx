@@ -76,7 +76,7 @@ export const BillParticipants = ({ navigation }: BillParticipantsProps) => {
       {contactsPermissionDenied && (
         <Box flex={1}>
           <Box flex={1} paddingHorizontal="6">
-            <Text marginBottom="4">
+            <Text marginBottom="6">
               To select participants on your bill, please grant Halver access to your
               contacts.
             </Text>
@@ -104,10 +104,18 @@ export const BillParticipants = ({ navigation }: BillParticipantsProps) => {
                 textAlign="center"
                 variant="sm"
               >
-                Go to settings and
+                <Text
+                  color="textCasal"
+                  fontFamily="Halver-Semibold"
+                  variant="sm"
+                  onPress={openAppSettings}
+                >
+                  Click here
+                </Text>{' '}
+                to go to settings and
                 {isIOS()
-                  ? ' toggle the contacts option as shown above'
-                  : ' select allow as shown above'}
+                  ? ' toggle the contacts option as shown above.'
+                  : ' select allow as shown above.'}
               </DynamicText>
             </Box>
           </Box>

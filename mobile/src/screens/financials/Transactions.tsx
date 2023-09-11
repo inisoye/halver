@@ -230,6 +230,7 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
             ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
             renderItem={renderItem}
             onEndReached={loadMoreTransactions}
+            onEndReachedThreshold={1.5}
           />
         </GestureHandlerRootView>
       </Screen>

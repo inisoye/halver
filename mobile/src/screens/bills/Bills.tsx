@@ -297,6 +297,7 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ navigation }) => {
           ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
           renderItem={renderItem}
           onEndReached={loadMoreBills}
+          onEndReachedThreshold={1.5}
         />
       </GestureHandlerRootView>
     </Screen>

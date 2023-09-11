@@ -658,7 +658,7 @@ const darkTheme: Theme = {
     textLight: darkColors.gray11,
     textLighter: darkColors.gray10,
     textApricot: brandColors.apricot6,
-    textCasal: brandColors.casal5,
+    textCasal: brandColors.casal4,
 
     buttonApricot: brandColors.apricot6,
     buttonCasal: brandColors.casal7,

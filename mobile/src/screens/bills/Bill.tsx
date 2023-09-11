@@ -439,9 +439,11 @@ export const Bill = ({ navigation, route }: BillProps) => {
 
                 {canCancelBill && <CancelBillModal billId={id} />}
 
-                <DynamicText color="textLight" textAlign="center" variant="xs">
-                  Bill created on {!!created && new Date(created).toDateString()}
-                </DynamicText>
+                {!!created && (
+                  <DynamicText color="textLight" textAlign="center" variant="xs">
+                    Bill created on {new Date(created).toDateString()}
+                  </DynamicText>
+                )}
               </Box>
             )}
           </Box>

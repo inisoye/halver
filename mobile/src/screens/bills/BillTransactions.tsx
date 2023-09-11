@@ -241,6 +241,7 @@ export const BillTransactions: React.FunctionComponent<BillTransactionsProps> = 
             ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
             renderItem={renderItem}
             onEndReached={loadMoreTransactions}
+            onEndReachedThreshold={1.5}
           />
         </GestureHandlerRootView>
       </Screen>

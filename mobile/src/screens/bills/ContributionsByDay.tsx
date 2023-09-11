@@ -164,6 +164,7 @@ export const ContributionsByDay: React.FunctionComponent<ContributionsByDayProps
           ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
           renderItem={renderItem}
           onEndReached={loadMoreContributions}
+          onEndReachedThreshold={1.5}
         />
       </GestureHandlerRootView>
     </Screen>

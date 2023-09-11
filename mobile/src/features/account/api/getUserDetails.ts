@@ -45,5 +45,7 @@ export const useUserDetails = () => {
         );
       }
     },
+    staleTime: 10 * (60 * 1000), // 10 mins
+    cacheTime: 15 * (60 * 1000), // 15 mins
   });
 };

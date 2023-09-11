@@ -35,7 +35,7 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
 
   const screenInfo = React.useMemo(() => {
     const peculiarScreenNames = {
-      Home: `Hello ${userDetails?.firstName}`,
+      Home: `Hello ${userDetails?.firstName ?? ''}`,
       Financials: 'Select an option',
       Account: 'Your account',
     };

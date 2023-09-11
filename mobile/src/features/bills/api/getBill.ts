@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, type QueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
 
 import { apiClient } from '@/lib/axios';
@@ -20,6 +20,13 @@ export const getBill = async (id: string) => {
 
 export const useBill = (id: string) => {
   return useQuery({
+    queryKey: [...allStaticQueryKeys.getBill, id],
+    queryFn: () => getBill(id),
+  });
+};
+
+export const prefetchBill = async (queryClient: QueryClient, id: string) => {
+  await queryClient.prefetchQuery({
     queryKey: [...allStaticQueryKeys.getBill, id],
     queryFn: () => getBill(id),
   });
