@@ -100,7 +100,7 @@ const ContactAvatarAndName: React.FunctionComponent<ContactAvatarAndNameProps> =
         </Box>
 
         <Box flexShrink={1}>
-          <DynamicText flexShrink={1} fontSize={15} lineHeight={20} numberOfLines={1}>
+          <DynamicText flexShrink={1} lineHeight={20} numberOfLines={1}>
             {item?.fullName}
           </DynamicText>
           <DynamicText

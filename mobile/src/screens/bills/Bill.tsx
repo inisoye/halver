@@ -382,16 +382,11 @@ export const Bill = ({ navigation, route }: BillProps) => {
           >
             {!!notes && (
               <Box gap="3">
-                <Text color="textLight" fontSize={13} variant="sm">
+                <Text color="textLight" variant="sm">
                   {notes}
                 </Text>
 
-                <Text
-                  color="textLight"
-                  fontFamily="Halver-Semibold"
-                  fontSize={13}
-                  variant="sm"
-                >
+                <Text color="textLight" fontFamily="Halver-Semibold" variant="sm">
                   — {creator?.firstName} (bill creator)
                 </Text>
               </Box>

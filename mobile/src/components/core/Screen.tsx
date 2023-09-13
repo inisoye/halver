@@ -20,7 +20,7 @@ interface ScreenHeaderProps {
   rightComponent?: React.ReactNode;
 }
 
-const screensWithNoBackButton = ['Home'];
+const screensWithNoBackButton = ['Home', 'Financials', 'Bills', 'Account'];
 const screensWithLightHeading = [''];
 
 const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({

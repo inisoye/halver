@@ -139,6 +139,7 @@ const SelectionItem: React.FunctionComponent<SelectionItemProps> = ({
       flexDirection="row"
       justifyContent="space-between"
       paddingHorizontal="4"
+      paddingLeft="3"
       paddingVertical="2"
     >
       <SelectionAvatarAndName

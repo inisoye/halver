@@ -58,15 +58,11 @@ const ParticipantAvatarAndName: React.FunctionComponent<ParticipantAvatarAndName
 
         <Box gap="1" width="65%">
           <Box flexDirection="row" justifyContent="flex-start">
-            <DynamicText
-              fontSize={15}
-              maxWidth={isCreditor ? '70%' : undefined}
-              numberOfLines={1}
-            >
+            <DynamicText maxWidth={isCreditor ? '70%' : undefined} numberOfLines={1}>
               {name}
             </DynamicText>
             {isCreditor && (
-              <Text color="green11" fontSize={15} numberOfLines={1}>
+              <Text color="green11" numberOfLines={1}>
                 {' '}
                 - Creditor
               </Text>

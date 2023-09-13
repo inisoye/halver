@@ -80,6 +80,15 @@ export const IntroMarquee: React.FunctionComponent = () => {
 
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
 
+  /**
+   * TS errors are ignored in the following lines due to type mismatch issues from Reanimated.
+   * https://github.com/software-mansion/react-native-reanimated/issues/4548
+   * https://github.com/software-mansion/react-native-reanimated/issues/4645
+   * Review later if fixes are made.
+   */
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const cardAnimatedStyle = useAnimatedStyle(() => {
     // -55 is used here as an offset. It ensures the slider covers the screen at the animation start.
     const yValue = interpolate(

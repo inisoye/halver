@@ -43,8 +43,8 @@ const BillRecentContributionItem: React.FunctionComponent<
       onPress={handleTransactionItemClick}
     >
       <Box alignItems="center" flexDirection="row" gap="4">
-        <Box gap="0.5">
-          <Text fontFamily="Halver-Semibold" fontSize={13} variant="sm">
+        <Box gap="1">
+          <Text fontFamily="Halver-Semibold" variant="xs2">
             From {payingUser?.firstName}
           </Text>
 

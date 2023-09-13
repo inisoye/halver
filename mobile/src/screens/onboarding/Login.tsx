@@ -79,7 +79,7 @@ export const Login: React.FunctionComponent = () => {
         <Button
           backgroundColor="white"
           disabled={!request || isSocialLoginLoading}
-          marginBottom="8"
+          marginBottom="16"
           marginLeft="auto"
           marginRight="auto"
           maxWidth="88%"

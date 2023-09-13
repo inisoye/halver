@@ -557,6 +557,10 @@ const theme = createTheme({
       fontSize: 12,
       lineHeight: 15,
     },
+    xs2: {
+      fontSize: 13,
+      lineHeight: 15,
+    },
     sm: {
       fontSize: 14,
       lineHeight: 17.85,

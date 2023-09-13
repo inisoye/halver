@@ -1,4 +1,5 @@
 {
   "editor.rulers": [100],
-  "dotenv.enableAutocloaking": false
+  "dotenv.enableAutocloaking": false,
+  "json.schemaDownload.enable": true
 }
