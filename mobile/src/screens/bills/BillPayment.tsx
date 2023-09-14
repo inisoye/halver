@@ -18,7 +18,7 @@ import { useUserDetails } from '@/features/account';
 import { DefaultCardSelectorModal, useUpdateBillAction } from '@/features/bills';
 import { CardIcon } from '@/features/financials';
 import { useBooleanStateControl, useFullScreenLoader } from '@/hooks';
-import { GoToArrow } from '@/icons';
+import { GoBackArrow } from '@/icons';
 import type { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 import {
   convertKebabAndSnakeToTitleCase,
@@ -129,7 +129,7 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
 
   useFullScreenLoader({
     isLoading: isBillUpdateLoading,
-    message: 'Processing your payment...',
+    message: 'Processing your selection...',
   });
 
   const { data: userDetails } = useUserDetails();
@@ -337,17 +337,12 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
           </DynamicText>
 
           <Button backgroundColor="green8" onPress={handleGoToBillWithUpdate}>
-            <Box
-              flexDirection="row"
-              gap="4"
-              justifyContent="space-between"
-              width="100%"
-            >
+            <Box alignItems="center" flexDirection="row" gap="4" width="100%">
+              <GoBackArrow isLight />
+
               <Text color="green12" fontFamily="Halver-Semibold">
                 Go back to bill
               </Text>
-
-              <GoToArrow />
             </Box>
           </Button>
         </Box>
@@ -355,7 +350,7 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
 
       <Modal
         closeModal={closeOptOutConfirmationModal}
-        headingText="You have successfully opted out of this bill"
+        headingText="You have successfully opted out of this bill."
         isLoaderOpen={false}
         isModalOpen={isOptOutConfirmationModalOpen}
         hasLargeHeading
@@ -366,25 +361,17 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
           paddingHorizontal="6"
           paddingTop="6"
         >
-          <DynamicText color="textLight" marginBottom="3" maxWidth="85%" variant="sm">
+          <DynamicText color="textLight" marginBottom="6" maxWidth="85%" variant="sm">
             The bill's creditor and creator will be notified.
           </DynamicText>
 
-          <Button
-            backgroundColor="modalElementBackground"
-            onPress={handleGoToBillWithUpdate}
-          >
-            <Box
-              flexDirection="row"
-              gap="4"
-              justifyContent="space-between"
-              width="100%"
-            >
-              <Text color="buttonTextNeutral" fontFamily="Halver-Semibold">
+          <Button backgroundColor="buttonCasal" onPress={handleGoToBillWithUpdate}>
+            <Box alignItems="center" flexDirection="row" gap="4" width="100%">
+              <GoBackArrow isLight />
+
+              <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
                 Go back to bill
               </Text>
-
-              <GoToArrow />
             </Box>
           </Button>
         </Box>

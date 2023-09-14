@@ -135,7 +135,9 @@ const SelectionItem: React.FunctionComponent<SelectionItemProps> = ({
       backgroundColor="modalElementBackground"
       borderRadius="md"
       columnGap="3"
-      entering={FadeInDown.duration(350).delay((index + 1) * 100)}
+      entering={FadeInDown.duration(350)
+        .springify()
+        .delay((index + 1) * 100)}
       flexDirection="row"
       justifyContent="space-between"
       paddingHorizontal="4"

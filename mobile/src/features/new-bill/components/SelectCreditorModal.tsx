@@ -56,7 +56,9 @@ const SelectCreditorOption: React.FunctionComponent<SelectCreditorOptionProps> =
 
   return (
     <Pressable
-      entering={FadeInDown.duration(350).delay((index + 2) * 150)}
+      entering={FadeInDown.duration(350)
+        .springify()
+        .delay((index + 2) * 150)}
       onPress={handleCreditorSelection}
     >
       {profileImageUrl ? (

@@ -449,7 +449,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
         <Box
           backgroundColor="background"
           borderTopColor="borderDefault"
-          borderTopWidth={0.5}
+          borderTopWidth={0.3}
           paddingBottom={buttonBottomMargin}
           paddingHorizontal="6"
           paddingTop="3"

@@ -249,7 +249,7 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
                   : undefined
               }
             >
-              <Text fontFamily="Halver-Semibold" marginBottom="3">
+              <Text fontFamily="Halver-Semibold" marginBottom="3" variant="lg">
                 Is this you?
               </Text>
               <Text color="textLight" marginBottom="6" variant="sm">

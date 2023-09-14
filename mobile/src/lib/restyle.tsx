@@ -648,11 +648,11 @@ const darkTheme: Theme = {
     background: darkColors.gray1,
     elementBackground: darkColors.gray3,
 
-    borderDefault: darkColors.gray5,
+    borderDefault: darkColors.grayA5,
     borderDarker: darkColors.gray5,
 
     bottomTabBackground: darkColors.gray1,
-    bottomTabBorder: darkColors.gray8,
+    bottomTabBorder: darkColors.grayA5,
     bottomTabText: darkColors.gray9,
 
     textDefault: darkColors.gray12,
