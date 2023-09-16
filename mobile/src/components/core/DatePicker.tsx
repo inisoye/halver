@@ -109,10 +109,6 @@ const DateBlock: React.FC<DateBlockProps> = ({
   const scrollToSelections = () => {
     snapScrollToIndex(value - digits[0]);
   };
-  React.useEffect(() => {
-    scrollToSelections();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrollRef.current]);
 
   // Add debounce to prevent effects of momentum scroll end overfiring on Android (and causing rerenders)
   const debouncedOnChange = React.useRef(

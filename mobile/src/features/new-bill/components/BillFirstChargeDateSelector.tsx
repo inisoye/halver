@@ -9,12 +9,13 @@ import {
   Modal,
   Text,
   TextFieldLabel,
+  TouchableOpacity,
 } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { SelectCaret } from '@/icons';
 import { BillDetailsFormValues } from '@/screens';
 import { marginAutoStyles } from '@/theme';
-import { isAndroid } from '@/utils';
+import { isAndroid, isIOS } from '@/utils';
 
 interface FirstChargeDateSelectorButtonProps {
   openModal: () => void;
@@ -27,11 +28,14 @@ const FirstChargeDateSelectorButton: React.FunctionComponent<
   const firstChargeDate = useWatch({ control, name: 'firstChargeDate' });
 
   return (
-    <Button
+    <TouchableOpacity
+      alignItems="center"
       backgroundColor="inputBackground"
+      borderRadius="base"
+      flexDirection="row"
       marginTop="1.5"
       paddingHorizontal="4"
-      paddingVertical="3"
+      paddingVertical={isIOS() ? '3' : '3'}
       onPress={openModal}
     >
       <Box alignItems="center" flexDirection="row" gap="2">
@@ -41,7 +45,7 @@ const FirstChargeDateSelectorButton: React.FunctionComponent<
       </Box>
 
       <SelectCaret style={marginAutoStyles['ml-auto']} />
-    </Button>
+    </TouchableOpacity>
   );
 };
 

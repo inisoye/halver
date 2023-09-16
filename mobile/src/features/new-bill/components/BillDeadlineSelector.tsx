@@ -9,6 +9,7 @@ import {
   Modal,
   Text,
   TextFieldLabel,
+  TouchableOpacity,
 } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { SelectCaret } from '@/icons';
@@ -28,8 +29,11 @@ const DeadlineSelectorButton: React.FunctionComponent<DeadlineSelectorButtonProp
   const deadline = useWatch({ control, name: 'deadline' });
 
   return (
-    <Button
+    <TouchableOpacity
+      alignItems="center"
       backgroundColor="inputBackground"
+      borderRadius="base"
+      flexDirection="row"
       marginTop="1.5"
       paddingHorizontal="4"
       paddingVertical={isIOS() ? '3' : '3'}
@@ -42,7 +46,7 @@ const DeadlineSelectorButton: React.FunctionComponent<DeadlineSelectorButtonProp
       </Box>
 
       <SelectCaret style={marginAutoStyles['ml-auto']} />
-    </Button>
+    </TouchableOpacity>
   );
 };
 
@@ -62,11 +66,15 @@ export const BillDeadlineSelector: React.FunctionComponent<
     setFalse: closeModal,
   } = useBooleanStateControl();
 
+  const handleOpenModal = () => {
+    openModal();
+  };
+
   return (
     <>
       <TextFieldLabel label="Select a deadline" />
 
-      <DeadlineSelectorButton control={control} openModal={openModal} />
+      <DeadlineSelectorButton control={control} openModal={handleOpenModal} />
 
       <Modal
         closeModal={closeModal}
