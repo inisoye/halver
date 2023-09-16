@@ -307,75 +307,84 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
         </Button>
       </Box>
 
-      <SuccessModal
-        closeModal={closeSuccessModal}
-        hasCloseButton={false}
-        headingText={`Great! ${
-          isBillRecurring
-            ? 'Your subscription has now been created'
-            : 'Your payment is now being finalized.'
-        }`}
-        isLoaderOpen={false}
-        isModalOpen={isSuccessModalOpen}
-        hasLargeHeading
-      >
-        <Box
-          backgroundColor="successModalBackground"
-          paddingBottom="8"
-          paddingHorizontal="6"
-          paddingTop="6"
-        >
-          <DynamicText
-            color="green12"
-            fontFamily="Halver-Semibold"
-            marginBottom="6"
-            width="75%"
+      {!isBillUpdateLoading && (
+        <>
+          <SuccessModal
+            closeModal={closeSuccessModal}
+            hasCloseButton={false}
+            headingText={`Great! ${
+              isBillRecurring
+                ? 'Your subscription has now been created'
+                : 'Your payment is now being finalized.'
+            }`}
+            isLoaderOpen={false}
+            isModalOpen={isSuccessModalOpen}
+            hasLargeHeading
           >
-            {isBillRecurring
-              ? 'We will notify you after every successful charge.'
-              : 'We will notify you once your contribution has been finalized.'}
-          </DynamicText>
+            <Box
+              backgroundColor="successModalBackground"
+              paddingBottom="8"
+              paddingHorizontal="6"
+              paddingTop="6"
+            >
+              <DynamicText
+                color="green12"
+                fontFamily="Halver-Semibold"
+                marginBottom="6"
+                width="75%"
+              >
+                {isBillRecurring
+                  ? 'We will notify you after every successful charge.'
+                  : 'We will notify you once your contribution has been finalized.'}
+              </DynamicText>
 
-          <Button backgroundColor="green8" onPress={handleGoToBillWithUpdate}>
-            <Box alignItems="center" flexDirection="row" gap="4" width="100%">
-              <GoBackArrow isLight />
+              <Button backgroundColor="green8" onPress={handleGoToBillWithUpdate}>
+                <Box alignItems="center" flexDirection="row" gap="4" width="100%">
+                  <GoBackArrow isLight />
 
-              <Text color="green12" fontFamily="Halver-Semibold">
-                Go back to bill
-              </Text>
+                  <Text color="green12" fontFamily="Halver-Semibold">
+                    Go back to bill
+                  </Text>
+                </Box>
+              </Button>
             </Box>
-          </Button>
-        </Box>
-      </SuccessModal>
+          </SuccessModal>
 
-      <Modal
-        closeModal={closeOptOutConfirmationModal}
-        headingText="You have successfully opted out of this bill."
-        isLoaderOpen={false}
-        isModalOpen={isOptOutConfirmationModalOpen}
-        hasLargeHeading
-      >
-        <Box
-          backgroundColor="modalBackground"
-          paddingBottom="8"
-          paddingHorizontal="6"
-          paddingTop="6"
-        >
-          <DynamicText color="textLight" marginBottom="6" maxWidth="85%" variant="sm">
-            The bill's creditor and creator will be notified.
-          </DynamicText>
+          <Modal
+            closeModal={closeOptOutConfirmationModal}
+            headingText="You have successfully opted out of this bill."
+            isLoaderOpen={false}
+            isModalOpen={isOptOutConfirmationModalOpen}
+            hasLargeHeading
+          >
+            <Box
+              backgroundColor="modalBackground"
+              paddingBottom="8"
+              paddingHorizontal="6"
+              paddingTop="6"
+            >
+              <DynamicText
+                color="textLight"
+                marginBottom="6"
+                maxWidth="85%"
+                variant="sm"
+              >
+                The bill's creditor and creator will be notified.
+              </DynamicText>
 
-          <Button backgroundColor="buttonCasal" onPress={handleGoToBillWithUpdate}>
-            <Box alignItems="center" flexDirection="row" gap="4" width="100%">
-              <GoBackArrow isLight />
+              <Button backgroundColor="buttonCasal" onPress={handleGoToBillWithUpdate}>
+                <Box alignItems="center" flexDirection="row" gap="4" width="100%">
+                  <GoBackArrow isLight />
 
-              <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
-                Go back to bill
-              </Text>
+                  <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
+                    Go back to bill
+                  </Text>
+                </Box>
+              </Button>
             </Box>
-          </Button>
-        </Box>
-      </Modal>
+          </Modal>
+        </>
+      )}
     </Screen>
   );
 };

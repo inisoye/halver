@@ -320,43 +320,45 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
         </Text>
       </KeyboardStickyButton>
 
-      <SuccessModal
-        closeModal={closeSuccessModal}
-        hasCloseButton={false}
-        headingText="Your bill was successfully created"
-        isLoaderOpen={false}
-        isModalOpen={isSuccessModalOpen}
-        hasLargeHeading
-      >
-        <Box
-          backgroundColor="successModalBackground"
-          paddingBottom="8"
-          paddingHorizontal="6"
-          paddingTop="6"
+      {!isCreateBillLoading && (
+        <SuccessModal
+          closeModal={closeSuccessModal}
+          hasCloseButton={false}
+          headingText="Your bill was successfully created"
+          isLoaderOpen={false}
+          isModalOpen={isSuccessModalOpen}
+          hasLargeHeading
         >
-          <Text color="green12" fontFamily="Halver-Semibold" marginBottom="3">
-            We have attempted to notify all the bill’s participants
-          </Text>
-          <Text color="green11" marginBottom="6" variant="sm">
-            You can always send additional notifications later.
-          </Text>
+          <Box
+            backgroundColor="successModalBackground"
+            paddingBottom="8"
+            paddingHorizontal="6"
+            paddingTop="6"
+          >
+            <Text color="green12" fontFamily="Halver-Semibold" marginBottom="3">
+              We have attempted to notify all the bill’s participants
+            </Text>
+            <Text color="green11" marginBottom="6" variant="sm">
+              You can always send additional notifications later.
+            </Text>
 
-          <Button backgroundColor="green8" onPress={handleGoToBill}>
-            <Box
-              flexDirection="row"
-              gap="4"
-              justifyContent="space-between"
-              width="100%"
-            >
-              <Text color="green12" fontFamily="Halver-Semibold">
-                Go to bill
-              </Text>
+            <Button backgroundColor="green8" onPress={handleGoToBill}>
+              <Box
+                flexDirection="row"
+                gap="4"
+                justifyContent="space-between"
+                width="100%"
+              >
+                <Text color="green12" fontFamily="Halver-Semibold">
+                  Go to bill
+                </Text>
 
-              <GoToArrow />
-            </Box>
-          </Button>
-        </Box>
-      </SuccessModal>
+                <GoToArrow />
+              </Box>
+            </Button>
+          </Box>
+        </SuccessModal>
+      )}
     </Screen>
   );
 };

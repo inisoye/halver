@@ -48,12 +48,20 @@ export const ProfileNameAndUsername: React.FunctionComponent<
 
   return (
     <AnimatedBox
-      backgroundColor="buttonCasal"
+      backgroundColor="elementBackground"
       borderRadius="lg"
+      elevation={1}
       flexGrow={1}
       gap="3"
       justifyContent="space-between"
       padding="4"
+      shadowColor="black"
+      shadowOffset={{
+        width: 0.2,
+        height: 0.2,
+      }}
+      shadowOpacity={0.2}
+      shadowRadius={0.3}
       style={animatedStyle}
     >
       <DynamicText

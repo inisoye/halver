@@ -145,7 +145,7 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
             marginBottom="3.5"
             paddingHorizontal="6"
           >
-            <Box paddingVertical="2" width="46.3%">
+            <Box paddingVertical="2" width="46%">
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -160,7 +160,7 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
               </Text>
             </Box>
 
-            <Box paddingVertical="2" width="46.3%">
+            <Box paddingVertical="2" width="46%">
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -175,7 +175,7 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
               </Text>
             </Box>
 
-            <Box paddingVertical="2" width="46.3%">
+            <Box paddingVertical="2" width="46%">
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -190,7 +190,7 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
               </Text>
             </Box>
 
-            <Box opacity={'accountName' ? 1 : 0.5} paddingVertical="2" width="46.3%">
+            <Box opacity={'accountName' ? 1 : 0.5} paddingVertical="2" width="46%">
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -210,7 +210,7 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
               </Text>
             </Box>
 
-            <Box opacity={'accountName' ? 1 : 0.5} paddingVertical="2" width="46.3%">
+            <Box opacity={'accountName' ? 1 : 0.5} paddingVertical="2" width="46%">
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -230,7 +230,7 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
               </Text>
             </Box>
 
-            <Box opacity={'accountName' ? 1 : 0.5} paddingVertical="2" width="46.3%">
+            <Box opacity={'accountName' ? 1 : 0.5} paddingVertical="2" width="46%">
               <Text
                 color="textLight"
                 marginBottom="0.75"

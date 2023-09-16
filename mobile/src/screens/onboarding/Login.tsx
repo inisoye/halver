@@ -15,7 +15,7 @@ import {
 import { Google as GoogleIcon } from '@/icons';
 import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys } from '@/lib/mmkv';
-import { handleAxiosErrorAlertAndHaptics } from '@/utils';
+import { handleAxiosErrorAlertAndHaptics, isIOS } from '@/utils';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -79,7 +79,7 @@ export const Login: React.FunctionComponent = () => {
         <Button
           backgroundColor="white"
           disabled={!request || isSocialLoginLoading}
-          marginBottom="16"
+          marginBottom={isIOS() ? '16' : '8'}
           marginLeft="auto"
           marginRight="auto"
           maxWidth="88%"

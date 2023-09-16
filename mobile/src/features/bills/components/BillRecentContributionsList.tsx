@@ -130,7 +130,7 @@ export const BillRecentContributionsList: React.FunctionComponent<
           paddingTop="3.5"
           rowGap="1"
         >
-          <Box paddingVertical="2" width="46.3%">
+          <Box paddingVertical="2" width="46%">
             <Text color="textLight" marginBottom="0.75" numberOfLines={1} variant="xs">
               Completed on
             </Text>
@@ -139,7 +139,7 @@ export const BillRecentContributionsList: React.FunctionComponent<
               {!!created && new Date(created).toDateString()}
             </Text>
           </Box>
-          <Box paddingVertical="2" width="46.3%">
+          <Box paddingVertical="2" width="46%">
             <Text color="textLight" marginBottom="0.75" numberOfLines={1} variant="xs">
               Creditor
             </Text>
@@ -148,7 +148,7 @@ export const BillRecentContributionsList: React.FunctionComponent<
               {receivingUser?.fullName}
             </Text>
           </Box>
-          <Box paddingVertical="2" width="46.3%">
+          <Box paddingVertical="2" width="46%">
             <Text color="textLight" marginBottom="0.75" numberOfLines={1} variant="xs">
               Amount
             </Text>
@@ -157,7 +157,7 @@ export const BillRecentContributionsList: React.FunctionComponent<
               {!!contribution && convertNumberToNaira(Number(contribution))}
             </Text>
           </Box>
-          <Box paddingVertical="2" width="46.3%">
+          <Box paddingVertical="2" width="46%">
             <Text color="textLight" marginBottom="0.75" numberOfLines={1} variant="xs">
               Amount with fees
             </Text>

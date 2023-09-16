@@ -55,7 +55,7 @@ const ActionStatusButton: React.FunctionComponent<ActionStatusButtonProps> = ({
     return (
       <Skeleton
         borderRadius="lg"
-        flexBasis="48.2%"
+        flexBasis="48%"
         flexDirection="row"
         flexGrow={1}
         gap="4"
@@ -93,7 +93,7 @@ const ActionStatusButton: React.FunctionComponent<ActionStatusButtonProps> = ({
       borderRadius="lg"
       disabled={disabled}
       elevation={1}
-      flexBasis="48.2%"
+      flexBasis="48%"
       flexDirection="row"
       flexGrow={1}
       gap="4"
@@ -141,7 +141,7 @@ const NewBillButton: React.FunctionComponent<NewBillButtonProps> = ({ navigation
       backgroundColor="newBillActionStatusBackground"
       borderRadius="lg"
       elevation={1}
-      flexBasis="48.2%"
+      flexBasis="48%"
       flexDirection="row"
       flexGrow={1}
       gap="4"

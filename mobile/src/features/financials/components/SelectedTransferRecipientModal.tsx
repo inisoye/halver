@@ -157,7 +157,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
             marginBottom="3.5"
             paddingHorizontal="6"
           >
-            <Box paddingVertical="2" width="46.3%">
+            <Box paddingVertical="2" width="46%">
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -172,7 +172,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
               </Text>
             </Box>
 
-            <Box opacity={accountNumber ? 1 : 0.5} paddingVertical="2" width="46.3%">
+            <Box opacity={accountNumber ? 1 : 0.5} paddingVertical="2" width="46%">
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -192,7 +192,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
               </Text>
             </Box>
 
-            <Box opacity={accountName ? 1 : 0.5} paddingVertical="2" width="46.3%">
+            <Box opacity={accountName ? 1 : 0.5} paddingVertical="2" width="46%">
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -212,7 +212,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
               </Text>
             </Box>
 
-            <Box opacity={created ? 1 : 0.5} paddingVertical="2" width="46.3%">
+            <Box opacity={created ? 1 : 0.5} paddingVertical="2" width="46%">
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -244,7 +244,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
               onPress={onDeleteCard}
             >
               <Text color="buttonTextDanger" fontFamily="Halver-Semibold">
-                {isDeleteTransferRecipientLoading ? 'Loading' : 'Delete recipient'}
+                {isDeleteTransferRecipientLoading ? 'Loading' : 'Delete'}
               </Text>
             </Button>
 
