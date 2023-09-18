@@ -1,6 +1,7 @@
 from django.urls import include, path
 
 from accounts.api.views import (
+    ExpoPushTokenUpdateAPIView,
     GoogleLogin,
     ProfileImageUploadAPIView,
     RegisteredContactsListAPIView,
@@ -24,6 +25,11 @@ urlpatterns = [
         "accounts/profile-image/",
         ProfileImageUploadAPIView.as_view(),
         name="profile-image-upload",
+    ),
+    path(
+        "accounts/expo-push-token/",
+        ExpoPushTokenUpdateAPIView.as_view(),
+        name="expo-push-token-update",
     ),
     path(
         "accounts/registered-contacts/",

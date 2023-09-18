@@ -122,3 +122,9 @@ class RegisteredContactsSerializer(serializers.ModelSerializer):
             "uuid",
         )
         read_only_fields = fields
+
+
+class ExpoPushTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ("expo_push_token",)

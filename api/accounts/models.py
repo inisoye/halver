@@ -53,7 +53,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    """Custom user model built Django's default model.
+    """Custom user model built on Django's default model.
 
     Args:
         AbstractBaseUser
@@ -129,6 +129,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         editable=False,
         default=uuid.uuid4,
         verbose_name="Public identifier",
+    )
+    expo_push_token = models.CharField(
+        max_length=70,
+        null=True,
+        blank=True,
+        unique=True,
+        error_messages={
+            "unique": _("This token already exists for a different user."),
+        },
     )
 
     objects = CustomUserManager()

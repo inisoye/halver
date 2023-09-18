@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.api.serializers import (
+    ExpoPushTokenSerializer,
     ProfileImageSerializer,
     RegisteredContactsSerializer,
 )
@@ -84,3 +85,26 @@ class RegisteredContactsListAPIView(APIView):
 
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
+
+
+class ExpoPushTokenUpdateAPIView(APIView):
+    def patch(self, request):
+        user = self.request.user
+
+        existing_token = user.expo_push_token
+
+        serializer = ExpoPushTokenSerializer(user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        new_token = serializer.validated_data.get("expo_push_token")
+
+        # Check if the new token is different from the existing one
+        if new_token != existing_token:
+            user.expo_push_token = new_token
+            user.save()
+            return Response(
+                {"detail": "Expo push token updated successfully"},
+                status=status.HTTP_200_OK,
+            )
+
+        return Response(status=status.HTTP_304_NOT_MODIFIED)
