@@ -88,6 +88,14 @@ class RegisteredContactsListAPIView(APIView):
 
 
 class ExpoPushTokenUpdateAPIView(APIView):
+    """API view for updating the Expo push token of a logged-in user.
+
+    Accepts PATCH requests.
+    """
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ExpoPushTokenSerializer
+
     def patch(self, request):
         user = self.request.user
 
@@ -107,4 +115,4 @@ class ExpoPushTokenUpdateAPIView(APIView):
                 status=status.HTTP_200_OK,
             )
 
-        return Response(status=status.HTTP_304_NOT_MODIFIED)
+        return Response(status=status.HTTP_204_NO_CONTENT)
