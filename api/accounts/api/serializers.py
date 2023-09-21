@@ -63,6 +63,7 @@ class CustomUserDefaultTransferRecipientSerializer(serializers.ModelSerializer):
             "account_number",
             "authorization_code",
             "bank_code",
+            "bank_logo",
             "bank_name",
             "created",
             "email",
