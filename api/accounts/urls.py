@@ -3,6 +3,7 @@ from django.urls import include, path
 from accounts.api.views import (
     ExpoPushTokenUpdateAPIView,
     GoogleLogin,
+    MultiplePushNotificationsView,
     ProfileImageUploadAPIView,
     RegisteredContactsListAPIView,
 )
@@ -39,5 +40,10 @@ urlpatterns = [
     path(
         "allauth/",
         include("allauth.urls"),
+    ),
+    path(
+        "send_multiple_push/",
+        MultiplePushNotificationsView.as_view(),
+        name="multiple_push_notifications",
     ),
 ]

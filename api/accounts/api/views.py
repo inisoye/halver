@@ -15,6 +15,7 @@ from accounts.api.serializers import (
 )
 from accounts.models import CustomUser
 from core.utils.responses import format_exception
+from libraries.notifications.base import send_push_messages
 
 env = Env()
 env.read_env()
@@ -116,3 +117,18 @@ class ExpoPushTokenUpdateAPIView(APIView):
             )
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class MultiplePushNotificationsView(APIView):
+    def post(self, request, *args, **kwargs):
+        # Retrieve data from the request, which is a list of dictionaries
+        push_parameters_list = request.data.get("push_parameters_list", [])
+
+        # Send multiple push notifications
+        if push_parameters_list:
+            response = send_push_messages(push_parameters_list)
+
+            if response:
+                return Response({"message": "Push notifications sent successfully"})
+
+        return Response({"message": "Invalid request"}, status=400)
