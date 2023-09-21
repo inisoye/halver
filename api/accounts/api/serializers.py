@@ -9,6 +9,7 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
+from financials.data.logos import bank_logo_index
 from financials.models import TransferRecipient, UserCard
 
 CustomUser = get_user_model()
@@ -57,6 +58,16 @@ class CustomUserDefaultCardSerializer(serializers.ModelSerializer):
 
 
 class CustomUserDefaultTransferRecipientSerializer(serializers.ModelSerializer):
+    bank_logo = serializers.SerializerMethodField()
+
+    def get_bank_logo(self, obj):
+        if obj.recipient_type == TransferRecipient.RecipientChoices.ACCOUNT:
+            bank_code = obj.bank_code
+            if bank_code:
+                return bank_logo_index.get(bank_code, None)
+
+        return None
+
     class Meta:
         model = TransferRecipient
         fields = (
