@@ -1,3 +1,4 @@
+import json
 import uuid
 
 from celery.utils.log import get_task_logger
@@ -383,13 +384,44 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
 
     transfer_reference = str(uuid.uuid4())
 
-    # Idempotency should be ensured within this function.
-    initiate_contribution_transfer(
-        contribution_amount=contribution_amount_in_kobo,
-        creditor_default_recipient_code=creditor_default_recipient_code,
-        reason=transfer_reason,
-        reference=transfer_reference,
-    )
+    try:
+        # Idempotency should be ensured within this function.
+        initiate_contribution_transfer(
+            contribution_amount=contribution_amount_in_kobo,
+            creditor_default_recipient_code=creditor_default_recipient_code,
+            reason=transfer_reason,
+            reference=transfer_reference,
+        )
+
+    # Handle cases when Paystack response is malformed.
+    except json.decoder.JSONDecodeError as json_error:
+        action.mark_as_failed_transfer()
+
+        defaults = {
+            "amount": contribution_amount_in_kobo,
+            "amount_in_naira": contribution_amount,
+            "uuid": transfer_reference,
+            "recipient": creditor.default_transfer_recipient,
+            "action": action,
+            "arrear": None,
+            "paying_user": participant,
+            "receiving_user": creditor,
+            "transfer_outcome": PaystackTransfer.TransferOutcomeChoices.FAILED,
+            "transfer_type": PaystackTransfer.TransferChoices.CREDITOR_SETTLEMENT,
+            "reason": transfer_reason,
+            "complete_paystack_response": {
+                "detail": "Transfer failed due to malformed data from paystack",
+                "error": json_error,
+                "transaction_data": request_data,
+            },
+        }
+
+        PaystackTransfer.objects.update_or_create(
+            paystack_transfer_reference=transfer_reference,
+            defaults={
+                **defaults,
+            },
+        )
 
 
 def finalize_contribution(request_data, transfer_outcome, final_action_status):
