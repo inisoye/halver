@@ -179,9 +179,14 @@ export const BillRecentContributionsList: React.FunctionComponent<
             marginBottom="3.5"
             onPress={handleGoToBillTransactions}
           >
-            <Text fontFamily="Halver-Semibold" variant="xl">
+            <DynamicText
+              flexGrow={1}
+              fontFamily="Halver-Semibold"
+              numberOfLines={1}
+              variant="xl"
+            >
               Recent contributions
-            </Text>
+            </DynamicText>
 
             {!isDisabled && <RightCaret isDark />}
           </TouchableOpacity>

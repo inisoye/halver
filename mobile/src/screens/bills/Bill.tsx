@@ -319,7 +319,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
                             maxWidth="85%"
                             variant="sm"
                           >
-                            Contribution round on{' '}
+                            Last contribution round on{' '}
                             {!!dayOfLastContributionRound &&
                               new Date(dayOfLastContributionRound).toDateString()}
                             .

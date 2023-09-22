@@ -1,5 +1,13 @@
 import { z } from 'zod';
 
+export const PatchedExpoPushToken = z
+  .object({ expoPushToken: z.string().max(70).nullable() })
+  .partial();
+
+export const ExpoPushToken = z
+  .object({ expoPushToken: z.string().max(70).nullable() })
+  .partial();
+
 export const RegisteredContacts = z.object({
   firstName: z.string(),
   fullName: z.string(),
@@ -393,6 +401,7 @@ export const CustomUserDefaultTransferRecipient = z.object({
   authorizationCode: z.string().max(100).nullish(),
   bankCode: z.string().max(10).nullish(),
   bankName: z.string().max(100).nullish(),
+  bankLogo: z.string().max(100).nullish(),
   created: z.string().datetime(),
   email: z.string().max(254).email().nullish(),
   name: z.string().max(100),

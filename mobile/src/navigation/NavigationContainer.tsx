@@ -40,13 +40,16 @@ export const NavigationContainer: React.FunctionComponent = () => {
     message: 'Gathering your details...',
   });
 
+  // Ensure token is available in MMKV and globally set in axios
+  const isTokenSet = !!token;
+
   return (
     <Box backgroundColor="background" flex={1}>
       <RNNavigationContainer
         ref={navigationRef}
         theme={isDarkMode ? DarkTheme : DefaultTheme}
       >
-        {!token ? (
+        {!isTokenSet ? (
           <LoginStackNavigator />
         ) : !isLoading && areUserDetailsIncomplete ? (
           <OnboardingStackNavigator />

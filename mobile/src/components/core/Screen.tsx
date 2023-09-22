@@ -60,7 +60,7 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
       justifyContent="space-between"
       paddingBottom="4"
       paddingHorizontal="6"
-      paddingTop={isIOS() ? '6' : '8'}
+      paddingTop="6"
       {...headerProps}
     >
       <Box

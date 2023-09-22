@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
 
 import { Box, Image, Text, TouchableOpacity } from '@/components';
 import { EditPhoto } from '@/icons';
@@ -9,14 +8,6 @@ import {
   getLightColorFromString,
   useIsDarkModeSelected,
 } from '@/utils';
-
-const styles = StyleSheet.create({
-  icon: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-  },
-});
 
 interface AccountAvatarButtonProps {
   fullName: string | undefined;
@@ -58,26 +49,36 @@ export const AccountAvatarButton: React.FunctionComponent<AccountAvatarButtonPro
             <Image
               borderRadius="lg"
               contentFit="contain"
-              height={88}
+              height={100}
               placeholder={profileImageHash}
               source={profileImageUrl}
-              width={88}
+              width={100}
             />
           ) : (
             <Box
               alignItems="center"
               borderRadius="lg"
-              height={88}
+              height={100}
               justifyContent="center"
               style={{ backgroundColor: avatarBackground }}
-              width={88}
+              width={100}
             >
               <Text color="textInverse" fontFamily="Halver-Semibold" variant="3xl">
                 {initials}
               </Text>
             </Box>
           )}
-          <EditPhoto style={styles.icon} />
+
+          <Box
+            borderRadius="base"
+            bottom={4}
+            opacity={0.85}
+            overflow="hidden"
+            position="absolute"
+            right={4}
+          >
+            <EditPhoto />
+          </Box>
         </TouchableOpacity>
       );
     },

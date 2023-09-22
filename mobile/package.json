@@ -4,9 +4,9 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "dev": "APP_VARIANT=development EXPO_PUBLIC_APP_VARIANT=development npx expo start --dev-client",
-    "dev-prod": "APP_VARIANT=development EXPO_PUBLIC_APP_VARIANT=development APP_VARIANT=development EXPO_PUBLIC_APP_VARIANT=development npx expo start -c --dev-client",
+    "dev-prod": "APP_VARIANT=development EXPO_PUBLIC_APP_VARIANT=development npx expo start -c --dev-client --no-dev --minify",
     "start": "npx expo start -c --dev-client",
-    "start-prod": "npx expo start --dev-client --no-dev --minify",
+    "start-prod": "npx expo start -c --dev-client --no-dev --minify",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -20,6 +20,7 @@
   "dependencies": {
     "@expo/webpack-config": "^19.0.0",
     "@hookform/resolvers": "^3.1.0",
+    "@react-native-community/datetimepicker": "7.2.0",
     "@react-native-community/netinfo": "9.3.10",
     "@react-native-google-signin/google-signin": "^10.0.1",
     "@react-navigation/bottom-tabs": "^6.5.8",
@@ -79,7 +80,8 @@
     "react-native-web": "~0.19.6",
     "react-native-webview": "13.2.2",
     "sentry-expo": "~7.0.0",
-    "zod": "^3.21.4"
+    "zod": "^3.21.4",
+    "expo-sms": "~11.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

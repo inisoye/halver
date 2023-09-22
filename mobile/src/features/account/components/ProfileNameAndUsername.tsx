@@ -24,8 +24,8 @@ export const ProfileNameAndUsername: React.FunctionComponent<
     return {
       backgroundColor: interpolateColor(
         progress.value,
-        [0, 1],
-        [brandColors.casal8, brandColors.pharlap8],
+        [0, 0.5, 1],
+        [brandColors.casal7, brandColors.pharlap8, brandColors.apricot8],
         'HSV',
         {
           useCorrectedHSVInterpolation: true,
@@ -36,7 +36,7 @@ export const ProfileNameAndUsername: React.FunctionComponent<
 
   const animate = () => {
     progress.value = withRepeat(
-      withTiming(1 - progress.value, { duration: 10000 }),
+      withTiming(1 - progress.value, { duration: 8000 }),
       -1,
       true,
     );
@@ -67,13 +67,19 @@ export const ProfileNameAndUsername: React.FunctionComponent<
       <DynamicText
         color="textWhite"
         fontFamily="Halver-Semibold"
+        maxWidth={180}
         numberOfLines={2}
         variant="xl"
       >
         {fullName}
       </DynamicText>
 
-      <DynamicText color="textWhite" fontFamily="Halver-Semibold" numberOfLines={1}>
+      <DynamicText
+        color="textWhite"
+        fontFamily="Halver-Semibold"
+        numberOfLines={1}
+        opacity={0.7}
+      >
         @{username}
       </DynamicText>
     </AnimatedBox>

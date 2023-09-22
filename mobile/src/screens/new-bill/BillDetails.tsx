@@ -46,7 +46,7 @@ const BillDetailsFormSchema = z
   .object({
     totalAmountDue: z.coerce
       .number({
-        required_error: 'A bill amount is required.',
+        required_error: 'Please enter a total bill amount.',
         invalid_type_error: 'The bill amount is required and must be a number.',
       })
       .min(MINIMUM_BILL_AMOUNT, {
@@ -59,11 +59,12 @@ const BillDetailsFormSchema = z
       })
       .transform(amount => amount.toString()),
     name: z
-      .string({ required_error: 'A bill name is required.' })
-      .max(100, { message: 'Your bill name should be less than 100 characters.' }),
+      .string({ required_error: 'Please enter a bill name.' })
+      .max(100, { message: 'Your bill name should be less than 100 characters.' })
+      .min(1, { message: 'Please enter a bill name.' }),
     deadline: z.coerce
       .date({
-        required_error: "The bill's deadline is required.",
+        required_error: 'Please enter a deadline for this bill.',
         invalid_type_error: 'The deadline must be a valid date.',
       })
       .refine(data => data > new Date(), {

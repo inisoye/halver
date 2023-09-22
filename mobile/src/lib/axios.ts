@@ -16,3 +16,6 @@ export const setAxiosDefaultToken = (token: string, _apiClient: AxiosInstance) =
 export const deleteAxiosDefaultToken = () => {
   delete axios.defaults.headers.common.Authorization;
 };
+
+export const isAPIClientTokenSet = () =>
+  !!apiClient.defaults.headers.common.Authorization;

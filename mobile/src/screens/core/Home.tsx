@@ -11,6 +11,7 @@ import {
   useActionStatusCounts,
 } from '@/features/home';
 import { HalverMillipede } from '@/icons';
+import { isAPIClientTokenSet } from '@/lib/axios';
 import type {
   AppRootStackParamList,
   HomeStackParamList,
@@ -37,8 +38,10 @@ export const Home = ({ navigation }: HomeProps) => {
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      if (areActionStatusCountsStale) refetchActionStatusCounts();
-      if (areTransactionsStale) refetchTransactions();
+      if (isAPIClientTokenSet()) {
+        if (areActionStatusCountsStale) refetchActionStatusCounts();
+        if (areTransactionsStale) refetchTransactions();
+      }
     });
 
     return unsubscribe;

@@ -5,6 +5,7 @@ import {
   Box,
   CraftedLogo,
   DynamicText,
+  Image,
   Screen,
   ScrollView,
   Text,
@@ -17,15 +18,25 @@ import {
   ProfileNameAndUsername,
   useUserDetails,
 } from '@/features/account';
+import { CardIcon } from '@/features/financials';
 import { EditPencil } from '@/icons';
 import type { AccountStackParamList } from '@/navigation';
+import { getInitials } from '@/utils';
 
 type AccountProps = NativeStackScreenProps<AccountStackParamList, 'Account'>;
 
 export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) => {
   const { data: userDetails } = useUserDetails();
-  const { profileImageHash, profileImageUrl, fullName, username, email, phone } =
-    userDetails || {};
+  const {
+    profileImageHash,
+    profileImageUrl,
+    fullName,
+    username,
+    email,
+    phone,
+    defaultCard,
+    defaultTransferRecipient,
+  } = userDetails || {};
 
   const handleGoToEditProfileImage = React.useCallback(() => {
     navigation.navigate('Edit profile image');
@@ -37,11 +48,22 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const goToCards = () => {
+    navigation.navigate('Cards');
+  };
+  const goToTransferRecipients = () => {
+    navigation.navigate('Transfer recipients');
+  };
+
+  const { cardType, last4 } = defaultCard || {};
+  const { bankLogo, accountNumber, bankName } = defaultTransferRecipient || {};
+  const initials = React.useMemo(() => getInitials(bankName), [bankName]);
+
   return (
     <Screen>
       <ScrollView>
-        <Box flex={1} gap="10" paddingHorizontal="6" paddingVertical="2">
-          <Box flexDirection="row" gap="4">
+        <Box flex={1} gap="8" paddingBottom="12" paddingHorizontal="6" paddingTop="2">
+          <Box borderRadius="lg" flexDirection="row" gap="4" overflow="hidden">
             <AccountAvatarButton
               fullName={fullName}
               handleGoToEditProfileImage={handleGoToEditProfileImage}
@@ -52,15 +74,26 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
             <ProfileNameAndUsername fullName={fullName} username={username} />
           </Box>
 
-          <Box>
-            <Text fontFamily="Halver-Semibold" variant="xl">
+          <Box
+            backgroundColor="elementBackground"
+            borderRadius="lg"
+            elevation={0.5}
+            paddingHorizontal="4"
+            paddingVertical="4"
+            shadowColor="black"
+            shadowOffset={{
+              width: 0.2,
+              height: 0.3,
+            }}
+            shadowOpacity={0.2}
+            shadowRadius={0.3}
+          >
+            <Text fontFamily="Halver-Semibold" marginBottom="4" variant="lg">
               Profile Info
             </Text>
 
             <Box
               alignItems="center"
-              borderColor="borderDefault"
-              borderTopWidth={true ? undefined : 1}
               flexDirection="row"
               gap="4"
               justifyContent="space-between"
@@ -89,8 +122,6 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
 
             <TouchableOpacity
               alignItems="center"
-              borderColor="borderDefault"
-              borderTopWidth={0.5}
               flexDirection="row"
               gap="4"
               hitSlop={{ top: 5, bottom: 24, left: 24, right: 24 }}
@@ -130,18 +161,182 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
             </TouchableOpacity>
           </Box>
 
-          <Box>
-            <Text fontFamily="Halver-Semibold" variant="xl">
+          <Box
+            backgroundColor="elementBackground"
+            borderRadius="lg"
+            elevation={0.5}
+            paddingHorizontal="4"
+            paddingVertical="4"
+            shadowColor="black"
+            shadowOffset={{
+              width: 0.2,
+              height: 0.3,
+            }}
+            shadowOpacity={0.2}
+            shadowRadius={0.3}
+          >
+            <Text fontFamily="Halver-Semibold" marginBottom="4" variant="lg">
               Appearance
             </Text>
 
             <DisplayModeSelectorModal />
           </Box>
 
+          {(!!defaultCard || !!defaultTransferRecipient) && (
+            <Box
+              backgroundColor="elementBackground"
+              borderRadius="lg"
+              elevation={0.5}
+              paddingHorizontal="4"
+              paddingVertical="4"
+              shadowColor="black"
+              shadowOffset={{
+                width: 0.2,
+                height: 0.3,
+              }}
+              shadowOpacity={0.2}
+              shadowRadius={0.3}
+            >
+              <Text fontFamily="Halver-Semibold" marginBottom="4" variant="lg">
+                Default financials
+              </Text>
+
+              {!!defaultCard && (
+                <TouchableOpacity
+                  alignItems="center"
+                  flexDirection="row"
+                  gap="4"
+                  hitSlop={{ top: 5, bottom: 24, left: 24, right: 24 }}
+                  justifyContent="space-between"
+                  paddingVertical="4"
+                  onPress={goToCards}
+                >
+                  <DynamicText
+                    color="textLight"
+                    fontFamily="Halver-Semibold"
+                    numberOfLines={1}
+                    variant="sm"
+                    width="40%"
+                  >
+                    Card
+                  </DynamicText>
+
+                  <Box
+                    alignItems="center"
+                    flexDirection="row"
+                    gap="2.5"
+                    justifyContent="flex-end"
+                    width="50%"
+                  >
+                    <Box alignItems="center" columnGap="1" flexDirection="row">
+                      <CardIcon type={cardType} />
+                      <DynamicText
+                        fontFamily="Halver-Semibold"
+                        marginLeft="1"
+                        numberOfLines={1}
+                        textAlign="right"
+                        variant="sm"
+                      >
+                        •••• {last4}
+                      </DynamicText>
+                    </Box>
+
+                    <EditPencil />
+                  </Box>
+                </TouchableOpacity>
+              )}
+
+              {!!defaultTransferRecipient && (
+                <TouchableOpacity
+                  alignItems="center"
+                  flexDirection="row"
+                  gap="4"
+                  hitSlop={{ top: 5, bottom: 24, left: 24, right: 24 }}
+                  justifyContent="space-between"
+                  paddingTop="4"
+                  onPress={goToTransferRecipients}
+                >
+                  <DynamicText
+                    color="textLight"
+                    fontFamily="Halver-Semibold"
+                    numberOfLines={1}
+                    variant="sm"
+                    width="40%"
+                  >
+                    Transfer recipient
+                  </DynamicText>
+
+                  <Box
+                    alignItems="center"
+                    flexDirection="row"
+                    gap="2.5"
+                    justifyContent="flex-end"
+                    width="50%"
+                  >
+                    <Box alignItems="center" columnGap="1" flexDirection="row">
+                      <Box
+                        backgroundColor="elementBackground"
+                        borderRadius="base"
+                        elevation={1}
+                        shadowColor="black"
+                        shadowOffset={{
+                          width: 0.1,
+                          height: 0.3,
+                        }}
+                        shadowOpacity={0.3}
+                        shadowRadius={0.2}
+                      >
+                        {bankLogo ? (
+                          <Image
+                            backgroundColor={bankLogo ? 'white' : 'bankImageBackground'}
+                            borderRadius="base"
+                            contentFit="contain"
+                            height={24}
+                            source={bankLogo}
+                            width={24}
+                          />
+                        ) : (
+                          <Box
+                            alignItems="center"
+                            backgroundColor="white"
+                            borderRadius="base"
+                            height={24}
+                            justifyContent="center"
+                            width={24}
+                          >
+                            <Text
+                              color="textBlack"
+                              fontFamily="Halver-Semibold"
+                              variant="sm"
+                            >
+                              {initials}
+                            </Text>
+                          </Box>
+                        )}
+                      </Box>
+
+                      <DynamicText
+                        fontFamily="Halver-Semibold"
+                        marginLeft="1"
+                        numberOfLines={1}
+                        textAlign="right"
+                        variant="sm"
+                      >
+                        {accountNumber}
+                      </DynamicText>
+                    </Box>
+
+                    <EditPencil />
+                  </Box>
+                </TouchableOpacity>
+              )}
+            </Box>
+          )}
+
           <CraftedLogo
             containerProps={{
               alignSelf: 'center',
-              marginVertical: '12',
+              marginTop: '24',
             }}
             hasText
           />

@@ -42,6 +42,7 @@ module.exports = {
           backgroundColor: '#161616',
         },
       },
+      googleServicesFile: './google-services.json',
     },
     web: {
       favicon: './assets/favicon.png',

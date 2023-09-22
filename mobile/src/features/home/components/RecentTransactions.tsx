@@ -189,7 +189,7 @@ export const RecentTransactions: React.FunctionComponent<RecentTransactionsProps
     [transactionsResponse?.pages],
   );
 
-  const transactionsExist = !!transactions && transactions.length > 1;
+  const transactionsExist = !!transactions && transactions.length > 0;
 
   const handleTransactionSelection = React.useCallback(
     (transaction: BillTransaction | undefined) => {

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "594051336508",
+    "project_id": "thehalver",
+    "storage_bucket": "thehalver.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:594051336508:android:05516e553f33e92c227639",
+        "android_client_info": {
+          "package_name": "com.halver.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "594051336508-mta8oenrfaecqocpqldscgho4s9tlrkj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUgDNV7rhxhtku6EH6FiTSaK02eDyn8HY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "594051336508-mta8oenrfaecqocpqldscgho4s9tlrkj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "594051336508-76s0stndv04f8a62dii3iemq20vpavba.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.halver.dev"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
