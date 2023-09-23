@@ -85,20 +85,24 @@ def process_card_creation_and_refund(request_data):
         "reason": reason,
     }
 
-    error_push_parameters_list = [
-        {
-            "token": user.expo_push_token,
-            "title": "Card addition fee transfer error",
-            "message": (
-                "We could not successfully transfer the refund from your card"
-                " addition fee You can retry the transfer in the"
-                " Halver app for free."
-            ),
-            "extra": {
-                "action": "failed-or-reversed-transfer",
+    error_push_parameters_list = (
+        [
+            {
+                "token": user.expo_push_token,
+                "title": "Card addition fee transfer error",
+                "message": (
+                    "We could not successfully transfer the refund from your card"
+                    " addition fee You can retry the transfer in the"
+                    " Halver app for free."
+                ),
+                "extra": {
+                    "action": "failed-or-reversed-transfer",
+                },
             },
-        },
-    ]
+        ]
+        if user.expo_push_token
+        else []
+    )
 
     try:
         paystack_transfer_payload = {
@@ -189,19 +193,23 @@ def record_card_addition_transfer_object(request_data, transfer_outcome):
         transfer_outcome == PaystackTransfer.TransferOutcomeChoices.FAILED
         or transfer_outcome == PaystackTransfer.TransferOutcomeChoices.REVERSED
     ):
-        push_parameters_list = [
-            {
-                "token": receiving_user.expo_push_token,
-                "title": "Card addition fee transfer error",
-                "message": (
-                    "We could not successfully transfer the refund from your card"
-                    " addition fee You can retry the transfer in the"
-                    " Halver app for free."
-                ),
-                "extra": {
-                    "action": "failed-or-reversed-transfer",
+        push_parameters_list = (
+            [
+                {
+                    "token": receiving_user.expo_push_token,
+                    "title": "Card addition fee transfer error",
+                    "message": (
+                        "We could not successfully transfer the refund from your card"
+                        " addition fee You can retry the transfer in the"
+                        " Halver app for free."
+                    ),
+                    "extra": {
+                        "action": "failed-or-reversed-transfer",
+                    },
                 },
-            },
-        ]
+            ]
+            if receiving_user.expo_push_token
+            else []
+        )
 
         send_push_messages(push_parameters_list)

@@ -83,16 +83,16 @@ def create_bill(bill_model, validated_data, creator):
         participants_params = [
             {
                 "token": participant.expo_push_token,
-                "title": f"🧾 New bill from {creator.full_name}",
+                "title": "New bill",
                 "message": (
-                    "You have been invited to contribute"
+                    f"You have been by {creator.full_name} invited to contribute"
                     f" ₦{add_commas_to_amount(participants_contribution_index[participant.uuid], decimal_places=2)} towards"  # noqa E501
                     f" {new_bill.name})."
                 ),
                 "extra": {
                     "action": "open-bill",
                     "bill_name": new_bill.name,
-                    "bill_id": new_bill.uuid,
+                    "bill_id": str(new_bill.uuid),
                 },
             }
             for participant in participants
@@ -106,23 +106,28 @@ def create_bill(bill_model, validated_data, creator):
         creditor_params = [
             {
                 "token": creditor.expo_push_token,
-                "title": f"🧾 New bill from {creator.full_name}",
+                "title": "New bill",
                 "message": (
-                    "You have been listed as a creditor on a new bill called"
-                    f" {new_bill.name} with a total amount of"
-                    f" ₦{add_commas_to_amount(new_bill.total_amount_due, decimal_places=2)}"  # noqa E501
+                    f"You have been listed by {creator.full_name} as a creditor on a"
+                    " new bill called"
+                    f" {new_bill.name}. The total bill amount is"
+                    f" ₦{add_commas_to_amount(new_bill.total_amount_due, decimal_places=2)}."  # noqa E501
                 ),
                 "extra": {
                     "action": "open-bill",
                     "bill_name": new_bill.name,
-                    "bill_id": new_bill.uuid,
+                    "bill_id": str(new_bill.uuid),
                 },
             }
         ]
         push_parameters_list.extend(creditor_params)
 
     if push_parameters_list:
-        send_push_messages_in_background.delay(push_parameters_list)
+        filtered_push_parameters_list = [
+            params for params in push_parameters_list if params["token"]
+        ]
+
+        send_push_messages_in_background.delay(filtered_push_parameters_list)
 
     return new_bill
 

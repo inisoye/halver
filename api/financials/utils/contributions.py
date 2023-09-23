@@ -370,7 +370,7 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
             "extra": {
                 "action": "failed-or-reversed-transfer",
                 "bill_name": bill.name,
-                "bill_id": bill.uuid,
+                "bill_id": str(bill.uuid),
             },
         },
         {
@@ -384,9 +384,13 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
             "extra": {
                 "action": "failed-or-reversed-transfer",
                 "bill_name": bill.name,
-                "bill_id": bill.uuid,
+                "bill_id": str(bill.uuid),
             },
         },
+    ]
+
+    filtered_error_push_parameters_list = [
+        params for params in error_push_parameters_list if params["token"]
     ]
 
     try:
@@ -398,7 +402,7 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
             "amount": contribution_amount_in_kobo,
             "recipient": creditor_default_recipient_code,
             "reason": transfer_reason,
-            "reference": transfer_reason,
+            "reference": transfer_reference,
         }
 
         response = TransferRequests.initiate(**paystack_transfer_payload)
@@ -417,7 +421,7 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
                 },
             )
 
-            send_push_messages(error_push_parameters_list)
+            send_push_messages(filtered_error_push_parameters_list)
 
             paystack_error = response["message"]
             logger.error(f"Error intiating Paystack transfer: {paystack_error}")
@@ -438,7 +442,7 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
             },
         )
 
-        send_push_messages(error_push_parameters_list)
+        send_push_messages(filtered_error_push_parameters_list)
 
 
 def finalize_contribution(request_data, transfer_outcome, final_action_status):
@@ -526,12 +530,14 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
     participants_push_parameters_list = [
         {
             "token": participant.expo_push_token,
-            "title": f"💳 New contribution on {bill.name}",
-            "message": f"{paying_user.full_name} has just made a contribution.",
+            "title": "New contribution",
+            "message": (
+                f"{paying_user.full_name} has just made a contribution on {bill.name}."
+            ),
             "extra": {
                 "action": "open-bill",
                 "bill_name": bill.name,
-                "bill_id": bill.uuid,
+                "bill_id": str(bill.uuid),
             },
         }
         for participant in bill.participants.all()
@@ -541,12 +547,14 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
     receiving_user_push_parameters_list = [
         {
             "token": receiving_user.expo_push_token,
-            "title": f"💳 New contribution on {bill.name}",
-            "message": f"{paying_user.full_name} has just made a contribution.",
+            "title": "New contribution",
+            "message": (
+                f"{paying_user.full_name} has just made a contribution on {bill.name}."
+            ),
             "extra": {
                 "action": "open-bill",
                 "bill_name": bill.name,
-                "bill_id": bill.uuid,
+                "bill_id": str(bill.uuid),
             },
         },
     ]
@@ -554,20 +562,24 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
     paying_user_push_parameters_list = [
         {
             "token": paying_user.expo_push_token,
-            "title": "💳 Contrubution successful",
+            "title": "Contrubution successful",
             "message": f"Your contribution towards {bill.name} was successful.",
             "extra": {
                 "action": "open-bill",
                 "bill_name": bill.name,
-                "bill_id": bill.uuid,
+                "bill_id": str(bill.uuid),
             },
         },
     ]
 
-    send_push_messages(
-        [
+    filtered_push_parameters_list = [
+        params
+        for params in [
             *participants_push_parameters_list,
             *receiving_user_push_parameters_list,
             *paying_user_push_parameters_list,
         ]
-    )
+        if params["token"]
+    ]
+
+    send_push_messages(filtered_push_parameters_list)

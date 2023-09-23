@@ -169,7 +169,7 @@ def process_arrear_contribution_transfer(arrear_id, request_data):
             "extra": {
                 "action": "failed-or-reversed-transfer",
                 "bill_name": bill.name,
-                "bill_id": bill.uuid,
+                "bill_id": str(bill.uuid),
             },
         },
         {
@@ -183,9 +183,13 @@ def process_arrear_contribution_transfer(arrear_id, request_data):
             "extra": {
                 "action": "failed-or-reversed-transfer",
                 "bill_name": bill.name,
-                "bill_id": bill.uuid,
+                "bill_id": str(bill.uuid),
             },
         },
+    ]
+
+    filtered_error_push_parameters_list = [
+        params for params in error_push_parameters_list if params["token"]
     ]
 
     try:
@@ -197,7 +201,7 @@ def process_arrear_contribution_transfer(arrear_id, request_data):
             "amount": contribution_amount_in_kobo,
             "recipient": creditor_default_recipient_code,
             "reason": transfer_reason,
-            "reference": transfer_reason,
+            "reference": transfer_reference,
         }
 
         response = TransferRequests.initiate(**paystack_transfer_payload)
@@ -216,7 +220,7 @@ def process_arrear_contribution_transfer(arrear_id, request_data):
                 },
             )
 
-            send_push_messages(error_push_parameters_list)
+            send_push_messages(filtered_error_push_parameters_list)
 
             paystack_error = response["message"]
             logger.error(f"Error intiating Paystack transfer: {paystack_error}")
@@ -237,4 +241,4 @@ def process_arrear_contribution_transfer(arrear_id, request_data):
             },
         )
 
-        send_push_messages(error_push_parameters_list)
+        send_push_messages(filtered_error_push_parameters_list)

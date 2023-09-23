@@ -111,7 +111,7 @@ def record_contribution_transfer_object(request_data, transfer_outcome):
                 "extra": {
                     "action": "failed-or-reversed-transfer",
                     "bill_name": bill.name,
-                    "bill_id": bill.uuid,
+                    "bill_id": str(bill.uuid),
                 },
             },
             {
@@ -125,12 +125,16 @@ def record_contribution_transfer_object(request_data, transfer_outcome):
                 "extra": {
                     "action": "failed-or-reversed-transfer",
                     "bill_name": bill.name,
-                    "bill_id": bill.uuid,
+                    "bill_id": str(bill.uuid),
                 },
             },
         ]
 
-        send_push_messages(push_parameters_list)
+        filtered_push_parameters_list = [
+            params for params in push_parameters_list if params["token"]
+        ]
+
+        send_push_messages(filtered_push_parameters_list)
 
 
 @shared_task

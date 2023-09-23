@@ -75,7 +75,7 @@ def record_bill_arrear(request_data):
             "extra": {
                 "action": "failed-subscription-charge",
                 "bill_name": bill.name,
-                "bill_id": bill.uuid,
+                "bill_id": str(bill.uuid),
             },
         },
         {
@@ -89,12 +89,16 @@ def record_bill_arrear(request_data):
             "extra": {
                 "action": "failed-subscription-charge",
                 "bill_name": bill.name,
-                "bill_id": bill.uuid,
+                "bill_id": str(bill.uuid),
             },
         },
     ]
 
-    send_push_messages(push_parameters_list)
+    filtered_push_parameters_list = [
+        params for params in push_parameters_list if params["token"]
+    ]
+
+    send_push_messages(filtered_push_parameters_list)
 
 
 @shared_task
@@ -195,7 +199,7 @@ def record_arrear_contribution_transfer_object(request_data, transfer_outcome):
                 "extra": {
                     "action": "failed-or-reversed-transfer",
                     "bill_name": bill.name,
-                    "bill_id": bill.uuid,
+                    "bill_id": str(bill.uuid),
                 },
             },
             {
@@ -209,12 +213,16 @@ def record_arrear_contribution_transfer_object(request_data, transfer_outcome):
                 "extra": {
                     "action": "failed-or-reversed-transfer",
                     "bill_name": bill.name,
-                    "bill_id": bill.uuid,
+                    "bill_id": str(bill.uuid),
                 },
             },
         ]
 
-        send_push_messages(push_parameters_list)
+        filtered_push_parameters_list = [
+            params for params in push_parameters_list if params["token"]
+        ]
+
+        send_push_messages(filtered_push_parameters_list)
 
 
 # TODO This should be carried out in a transaction. With select_for_updates
@@ -305,12 +313,12 @@ def finalize_arrear_contribution(
     participants_push_parameters_list = [
         {
             "token": participant.expo_push_token,
-            "title": f"💳 New arrear contribution on {bill.name}",
+            "title": f"New arrear contribution on {bill.name}",
             "message": f"{paying_user.full_name} has just made a contribution.",
             "extra": {
                 "action": "open-bill",
                 "bill_name": bill.name,
-                "bill_id": bill.uuid,
+                "bill_id": str(bill.uuid),
             },
         }
         for participant in bill.participants.all()
@@ -320,12 +328,14 @@ def finalize_arrear_contribution(
     receiving_user_push_parameters_list = [
         {
             "token": receiving_user.expo_push_token,
-            "title": f"💳 New arrear contribution on {bill.name}",
-            "message": f"{paying_user.full_name} has just made a contribution.",
+            "title": "New arrear contribution",
+            "message": (
+                f"{paying_user.full_name} has just made a contribution on {bill.name}."
+            ),
             "extra": {
                 "action": "open-bill",
                 "bill_name": bill.name,
-                "bill_id": bill.uuid,
+                "bill_id": str(bill.uuid),
             },
         },
     ]
@@ -333,20 +343,24 @@ def finalize_arrear_contribution(
     paying_user_push_parameters_list = [
         {
             "token": paying_user.expo_push_token,
-            "title": "💳 Contrubution successful",
+            "title": "Contrubution successful",
             "message": f"Your contribution towards {bill.name} was successful.",
             "extra": {
                 "action": "open-bill",
                 "bill_name": bill.name,
-                "bill_id": bill.uuid,
+                "bill_id": str(bill.uuid),
             },
         },
     ]
 
-    send_push_messages(
-        [
+    filtered_push_parameters_list = [
+        params
+        for params in [
             *participants_push_parameters_list,
             *receiving_user_push_parameters_list,
             *paying_user_push_parameters_list,
         ]
-    )
+        if params["token"]
+    ]
+
+    send_push_messages(filtered_push_parameters_list)

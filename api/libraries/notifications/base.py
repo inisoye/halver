@@ -157,7 +157,7 @@ def send_push_messages(push_parameters_list):
     retries = 0
     successful = False
 
-    while retries < MAX_RETRIES and not successful:
+    while retries < MAX_RETRIES and not successful and push_parameters_list:
         try:
             # Create PushMessage objects inside the method
             push_messages = [
