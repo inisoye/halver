@@ -198,7 +198,7 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
               shadowRadius={0.3}
             >
               <Text fontFamily="Halver-Semibold" marginBottom="4" variant="lg">
-                Default financials
+                Default financial details
               </Text>
 
               {!!defaultCard && (
