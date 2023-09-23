@@ -17,6 +17,7 @@ from financials.utils.transfers import (
     create_paystack_transfer_object,
     extract_paystack_transaction_id_from_transfer_reason,
 )
+from libraries.notifications.base import send_push_messages
 from libraries.paystack.subscription_requests import SubscriptionRequests
 from libraries.paystack.transaction_requests import TransactionRequests
 from libraries.paystack.transfer_requests import TransferRequests
@@ -272,47 +273,6 @@ def create_contribution_transaction_object(
     return new_transaction
 
 
-def initiate_contribution_transfer(
-    contribution_amount,
-    creditor_default_recipient_code,
-    reason,
-    reference,
-) -> None:
-    """Initiates a transfer of a contribution to a creditor's default recipient
-    account/card.
-
-    Makes a call to the Paystack API to get this done.
-
-    Args:
-        contribution_amount (float): The amount of money to be transferred.
-        creditor_default_recipient_code (str): The code for the creditor's default
-            recipient account/card.
-        reason (str): The reason for the transfer.
-        reason (uuid): A generated paystack transfer reference.
-
-    Returns:
-        None
-    """
-
-    # The custom reference passed here would help with idempotence.
-    # If Paystack receives the same reference for two transfers,
-    # an error would be thrown.
-
-    paystack_transfer_payload = {
-        "source": "balance",
-        "amount": contribution_amount,
-        "recipient": creditor_default_recipient_code,
-        "reason": reason,
-        "reference": reference,
-    }
-
-    response = TransferRequests.initiate(**paystack_transfer_payload)
-
-    if not response["status"]:
-        paystack_error = response["message"]
-        logger.error(f"Error intiating Paystack transfer: {paystack_error}")
-
-
 def process_contribution_transfer(action_id, request_data, transaction_type):
     """Common function to process contributions and initiate Paystack transfers.
     Used for one-time and subscription contribution transfers.
@@ -384,44 +344,101 @@ def process_contribution_transfer(action_id, request_data, transaction_type):
 
     transfer_reference = str(uuid.uuid4())
 
+    failed_paystack_transfer_object_defaults = {
+        "amount": contribution_amount_in_kobo,
+        "amount_in_naira": contribution_amount,
+        "uuid": transfer_reference,
+        "recipient": creditor.default_transfer_recipient,
+        "action": action,
+        "arrear": None,
+        "paying_user": participant,
+        "receiving_user": creditor,
+        "transfer_outcome": PaystackTransfer.TransferOutcomeChoices.FAILED,
+        "transfer_type": PaystackTransfer.TransferChoices.CREDITOR_SETTLEMENT,
+        "reason": transfer_reason,
+    }
+
+    error_push_parameters_list = [
+        {
+            "token": participant.expo_push_token,
+            "title": "Contribution transfer error",
+            "message": (
+                "We could not successfully transfer your contribution on"
+                f" {bill.name}. You can retry the transfer in the Halver app for"
+                " free."
+            ),
+            "extra": {
+                "action": "failed-or-reversed-transfer",
+                "bill_name": bill.name,
+                "bill_id": bill.uuid,
+            },
+        },
+        {
+            "token": creditor.expo_push_token,
+            "title": "Contribution transfer error",
+            "message": (
+                f"We could not successfully transfer {participant.full_name}'s"
+                f" contribution on {bill.name}. You can retry the transfer in the"
+                " Halver app for free."
+            ),
+            "extra": {
+                "action": "failed-or-reversed-transfer",
+                "bill_name": bill.name,
+                "bill_id": bill.uuid,
+            },
+        },
+    ]
+
     try:
-        # Idempotency should be ensured within this function.
-        initiate_contribution_transfer(
-            contribution_amount=contribution_amount_in_kobo,
-            creditor_default_recipient_code=creditor_default_recipient_code,
-            reason=transfer_reason,
-            reference=transfer_reference,
-        )
+        # The custom reference passed here would help with idempotence.
+        # If Paystack receives the same reference for two transfers,
+        # an error would be thrown.
+        paystack_transfer_payload = {
+            "source": "balance",
+            "amount": contribution_amount,
+            "recipient": creditor_default_recipient_code,
+            "reason": transfer_reason,
+            "reference": transfer_reason,
+        }
+
+        response = TransferRequests.initiate(**paystack_transfer_payload)
+
+        if not response["status"]:
+            action.mark_as_failed_transfer()
+
+            PaystackTransfer.objects.update_or_create(
+                paystack_transfer_reference=transfer_reference,
+                defaults={
+                    **failed_paystack_transfer_object_defaults,
+                    "complete_paystack_response": {
+                        "response": response,
+                        "request_data": request_data,
+                    },
+                },
+            )
+
+            send_push_messages(error_push_parameters_list)
+
+            paystack_error = response["message"]
+            logger.error(f"Error intiating Paystack transfer: {paystack_error}")
 
     # Handle cases when Paystack response is malformed.
     except json.decoder.JSONDecodeError as json_error:
         action.mark_as_failed_transfer()
 
-        defaults = {
-            "amount": contribution_amount_in_kobo,
-            "amount_in_naira": contribution_amount,
-            "uuid": transfer_reference,
-            "recipient": creditor.default_transfer_recipient,
-            "action": action,
-            "arrear": None,
-            "paying_user": participant,
-            "receiving_user": creditor,
-            "transfer_outcome": PaystackTransfer.TransferOutcomeChoices.FAILED,
-            "transfer_type": PaystackTransfer.TransferChoices.CREDITOR_SETTLEMENT,
-            "reason": transfer_reason,
-            "complete_paystack_response": {
-                "detail": "Transfer failed due to malformed data from paystack",
-                "error": json_error,
-                "transaction_data": request_data,
-            },
-        }
-
         PaystackTransfer.objects.update_or_create(
             paystack_transfer_reference=transfer_reference,
             defaults={
-                **defaults,
+                **failed_paystack_transfer_object_defaults,
+                "complete_paystack_response": {
+                    "detail": "Transfer failed due to malformed data from paystack",
+                    "error": json_error,
+                    "request_data": request_data,
+                },
             },
         )
+
+        send_push_messages(error_push_parameters_list)
 
 
 def finalize_contribution(request_data, transfer_outcome, final_action_status):
@@ -451,8 +468,10 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
     action_id = extract_uuidv4s_from_string(reason, position=1)
     action = BillAction.objects.select_related(
         "participant",
+        "bill",
         "bill__creditor",
     ).get(uuid=action_id)
+    bill = action.bill
     receiving_user = action.bill.creditor
 
     # The action is effectively complete or ongoing as the transfer has been successful.
@@ -491,7 +510,7 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
     paying_user = paystack_transaction_object.paying_user
 
     bill_transaction_object = {
-        "bill": action.bill,
+        "bill": bill,
         "contribution": convert_to_naira(amount),
         "paying_user": paying_user,
         "receiving_user": receiving_user,
@@ -502,3 +521,53 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
     }
 
     BillTransaction.objects.create(**bill_transaction_object)
+
+    # Handle notifications after all other operations
+    participants_push_parameters_list = [
+        {
+            "token": participant.expo_push_token,
+            "title": f"💳 New contribution on {bill.name}",
+            "message": f"{paying_user.full_name} has just made a contribution.",
+            "extra": {
+                "action": "open-bill",
+                "bill_name": bill.name,
+                "bill_id": bill.uuid,
+            },
+        }
+        for participant in bill.participants.all()
+        if participant.expo_push_token and participant.uuid != paying_user.uuid
+    ]
+
+    receiving_user_push_parameters_list = [
+        {
+            "token": receiving_user.expo_push_token,
+            "title": f"💳 New contribution on {bill.name}",
+            "message": f"{paying_user.full_name} has just made a contribution.",
+            "extra": {
+                "action": "open-bill",
+                "bill_name": bill.name,
+                "bill_id": bill.uuid,
+            },
+        },
+    ]
+
+    paying_user_push_parameters_list = [
+        {
+            "token": paying_user.expo_push_token,
+            "title": "💳 Contrubution successful",
+            "message": f"Your contribution towards {bill.name} was successful.",
+            "extra": {
+                "action": "open-bill",
+                "bill_name": bill.name,
+                "bill_id": bill.uuid,
+            },
+        },
+    ]
+
+    send_push_messages(
+        [
+            *participants_push_parameters_list,
+            *receiving_user_push_parameters_list,
+            *paying_user_push_parameters_list,
+        ]
+    )

@@ -666,6 +666,8 @@ class BillArrear(AbstractTimeStampedUUIDModel, models.Model):
         OVERDUE = "overdue", "Overdue"
         FORGIVEN = "forgiven", "Forgiven"
         PENDING_TRANSFER = "pending_transfer", "Pending transfer"
+        FAILED_TRANSFER = "failed_transfer", "Failed transfer"
+        REVERSED_TRANSFER = "reversed_transfer", "Reversed transfer"
         COMPLETED = "completed", "Completed"
 
     bill = models.ForeignKey(
@@ -754,12 +756,20 @@ class BillArrear(AbstractTimeStampedUUIDModel, models.Model):
     def mark_as_failed_transfer(self):
         self._update_status(self.StatusChoices.FAILED_TRANSFER)
 
+    def mark_as_reversed_transfer(self):
+        self._update_status(self.StatusChoices.REVERSED_TRANSFER)
+
     def mark_as_completed(self):
         self._update_status(self.StatusChoices.COMPLETED)
 
     @classmethod
     def get_unsettled_arrears_on_bill(cls, bill_uuid):
-        unsettled_arrear_statuses = ("overdue", "pending_transfer", "failed_transfer")
+        unsettled_arrear_statuses = (
+            "overdue",
+            "pending_transfer",
+            "failed_transfer",
+            "reversed_transfer",
+        )
 
         return cls.objects.select_related("participant").filter(
             bill__uuid=bill_uuid,

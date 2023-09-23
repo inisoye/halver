@@ -1,13 +1,17 @@
+import json
 import uuid
+
+from celery.utils.log import get_task_logger
 
 from bills.models import BillArrear
 from core.utils.currency import convert_to_kobo_integer
-from financials.models import PaystackTransaction
-from financials.utils.contributions import (
-    create_contribution_transaction_object,
-    initiate_contribution_transfer,
-)
+from financials.models import PaystackTransaction, PaystackTransfer
+from financials.utils.contributions import create_contribution_transaction_object
+from libraries.notifications.base import send_push_messages
 from libraries.paystack.transaction_requests import TransactionRequests
+from libraries.paystack.transfer_requests import TransferRequests
+
+logger = get_task_logger(__name__)
 
 
 def handle_arrear_contribution(arrear):
@@ -139,9 +143,98 @@ def process_arrear_contribution_transfer(arrear_id, request_data):
 
     transfer_reference = str(uuid.uuid4())
 
-    initiate_contribution_transfer(
-        contribution_amount=contribution_amount_in_kobo,
-        creditor_default_recipient_code=creditor_default_recipient_code,
-        reason=transfer_reason,
-        reference=transfer_reference,
-    )
+    failed_paystack_transfer_object_defaults = {
+        "amount": contribution_amount_in_kobo,
+        "amount_in_naira": contribution_amount,
+        "uuid": transfer_reference,
+        "recipient": creditor.default_transfer_recipient,
+        "action": action,
+        "arrear": arrear,
+        "paying_user": participant,
+        "receiving_user": creditor,
+        "transfer_outcome": PaystackTransfer.TransferOutcomeChoices.FAILED,
+        "transfer_type": PaystackTransfer.TransferChoices.ARREAR_SETTLEMENT,
+        "reason": transfer_reason,
+    }
+
+    error_push_parameters_list = [
+        {
+            "token": participant.expo_push_token,
+            "title": "Contribution transfer error",
+            "message": (
+                "We could not successfully transfer your contribution on"
+                f" {bill.name}. You can retry the transfer in the Halver app for"
+                " free."
+            ),
+            "extra": {
+                "action": "failed-or-reversed-transfer",
+                "bill_name": bill.name,
+                "bill_id": bill.uuid,
+            },
+        },
+        {
+            "token": creditor.expo_push_token,
+            "title": "Contribution transfer error",
+            "message": (
+                f"We could not successfully transfer {participant.full_name}'s"
+                f" contribution on {bill.name}. You can retry the transfer in the"
+                " Halver app for free."
+            ),
+            "extra": {
+                "action": "failed-or-reversed-transfer",
+                "bill_name": bill.name,
+                "bill_id": bill.uuid,
+            },
+        },
+    ]
+
+    try:
+        # The custom reference passed here would help with idempotence.
+        # If Paystack receives the same reference for two transfers,
+        # an error would be thrown.
+        paystack_transfer_payload = {
+            "source": "balance",
+            "amount": contribution_amount,
+            "recipient": creditor_default_recipient_code,
+            "reason": transfer_reason,
+            "reference": transfer_reason,
+        }
+
+        response = TransferRequests.initiate(**paystack_transfer_payload)
+
+        if not response["status"]:
+            arrear.mark_as_failed_transfer()
+
+            PaystackTransfer.objects.update_or_create(
+                paystack_transfer_reference=transfer_reference,
+                defaults={
+                    **failed_paystack_transfer_object_defaults,
+                    "complete_paystack_response": {
+                        "response": response,
+                        "request_data": request_data,
+                    },
+                },
+            )
+
+            send_push_messages(error_push_parameters_list)
+
+            paystack_error = response["message"]
+            logger.error(f"Error intiating Paystack transfer: {paystack_error}")
+
+    # Handle cases when Paystack response is malformed.
+    except json.decoder.JSONDecodeError as json_error:
+        arrear.mark_as_failed_transfer()
+
+        PaystackTransfer.objects.update_or_create(
+            paystack_transfer_reference=transfer_reference,
+            defaults={
+                **failed_paystack_transfer_object_defaults,
+                "complete_paystack_response": {
+                    "detail": "Transfer failed due to malformed data from paystack",
+                    "error": json_error,
+                    "request_data": request_data,
+                },
+            },
+        )
+
+        send_push_messages(error_push_parameters_list)

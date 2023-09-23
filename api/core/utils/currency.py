@@ -1,6 +1,8 @@
 from decimal import ROUND_HALF_EVEN, Decimal
 from typing import Union
 
+from core.utils.decimals import round_decimal
+
 
 def convert_to_kobo_integer(value: Union[int, float, Decimal, str]) -> int:
     """Converts a numeric value (or numeric string) to an integer value
@@ -42,3 +44,9 @@ def convert_to_naira(value: Union[int, float, Decimal, str]) -> Decimal:
     naira = value_decimal / Decimal("100")
     naira_rounded = naira.quantize(Decimal("0.0001"), rounding=ROUND_HALF_EVEN)
     return naira_rounded
+
+
+def add_commas_to_amount(
+    value: Union[int, float, Decimal, str], decimal_places: int = 4
+):
+    return "{:,}".format(round_decimal(Decimal(value), decimal_places))

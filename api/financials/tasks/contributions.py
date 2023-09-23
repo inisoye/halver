@@ -9,6 +9,7 @@ from financials.utils.contributions import (
     process_contribution_transfer,
 )
 from financials.utils.transfers import create_paystack_transfer_object
+from libraries.notifications.base import send_push_messages
 
 logger = get_task_logger(__name__)
 
@@ -62,9 +63,12 @@ def record_contribution_transfer_object(request_data, transfer_outcome):
     reason = data.get("reason")
 
     action_id = extract_uuidv4s_from_string(reason, position=1)
-    action = BillAction.objects.select_related("participant", "bill__creditor").get(
-        uuid=action_id
-    )
+    action = BillAction.objects.select_related(
+        "participant", "bill", "bill__creditor"
+    ).get(uuid=action_id)
+
+    bill = action.bill
+
     receiving_user = action.bill.creditor
     paying_user = action.participant
 
@@ -90,6 +94,43 @@ def record_contribution_transfer_object(request_data, transfer_outcome):
         action=action,
         reason=reason,
     )
+
+    if (
+        transfer_outcome == PaystackTransfer.TransferOutcomeChoices.FAILED
+        or transfer_outcome == PaystackTransfer.TransferOutcomeChoices.REVERSED
+    ):
+        push_parameters_list = [
+            {
+                "token": paying_user.expo_push_token,
+                "title": "Contribution transfer error",
+                "message": (
+                    "We could not successfully transfer your contribution on"
+                    f" {bill.name}. You can retry the transfer in the Halver app for"
+                    " free."
+                ),
+                "extra": {
+                    "action": "failed-or-reversed-transfer",
+                    "bill_name": bill.name,
+                    "bill_id": bill.uuid,
+                },
+            },
+            {
+                "token": receiving_user.expo_push_token,
+                "title": "Contribution transfer error",
+                "message": (
+                    f"We could not successfully transfer {paying_user.full_name}'s"
+                    f" contribution on {bill.name}. You can retry the transfer in the"
+                    " Halver app for free."
+                ),
+                "extra": {
+                    "action": "failed-or-reversed-transfer",
+                    "bill_name": bill.name,
+                    "bill_id": bill.uuid,
+                },
+            },
+        ]
+
+        send_push_messages(push_parameters_list)
 
 
 @shared_task

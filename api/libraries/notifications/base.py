@@ -29,12 +29,40 @@ INITIAL_RETRY_DELAY = 30
 
 # Function to calculate exponential backoff delay
 def calculate_backoff_delay(retry_count):
+    """
+    Calculate the exponential backoff delay for retrying a failed operation.
+
+    Args:
+        retry_count (int): The current retry count.
+
+    Returns:
+        int: The backoff delay in seconds.
+    """
+
     return INITIAL_RETRY_DELAY * (2**retry_count)
 
 
 # Basic arguments. You should extend this function with the push features you
 # want to use, or simply pass in a `PushMessage` object.
 def send_push_message(token, message, extra=None, title=None, subtitle=None):
+    """Send a push message to a specific device token.
+
+    Args:
+        token (str): The device token to which the message will be sent.
+        message (str): The message to send.
+        extra (dict, optional): Additional data to include with the push message.
+        title (str, optional): The title of the push message.
+        subtitle (str, optional): The subtitle of the push message.
+
+    Returns:
+        dict: The response from the push server.
+
+    Raises:
+        PushServerError: If there is an error on the push server side.
+        ConnectionError: If there is a connection error.
+        HTTPError: If there is an HTTP error.
+    """
+
     retries = 0
     successful = False
 
@@ -109,6 +137,23 @@ def send_push_message(token, message, extra=None, title=None, subtitle=None):
 
 
 def send_push_messages(push_parameters_list):
+    """Send multiple push messages to different device tokens.
+
+    Args:
+        push_parameters_list (list): A list of dictionaries containing push parameters
+                                     for each message. Each dictionary should have
+                                     'token', 'message', 'extra', 'title', and
+                                     'subtitle' keys.
+
+    Returns:
+        dict: The response from the push server.
+
+    Raises:
+        PushServerError: If there is an error on the push server side.
+        ConnectionError: If there is a connection error.
+        HTTPError: If there is an HTTP error.
+    """
+
     retries = 0
     successful = False
 

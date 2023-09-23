@@ -15,13 +15,20 @@ from financials.utils.transfers import (
     create_paystack_transfer_object,
     extract_paystack_transaction_id_from_transfer_reason,
 )
+from libraries.notifications.base import send_push_messages
 
 logger = get_task_logger(__name__)
 
 
 @shared_task
 def record_bill_arrear(request_data):
-    """ """
+    """Records a bill arrear for a failed recurring contribution payment and
+    sends push notifications.
+
+    Args:
+        request_data (dict): A dictionary of data received from Paystack
+            webhooks containing information on a failed card charge
+    """
 
     data = request_data.get("data")
 
@@ -30,13 +37,21 @@ def record_bill_arrear(request_data):
 
     subscription_object = PaystackSubscription.objects.get(
         paystack_subscription_code=subscription_code
-    ).select_related("action", "action__bill", "action__participant")
+    ).select_related(
+        "action",
+        "action__bill",
+        "action__bill__creditor",
+        "action__participant",
+    )
 
     action = subscription_object.action
+    bill = action.bill
+
+    participant = action.participant
 
     bill_arrear_object = {
-        "bill": action.bill,
-        "participant": action.participant,
+        "bill": bill,
+        "participant": participant,
         "action": action,
         "contribution": action.contribution,
         "paystack_transaction_fee": action.paystack_transaction_fee,
@@ -47,6 +62,39 @@ def record_bill_arrear(request_data):
     }
 
     BillArrear.objects.create(**bill_arrear_object)
+
+    push_parameters_list = [
+        {
+            "token": participant.expo_push_token,
+            "title": "Recurring contribution payment error",
+            "message": (
+                "We tried charging your card for your contribution towards"
+                f" {bill.name} but our attempt failed. You can retry your payment in"
+                " the arrear section of the bill."
+            ),
+            "extra": {
+                "action": "failed-subscription-charge",
+                "bill_name": bill.name,
+                "bill_id": bill.uuid,
+            },
+        },
+        {
+            "token": action.bill.creditor.expo_push_token,
+            "title": "Recurring contribution payment error",
+            "message": (
+                f"We tried charging {participant.full_name}'s card for their"
+                f" contribution towards {bill.name} but our attempt failed. We have"
+                " saved this as an arrear on the bill."
+            ),
+            "extra": {
+                "action": "failed-subscription-charge",
+                "bill_name": bill.name,
+                "bill_id": bill.uuid,
+            },
+        },
+    ]
+
+    send_push_messages(push_parameters_list)
 
 
 @shared_task
@@ -98,10 +146,13 @@ def record_arrear_contribution_transfer_object(request_data, transfer_outcome):
     arrear = BillArrear.objects.get(uuid=arrear_id).select_related(
         "action",
         "participant",
+        "bill",
         "bill__creditor",
     )
 
     action = arrear.action
+    bill = arrear.bill
+
     paying_user = arrear.participant
     receiving_user = arrear.bill.creditor
 
@@ -110,6 +161,12 @@ def record_arrear_contribution_transfer_object(request_data, transfer_outcome):
         recipient_code=recipient_code,
         user=receiving_user,
     )
+
+    if transfer_outcome == PaystackTransfer.TransferOutcomeChoices.FAILED:
+        arrear.mark_as_failed_transfer()
+
+    if transfer_outcome == PaystackTransfer.TransferOutcomeChoices.REVERSED:
+        arrear.mark_as_reversed_transfer()
 
     create_paystack_transfer_object(
         request_data=request_data,
@@ -121,6 +178,43 @@ def record_arrear_contribution_transfer_object(request_data, transfer_outcome):
         action=action,
         arrear=arrear,
     )
+
+    if (
+        transfer_outcome == PaystackTransfer.TransferOutcomeChoices.FAILED
+        or transfer_outcome == PaystackTransfer.TransferOutcomeChoices.REVERSED
+    ):
+        push_parameters_list = [
+            {
+                "token": paying_user.expo_push_token,
+                "title": "Contribution transfer error",
+                "message": (
+                    "We could not successfully transfer your arrear contribution on"
+                    f" {bill.name}. You can retry the transfer in the Halver app for"
+                    " free."
+                ),
+                "extra": {
+                    "action": "failed-or-reversed-transfer",
+                    "bill_name": bill.name,
+                    "bill_id": bill.uuid,
+                },
+            },
+            {
+                "token": receiving_user.expo_push_token,
+                "title": "Contribution transfer error",
+                "message": (
+                    f"We could not successfully transfer {paying_user.full_name}'s"
+                    f" arrear contribution on {bill.name}. You can retry the transfer"
+                    " in the Halver app for free."
+                ),
+                "extra": {
+                    "action": "failed-or-reversed-transfer",
+                    "bill_name": bill.name,
+                    "bill_id": bill.uuid,
+                },
+            },
+        ]
+
+        send_push_messages(push_parameters_list)
 
 
 # TODO This should be carried out in a transaction. With select_for_updates
@@ -153,9 +247,10 @@ def finalize_arrear_contribution(
     arrear = BillArrear.objects.get(uuid=arrear_id).select_related(
         "action",
         "participant",
+        "bill",
         "bill__creditor",
     )
-
+    bill = arrear.bill
     action = arrear.action
     receiving_user = arrear.bill.creditor
 
@@ -192,7 +287,7 @@ def finalize_arrear_contribution(
     paying_user = paystack_transaction_object.paying_user
 
     bill_transaction_object = {
-        "bill": action.bill,
+        "bill": bill,
         "contribution": convert_to_naira(amount),
         "paying_user": paying_user,
         "receiving_user": receiving_user,
@@ -204,6 +299,54 @@ def finalize_arrear_contribution(
         "paystack_transfer": paystack_transfer_object,
     }
 
-    # TODO this should be get or create for idempotency.
-    # Prevent drawbacks of duplicate messages. Get by paystack transaction ref, maybe?
     BillTransaction.objects.create(**bill_transaction_object)
+
+    # Handle notifications after all other operations
+    participants_push_parameters_list = [
+        {
+            "token": participant.expo_push_token,
+            "title": f"💳 New arrear contribution on {bill.name}",
+            "message": f"{paying_user.full_name} has just made a contribution.",
+            "extra": {
+                "action": "open-bill",
+                "bill_name": bill.name,
+                "bill_id": bill.uuid,
+            },
+        }
+        for participant in bill.participants.all()
+        if participant.expo_push_token and participant.uuid != paying_user.uuid
+    ]
+
+    receiving_user_push_parameters_list = [
+        {
+            "token": receiving_user.expo_push_token,
+            "title": f"💳 New arrear contribution on {bill.name}",
+            "message": f"{paying_user.full_name} has just made a contribution.",
+            "extra": {
+                "action": "open-bill",
+                "bill_name": bill.name,
+                "bill_id": bill.uuid,
+            },
+        },
+    ]
+
+    paying_user_push_parameters_list = [
+        {
+            "token": paying_user.expo_push_token,
+            "title": "💳 Contrubution successful",
+            "message": f"Your contribution towards {bill.name} was successful.",
+            "extra": {
+                "action": "open-bill",
+                "bill_name": bill.name,
+                "bill_id": bill.uuid,
+            },
+        },
+    ]
+
+    send_push_messages(
+        [
+            *participants_push_parameters_list,
+            *receiving_user_push_parameters_list,
+            *paying_user_push_parameters_list,
+        ]
+    )

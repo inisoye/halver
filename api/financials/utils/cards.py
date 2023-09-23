@@ -1,11 +1,8 @@
-import uuid
-
 from celery.utils.log import get_task_logger
 
 from bills.utils.fees import calculate_all_transaction_fees
 from core.utils.currency import convert_to_naira
 from financials.models import PaystackTransaction, UserCard
-from libraries.paystack.transfer_requests import TransferRequests
 
 logger = get_task_logger(__name__)
 
@@ -149,23 +146,3 @@ def create_card_addition_paystack_transaction_object(
     new_transaction = PaystackTransaction.objects.create(**paystack_transaction_object)
 
     return new_transaction
-
-
-def initiate_card_addition_charge_refund(
-    refundable_amount,
-    refund_recipient_code,
-    user_id,
-) -> None:
-    paystack_transfer_payload = {
-        "source": "balance",
-        "amount": refundable_amount,
-        "recipient": refund_recipient_code,
-        "reason": f"Refund for card creation for user:{user_id}",
-        "reference": str(uuid.uuid4()),
-    }
-
-    response = TransferRequests.initiate(**paystack_transfer_payload)
-
-    if not response["status"]:
-        paystack_error = response["message"]
-        logger.error(f"Error intiating Paystack transfer: {paystack_error}")

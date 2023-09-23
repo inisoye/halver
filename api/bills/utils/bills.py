@@ -4,7 +4,9 @@ from uuid import UUID
 from django.db import transaction
 from rest_framework import serializers
 
+from accounts.tasks.notifications import send_push_messages_in_background
 from bills.utils.fees import calculate_all_transaction_fees
+from core.utils.currency import add_commas_to_amount
 from core.utils.users import get_user_by_id_drf, get_users_by_ids_drf
 
 
@@ -73,6 +75,54 @@ def create_bill(bill_model, validated_data, creator):
         participants_contribution_index,
         unregistered_participants_contribution_index,
     )
+
+    # Handle notifications after all other operations
+    push_parameters_list = []
+
+    if participants:
+        participants_params = [
+            {
+                "token": participant.expo_push_token,
+                "title": f"🧾 New bill from {creator.full_name}",
+                "message": (
+                    "You have been invited to contribute"
+                    f" ₦{add_commas_to_amount(participants_contribution_index[participant.uuid], decimal_places=2)} towards"  # noqa E501
+                    f" {new_bill.name})."
+                ),
+                "extra": {
+                    "action": "open-bill",
+                    "bill_name": new_bill.name,
+                    "bill_id": new_bill.uuid,
+                },
+            }
+            for participant in participants
+            if participant.expo_push_token
+            and participant.uuid != creator.uuid
+            and participant.uuid != creditor.uuid
+        ]
+        push_parameters_list.extend(participants_params)
+
+    if creditor.uuid != creator.uuid:
+        creditor_params = [
+            {
+                "token": creditor.expo_push_token,
+                "title": f"🧾 New bill from {creator.full_name}",
+                "message": (
+                    "You have been listed as a creditor on a new bill called"
+                    f" {new_bill.name} with a total amount of"
+                    f" ₦{add_commas_to_amount(new_bill.total_amount_due, decimal_places=2)}"  # noqa E501
+                ),
+                "extra": {
+                    "action": "open-bill",
+                    "bill_name": new_bill.name,
+                    "bill_id": new_bill.uuid,
+                },
+            }
+        ]
+        push_parameters_list.extend(creditor_params)
+
+    if push_parameters_list:
+        send_push_messages_in_background.delay(push_parameters_list)
 
     return new_bill
 
