@@ -337,7 +337,7 @@ CELERY_IMPORTS = (
 CELERY_BEAT_SCHEDULE = {
     "update_overdue_statuses": {
         "task": "bills.tasks.actions.update_overdue_statuses",
-        "schedule": timedelta(hours=6),
+        "schedule": timedelta(hours=12),
     },
 }
 
