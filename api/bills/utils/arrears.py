@@ -194,7 +194,7 @@ def process_arrear_contribution_transfer(arrear_id, request_data):
         # an error would be thrown.
         paystack_transfer_payload = {
             "source": "balance",
-            "amount": contribution_amount,
+            "amount": contribution_amount_in_kobo,
             "recipient": creditor_default_recipient_code,
             "reason": transfer_reason,
             "reference": transfer_reason,
