@@ -470,11 +470,17 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
     amount = data.get("amount")
 
     action_id = extract_uuidv4s_from_string(reason, position=1)
-    action = BillAction.objects.select_related(
-        "participant",
-        "bill",
-        "bill__creditor",
-    ).get(uuid=action_id)
+    action = (
+        BillAction.objects.select_related(
+            "participant",
+            "bill",
+            "bill__creditor",
+        )
+        .prefetch_related(
+            "bill__participants",
+        )
+        .get(uuid=action_id)
+    )
     bill = action.bill
     receiving_user = action.bill.creditor
 
@@ -540,7 +546,7 @@ def finalize_contribution(request_data, transfer_outcome, final_action_status):
                 "bill_id": str(bill.uuid),
             },
         }
-        for participant in bill.participants.all()
+        for participant in action.bill.participants.all()
         if participant.expo_push_token and participant.uuid != paying_user.uuid
     ]
 

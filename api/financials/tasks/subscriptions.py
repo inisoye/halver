@@ -13,6 +13,7 @@ from financials.utils.contributions import (
     process_contribution_transfer,
 )
 from financials.utils.plans import extract_uuids_from_plan_description
+from libraries.notifications.base import send_push_messages
 
 logger = get_task_logger(__name__)
 
@@ -39,7 +40,18 @@ def process_subscription_creation(request_data):
 
     _, _, action_uuid, _ = extract_uuids_from_plan_description(plan_description)
 
-    action = BillAction.objects.get(uuid=action_uuid)
+    action = (
+        BillAction.objects.select_related(
+            "participant",
+            "paystack_plan",
+            "bill__creditor",
+            "bill",
+        )
+        .prefetch_related(
+            "bill__participants",
+        )
+        .get(uuid=action_uuid)
+    )
     plan_object = action.paystack_plan
     participant = action.participant
     start_date = action.bill.first_charge_date
@@ -63,6 +75,64 @@ def process_subscription_creation(request_data):
         paystack_email_token=email_token,
         complete_paystack_response=request_data,
     )
+
+    bill = action.bill
+    creditor = action.bill.creditor
+
+    # Handle notifications after all other operations
+    participants_push_parameters_list = [
+        {
+            "token": participant.expo_push_token,
+            "title": f"New subscription on {bill.name}",
+            "message": f"{participant.full_name} has just subscribed to {bill.name}.",
+            "extra": {
+                "action": "open-bill",
+                "bill_name": bill.name,
+                "bill_id": str(bill.uuid),
+            },
+        }
+        for participant_object in action.bill.participants.all()
+        if participant_object.expo_push_token
+        and participant_object.uuid != participant.uuid
+    ]
+
+    receiving_user_push_parameters_list = [
+        {
+            "token": creditor.expo_push_token,
+            "title": f"New subscription on {bill.name}",
+            "message": f"{participant.full_name} has just subscribed to {bill.name}.",
+            "extra": {
+                "action": "open-bill",
+                "bill_name": bill.name,
+                "bill_id": str(bill.uuid),
+            },
+        },
+    ]
+
+    paying_user_push_parameters_list = [
+        {
+            "token": participant.expo_push_token,
+            "title": "Contrubution successful",
+            "message": f"You have successfully subscribed to {bill.name}",
+            "extra": {
+                "action": "open-bill",
+                "bill_name": bill.name,
+                "bill_id": str(bill.uuid),
+            },
+        },
+    ]
+
+    filtered_push_parameters_list = [
+        params
+        for params in [
+            *participants_push_parameters_list,
+            *receiving_user_push_parameters_list,
+            *paying_user_push_parameters_list,
+        ]
+        if params["token"]
+    ]
+
+    send_push_messages(filtered_push_parameters_list)
 
 
 @shared_task

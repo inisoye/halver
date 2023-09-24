@@ -242,7 +242,8 @@ class BillCancellationAPIView(APIView):
             )
         else:
             return Response(
-                "All subscriptions successfully cancelled", status=status.HTTP_200_OK
+                {"detail": "All subscriptions successfully cancelled"},
+                status=status.HTTP_200_OK,
             )
 
 
