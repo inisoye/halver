@@ -65,7 +65,9 @@ export const DisplayModeSelectorModal: React.FunctionComponent = () => {
     setFalse: closeDisplayModeModal,
   } = useBooleanStateControl();
 
-  const [displayMode = 'dark', setDisplayMode] = useMMKVString(allMMKVKeys.displayMode);
+  const [displayMode = 'system', setDisplayMode] = useMMKVString(
+    allMMKVKeys.displayMode,
+  );
 
   return (
     <>
