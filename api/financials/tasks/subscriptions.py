@@ -113,7 +113,7 @@ def process_subscription_creation(request_data):
         {
             "token": participant.expo_push_token,
             "title": "Subscription successful",
-            "message": f"You have successfully subscribed to {bill.name}",
+            "message": f"You have successfully subscribed to {bill.name}.",
             "extra": {
                 "action": "open-bill",
                 "bill_name": bill.name,
