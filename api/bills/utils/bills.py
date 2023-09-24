@@ -85,9 +85,9 @@ def create_bill(bill_model, validated_data, creator):
                 "token": participant.expo_push_token,
                 "title": "New bill",
                 "message": (
-                    f"You have been by {creator.full_name} invited to contribute"
-                    f" ₦{add_commas_to_amount(participants_contribution_index[participant.uuid], decimal_places=2)} towards"  # noqa E501
-                    f" {new_bill.name})."
+                    f"You have been invited by {creator.full_name} to"
+                    f" contribute{' ₦' + add_commas_to_amount(participants_contribution_index.get(str(participant.uuid)), decimal_places=2) if participants_contribution_index.get(str(participant.uuid)) is not None else ''} towards"  # noqa E501
+                    f" a bill called {new_bill.name})."
                 ),
                 "extra": {
                     "action": "open-bill",
