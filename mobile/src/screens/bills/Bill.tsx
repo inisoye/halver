@@ -157,6 +157,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
     currentUserActionStatus === 'ongoing' ||
     currentUserActionStatus === 'opted_out' ||
     currentUserActionStatus === 'pending_transfer' ||
+    currentUserActionStatus === 'payment_initialized' ||
     currentUserActionStatus === 'cancelled';
 
   const handleGoBack = () => {

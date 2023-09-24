@@ -162,6 +162,7 @@ export const BillActionStatusEnum = z.enum([
   'failed_transfer',
   'reversed_transfer',
   'cancelled',
+  'payment_initialized',
   'completed',
   'ongoing',
   'last_payment_failed',

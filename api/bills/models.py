@@ -369,6 +369,7 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
         REVERSED_TRANSFER = "reversed_transfer", "Reversed transfer"
         CANCELLED = "cancelled", "Cancelled"
         # For one-time bills.
+        PAYMENT_INITIALIZED = "payment_initialized", "Payment initialized"
         COMPLETED = "completed", "Completed"
         # For recurring bills.
         ONGOING = "ongoing", "Ongoing"
@@ -465,6 +466,9 @@ class BillAction(AbstractTimeStampedUUIDModel, models.Model):
 
     def mark_as_reversed_transfer(self):
         self._update_status(self.StatusChoices.REVERSED_TRANSFER)
+
+    def mark_as_payment_initialized(self):
+        self._update_status(self.StatusChoices.PAYMENT_INITIALIZED)
 
     def mark_as_completed(self):
         self._update_status(self.StatusChoices.COMPLETED)

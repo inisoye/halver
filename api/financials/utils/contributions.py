@@ -198,6 +198,9 @@ def handle_bill_contribution(action):
             amount_in_kobo=amount_in_kobo,
         )
 
+        # Mark status as payment initialized here for instant feedback
+        action.mark_as_payment_initialized()
+
         return charge_response
 
     # Handle recurring payments/subscriptions
