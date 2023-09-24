@@ -44,7 +44,9 @@ def calculate_backoff_delay(retry_count):
 
 # Basic arguments. You should extend this function with the push features you
 # want to use, or simply pass in a `PushMessage` object.
-def send_push_message(token, message, extra=None, title=None, subtitle=None):
+def send_push_message(
+    token, message, extra=None, title=None, subtitle=None, sound="default"
+):
     """Send a push message to a specific device token.
 
     Args:
@@ -75,6 +77,7 @@ def send_push_message(token, message, extra=None, title=None, subtitle=None):
                     data=extra,
                     title=title,
                     subtitle=subtitle,
+                    sound=sound,
                 )
             )
             successful = True
@@ -167,6 +170,7 @@ def send_push_messages(push_parameters_list):
                     data=item.get("extra"),
                     title=item.get("title"),
                     subtitle=item.get("subtitle"),
+                    sound=item.get("sound") or "default",
                 )
                 for item in push_parameters_list
             ]
