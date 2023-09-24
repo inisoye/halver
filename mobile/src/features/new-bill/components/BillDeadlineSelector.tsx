@@ -54,8 +54,9 @@ interface BillDeadlineSelectorProps {
   control: Control<BillDetailsFormValues>;
 }
 
-const currentYear = new Date().getFullYear();
-const futureYear = currentYear + 2;
+const tomorrow = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
+const twoYearsFromNow = new Date();
+twoYearsFromNow.setFullYear(twoYearsFromNow.getFullYear() + 2, 0, 0);
 
 export const BillDeadlineSelector: React.FunctionComponent<
   BillDeadlineSelectorProps
@@ -99,14 +100,10 @@ export const BillDeadlineSelector: React.FunctionComponent<
             render={({ field: { onChange, value } }) => {
               return (
                 <DatePicker
-                  endYear={futureYear}
-                  fontSize={15}
-                  format="yyyy-mm-dd"
-                  height={160}
-                  markHeight={36}
-                  startYear={currentYear}
-                  value={value}
-                  onChange={onChange}
+                  maximumDate={twoYearsFromNow}
+                  minimumDate={tomorrow}
+                  RHFOnChange={onChange}
+                  RHFValue={value}
                 />
               );
             }}

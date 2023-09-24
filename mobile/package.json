@@ -20,7 +20,6 @@
   "dependencies": {
     "@expo/webpack-config": "^19.0.0",
     "@hookform/resolvers": "^3.1.0",
-    "@react-native-community/datetimepicker": "7.2.0",
     "@react-native-community/netinfo": "9.3.10",
     "@react-native-google-signin/google-signin": "^10.0.1",
     "@react-navigation/bottom-tabs": "^6.5.8",
@@ -55,6 +54,7 @@
     "expo-navigation-bar": "~2.3.0",
     "expo-network": "~5.4.0",
     "expo-notifications": "~0.20.1",
+    "expo-sms": "~11.4.0",
     "expo-splash-screen": "~0.20.5",
     "expo-status-bar": "~1.6.0",
     "expo-system-ui": "~2.4.0",
@@ -67,6 +67,7 @@
     "react-hook-form": "^7.43.9",
     "react-native": "0.72.4",
     "react-native-avoid-softinput": "^3.1.5",
+    "react-native-date-picker": "^4.3.3",
     "react-native-gesture-handler": "~2.12.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-mmkv": "^2.8.0",
@@ -80,8 +81,7 @@
     "react-native-web": "~0.19.6",
     "react-native-webview": "13.2.2",
     "sentry-expo": "~7.0.0",
-    "zod": "^3.21.4",
-    "expo-sms": "~11.4.0"
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

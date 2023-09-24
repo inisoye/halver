@@ -59,7 +59,7 @@ export const useNotificationsSetup = () => {
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
       _response => {
-        console.log(_response);
+        // console.log(JSON.stringify(_response));
         // Handle the user's tap on the notification here
       },
     );
