@@ -11,6 +11,7 @@ export const statusColorIndex: StatusColorIndex = {
   failed_transfer: 'red11',
   reversed_transfer: 'red11',
   cancelled: 'red11',
+  payment_initialized: 'orange11',
   completed: 'green11',
   ongoing: 'green11',
   last_payment_failed: 'red11',
@@ -46,6 +47,7 @@ export function generateLongStatus({
     cancelled: areAllStatusesSame
       ? 'Bill cancelled'
       : `${billStatusMessagePrefix} cancelled`,
+    payment_initialized: `${billStatusMessagePrefix} payment${pluralSuffix} initialized`,
     completed: `${billStatusMessagePrefix} payment${pluralSuffix} completed`,
     ongoing: `${billStatusMessagePrefix} subscription${pluralSuffix} ongoing`,
     last_payment_failed: `${billStatusMessagePrefix} payment${pluralSuffix} failed`,
