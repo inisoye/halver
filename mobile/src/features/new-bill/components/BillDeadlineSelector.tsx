@@ -55,8 +55,9 @@ interface BillDeadlineSelectorProps {
 }
 
 const tomorrow = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
-const twoYearsFromNow = new Date();
-twoYearsFromNow.setFullYear(twoYearsFromNow.getFullYear() + 2, 0, 0);
+const twoYearsFromNow = new Date(
+  new Date().setFullYear(new Date().getFullYear() + 2, 0, 0),
+);
 
 export const BillDeadlineSelector: React.FunctionComponent<
   BillDeadlineSelectorProps

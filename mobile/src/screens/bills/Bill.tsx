@@ -64,7 +64,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
   // @ts-ignore
   const headerTitleAnimatedStyle = useAnimatedStyle(() => {
     const opacity = withTiming(scrollY.value >= threshold ? 1 : 0);
-    const translateY = withSpring(scrollY.value >= threshold ? 0 : 30);
+    const translateY = withSpring(scrollY.value >= threshold ? 0 : 15);
 
     return {
       opacity,
@@ -222,33 +222,41 @@ export const Bill = ({ navigation, route }: BillProps) => {
         paddingHorizontal="6"
         paddingTop={isIOS() ? '5' : '8'}
       >
-        <Box alignItems="center" flexDirection="row" maxWidth="60%">
+        <Box alignItems="center" flexDirection="row" flexShrink={1} gap="4">
           <TouchableOpacity
             hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}
-            marginRight="4"
             onPress={handleGoBack}
           >
             <BackWithBackground />
           </TouchableOpacity>
 
-          <AnimatedText
-            fontFamily="Halver-Semibold"
-            lineHeight={32}
-            marginRight="2"
-            numberOfLines={1}
-            style={headerTitleAnimatedStyle}
-            variant="2xl"
+          <Box
+            alignItems="center"
+            flexDirection="row"
+            flexGrow={1}
+            flexShrink={1}
+            gap="2"
+            justifyContent="flex-start"
           >
-            {name}
-          </AnimatedText>
+            <AnimatedText
+              flexShrink={1}
+              fontFamily="Halver-Semibold"
+              lineHeight={32}
+              numberOfLines={1}
+              style={headerTitleAnimatedStyle}
+              variant="2xl"
+            >
+              {name}
+            </AnimatedText>
 
-          <AnimatedBox
-            backgroundColor={billStatusColor}
-            borderRadius="sm"
-            height={6}
-            style={headerTitleAnimatedStyle}
-            width={6}
-          />
+            <AnimatedBox
+              backgroundColor={billStatusColor}
+              borderRadius="sm"
+              height={6}
+              style={headerTitleAnimatedStyle}
+              width={6}
+            />
+          </Box>
         </Box>
 
         {isCreator && false && (
@@ -272,13 +280,13 @@ export const Bill = ({ navigation, route }: BillProps) => {
           >
             <Box
               flexDirection="row"
-              gap="2"
+              gap="8"
               justifyContent="space-between"
               marginBottom="12"
             >
               <DynamicText
+                flexShrink={1}
                 fontFamily="Halver-Semibold"
-                maxWidth="65%"
                 numberOfLines={2}
                 variant="4xl"
               >
@@ -289,11 +297,12 @@ export const Bill = ({ navigation, route }: BillProps) => {
                 color={billStatusColor}
                 fontFamily="Halver-Semibold"
                 lineHeight={13.5}
-                maxWidth="30%"
+                opacity={status?.long ? 1 : 0}
                 textAlign="right"
                 variant="xs"
+                width="28%"
               >
-                {status?.long}
+                {status?.long || 'Loading status'}
               </DynamicText>
             </Box>
 

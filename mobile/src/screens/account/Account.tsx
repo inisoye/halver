@@ -63,7 +63,13 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
     <Screen>
       <ScrollView>
         <Box flex={1} gap="8" paddingBottom="12" paddingHorizontal="6" paddingTop="2">
-          <Box borderRadius="lg" flexDirection="row" gap="4" overflow="hidden">
+          <Box
+            alignItems="stretch"
+            borderRadius="lg"
+            flexDirection="row"
+            gap="4"
+            overflow="hidden"
+          >
             <AccountAvatarButton
               fullName={fullName}
               handleGoToEditProfileImage={handleGoToEditProfileImage}

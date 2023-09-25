@@ -83,6 +83,13 @@ module.exports = {
           cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera',
         },
       ],
+      [
+        'expo-notifications',
+        {
+          icon: './assets/notification-icon.png',
+          color: '#ffffff',
+        },
+      ],
     ],
     hooks: {
       postPublish: [

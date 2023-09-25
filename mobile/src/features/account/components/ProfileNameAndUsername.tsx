@@ -52,6 +52,7 @@ export const ProfileNameAndUsername: React.FunctionComponent<
       borderRadius="lg"
       elevation={1}
       flexGrow={1}
+      flexShrink={1}
       gap="3"
       justifyContent="space-between"
       padding="4"
@@ -67,8 +68,7 @@ export const ProfileNameAndUsername: React.FunctionComponent<
       <DynamicText
         color="textWhite"
         fontFamily="Halver-Semibold"
-        maxWidth={180}
-        numberOfLines={2}
+        numberOfLines={1}
         variant="xl"
       >
         {fullName}
