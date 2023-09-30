@@ -74,7 +74,9 @@ module.exports = {
       ],
       [
         'expo-contacts',
-        { contactsPermission: 'Allow $(PRODUCT_NAME) to access your contacts.' },
+        {
+          contactsPermission: 'Allow $(PRODUCT_NAME) to access your contacts.',
+        },
       ],
       [
         'expo-image-picker',
