@@ -9,11 +9,17 @@ import * as React from 'react';
 import { useMMKVString } from 'react-native-mmkv';
 
 import { Box } from '@/components';
-import { checkIfUserDetailsAreIncomplete, useUserDetails } from '@/features/account';
+import {
+  checkIfUserDetailsAreIncomplete,
+  useUserDetails,
+} from '@/features/account';
 import { useFullScreenLoader } from '@/hooks';
 import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys } from '@/lib/mmkv';
-import { LoginStackNavigator, OnboardingStackNavigator } from '@/navigation/stacks';
+import {
+  LoginStackNavigator,
+  OnboardingStackNavigator,
+} from '@/navigation/stacks';
 import { useIsDarkModeSelected } from '@/utils';
 
 import { AppRootStackNavigator } from './AppRootStackNavigator';

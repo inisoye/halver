@@ -41,7 +41,12 @@ export type AppRootStackParamList = {
   'Split Breakdown': undefined;
   'Bill Summary': undefined;
 
-  Bill: { id: string; name: string; shouldUpdate?: boolean; isOnRoot?: boolean };
+  Bill: {
+    id: string;
+    name: string;
+    shouldUpdate?: boolean;
+    isOnRoot?: boolean;
+  };
   'Bills by status': { status: keyof typeof actionStatusColors };
   'Bill Payment': {
     actionId: string | undefined;
@@ -90,16 +95,31 @@ export const AppRootStackNavigator: React.FunctionComponent = () => {
 
       <AppRootStack.Group screenOptions={{ headerShown: false }}>
         <AppRootStack.Screen component={BillDetails} name="Bill Details" />
-        <AppRootStack.Screen component={BillParticipants} name="Select Participants" />
-        <AppRootStack.Screen component={SplitBreakdown} name="Split Breakdown" />
+        <AppRootStack.Screen
+          component={BillParticipants}
+          name="Select Participants"
+        />
+        <AppRootStack.Screen
+          component={SplitBreakdown}
+          name="Split Breakdown"
+        />
         <AppRootStack.Screen component={BillSummary} name="Bill Summary" />
       </AppRootStack.Group>
 
       <AppRootStack.Group screenOptions={{ headerShown: false }}>
-        <AppRootStack.Screen component={EditProfileImage} name="Edit profile image" />
-        <AppRootStack.Screen component={EditPhoneNumber} name="Edit phone number" />
+        <AppRootStack.Screen
+          component={EditProfileImage}
+          name="Edit profile image"
+        />
+        <AppRootStack.Screen
+          component={EditPhoneNumber}
+          name="Edit phone number"
+        />
         <AppRootStack.Screen component={AddCard} name="Add your card" />
-        <AppRootStack.Screen component={AddTransferRecipient} name="Add a recipient" />
+        <AppRootStack.Screen
+          component={AddTransferRecipient}
+          name="Add a recipient"
+        />
       </AppRootStack.Group>
 
       <AppRootStack.Group screenOptions={{ headerShown: false }}>
