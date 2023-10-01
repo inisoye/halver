@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { ActivityIndicator } from 'react-native';
-import { ModalComponentProp, ModalComponentWithOptions } from 'react-native-modalfy';
+import {
+  ModalComponentProp,
+  ModalComponentWithOptions,
+} from 'react-native-modalfy';
 
 import { ModalStackParams } from '@/lib/modalfy';
 import { colors } from '@/theme';

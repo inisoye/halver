@@ -15,7 +15,10 @@ import {
   Text,
 } from '@/components';
 import { useUserDetails } from '@/features/account';
-import { DefaultCardSelectorModal, useUpdateBillAction } from '@/features/bills';
+import {
+  DefaultCardSelectorModal,
+  useUpdateBillAction,
+} from '@/features/bills';
 import { CardIcon } from '@/features/financials';
 import { useBooleanStateControl, useFullScreenLoader } from '@/hooks';
 import { GoBackArrow } from '@/icons';
@@ -96,7 +99,10 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
         },
 
         onError: error => {
-          handleAxiosErrorAlertAndHaptics('Error in bill payment', error as AxiosError);
+          handleAxiosErrorAlertAndHaptics(
+            'Error in bill payment',
+            error as AxiosError,
+          );
         },
       },
     );
@@ -214,7 +220,9 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
                 Your contribution
               </Text>
               <Text fontFamily="Halver-Semibold" variant="sm">
-                {contribution ? convertNumberToNaira(Number(contribution)) : undefined}
+                {contribution
+                  ? convertNumberToNaira(Number(contribution))
+                  : undefined}
               </Text>
             </Box>
 
@@ -338,8 +346,16 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
                   : 'We will notify you once your contribution has been finalized.'}
               </DynamicText>
 
-              <Button backgroundColor="green8" onPress={handleGoToBillWithUpdate}>
-                <Box alignItems="center" flexDirection="row" gap="4" width="100%">
+              <Button
+                backgroundColor="green6"
+                onPress={handleGoToBillWithUpdate}
+              >
+                <Box
+                  alignItems="center"
+                  flexDirection="row"
+                  gap="4"
+                  width="100%"
+                >
                   <GoBackArrow isLight />
 
                   <Text color="green12" fontFamily="Halver-Semibold">
@@ -372,8 +388,16 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
                 The bill's creditor and creator will be notified.
               </DynamicText>
 
-              <Button backgroundColor="buttonCasal" onPress={handleGoToBillWithUpdate}>
-                <Box alignItems="center" flexDirection="row" gap="4" width="100%">
+              <Button
+                backgroundColor="buttonCasal"
+                onPress={handleGoToBillWithUpdate}
+              >
+                <Box
+                  alignItems="center"
+                  flexDirection="row"
+                  gap="4"
+                  width="100%"
+                >
                   <GoBackArrow isLight />
 
                   <Text color="buttonTextCasal" fontFamily="Halver-Semibold">

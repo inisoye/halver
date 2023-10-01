@@ -113,7 +113,9 @@ export const BillCreateMMKV = z.object({
   name: z.string().max(100),
   notes: z.string().nullish().optional(),
   totalAmountDue: z.string().regex(/^-?\d{0,15}(?:\.\d{0,4})?$/),
-  unregisteredParticipants: z.array(BillUnregisteredParticipantCreate).optional(),
+  unregisteredParticipants: z
+    .array(BillUnregisteredParticipantCreate)
+    .optional(),
   registeredParticipants: z.array(BillRegisteredParticipantMMKV).optional(),
   uuid: z.string().uuid().optional(),
 });
@@ -137,7 +139,9 @@ export const BillCreate = z.object({
     .string()
     .regex(/^-?\d{0,15}(?:\.\d{0,4})?$/)
     .optional(),
-  unregisteredParticipants: z.array(BillUnregisteredParticipantCreate).optional(),
+  unregisteredParticipants: z
+    .array(BillUnregisteredParticipantCreate)
+    .optional(),
   uuid: z.string().uuid().optional(),
 });
 

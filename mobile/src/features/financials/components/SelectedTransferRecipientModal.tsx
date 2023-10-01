@@ -9,7 +9,10 @@ import {
   isAndroid,
 } from '@/utils';
 
-import { useDeleteTransferRecipient, useSetDefaultTransferRecipient } from '../api';
+import {
+  useDeleteTransferRecipient,
+  useSetDefaultTransferRecipient,
+} from '../api';
 import { TransferRecipient } from './TransferRecipientItem';
 
 interface BankLogoProps {
@@ -17,7 +20,10 @@ interface BankLogoProps {
   initials: string;
 }
 
-const BankLogo: React.FunctionComponent<BankLogoProps> = ({ bankLogo, initials }) => {
+const BankLogo: React.FunctionComponent<BankLogoProps> = ({
+  bankLogo,
+  initials,
+}) => {
   return bankLogo ? (
     <Image
       backgroundColor={bankLogo ? 'white' : 'bankImageBackground'}
@@ -105,9 +111,12 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
     return (
       <Modal
         closeModal={closeModal}
-        headingComponent={<BankLogo bankLogo={bankLogo} initials={bankInitials} />}
+        headingComponent={
+          <BankLogo bankLogo={bankLogo} initials={bankInitials} />
+        }
         isLoaderOpen={
-          isSetDefaultTransferRecipientLoading || isDeleteTransferRecipientLoading
+          isSetDefaultTransferRecipientLoading ||
+          isDeleteTransferRecipientLoading
         }
         isModalOpen={isModalOpen}
         hasLargeHeading
@@ -116,14 +125,16 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
           backgroundColor="modalBackground"
           maxHeight="81%"
           opacity={
-            isSetDefaultTransferRecipientLoading || isDeleteTransferRecipientLoading
+            isSetDefaultTransferRecipientLoading ||
+            isDeleteTransferRecipientLoading
               ? 0.6
               : 1
           }
           paddingBottom={isAndroid() ? '2' : '6'}
           paddingTop={isDefault ? undefined : '5'}
           pointerEvents={
-            isSetDefaultTransferRecipientLoading || isDeleteTransferRecipientLoading
+            isSetDefaultTransferRecipientLoading ||
+            isDeleteTransferRecipientLoading
               ? 'none'
               : undefined
           }
@@ -172,7 +183,11 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
               </Text>
             </Box>
 
-            <Box opacity={accountNumber ? 1 : 0.5} paddingVertical="2" width="46%">
+            <Box
+              opacity={accountNumber ? 1 : 0.5}
+              paddingVertical="2"
+              width="46%"
+            >
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -192,7 +207,11 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
               </Text>
             </Box>
 
-            <Box opacity={accountName ? 1 : 0.5} paddingVertical="2" width="46%">
+            <Box
+              opacity={accountName ? 1 : 0.5}
+              paddingVertical="2"
+              width="46%"
+            >
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -233,11 +252,17 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
             </Box>
           </Box>
 
-          <Box flexDirection="row" gap="3" marginBottom="3" paddingHorizontal="6">
+          <Box
+            flexDirection="row"
+            gap="3"
+            marginBottom="3"
+            paddingHorizontal="6"
+          >
             <Button
               backgroundColor="buttonNeutralDarker"
               disabled={
-                isSetDefaultTransferRecipientLoading || isDeleteTransferRecipientLoading
+                isSetDefaultTransferRecipientLoading ||
+                isDeleteTransferRecipientLoading
               }
               flex={1}
               paddingVertical="2.5"
@@ -260,7 +285,9 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
               onPress={onSetDefaultCardSubmit}
             >
               <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
-                {isSetDefaultTransferRecipientLoading ? 'Loading...' : 'Set as default'}
+                {isSetDefaultTransferRecipientLoading
+                  ? 'Loading...'
+                  : 'Set as default'}
               </Text>
             </Button>
           </Box>

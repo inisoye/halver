@@ -1,6 +1,6 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { FadeInDown } from 'react-native-reanimated';
+import { FadeInDown, Layout } from 'react-native-reanimated';
 
 import {
   AnimatedBox,
@@ -50,45 +50,57 @@ const areSelectionAvatarAndNamePropsEqual = (
 };
 
 const SelectionAvatarAndName: React.FunctionComponent<SelectionAvatarAndNameProps> =
-  React.memo(({ avatarBackground, name, profileImageHash, profileImageUrl }) => {
-    const initials = React.useMemo(() => getInitials(name), [name]);
+  React.memo(
+    ({ avatarBackground, name, profileImageHash, profileImageUrl }) => {
+      const initials = React.useMemo(() => getInitials(name), [name]);
 
-    const contactHasImage = profileImageHash || profileImageUrl;
+      const contactHasImage = profileImageHash || profileImageUrl;
 
-    return (
-      <Box alignItems="center" columnGap="3" flexDirection="row">
-        {contactHasImage ? (
-          <Image
-            borderRadius="lg"
-            contentFit="contain"
-            height={28}
-            placeholder={profileImageHash}
-            source={profileImageUrl}
-            width={28}
-          />
-        ) : (
-          <Box
-            alignItems="center"
-            borderRadius="md"
-            height={28}
-            justifyContent="center"
-            style={{
-              backgroundColor: avatarBackground.color,
-            }}
-            width={28}
+      return (
+        <Box alignItems="center" columnGap="3" flexDirection="row">
+          {contactHasImage ? (
+            <Image
+              borderRadius="lg"
+              contentFit="contain"
+              height={28}
+              placeholder={profileImageHash}
+              source={profileImageUrl}
+              width={28}
+            />
+          ) : (
+            <Box
+              alignItems="center"
+              borderRadius="md"
+              height={28}
+              justifyContent="center"
+              style={{
+                backgroundColor: avatarBackground.color,
+              }}
+              width={28}
+            >
+              <Text
+                color="textInverse"
+                fontFamily="Halver-Semibold"
+                opacity={0.85}
+              >
+                {initials[0]}
+              </Text>
+            </Box>
+          )}
+
+          <DynamicText
+            flexShrink={1}
+            lineHeight={20}
+            maxWidth="80%"
+            numberOfLines={1}
           >
-            <Text color="textInverse" fontFamily="Halver-Semibold" opacity={0.85}>
-              {initials[0]}
-            </Text>
-          </Box>
-        )}
-
-        <DynamicText flexShrink={1} lineHeight={20} maxWidth="80%" numberOfLines={1}>
-          {name}
-        </DynamicText>
-      </Box>
-    );
-  }, areSelectionAvatarAndNamePropsEqual);
+            {name}
+          </DynamicText>
+        </Box>
+      );
+    },
+    areSelectionAvatarAndNamePropsEqual,
+  );
 
 interface SelectionItemProps {
   name: string | undefined;
@@ -140,6 +152,7 @@ const SelectionItem: React.FunctionComponent<SelectionItemProps> = ({
         .delay((index + 1) * 100)}
       flexDirection="row"
       justifyContent="space-between"
+      layout={Layout}
       paddingHorizontal="4"
       paddingLeft="3"
       paddingVertical="2"
@@ -190,7 +203,8 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
     const timeout = setTimeout(() => {
       if (
         !numberOfSelectionsExcludingCreator ||
-        (numberOfSelectionsExcludingCreator && numberOfSelectionsExcludingCreator === 0)
+        (numberOfSelectionsExcludingCreator &&
+          numberOfSelectionsExcludingCreator === 0)
       ) {
         closeModal();
       }
@@ -211,9 +225,10 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
     if (isRegistered) {
       setNewBillPayload({
         ...newBillPayload,
-        registeredParticipants: selectedRegisteredParticipantsExcludingCreator?.filter(
-          participant => participant.uuid !== clickedItemUUID,
-        ),
+        registeredParticipants:
+          selectedRegisteredParticipantsExcludingCreator?.filter(
+            participant => participant.uuid !== clickedItemUUID,
+          ),
       });
     } else {
       setNewBillPayload({
@@ -279,7 +294,10 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
           <ScrollView>
             <Box gap="4">
               {selectedRegisteredParticipantsExcludingCreator?.map(
-                ({ name, uuid, profileImageHash, profileImageUrl, phone }, index) => {
+                (
+                  { name, uuid, profileImageHash, profileImageUrl, phone },
+                  index,
+                ) => {
                   return (
                     <SelectionItem
                       handleSelectionRemoval={handleSelectionRemoval}
@@ -296,20 +314,24 @@ export const ViewContactSelectionsModal: React.FunctionComponent<
                 },
               )}
 
-              {selectedUnregisteredParticipants?.map(({ name, phone }, index) => {
-                return (
-                  <SelectionItem
-                    handleSelectionRemoval={handleSelectionRemoval}
-                    index={
-                      selectedRegisteredParticipantsExcludingCreatorLength + index - 1
-                    }
-                    isRegistered={false}
-                    key={phone}
-                    name={name}
-                    phone={phone}
-                  />
-                );
-              })}
+              {selectedUnregisteredParticipants?.map(
+                ({ name, phone }, index) => {
+                  return (
+                    <SelectionItem
+                      handleSelectionRemoval={handleSelectionRemoval}
+                      index={
+                        selectedRegisteredParticipantsExcludingCreatorLength +
+                        index -
+                        1
+                      }
+                      isRegistered={false}
+                      key={phone}
+                      name={name}
+                      phone={phone}
+                    />
+                  );
+                },
+              )}
             </Box>
           </ScrollView>
 

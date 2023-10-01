@@ -14,6 +14,7 @@ import {
   SuccessModal,
   Text,
 } from '@/components';
+import { SMSHandler } from '@/features/bills';
 import {
   BillCreatePayload,
   BillCreationMMKVPayload,
@@ -29,7 +30,10 @@ import {
   handleAxiosErrorAlertAndHaptics,
 } from '@/utils';
 
-type BillSummaryProps = NativeStackScreenProps<AppRootStackParamList, 'Bill Summary'>;
+type BillSummaryProps = NativeStackScreenProps<
+  AppRootStackParamList,
+  'Bill Summary'
+>;
 
 export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
   navigation,
@@ -48,7 +52,8 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
     setFalse: closeSuccessModal,
   } = useBooleanStateControl();
 
-  const { mutate: createBill, isLoading: isCreateBillLoading } = useCreateBill();
+  const { mutate: createBill, isLoading: isCreateBillLoading } =
+    useCreateBill();
 
   useFullScreenLoader({
     isLoading: isCreateBillLoading,
@@ -116,7 +121,8 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
     }
   });
 
-  const totalAmountDueExcludingCreditor = Number(totalAmountDue) - creditorContribution;
+  const totalAmountDueExcludingCreditor =
+    Number(totalAmountDue) - creditorContribution;
 
   const finalBillPayload: BillCreatePayload = {
     creditorId,
@@ -143,7 +149,10 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
       },
 
       onError: error => {
-        handleAxiosErrorAlertAndHaptics('Error creating bill', error as AxiosError);
+        handleAxiosErrorAlertAndHaptics(
+          'Error creating bill',
+          error as AxiosError,
+        );
       },
     });
   };
@@ -161,6 +170,13 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
       },
     });
   };
+
+  const areThereRegisteredParticipants =
+    !!updatedParticipants && updatedParticipants.length > 0;
+
+  const areThereUnregisteredParticipants =
+    !!updatedUnregisteredParticipants &&
+    updatedUnregisteredParticipants.length > 0;
 
   return (
     <Screen hasNoIOSBottomInset>
@@ -212,53 +228,57 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
 
             <ScrollView>
               <Box gap="4">
-                {updatedParticipants?.map(({ uuid, phone, name, contribution }) => {
-                  const isCreditor = uuid === creditorId;
+                {updatedParticipants?.map(
+                  ({ uuid, phone, name, contribution }) => {
+                    const isCreditor = uuid === creditorId;
 
-                  return (
-                    <Box
-                      alignItems="center"
-                      flexDirection="row"
-                      gap="4"
-                      justifyContent="space-between"
-                      key={uuid || phone}
-                    >
+                    return (
                       <Box
                         alignItems="center"
                         flexDirection="row"
-                        flexShrink={1}
-                        maxWidth="65%"
-                        minWidth="50%"
+                        gap="4"
+                        justifyContent="space-between"
+                        key={uuid || phone}
                       >
+                        <Box
+                          alignItems="center"
+                          flexDirection="row"
+                          flexShrink={1}
+                          maxWidth="65%"
+                          minWidth="50%"
+                        >
+                          <DynamicText
+                            color={isCreditor ? 'green11' : 'textLight'}
+                            maxWidth={isCreditor ? '56%' : undefined}
+                            numberOfLines={1}
+                            variant="sm"
+                          >
+                            {name}
+                          </DynamicText>
+
+                          {isCreditor && (
+                            <DynamicText color="green11" variant="sm">
+                              {' '}
+                              - Creditor
+                            </DynamicText>
+                          )}
+                        </Box>
+
                         <DynamicText
-                          color={isCreditor ? 'green11' : 'textLight'}
-                          maxWidth={isCreditor ? '56%' : undefined}
-                          numberOfLines={1}
+                          color={isCreditor ? 'green11' : undefined}
+                          flexShrink={1}
+                          textAlign="right"
+                          textDecorationLine={
+                            isCreditor ? 'line-through' : undefined
+                          }
                           variant="sm"
                         >
-                          {name}
+                          {convertNumberToNaira(Number(contribution))}
                         </DynamicText>
-
-                        {isCreditor && (
-                          <DynamicText color="green11" variant="sm">
-                            {' '}
-                            - Creditor
-                          </DynamicText>
-                        )}
                       </Box>
-
-                      <DynamicText
-                        color={isCreditor ? 'green11' : undefined}
-                        flexShrink={1}
-                        textAlign="right"
-                        textDecorationLine={isCreditor ? 'line-through' : undefined}
-                        variant="sm"
-                      >
-                        {convertNumberToNaira(Number(contribution))}
-                      </DynamicText>
-                    </Box>
-                  );
-                })}
+                    );
+                  },
+                )}
                 {updatedUnregisteredParticipants?.map(
                   ({ phone, name, contribution }) => {
                     return (
@@ -276,12 +296,20 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
                           maxWidth="65%"
                           minWidth="50%"
                         >
-                          <DynamicText color="textLight" numberOfLines={1} variant="sm">
+                          <DynamicText
+                            color="textLight"
+                            numberOfLines={1}
+                            variant="sm"
+                          >
                             {name}
                           </DynamicText>
                         </Box>
 
-                        <DynamicText flexShrink={1} textAlign="right" variant="sm">
+                        <DynamicText
+                          flexShrink={1}
+                          textAlign="right"
+                          variant="sm"
+                        >
                           {convertNumberToNaira(Number(contribution))}
                         </DynamicText>
                       </Box>
@@ -336,26 +364,47 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
             paddingTop="6"
           >
             <Text color="green12" fontFamily="Halver-Semibold" marginBottom="3">
-              We have attempted to notify all the bill’s participants
+              {areThereUnregisteredParticipants
+                ? 'Click SMS below to invite the participants of your bill that have not joined Halver yet.'
+                : 'We have attempted to notify all the bill’s participants'}
             </Text>
             <Text color="green11" marginBottom="6" variant="sm">
-              You can always send additional notifications later.
+              {areThereRegisteredParticipants &&
+              areThereUnregisteredParticipants
+                ? 'We have attempted to notify all the bill’s registered participants.'
+                : 'You can always send additional notifications later.'}
             </Text>
 
-            <Button backgroundColor="green8" onPress={handleGoToBill}>
-              <Box
-                flexDirection="row"
-                gap="4"
-                justifyContent="space-between"
-                width="100%"
+            <Box flexDirection="row" gap="3" marginBottom="3">
+              <Button
+                backgroundColor={
+                  areThereUnregisteredParticipants ? 'green6' : 'green5'
+                }
+                flex={1}
+                paddingLeft="4"
+                paddingRight="4"
+                onPress={handleGoToBill}
               >
-                <Text color="green12" fontFamily="Halver-Semibold">
-                  Go to bill
-                </Text>
+                <Box
+                  flexDirection="row"
+                  gap="4"
+                  justifyContent="space-between"
+                  width="100%"
+                >
+                  <Text color="green12" fontFamily="Halver-Semibold">
+                    Go to bill
+                  </Text>
+                  <GoToArrow />
+                </Box>
+              </Button>
 
-                <GoToArrow />
-              </Box>
-            </Button>
+              {areThereUnregisteredParticipants && (
+                <SMSHandler
+                  billName={billName}
+                  unregisteredParticipants={unregisteredParticipants}
+                />
+              )}
+            </Box>
           </Box>
         </SuccessModal>
       )}

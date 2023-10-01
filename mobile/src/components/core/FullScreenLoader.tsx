@@ -11,10 +11,9 @@ interface FullScreenLoaderProps {
   message?: string;
 }
 
-export const FullScreenLoader: React.FunctionComponent<FullScreenLoaderProps> = ({
-  isVisible = false,
-  message = 'Loading...',
-}) => {
+export const FullScreenLoader: React.FunctionComponent<
+  FullScreenLoaderProps
+> = ({ isVisible = false, message = 'Loading...' }) => {
   return (
     <Modal
       animationType="fade"
