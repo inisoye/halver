@@ -31,6 +31,7 @@ import {
   BillRecentContributionsList,
   CancelBillModal,
   CancelSubscriptionModal,
+  ShareBillModal,
   statusColorIndex,
   useBill,
   useBillContributionsByDay,
@@ -109,10 +110,14 @@ export const Bill = ({ navigation, route }: BillProps) => {
   const totalAmountDue = Number(totalAmountDueString);
   const totalAmountPaid = Number(totalAmountPaidString);
 
-  const billStatusColor = status?.short ? statusColorIndex[status?.short] : undefined;
+  const billStatusColor = status?.short
+    ? statusColorIndex[status?.short]
+    : undefined;
 
-  const { refetch: refetchBillTransactions, isStale: areBillTransactionsStale } =
-    useInfiniteBillTransactions(id);
+  const {
+    refetch: refetchBillTransactions,
+    isStale: areBillTransactionsStale,
+  } = useInfiniteBillTransactions(id);
   const {
     data: billContributionsByDayResponse,
     refetch: refetchBillContributionsByDay,
@@ -148,9 +153,17 @@ export const Bill = ({ navigation, route }: BillProps) => {
     isBillStale,
   ]);
 
-  const currentUserAction = actions?.find(
-    action => action?.participant?.uuid === currentUserUUID,
+  const areAnyParticipantsUnregistered = React.useMemo(
+    () => actions?.some(action => action.status === 'unregistered'),
+    [actions],
   );
+
+  const currentUserAction = React.useMemo(
+    () =>
+      actions?.find(action => action?.participant?.uuid === currentUserUUID),
+    [actions, currentUserUUID],
+  );
+
   const currentUserActionStatus = currentUserAction?.status;
   const isCurrentUserStatusFinal =
     currentUserActionStatus === 'completed' ||
@@ -264,6 +277,10 @@ export const Bill = ({ navigation, route }: BillProps) => {
             <Gear />
           </TouchableOpacity>
         )}
+
+        {areAnyParticipantsUnregistered && (
+          <ShareBillModal actions={actions} billName={name} />
+        )}
       </Box>
 
       <Box backgroundColor="transparent" height={16}>
@@ -311,7 +328,10 @@ export const Bill = ({ navigation, route }: BillProps) => {
                 {isBillRecurring && (
                   <>
                     {totalAmountPaid === 0 || !totalContributionOfLastRound ? (
-                      <DynamicText color="textLight" fontFamily="Halver-Semibold">
+                      <DynamicText
+                        color="textLight"
+                        fontFamily="Halver-Semibold"
+                      >
                         No contributions yet.
                       </DynamicText>
                     ) : (
@@ -331,12 +351,19 @@ export const Bill = ({ navigation, route }: BillProps) => {
                           >
                             Last contribution round on{' '}
                             {!!dayOfLastContributionRound &&
-                              new Date(dayOfLastContributionRound).toDateString()}
+                              new Date(
+                                dayOfLastContributionRound,
+                              ).toDateString()}
                             .
                           </DynamicText>
 
                           <TouchableOpacity
-                            hitSlop={{ top: 40, bottom: 40, left: 40, right: 40 }}
+                            hitSlop={{
+                              top: 40,
+                              bottom: 40,
+                              left: 40,
+                              right: 40,
+                            }}
                             onPress={handleContributionsNavigation}
                           >
                             <Rewind />
@@ -396,14 +423,22 @@ export const Bill = ({ navigation, route }: BillProps) => {
                   {notes}
                 </Text>
 
-                <Text color="textLight" fontFamily="Halver-Semibold" variant="sm">
+                <Text
+                  color="textLight"
+                  fontFamily="Halver-Semibold"
+                  variant="sm"
+                >
                   — {creator?.firstName} (bill creator)
                 </Text>
               </Box>
             )}
 
             {!!actions && (
-              <BillParticipantsList actions={actions} isDiscreet={isDiscreet} />
+              <BillParticipantsList
+                actions={actions}
+                billName={name}
+                isDiscreet={isDiscreet}
+              />
             )}
 
             {!isBillLoading && (
@@ -423,7 +458,9 @@ export const Bill = ({ navigation, route }: BillProps) => {
                   flexWrap="wrap"
                   justifyContent="center"
                 >
-                  {!!creator && <BillCreatorCreditorFlag creatorOrCreditor={creator} />}
+                  {!!creator && (
+                    <BillCreatorCreditorFlag creatorOrCreditor={creator} />
+                  )}
 
                   {!!creditor && (
                     <BillCreatorCreditorFlag
@@ -445,7 +482,11 @@ export const Bill = ({ navigation, route }: BillProps) => {
                 {canCancelBill && <CancelBillModal billId={id} />}
 
                 {!!created && (
-                  <DynamicText color="textLight" textAlign="center" variant="xs">
+                  <DynamicText
+                    color="textLight"
+                    textAlign="center"
+                    variant="xs"
+                  >
                     Bill created on {new Date(created).toDateString()}
                   </DynamicText>
                 )}

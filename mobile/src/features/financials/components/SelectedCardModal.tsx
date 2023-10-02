@@ -21,7 +21,8 @@ interface SelectedCardModalProps {
 
 export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> =
   React.memo(({ selectedCard, closeModal, isModalOpen }) => {
-    const { bank, cardType, first6, last4, isDefault, created } = selectedCard || {};
+    const { bank, cardType, first6, last4, isDefault, created } =
+      selectedCard || {};
     const bankName = convertKebabAndSnakeToTitleCase(bank);
 
     const cardDigits = React.useMemo(
@@ -29,7 +30,8 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
       [first6, last4],
     );
 
-    const { mutate: deleteCard, isLoading: isDeleteCardLoading } = useDeleteCard();
+    const { mutate: deleteCard, isLoading: isDeleteCardLoading } =
+      useDeleteCard();
     const { mutate: setDefaultCard, isLoading: isSetDefaultCardLoading } =
       useSetDefaultCard();
 
@@ -40,7 +42,10 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
         },
 
         onError: error => {
-          handleAxiosErrorAlertAndHaptics('Error deleting card', error as AxiosError);
+          handleAxiosErrorAlertAndHaptics(
+            'Error deleting card',
+            error as AxiosError,
+          );
         },
       });
     };
@@ -167,7 +172,12 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
             <CardIcon type={cardType} />
           </Box>
 
-          <Box flexDirection="row" gap="3" marginBottom="3" paddingHorizontal="6">
+          <Box
+            flexDirection="row"
+            gap="3"
+            marginBottom="3"
+            paddingHorizontal="6"
+          >
             <Button
               backgroundColor="buttonNeutralDarker"
               disabled={isSetDefaultCardLoading || isDeleteCardLoading}
@@ -181,7 +191,9 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
 
             <Button
               backgroundColor="buttonCasal"
-              disabled={isSetDefaultCardLoading || isDeleteCardLoading || isDefault}
+              disabled={
+                isSetDefaultCardLoading || isDeleteCardLoading || isDefault
+              }
               flex={1}
               onPress={onSetDefaultCardSubmit}
             >

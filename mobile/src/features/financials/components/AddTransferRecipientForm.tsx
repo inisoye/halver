@@ -88,7 +88,9 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
         bankCode: '',
       });
 
-    const onAccountValidationSubmit = (submittedData: BankDetailsFormValues) => {
+    const onAccountValidationSubmit = (
+      submittedData: BankDetailsFormValues,
+    ) => {
       validateAccountDetails(
         {
           accountNumber: submittedData.accountNumber,
@@ -158,8 +160,8 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
                 paddingVertical="2"
                 variant="sm"
               >
-                Transfer recipients are bank accounts you'll use to receive payments on
-                Halver.
+                Transfer recipients are bank accounts you'll use to receive
+                payments on Halver.
               </Text>
             )}
 
@@ -228,7 +230,8 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
                 : undefined
             }
             isLoaderOpen={
-              isValidateAccountDetailsLoading || isCreateTransferRecipientLoading
+              isValidateAccountDetailsLoading ||
+              isCreateTransferRecipientLoading
             }
             isModalOpen={isConfirmationModalOpen}
             hasLargeHeading
@@ -236,7 +239,8 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
             <Box
               backgroundColor="modalBackground"
               opacity={
-                isValidateAccountDetailsLoading || isCreateTransferRecipientLoading
+                isValidateAccountDetailsLoading ||
+                isCreateTransferRecipientLoading
                   ? 0.6
                   : 1
               }
@@ -244,7 +248,8 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
               paddingHorizontal="6"
               paddingTop="6"
               pointerEvents={
-                isValidateAccountDetailsLoading || isCreateTransferRecipientLoading
+                isValidateAccountDetailsLoading ||
+                isCreateTransferRecipientLoading
                   ? 'none'
                   : undefined
               }
@@ -253,15 +258,16 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
                 Is this you?
               </Text>
               <Text color="textLight" marginBottom="6" variant="sm">
-                To continue, confirm that the above name is the name associated with the
-                account details you have entered.
+                To continue, confirm that the above name is the name associated
+                with the account details you have entered.
               </Text>
 
               <Box flexDirection="row" gap="3">
                 <Button
                   backgroundColor="buttonNeutralDarker"
                   disabled={
-                    isValidateAccountDetailsLoading || isCreateTransferRecipientLoading
+                    isValidateAccountDetailsLoading ||
+                    isCreateTransferRecipientLoading
                   }
                   flex={1}
                   onPress={closeConfirmationModal}
@@ -271,7 +277,8 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
                 <Button
                   backgroundColor="buttonCasal"
                   disabled={
-                    isValidateAccountDetailsLoading || isCreateTransferRecipientLoading
+                    isValidateAccountDetailsLoading ||
+                    isCreateTransferRecipientLoading
                   }
                   flex={1}
                   onPress={onCreateTransferRecipientSubmit}

@@ -117,7 +117,11 @@ const SelectorOption: React.FunctionComponent<SelectorOptionProps> = ({
       </Box>
 
       {isSelected && (
-        <SelectTick height={18} style={{ marginRight: spacing[6] }} width={18} />
+        <SelectTick
+          height={18}
+          style={{ marginRight: spacing[6] }}
+          width={18}
+        />
       )}
       {!isSelected && (
         <SelectInactiveItem
@@ -178,21 +182,24 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
     handleModalClose();
   };
 
-  const renderItem: ListRenderItem<(typeof filteredBanks)[number]> = React.useCallback(
-    ({ item }: { item: SelectedBank }) => (
-      <SelectorOption
-        handleItemClick={handleItemClick}
-        item={item}
-        selectedBank={selectedBank}
-      />
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectedBank],
-  );
+  const renderItem: ListRenderItem<(typeof filteredBanks)[number]> =
+    React.useCallback(
+      ({ item }: { item: SelectedBank }) => (
+        <SelectorOption
+          handleItemClick={handleItemClick}
+          item={item}
+          selectedBank={selectedBank}
+        />
+      ),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [selectedBank],
+    );
 
   const noBankMatchesFilter = filteredBanks?.length === 0;
 
-  const selectedInitials = selectedBank?.name ? getInitials(selectedBank.name) : '';
+  const selectedInitials = selectedBank?.name
+    ? getInitials(selectedBank.name)
+    : '';
 
   return (
     <>
@@ -226,7 +233,11 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
                 justifyContent="center"
                 width={18}
               >
-                <Text color="textBlack" fontFamily="Halver-Semibold" variant="xxs">
+                <Text
+                  color="textBlack"
+                  fontFamily="Halver-Semibold"
+                  variant="xxs"
+                >
                   {selectedInitials}
                 </Text>
               </Box>

@@ -15,6 +15,7 @@ export * from './Search';
 export * from './SelectCaret';
 export * from './SelectInactiveItem';
 export * from './SelectTick';
+export * from './ShareArrow';
 export * from './SmallAlert';
 export * from './SmallClose';
 export * from './SuccessTick';

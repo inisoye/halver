@@ -50,7 +50,12 @@ export const BillContributionMeter: React.FunctionComponent<
         />
       </Box>
 
-      <Box flexDirection="row" gap="4" justifyContent="space-between" marginTop="2">
+      <Box
+        flexDirection="row"
+        gap="4"
+        justifyContent="space-between"
+        marginTop="2"
+      >
         <Text color="textLight" fontFamily="Halver-Semibold" variant="xs">
           {totalAmountPaid === 0
             ? `No contributions${isRecurring ? '' : ' yet'}`
@@ -74,7 +79,9 @@ export const BillContributionMeterWithColor: React.FunctionComponent<
   BillContributionMeterProps
 > = ({ totalAmountPaid, totalAmountDue, isRecurring = false }) => {
   const percentagePaid =
-    totalAmountDue > 0 ? Math.min(100, (totalAmountPaid / totalAmountDue) * 100) : 0;
+    totalAmountDue > 0
+      ? Math.min(100, (totalAmountPaid / totalAmountDue) * 100)
+      : 0;
 
   const percentagePaidString = percentagePaid.toFixed();
   const color = getPercentageContributedColors(percentagePaid);
@@ -98,7 +105,12 @@ export const BillContributionMeterWithColor: React.FunctionComponent<
         />
       </Box>
 
-      <Box flexDirection="row" gap="4" justifyContent="space-between" marginTop="2">
+      <Box
+        flexDirection="row"
+        gap="4"
+        justifyContent="space-between"
+        marginTop="2"
+      >
         <Text color="textLight" fontFamily="Halver-Semibold" variant="xs">
           {totalAmountPaid === 0
             ? `No contributions${isRecurring ? '' : ' yet'}`

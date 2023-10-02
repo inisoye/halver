@@ -24,19 +24,30 @@ interface BillParticipantItemProps {
 
 const BillParticipantItem: React.FunctionComponent<BillParticipantItemProps> =
   React.memo(({ action, handleItemSelection, isDiscreet }) => {
-    const { status: actionStatus, participant, unregisteredParticipant, uuid } = action;
+    const {
+      status: actionStatus,
+      participant,
+      unregisteredParticipant,
+      uuid,
+    } = action;
 
     const isDarkMode = useIsDarkModeSelected();
 
     const formattedStatus = convertKebabAndSnakeToTitleCase(actionStatus);
-    const actionStatusColor = actionStatus ? statusColorIndex[actionStatus] : undefined;
+    const actionStatusColor = actionStatus
+      ? statusColorIndex[actionStatus]
+      : undefined;
     const initials = getInitials(
       participant?.fullName || unregisteredParticipant?.name,
     );
 
     const avatarBackground = isDarkMode
-      ? getLightColorFromString(participant?.fullName || unregisteredParticipant?.name)
-      : getDarkColorFromString(participant?.fullName || unregisteredParticipant?.name);
+      ? getLightColorFromString(
+          participant?.fullName || unregisteredParticipant?.name,
+        )
+      : getDarkColorFromString(
+          participant?.fullName || unregisteredParticipant?.name,
+        );
 
     const hasImage = !!participant?.profileImageUrl;
 
@@ -102,7 +113,11 @@ const BillParticipantItem: React.FunctionComponent<BillParticipantItemProps> =
           <Text fontFamily="Halver-Semibold" marginBottom="0.75" variant="xs2">
             {name}
           </Text>
-          <Text color={actionStatusColor} fontFamily="Halver-Semibold" variant="xxs">
+          <Text
+            color={actionStatusColor}
+            fontFamily="Halver-Semibold"
+            variant="xxs"
+          >
             {formattedStatus}
           </Text>
         </Box>
@@ -112,12 +127,13 @@ const BillParticipantItem: React.FunctionComponent<BillParticipantItemProps> =
 
 interface BillParticipantsListProps {
   actions: BillDetailAction[] | undefined;
+  billName: string;
   isDiscreet: boolean | undefined;
 }
 
 export const BillParticipantsList: React.FunctionComponent<
   BillParticipantsListProps
-> = ({ actions, isDiscreet }) => {
+> = ({ actions, billName, isDiscreet }) => {
   const { spacing } = useTheme<Theme>();
   const [selectedAction, setSelectedAction] = React.useState<
     BillDetailAction[] | undefined
@@ -144,6 +160,7 @@ export const BillParticipantsList: React.FunctionComponent<
       <Box>
         <ParticipantsListDetailsModal
           actions={actions}
+          billName={billName}
           closeModal={closeModal}
           isDiscreet={isDiscreet}
           isModalOpen={isModalOpen}
