@@ -1,6 +1,7 @@
 from django.urls import include, path
 
 from accounts.api.views import (
+    AppleLogin,
     ExpoPushTokenUpdateAPIView,
     GoogleLogin,
     MultiplePushNotificationsView,
@@ -21,6 +22,11 @@ urlpatterns = [
         "dj-rest-auth/google/",
         GoogleLogin.as_view(),
         name="google_login",
+    ),
+    path(
+        "dj-rest-auth/apple/",
+        AppleLogin.as_view(),
+        name="apple_login",
     ),
     path(
         "accounts/profile-image/",

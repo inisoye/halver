@@ -26,15 +26,6 @@ env = Env()
 env.read_env()
 
 
-class AppleLogin(AppleLoginView):
-    adapter_class = AppleOAuth2Adapter
-    callback_url = env.str(
-        "APPLE_OAUTH_CALLBACK_URL",
-        default="default_apple_oauth_callback_url",
-    )
-    client_class = AppleOAuth2Client
-
-
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
     callback_url = env.str(
@@ -42,6 +33,15 @@ class GoogleLogin(SocialLoginView):
         default="default_google_oauth_callback_url",
     )
     client_class = OAuth2Client
+
+
+class AppleLogin(AppleLoginView):
+    adapter_class = AppleOAuth2Adapter
+    callback_url = env.str(
+        "APPLE_OAUTH_CALLBACK_URL",
+        default="default_apple_oauth_callback_url",
+    )
+    client_class = AppleOAuth2Client
 
 
 class ProfileImageUploadAPIView(APIView):
