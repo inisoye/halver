@@ -4,9 +4,6 @@
   "python.analysis.autoImportCompletions": true,
   "python.analysis.autoImportUserSymbols": true,
   "python.analysis.ignore": ["**/migrations/*"],
-  "python.defaultInterpreterPath": "/Users/inioluwaakinyosoye/Library/Caches/pypoetry/virtualenvs/halver-api-J089k1eH-py3.11/bin/python3",
-  "python.linting.enabled": true,
-  "python.linting.flake8Enabled": true,
-  "python.linting.ignorePatterns": ["**/migrations/*"],
-  "python.analysis.typeCheckingMode": "off"
+  "python.analysis.typeCheckingMode": "off",
+  "python.defaultInterpreterPath": "/Users/inioluwaakinyosoye/Library/Caches/pypoetry/virtualenvs/halver-api-J089k1eH-py3.11/bin/python3"
 }

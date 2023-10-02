@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "dj_rest_auth.registration",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.apple",
     "drf_spectacular",
     "debug_toolbar",
     "import_export",
@@ -307,7 +308,27 @@ SOCIALACCOUNT_PROVIDERS = {
             "access_type": "online",
         },
         "OAUTH_PKCE_ENABLED": True,
-    }
+    },
+    "apple": {
+        "APP": {
+            "client_id": env.str(
+                "APPLE_OAUTH_CLIENT_ID",
+                default="default_apple_oauth_client_id",
+            ),
+            "secret": env.str(
+                "APPLE_OAUTH_SECRET",
+                default="default_apple_oauth_secret",
+            ),
+            "key": env.str(
+                "APPLE_OAUTH_KEY",
+                default="default_apple_oauth_key",
+            ),
+            "certificate_key": env.str(
+                "APPLE_OAUTH_CERTIFICATE_KEY",
+                default="default_apple_oauth_certificate_key",
+            ),
+        }
+    },
 }
 
 
