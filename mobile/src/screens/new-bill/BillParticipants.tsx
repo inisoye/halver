@@ -77,8 +77,8 @@ export const BillParticipants = ({ navigation }: BillParticipantsProps) => {
         <Box flex={1}>
           <Box flex={1} paddingHorizontal="6">
             <Text marginBottom="6">
-              To select participants on your bill, please grant Halver access to your
-              contacts.
+              To select participants on your bill, please grant Halver access to
+              your contacts.
             </Text>
 
             <Box
@@ -120,7 +120,10 @@ export const BillParticipants = ({ navigation }: BillParticipantsProps) => {
             </Box>
           </Box>
 
-          <KeyboardStickyButton backgroundColor="buttonCasal" onPress={openAppSettings}>
+          <KeyboardStickyButton
+            backgroundColor="buttonCasal"
+            onPress={openAppSettings}
+          >
             <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
               Go to settings
             </Text>
@@ -138,7 +141,9 @@ export const BillParticipants = ({ navigation }: BillParticipantsProps) => {
             paddingHorizontal="0"
             placeholder="Search for a contact"
             prefixComponent={<Search />}
-            suffixComponent={<ViewContactSelectionsModal navigation={navigation} />}
+            suffixComponent={
+              <ViewContactSelectionsModal navigation={navigation} />
+            }
           />
 
           <ContactsList contactsFilterValue={contactsFilterValue} />

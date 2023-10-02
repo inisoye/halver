@@ -36,7 +36,9 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
           return {
             fullName: name,
             phone: isMobilePhone(numberWithoutSpaces, 'en-NG')
-              ? parsePhoneNumberFromString(numberWithoutSpaces, 'NG')?.format('E.164')
+              ? parsePhoneNumberFromString(numberWithoutSpaces, 'NG')?.format(
+                  'E.164',
+                )
               : undefined,
           };
         });
@@ -69,7 +71,9 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
 
   const filteredUnregisteredContacts = React.useMemo(() => {
     return allUnregisteredContacts.filter(contact =>
-      contact?.fullName?.toLowerCase().includes(contactsFilterValue?.toLowerCase()),
+      contact?.fullName
+        ?.toLowerCase()
+        .includes(contactsFilterValue?.toLowerCase()),
     );
   }, [allUnregisteredContacts, contactsFilterValue]);
 
@@ -86,7 +90,10 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
       return ['Contacts', ...filteredUnregisteredContacts];
     }
 
-    if (!filteredUnregisteredContacts || filteredUnregisteredContacts?.length < 1) {
+    if (
+      !filteredUnregisteredContacts ||
+      filteredUnregisteredContacts?.length < 1
+    ) {
       return ['Contacts on Halver', ...filteredRegisteredContacts];
     }
 
@@ -96,7 +103,11 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
       'Other contacts',
       ...filteredUnregisteredContacts,
     ];
-  }, [filteredRegisteredContacts, noContactsFound, filteredUnregisteredContacts]);
+  }, [
+    filteredRegisteredContacts,
+    noContactsFound,
+    filteredUnregisteredContacts,
+  ]);
 
   const stickyHeaderIndices = React.useMemo(
     () =>
@@ -118,7 +129,9 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
   }) => {
     const isLastItem = index === contactsWithHeadings.length - 1;
 
-    return <ContactRenderItem index={index} isLastItem={isLastItem} item={item} />;
+    return (
+      <ContactRenderItem index={index} isLastItem={isLastItem} item={item} />
+    );
   };
 
   return (
@@ -169,7 +182,15 @@ export const ContactsContinueButton: React.FunctionComponent<
     if (numberOfSelectionsExcludingCreator < 1) {
       handleGenericErrorAlertAndHaptics(
         'No participant selected',
-        'Please select at least one participant to continue',
+        'Please select at least one participant to continue.',
+      );
+      return;
+    }
+
+    if (numberOfSelectionsExcludingCreator > 16) {
+      handleGenericErrorAlertAndHaptics(
+        'Too many participants',
+        'Select 16 or fewer participants to continue.',
       );
       return;
     }
