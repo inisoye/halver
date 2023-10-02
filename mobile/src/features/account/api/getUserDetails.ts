@@ -27,7 +27,10 @@ export const useUserDetails = () => {
     queryFn: getUserDetails,
     enabled: !!token,
     onError: (error: AxiosError) => {
-      if (error.response && THROW_OUT_STATUS_CODES.includes(error.response?.status)) {
+      if (
+        error.response &&
+        THROW_OUT_STATUS_CODES.includes(error.response?.status)
+      ) {
         setToken(undefined);
         storage.clearAll();
         deleteAxiosDefaultToken();

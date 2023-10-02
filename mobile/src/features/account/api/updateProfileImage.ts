@@ -22,7 +22,9 @@ export const useUpdateProfileImage = () => {
   return useMutation({
     mutationFn: updateProfileImage,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getUserDetails });
+      queryClient.invalidateQueries({
+        queryKey: allStaticQueryKeys.getUserDetails,
+      });
     },
   });
 };

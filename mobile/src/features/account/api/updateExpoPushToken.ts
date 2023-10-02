@@ -5,7 +5,9 @@ import { apiClient } from '@/lib/axios';
 import { allStaticQueryKeys } from '@/lib/react-query';
 import { PatchedExpoPushToken as PatchedExpoPushTokenSchema } from '@/lib/zod';
 
-export type ExpoPushTokenUpdatePayload = z.infer<typeof PatchedExpoPushTokenSchema>;
+export type ExpoPushTokenUpdatePayload = z.infer<
+  typeof PatchedExpoPushTokenSchema
+>;
 
 export const updateExpoPushToken = async (
   expoPushTokenUpdateDto: ExpoPushTokenUpdatePayload,
@@ -23,7 +25,9 @@ export const useUpdateExpoPushToken = () => {
   return useMutation({
     mutationFn: updateExpoPushToken,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getUserDetails });
+      queryClient.invalidateQueries({
+        queryKey: allStaticQueryKeys.getUserDetails,
+      });
     },
   });
 };

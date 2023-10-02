@@ -12,7 +12,9 @@ import { isStringOrArrayOfStrings } from './strings';
  * @param errors - An object containing errors, where the keys are (often) field names and the values are error messages.
  * @returns A single string representing the formatted error message that includes all the messages in the initial object.
  */
-const formatErrorObject = (errors: { [key: string]: string | string[] }): string => {
+const formatErrorObject = (errors: {
+  [key: string]: string | string[];
+}): string => {
   const namedErrors: string[] = [];
   const otherErrors: string[] = [];
 
@@ -53,7 +55,9 @@ const formatErrorObject = (errors: { [key: string]: string | string[] }): string
   const result: string[] = [...namedErrors];
   if (otherErrors.length) {
     result.push(
-      `${namedErrors.length > 1 ? 'Other errors: ' : ''}${otherErrors.join('. ')}`,
+      `${namedErrors.length > 1 ? 'Other errors: ' : ''}${otherErrors.join(
+        '. ',
+      )}`,
     );
   }
 

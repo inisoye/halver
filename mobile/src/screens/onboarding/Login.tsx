@@ -27,7 +27,9 @@ export const customStyles = StyleSheet.create({
 });
 
 export const Login: React.FunctionComponent = () => {
-  const [accessToken, setAccessToken] = React.useState<string | undefined>(undefined);
+  const [accessToken, setAccessToken] = React.useState<string | undefined>(
+    undefined,
+  );
   const { mutate: postSocialLogin, isLoading: isSocialLoginLoading } =
     usePostSocialLogin();
   const [_, setToken] = useMMKVString(allMMKVKeys.token);
@@ -71,7 +73,10 @@ export const Login: React.FunctionComponent = () => {
 
   return (
     <>
-      <FullScreenLoader isVisible={isSocialLoginLoading} message="Logging you in..." />
+      <FullScreenLoader
+        isVisible={isSocialLoginLoading}
+        message="Logging you in..."
+      />
 
       <Screen isHeaderShown={false}>
         <IntroMarquee />

@@ -13,7 +13,10 @@ export type UpdateUserDetailsPayload = z.infer<typeof PatchedUserDetailsSchema>;
 export const updateSingleUserDetail = async (
   updateUserDetailsDto: UpdateUserDetailsPayload,
 ) => {
-  const response = await apiClient.patch('/dj-rest-auth/user/', updateUserDetailsDto);
+  const response = await apiClient.patch(
+    '/dj-rest-auth/user/',
+    updateUserDetailsDto,
+  );
   return UserDetailsSchema.parse(response.data);
 };
 
@@ -23,7 +26,9 @@ export const useUpdateSingleUserDetail = () => {
   return useMutation({
     mutationFn: updateSingleUserDetail,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getUserDetails });
+      queryClient.invalidateQueries({
+        queryKey: allStaticQueryKeys.getUserDetails,
+      });
     },
   });
 };
