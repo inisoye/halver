@@ -9,7 +9,7 @@ import {
 
 export type SocialLoginPayload = z.infer<typeof SocialLoginSchema>;
 
-export const postSocialLogIn = async (
+export const postGoogleLogin = async (
   lotteryPaymentDto: SocialLoginPayload,
 ) => {
   const response = await tokenlessApiClient.post(
@@ -19,8 +19,8 @@ export const postSocialLogIn = async (
   return TokenSchema.parse(response.data);
 };
 
-export const usePostSocialLogin = () => {
+export const usePostGoogleLogin = () => {
   return useMutation({
-    mutationFn: postSocialLogIn,
+    mutationFn: postGoogleLogin,
   });
 };

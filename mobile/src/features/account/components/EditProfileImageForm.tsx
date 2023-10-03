@@ -85,9 +85,9 @@ interface EditProfileImageFormProps {
 export const EditProfileImageForm: React.FunctionComponent<
   EditProfileImageFormProps
 > = ({ isOnboarding, onComplete }) => {
-  const [image, setImage] = React.useState<ImagePicker.ImagePickerAsset | undefined>(
-    undefined,
-  );
+  const [image, setImage] = React.useState<
+    ImagePicker.ImagePickerAsset | undefined
+  >(undefined);
   const { mutate: updateProfileImage, isLoading: isProfileImageUpdateLoading } =
     useUpdateProfileImage();
 
@@ -144,12 +144,18 @@ export const EditProfileImageForm: React.FunctionComponent<
             paddingVertical="2"
             variant="sm"
           >
-            We want everyone to be easily recognizable on Halver. Please upload a photo
-            with your face in it.
+            We want everyone to be easily recognizable on Halver. Please upload
+            a photo with your face in it.
           </Text>
         )}
 
-        <Box flex={1} gap="7" marginTop="5" paddingHorizontal="6" paddingVertical="8">
+        <Box
+          flex={1}
+          gap="7"
+          marginTop="5"
+          paddingHorizontal="6"
+          paddingVertical="8"
+        >
           {!!imageUri && (
             <AnimatedImage
               borderRadius="2xl"
@@ -177,7 +183,11 @@ export const EditProfileImageForm: React.FunctionComponent<
             variant="sm"
             onPress={pickImage}
           >
-            <Text color="buttonTextApricot" fontFamily="Halver-Semibold" variant="sm">
+            <Text
+              color="buttonTextApricot"
+              fontFamily="Halver-Semibold"
+              variant="sm"
+            >
               {!imageUri ? 'Select an ' : 'Change '}image
             </Text>
             <UserFolder />
