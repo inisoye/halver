@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import * as Google from 'expo-auth-session/providers/google';
 import Constants from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
@@ -16,7 +16,7 @@ import { usePostGoogleLogin, type SocialLoginPayload } from '../api';
 
 WebBrowser.maybeCompleteAuthSession();
 
-export const customStyles = StyleSheet.create({
+const customStyles = StyleSheet.create({
   googleLogo: {
     position: 'absolute',
     left: 24,
@@ -76,7 +76,7 @@ export const GoogleLoginButton: React.FunctionComponent = () => {
       />
 
       <Button
-        backgroundColor="white"
+        backgroundColor={isIOS() ? 'loginButtonDark' : 'white'}
         disabled={!request || isGoogleLoginLoading}
         marginBottom={isIOS() ? '16' : '8'}
         marginLeft="auto"
@@ -88,7 +88,7 @@ export const GoogleLoginButton: React.FunctionComponent = () => {
       >
         <GoogleIcon style={customStyles.googleLogo} />
 
-        <Text color="textBlack" fontFamily="Halver-Semibold">
+        <Text color={isIOS() ? 'white' : 'black'} fontFamily="Halver-Semibold">
           {isGoogleLoginLoading ? 'Loading' : 'Continue with Google'}
         </Text>
       </Button>

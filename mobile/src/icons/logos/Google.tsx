@@ -4,7 +4,9 @@ import { ISvgProps } from 'svg.types';
 
 type GoogleProps = ISvgProps;
 
-export const Google: React.FunctionComponent<GoogleProps> = ({ ...otherProps }) => {
+export const Google: React.FunctionComponent<GoogleProps> = ({
+  ...otherProps
+}) => {
   return (
     <Svg
       fill="none"

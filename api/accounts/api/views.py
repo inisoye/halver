@@ -5,7 +5,6 @@ from allauth.socialaccount.providers.apple.views import (
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
-from dj_rest_auth.registration.views import SocialLoginView as AppleLoginView
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from environs import Env
 from rest_framework import status
@@ -35,7 +34,7 @@ class GoogleLogin(SocialLoginView):
     client_class = OAuth2Client
 
 
-class AppleLogin(AppleLoginView):
+class AppleLogin(SocialLoginView):
     adapter_class = AppleOAuth2Adapter
     callback_url = env.str(
         "APPLE_OAUTH_CALLBACK_URL",

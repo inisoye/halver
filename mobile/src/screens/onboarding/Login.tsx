@@ -2,7 +2,11 @@ import * as React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { Screen } from '@/components';
-import { GoogleLoginButton, IntroMarquee } from '@/features/account';
+import {
+  AppleLoginButton,
+  GoogleLoginButton,
+  IntroMarquee,
+} from '@/features/account';
 
 export const customStyles = StyleSheet.create({
   googleLogo: {
@@ -17,6 +21,7 @@ export const Login: React.FunctionComponent = () => {
       <Screen isHeaderShown={false}>
         <IntroMarquee />
 
+        <AppleLoginButton />
         <GoogleLoginButton />
       </Screen>
     </>

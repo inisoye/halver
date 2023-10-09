@@ -18,7 +18,11 @@ import {
 } from '@/components';
 import { useTransferUnregisteredParticipantData } from '@/features/bills';
 import { showToast } from '@/lib/root-toast';
-import { handleAxiosErrorAlertAndHaptics, isMobilePhone } from '@/utils';
+import {
+  getFromSecureStore,
+  handleAxiosErrorAlertAndHaptics,
+  isMobilePhone,
+} from '@/utils';
 
 import { useUpdateSingleUserDetail } from '../api';
 
@@ -35,10 +39,9 @@ const PhoneFormSchema = z.object({
 
 type PhoneFormValues = z.infer<typeof PhoneFormSchema>;
 
-export const EditPhoneNumberForm: React.FunctionComponent<EditPhoneNumberFormProps> = ({
-  isOnboarding,
-  onComplete,
-}) => {
+export const EditPhoneNumberForm: React.FunctionComponent<
+  EditPhoneNumberFormProps
+> = ({ isOnboarding, onComplete }) => {
   const {
     control,
     handleSubmit,
@@ -47,14 +50,24 @@ export const EditPhoneNumberForm: React.FunctionComponent<EditPhoneNumberFormPro
     defaultValues: { phone: undefined },
     resolver: zodResolver(PhoneFormSchema),
   });
-  const { mutate: updateSingleUserDetail, isLoading: isUserDetailsUpdateLoading } =
-    useUpdateSingleUserDetail();
+  const {
+    mutate: updateSingleUserDetail,
+    isLoading: isUserDetailsUpdateLoading,
+  } = useUpdateSingleUserDetail();
 
   const { mutate: transferUnregisteredParticipantData } =
     useTransferUnregisteredParticipantData();
 
-  const onSubmit = (data: PhoneFormValues) => {
-    updateSingleUserDetail(data, {
+  const onSubmit = async (data: PhoneFormValues) => {
+    const appleFamilyName = await getFromSecureStore('APPLE_FAMILY_NAME');
+    const appleGivenName = await getFromSecureStore('APPLE_GIVEN_NAME');
+
+    const payload =
+      appleFamilyName && appleGivenName
+        ? { ...data, firstName: appleGivenName, lastName: appleFamilyName }
+        : data;
+
+    updateSingleUserDetail(payload, {
       onSuccess: () => {
         // Perform transfer of data once phone number becomes available on the backend.
         if (isOnboarding) {
@@ -99,11 +112,17 @@ export const EditPhoneNumberForm: React.FunctionComponent<EditPhoneNumberFormPro
               paddingVertical="2"
               variant="sm"
             >
-              Use a number your friends have. It'll help them find you easily on Halver.
+              Use a number your friends have. It'll help them find you easily on
+              Halver.
             </Text>
           )}
 
-          <Box marginTop="10" paddingBottom="20" paddingHorizontal="6" paddingTop="2">
+          <Box
+            marginTop="10"
+            paddingBottom="20"
+            paddingHorizontal="6"
+            paddingTop="2"
+          >
             <TextFieldLabel label="Your phone number" />
 
             <TextField

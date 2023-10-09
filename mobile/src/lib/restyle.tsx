@@ -462,6 +462,8 @@ const theme = createTheme({
     buttonDangerLighter: lightColors.red4,
     buttonNeutralDarker: lightColors.gray5,
 
+    loginButtonDark: darkColors.gray3,
+
     buttonTextApricot: lightColors.gray1,
     buttonTextCasal: lightColors.gray1,
     buttonTextPharlap: lightColors.gray1,
@@ -671,6 +673,8 @@ const darkTheme: Theme = {
     buttonDangerLighter: darkColors.red3,
     buttonNeutralDarker: darkColors.gray3,
 
+    loginButtonDark: darkColors.gray3,
+
     buttonTextApricot: darkColors.gray1,
     buttonTextCasal: darkColors.gray12,
     buttonTextPharlap: darkColors.gray1,
@@ -735,6 +739,8 @@ export const RestyleProvider: React.FunctionComponent<RestyleProviderProps> = ({
   const isDarkMode = useIsDarkModeSelected();
 
   return (
-    <ThemeProvider theme={isDarkMode ? darkTheme : theme}>{children}</ThemeProvider>
+    <ThemeProvider theme={isDarkMode ? darkTheme : theme}>
+      {children}
+    </ThemeProvider>
   );
 };

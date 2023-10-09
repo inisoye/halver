@@ -14,6 +14,7 @@ module.exports = {
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: false,
+      usesAppleSignIn: true,
       bundleIdentifier: IS_DEV ? 'com.halver.dev' : 'com.halver',
       splash: {
         image: './assets/splash-light.png',
@@ -24,6 +25,9 @@ module.exports = {
           resizeMode: 'contain',
           backgroundColor: '#161616',
         },
+      },
+      config: {
+        usesNonExemptEncryption: false,
       },
     },
     android: {
@@ -66,6 +70,7 @@ module.exports = {
     },
     plugins: [
       ['sentry-expo'],
+      ['expo-apple-authentication'],
       [
         'expo-build-properties',
         {

@@ -31,9 +31,9 @@ export const useUserDetails = () => {
         error.response &&
         THROW_OUT_STATUS_CODES.includes(error.response?.status)
       ) {
-        setToken(undefined);
-        storage.clearAll();
         deleteAxiosDefaultToken();
+        storage.clearAll();
+        setToken(undefined);
 
         const errorMessage = formatAxiosErrorMessage(error);
         Alert.alert(
@@ -48,7 +48,7 @@ export const useUserDetails = () => {
         );
       }
     },
-    staleTime: 10 * (60 * 1000), // 10 mins
+    staleTime: 0, // 10 mins
     cacheTime: 15 * (60 * 1000), // 15 mins
   });
 };

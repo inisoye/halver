@@ -24,3 +24,17 @@ export const usePostGoogleLogin = () => {
     mutationFn: postGoogleLogin,
   });
 };
+
+export const postAppleLogin = async (lotteryPaymentDto: SocialLoginPayload) => {
+  const response = await tokenlessApiClient.post(
+    '/dj-rest-auth/apple/',
+    lotteryPaymentDto,
+  );
+  return TokenSchema.parse(response.data);
+};
+
+export const usePostAppleLogin = () => {
+  return useMutation({
+    mutationFn: postAppleLogin,
+  });
+};

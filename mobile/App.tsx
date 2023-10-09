@@ -37,7 +37,11 @@ function MainContent() {
 
   // Post token to backend only when user is authenticated and the token already exists.
   React.useEffect(() => {
-    if (expoPushToken && !!apiClient.defaults.headers.common.Authorization && token) {
+    if (
+      expoPushToken &&
+      !!apiClient.defaults.headers.common.Authorization &&
+      token
+    ) {
       updateExpoPushToken({ expoPushToken });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

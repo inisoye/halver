@@ -11,7 +11,12 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { Box, LinearGradient, Text } from '@/components';
-import { Donation, MultipleContributions, SplitPayments, Subscriptions } from '@/icons';
+import {
+  Donation,
+  MultipleContributions,
+  SplitPayments,
+  Subscriptions,
+} from '@/icons';
 import { colors } from '@/theme';
 
 const customStyles = StyleSheet.create({
@@ -40,7 +45,8 @@ const SLIDER_CONTENT = [
   {
     backgroundColor: colors['grey-dark'][200],
     mainHeading: 'Split payments, delightfully',
-    subHeading: 'Put an end to the awkwardness of paying group bills at restaurants',
+    subHeading:
+      'Put an end to the awkwardness of paying group bills at restaurants.',
     Icon: SplitPayments,
     isDark: true,
     mainHeadingMaxWidth: 200,
@@ -49,16 +55,16 @@ const SLIDER_CONTENT = [
     backgroundColor: colors.apricot.DEFAULT,
     mainHeading: 'Automatically share subscription costs',
     subHeading:
-      'Collect contributions for Netflix, Spotify Family, and more, with ease',
+      'Collect contributions for Netflix, Spotify Family, and more, with ease.',
     Icon: Subscriptions,
     isDark: false,
     mainHeadingMaxWidth: 250,
   },
   {
     backgroundColor: colors.casal.DEFAULT,
-    mainHeading: 'Split your bills with as many people as you want',
+    mainHeading: 'Split your bills with up to sixteen people',
     subHeading:
-      'Drive costs down by adding more people to a bill. The more the merrier',
+      'Drive costs down by adding more people to a bill. The more the merrier.',
     Icon: MultipleContributions,
     isDark: true,
     mainHeadingMaxWidth: 270,
@@ -126,10 +132,16 @@ export const IntroMarquee: React.FunctionComponent = () => {
             return (
               <Animated.View
                 key={mainHeading}
-                style={[customStyles.card, cardAnimatedStyle, { backgroundColor }]}
+                style={[
+                  customStyles.card,
+                  cardAnimatedStyle,
+                  { backgroundColor },
+                ]}
               >
                 <Text
-                  color={isDark ? 'textIntroMarqueeDark' : 'textIntroMarqueeLight'}
+                  color={
+                    isDark ? 'textIntroMarqueeDark' : 'textIntroMarqueeLight'
+                  }
                   fontFamily="Halver-Semibold"
                   lineHeight={24}
                   marginBottom="6"
@@ -139,7 +151,9 @@ export const IntroMarquee: React.FunctionComponent = () => {
                   {mainHeading}
                 </Text>
                 <Text
-                  color={isDark ? 'textIntroMarqueeDark' : 'textIntroMarqueeLight'}
+                  color={
+                    isDark ? 'textIntroMarqueeDark' : 'textIntroMarqueeLight'
+                  }
                   lineHeight={17}
                   opacity={0.7}
                   style={customStyles.subHeading}
@@ -166,10 +180,16 @@ export const IntroMarquee: React.FunctionComponent = () => {
             return (
               <Animated.View
                 key={mainHeading}
-                style={[customStyles.card, cardAnimatedStyle, { backgroundColor }]}
+                style={[
+                  customStyles.card,
+                  cardAnimatedStyle,
+                  { backgroundColor },
+                ]}
               >
                 <Text
-                  color={isDark ? 'textIntroMarqueeDark' : 'textIntroMarqueeLight'}
+                  color={
+                    isDark ? 'textIntroMarqueeDark' : 'textIntroMarqueeLight'
+                  }
                   fontFamily="Halver-Semibold"
                   lineHeight={24}
                   marginBottom="6"
@@ -179,7 +199,9 @@ export const IntroMarquee: React.FunctionComponent = () => {
                   {mainHeading}
                 </Text>
                 <Text
-                  color={isDark ? 'textIntroMarqueeDark' : 'textIntroMarqueeLight'}
+                  color={
+                    isDark ? 'textIntroMarqueeDark' : 'textIntroMarqueeLight'
+                  }
                   lineHeight={17}
                   opacity={0.7}
                   style={customStyles.subHeading}

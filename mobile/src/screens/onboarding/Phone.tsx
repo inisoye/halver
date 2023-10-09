@@ -11,5 +11,10 @@ export const Phone: React.FunctionComponent<PhoneProps> = ({ navigation }) => {
     navigation.navigate('BankAccountDetails');
   };
 
-  return <EditPhoneNumberForm isOnboarding onComplete={handleGoToBankAccountDetails} />;
+  return (
+    <EditPhoneNumberForm
+      isOnboarding
+      onComplete={handleGoToBankAccountDetails}
+    />
+  );
 };

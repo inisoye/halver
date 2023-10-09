@@ -2,7 +2,14 @@ import * as Haptics from 'expo-haptics';
 import * as React from 'react';
 import { useMMKVString } from 'react-native-mmkv';
 
-import { Box, Button, DynamicText, Modal, Text, TouchableOpacity } from '@/components';
+import {
+  Box,
+  Button,
+  DynamicText,
+  Modal,
+  Text,
+  TouchableOpacity,
+} from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { deleteAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys, storage } from '@/lib/mmkv';
@@ -67,7 +74,11 @@ export const LogOutModal: React.FunctionComponent = () => {
           paddingHorizontal="6"
           paddingTop="6"
         >
-          <DynamicText fontFamily="Halver-Semibold" marginBottom="6" width="70%">
+          <DynamicText
+            fontFamily="Halver-Semibold"
+            marginBottom="6"
+            width="70%"
+          >
             All your data and preferences on this phone will be deleted.
           </DynamicText>
 
@@ -82,7 +93,11 @@ export const LogOutModal: React.FunctionComponent = () => {
               </Text>
             </Button>
 
-            <Button backgroundColor="buttonNeutralDarker" flex={1} onPress={logOut}>
+            <Button
+              backgroundColor="buttonNeutralDarker"
+              flex={1}
+              onPress={logOut}
+            >
               <Text color="red11" fontFamily="Halver-Semibold">
                 Yes
               </Text>
