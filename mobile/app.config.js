@@ -72,6 +72,12 @@ module.exports = {
       ['sentry-expo'],
       ['expo-apple-authentication'],
       [
+        'expo-local-authentication',
+        {
+          faceIDPermission: 'Allow $(PRODUCT_NAME) to use Face ID.',
+        },
+      ],
+      [
         'expo-build-properties',
         {
           ios: { flipper: true },

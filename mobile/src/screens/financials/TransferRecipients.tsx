@@ -16,7 +16,7 @@ import {
   type TransferRecipient,
 } from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
-import { BankEmoji, CirclePlus } from '@/icons';
+import { BankEmoji, CirclePlus, Plus } from '@/icons';
 import type { FinancialsStackParamList } from '@/navigation';
 import { gapStyles } from '@/theme';
 
@@ -25,18 +25,17 @@ type TransferRecipientsProps = NativeStackScreenProps<
   'Transfer recipients'
 >;
 
-export const TransferRecipients: React.FunctionComponent<TransferRecipientsProps> = ({
-  navigation,
-}) => {
+export const TransferRecipients: React.FunctionComponent<
+  TransferRecipientsProps
+> = ({ navigation }) => {
   const {
     state: isModalOpen,
     setTrue: openModal,
     setFalse: closeModal,
   } = useBooleanStateControl();
 
-  const [selectedTransferRecipient, _setSelectedTransferRecipient] = React.useState<
-    TransferRecipient | undefined
-  >(undefined);
+  const [selectedTransferRecipient, _setSelectedTransferRecipient] =
+    React.useState<TransferRecipient | undefined>(undefined);
 
   const setSelectedTransferRecipient = React.useCallback(
     (recipient: TransferRecipient) => {
@@ -75,7 +74,16 @@ export const TransferRecipients: React.FunctionComponent<TransferRecipientsProps
         selectedTransferRecipient={selectedTransferRecipient}
       />
 
-      <Screen>
+      <Screen
+        headerRightComponent={
+          <TouchableOpacity
+            hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}
+            onPress={goToAddTransferRecipient}
+          >
+            <Plus />
+          </TouchableOpacity>
+        }
+      >
         <FullScreenLoader
           isVisible={areTransferRecipientsLoading}
           message="Loading transfer recipients..."
@@ -103,8 +111,8 @@ export const TransferRecipients: React.FunctionComponent<TransferRecipientsProps
                 paddingHorizontal="6"
                 variant="sm"
               >
-                Transfer recipients are bank accounts used to receive payments on
-                Halver. You currently have none added.
+                Transfer recipients are bank accounts used to receive payments
+                on Halver. You currently have none added.
               </DynamicText>
             )}
 
@@ -148,7 +156,12 @@ export const TransferRecipients: React.FunctionComponent<TransferRecipientsProps
                 shadowRadius={0.3}
                 onPress={goToAddTransferRecipient}
               >
-                <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">
+                <Box
+                  alignItems="center"
+                  columnGap="2"
+                  flexDirection="row"
+                  width="70%"
+                >
                   <BankEmoji height={24} width={24} />
 
                   <DynamicText

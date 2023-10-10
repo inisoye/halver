@@ -16,7 +16,7 @@ import {
   type Card,
 } from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
-import { CirclePlus, CreditCard } from '@/icons';
+import { CirclePlus, CreditCard, Plus } from '@/icons';
 import type { FinancialsStackParamList } from '@/navigation';
 import { gapStyles } from '@/theme';
 
@@ -29,7 +29,9 @@ export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
     setFalse: closeModal,
   } = useBooleanStateControl();
 
-  const [selectedCard, _setSelectedCard] = React.useState<Card | undefined>(undefined);
+  const [selectedCard, _setSelectedCard] = React.useState<Card | undefined>(
+    undefined,
+  );
 
   const setSelectedCard = React.useCallback((card: Card) => {
     _setSelectedCard(card);
@@ -42,11 +44,14 @@ export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
   // Place default card before others.
   const sortedCards = React.useMemo(
     () =>
-      cards?.sort((a, b) => (a.isDefault === b.isDefault ? 0 : a.isDefault ? -1 : 1)),
+      cards?.sort((a, b) =>
+        a.isDefault === b.isDefault ? 0 : a.isDefault ? -1 : 1,
+      ),
     [cards],
   );
 
-  const areThereCards = !areCardsLoading && !!sortedCards && sortedCards?.length > 0;
+  const areThereCards =
+    !areCardsLoading && !!sortedCards && sortedCards?.length > 0;
   const onlyOneCardAvailable = sortedCards?.length === 1;
 
   const goToAddCard = () => {
@@ -61,8 +66,20 @@ export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
         selectedCard={selectedCard}
       />
 
-      <Screen>
-        <FullScreenLoader isVisible={areCardsLoading} message="Loading your cards..." />
+      <Screen
+        headerRightComponent={
+          <TouchableOpacity
+            hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}
+            onPress={goToAddCard}
+          >
+            <Plus />
+          </TouchableOpacity>
+        }
+      >
+        <FullScreenLoader
+          isVisible={areCardsLoading}
+          message="Loading your cards..."
+        />
 
         {!areCardsLoading && (
           <Box flex={1} paddingVertical="2">
@@ -86,8 +103,8 @@ export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
                 paddingHorizontal="6"
                 variant="sm"
               >
-                Cards are used to make contributions on Halver. You currently have none
-                added.
+                Cards are used to make contributions on Halver. You currently
+                have none added.
               </DynamicText>
             )}
 
@@ -132,7 +149,12 @@ export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
                 shadowRadius={0.3}
                 onPress={goToAddCard}
               >
-                <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">
+                <Box
+                  alignItems="center"
+                  columnGap="2"
+                  flexDirection="row"
+                  width="70%"
+                >
                   <CreditCard />
 
                   <DynamicText

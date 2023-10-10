@@ -101,7 +101,10 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
     ...(item?.unregisteredParticipants || []),
   ];
 
-  const firstFourParticipants = participantsAndUnregisteredParticipants.slice(0, 5);
+  const firstFourParticipants = participantsAndUnregisteredParticipants.slice(
+    0,
+    5,
+  );
 
   const hasNoRegisteredParticipantWithPhotos =
     !!item?.participants &&
@@ -113,7 +116,10 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
     : { message: 'Unknown', color: undefined };
 
   const handleBillNavigation = () => {
-    navigation.navigate('Bill', { id: item?.uuid || '', name: item?.name || '' });
+    navigation.navigate('Bill', {
+      id: item?.uuid || '',
+      name: item?.name || '',
+    });
   };
 
   return (
@@ -174,7 +180,11 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
           </Box>
 
           <Box width="74%">
-            <Text fontFamily="Halver-Semibold" marginBottom="0.75" numberOfLines={1}>
+            <Text
+              fontFamily="Halver-Semibold"
+              marginBottom="0.75"
+              numberOfLines={1}
+            >
               {item?.name}
             </Text>
             <Text
@@ -185,7 +195,11 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
             >
               {item?.totalParticipants}
               {item?.totalParticipants === 1 ? ' person • ' : ' people • '}
-              <Text color={status.color} fontFamily="Halver-Semibold" variant="xs">
+              <Text
+                color={status.color}
+                fontFamily="Halver-Semibold"
+                variant="xs"
+              >
                 {status.message}
               </Text>
             </Text>
@@ -245,8 +259,17 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ navigation }) => {
 
   const noBillsFound = !areBillsLoading && (!bills || bills?.length < 1);
 
-  const renderItem: ListRenderItem<BillListItem | undefined> = ({ item, index }) => {
-    return <BillListRenderItem index={index} item={item} navigation={navigation} />;
+  const renderItem: ListRenderItem<BillListItem | undefined> = ({
+    item,
+    index,
+  }) => {
+    return (
+      <BillListRenderItem index={index} item={item} navigation={navigation} />
+    );
+  };
+
+  const goToBillDetails = () => {
+    navigation.navigate('Bill Details');
   };
 
   return (
@@ -255,9 +278,7 @@ export const Bills: React.FunctionComponent<BillsProps> = ({ navigation }) => {
       headerRightComponent={
         <TouchableOpacity
           hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}
-          onPress={() => {
-            navigation.navigate('Bill Details');
-          }}
+          onPress={goToBillDetails}
         >
           <Plus />
         </TouchableOpacity>
