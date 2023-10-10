@@ -38,7 +38,6 @@ export const AppleLoginButton: React.FunctionComponent = () => {
       });
 
       // Get and save the user's name as these would not be recoverable on server
-
       const { familyName, givenName } = credentials.fullName ?? {};
 
       if (familyName && givenName) {

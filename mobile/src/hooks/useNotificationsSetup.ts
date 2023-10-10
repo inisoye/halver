@@ -18,7 +18,8 @@ async function registerForPushNotificationsAsync() {
   }
 
   if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
     if (existingStatus !== 'granted') {
@@ -41,32 +42,38 @@ async function registerForPushNotificationsAsync() {
 }
 
 export const useNotificationsSetup = () => {
-  const [expoPushToken, setExpoPushToken] = React.useState<string | undefined>('');
+  const [expoPushToken, setExpoPushToken] = React.useState<string | undefined>(
+    '',
+  );
   const [notification, setNotification] = React.useState<
     Notifications.Notification | undefined
   >(undefined);
-  const notificationListener = React.useRef<Notifications.Subscription | undefined>();
-  const responseListener = React.useRef<Notifications.Subscription | undefined>();
+  const notificationListener = React.useRef<
+    Notifications.Subscription | undefined
+  >();
+  const responseListener = React.useRef<
+    Notifications.Subscription | undefined
+  >();
 
   React.useEffect(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
-    notificationListener.current = Notifications.addNotificationReceivedListener(
-      notificationResponse => {
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener(notificationResponse => {
         setNotification(notificationResponse);
-      },
-    );
+      });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(
-      _response => {
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener(_response => {
         // console.log(JSON.stringify(_response));
         // Handle the user's tap on the notification here
-      },
-    );
+      });
 
     return () => {
       if (notificationListener.current)
-        Notifications.removeNotificationSubscription(notificationListener.current);
+        Notifications.removeNotificationSubscription(
+          notificationListener.current,
+        );
       if (responseListener.current)
         Notifications.removeNotificationSubscription(responseListener.current);
     };
