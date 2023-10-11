@@ -1,7 +1,13 @@
 import * as React from 'react';
 import { useMMKVString } from 'react-native-mmkv';
 
-import { Box, DynamicText, Modal, ScrollView, TouchableOpacity } from '@/components';
+import {
+  Box,
+  DynamicText,
+  Modal,
+  ScrollView,
+  TouchableOpacity,
+} from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { EditPencil, SelectInactiveItem, SelectTick } from '@/icons';
 import { allMMKVKeys } from '@/lib/mmkv';
@@ -11,7 +17,10 @@ interface DiplayModeItemProps {
   name: string;
   value: string;
   setDisplayMode: (
-    value: string | ((current: string | undefined) => string | undefined) | undefined,
+    value:
+      | string
+      | ((current: string | undefined) => string | undefined)
+      | undefined,
   ) => void;
   closeDisplayModeModal: () => void;
   displayMode: string;
@@ -39,10 +48,28 @@ const DiplayModeItem: React.FunctionComponent<DiplayModeItemProps> = React.memo(
         paddingVertical="2.5"
         onPress={handleSelection}
       >
-        <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">
+        <Box alignItems="center" columnGap="3" flexDirection="row" width="70%">
           <DynamicText fontFamily="Halver-Semibold" marginLeft="1" variant="sm">
             {name}
           </DynamicText>
+
+          {value === 'system' && (
+            <Box
+              backgroundColor="defaultItemTagBg"
+              borderRadius="base"
+              px="1.5"
+              py="0.5"
+            >
+              <DynamicText
+                color="textWhite"
+                fontFamily="Halver-Semibold"
+                fontSize={9}
+                variant="xxs"
+              >
+                Recommended
+              </DynamicText>
+            </Box>
+          )}
         </Box>
 
         {isSelected && <SelectTick height={16} width={16} />}
@@ -53,9 +80,9 @@ const DiplayModeItem: React.FunctionComponent<DiplayModeItemProps> = React.memo(
 );
 
 const DISPLAY_MODES = [
+  { name: 'System', value: 'system' },
   { name: 'Dark', value: 'dark' },
   { name: 'Light', value: 'light' },
-  { name: 'System', value: 'system' },
 ];
 
 export const DisplayModeSelectorModal: React.FunctionComponent = () => {

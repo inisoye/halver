@@ -64,8 +64,17 @@ export const CardItem: React.FunctionComponent<CardItemProps> = React.memo(
         </Box>
 
         {isDefault && (
-          <Box backgroundColor="defaultItemTagBg" borderRadius="base" px="2" py="1">
-            <DynamicText color="textWhite" fontFamily="Halver-Semibold" variant="xxs">
+          <Box
+            backgroundColor="defaultItemTagBg"
+            borderRadius="base"
+            px="2"
+            py="1"
+          >
+            <DynamicText
+              color="textWhite"
+              fontFamily="Halver-Semibold"
+              variant="xxs"
+            >
               Default
             </DynamicText>
           </Box>
