@@ -3,7 +3,12 @@ import * as React from 'react';
 
 import { FullScreenLoader } from '@/components';
 import { useUserDetails } from '@/features/account';
-import { BankAccountDetails, CardDetails, Phone, ProfileImage } from '@/screens';
+import {
+  BankAccountDetails,
+  CardDetails,
+  Phone,
+  ProfileImage,
+} from '@/screens';
 
 export type OnboardingStackParamList = {
   Login: undefined;
@@ -27,7 +32,10 @@ export const OnboardingStackNavigator: React.FunctionComponent = () => {
 
   if (isLoading) {
     return (
-      <FullScreenLoader isVisible={isLoading} message="Obtaining your details..." />
+      <FullScreenLoader
+        isVisible={isLoading}
+        message="Obtaining your details..."
+      />
     );
   }
 

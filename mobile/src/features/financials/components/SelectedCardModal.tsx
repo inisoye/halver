@@ -88,16 +88,15 @@ export const SelectedCardModal: React.FunctionComponent<SelectedCardModalProps> 
           {isDefault && (
             <Box
               alignItems="center"
-              backgroundColor="buttonPharlap"
+              backgroundColor="defaultItemTagBg"
               columnGap="3"
               flexDirection="row"
               marginBottom="5"
-              opacity={0.8}
               paddingHorizontal="6"
               paddingVertical="1.5"
             >
               <Text
-                color="textInverse"
+                color="buttonTextCasal"
                 fontFamily="Halver-Semibold"
                 textAlign="center"
                 variant="xs"
