@@ -48,7 +48,7 @@ bank_logo_index = {
     "00103": "https://nigerianbanks.xyz/logo/globus-bank.png",
     "100022": "https://res.cloudinary.com/duvwrrksq/image/upload/v1683262056/paystack/gomoney_gspcgl.jpg",
     "50739": None,
-    "562": "https://nigerianbanks.xyz/logo/ekondo-microfinance-bank.png",
+    "562": "https://res.cloudinary.com/duvwrrksq/image/upload/v1683264779/paystack/greenwich_s33kvj.jpg",
     "058": "https://nigerianbanks.xyz/logo/guaranty-trust-bank.png",
     "51251": "https://res.cloudinary.com/duvwrrksq/image/upload/v1683262057/paystack/hackman_rsnxws.jpg",
     "50383": "https://res.cloudinary.com/duvwrrksq/image/upload/v1683262061/paystack/hasal_ups3qt.jpg",

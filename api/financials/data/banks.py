@@ -812,7 +812,7 @@ all_banks = [
         "is_deleted": False,
         "createdAt": "2022-09-16T15:23:58.000Z",
         "updatedAt": "2022-09-16T15:23:58.000Z",
-        "logo": "https://nigerianbanks.xyz/logo/ekondo-microfinance-bank.png",
+        "logo": "https://res.cloudinary.com/duvwrrksq/image/upload/v1683264779/paystack/greenwich_s33kvj.jpg",
     },
     {
         "id": 9,
