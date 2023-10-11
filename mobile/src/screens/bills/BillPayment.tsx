@@ -27,6 +27,8 @@ import {
   convertKebabAndSnakeToTitleCase,
   convertNumberToNaira,
   handleAxiosErrorAlertAndHaptics,
+  handleBiometricAuthentication,
+  handleGenericErrorAlertAndHaptics,
   isIOS,
 } from '@/utils';
 
@@ -83,54 +85,72 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
     closeOptOutConfirmationModal();
   };
 
-  const handleBillPayment = () => {
-    updateBillAction(
-      {
-        id: String(actionId),
-        billActionResponseDto: {
-          hasParticipantAgreed: true,
-        },
-      },
-      {
-        onSuccess: () => {
-          setTimeout(() => {
-            openSuccessModal();
-          }, 200);
-        },
+  const handleBillPayment = async () => {
+    const isUserAuthenticated = await handleBiometricAuthentication();
 
-        onError: error => {
-          handleAxiosErrorAlertAndHaptics(
-            'Error in bill payment',
-            error as AxiosError,
-          );
+    if (isUserAuthenticated) {
+      updateBillAction(
+        {
+          id: String(actionId),
+          billActionResponseDto: {
+            hasParticipantAgreed: true,
+          },
         },
-      },
-    );
+        {
+          onSuccess: () => {
+            setTimeout(() => {
+              openSuccessModal();
+            }, 200);
+          },
+
+          onError: error => {
+            handleAxiosErrorAlertAndHaptics(
+              'Error in bill payment',
+              error as AxiosError,
+            );
+          },
+        },
+      );
+    } else {
+      handleGenericErrorAlertAndHaptics(
+        'Error in bill payment',
+        'You must verify your identity to make a payment',
+      );
+    }
   };
 
-  const handleOptOut = () => {
-    updateBillAction(
-      {
-        id: String(actionId),
-        billActionResponseDto: {
-          hasParticipantAgreed: false,
-        },
-      },
-      {
-        onSuccess: () => {
-          setTimeout(() => {
-            openOptOutConfirmationModal();
-          }, 200);
-        },
+  const handleOptOut = async () => {
+    const isUserAuthenticated = await handleBiometricAuthentication();
 
-        onError: error => {
-          handleAxiosErrorAlertAndHaptics(
-            'Error in opting out of bill',
-            error as AxiosError,
-          );
+    if (isUserAuthenticated) {
+      updateBillAction(
+        {
+          id: String(actionId),
+          billActionResponseDto: {
+            hasParticipantAgreed: false,
+          },
         },
-      },
-    );
+        {
+          onSuccess: () => {
+            setTimeout(() => {
+              openOptOutConfirmationModal();
+            }, 200);
+          },
+
+          onError: error => {
+            handleAxiosErrorAlertAndHaptics(
+              'Error in opting out of bill',
+              error as AxiosError,
+            );
+          },
+        },
+      );
+    } else {
+      handleGenericErrorAlertAndHaptics(
+        'Error in opting out of bill',
+        'You must verify your identity to opt out of a bill',
+      );
+    }
   };
 
   useFullScreenLoader({

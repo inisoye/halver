@@ -7,9 +7,8 @@ import { allMMKVKeys } from '@/lib/mmkv';
 import { BillCreationMMKVPayload } from '../types';
 
 export const useBillPayloadWithSelectionDetails = () => {
-  const [newBillPayload, setNewBillPayload] = useMMKVObject<BillCreationMMKVPayload>(
-    allMMKVKeys.newBillPayload,
-  );
+  const [newBillPayload, setNewBillPayload] =
+    useMMKVObject<BillCreationMMKVPayload>(allMMKVKeys.newBillPayload);
   const { data: creatorDetails } = useUserDetails();
 
   const selectedRegisteredParticipants = newBillPayload?.registeredParticipants;
@@ -20,7 +19,8 @@ export const useBillPayloadWithSelectionDetails = () => {
       ),
     [creatorDetails?.uuid, selectedRegisteredParticipants],
   );
-  const selectedUnregisteredParticipants = newBillPayload?.unregisteredParticipants;
+  const selectedUnregisteredParticipants =
+    newBillPayload?.unregisteredParticipants;
 
   const selectedRegisteredParticipantsLength = selectedRegisteredParticipants
     ? selectedRegisteredParticipants.length
@@ -29,23 +29,28 @@ export const useBillPayloadWithSelectionDetails = () => {
     selectedRegisteredParticipantsExcludingCreator
       ? selectedRegisteredParticipantsExcludingCreator.length
       : 0;
-  const selectedUnregisteredParticipantsLength = selectedUnregisteredParticipants
-    ? selectedUnregisteredParticipants.length
-    : 0;
+  const selectedUnregisteredParticipantsLength =
+    selectedUnregisteredParticipants
+      ? selectedUnregisteredParticipants.length
+      : 0;
 
   const numberOfSelections =
     selectedRegisteredParticipants && selectedUnregisteredParticipants
-      ? selectedRegisteredParticipantsLength + selectedUnregisteredParticipantsLength
+      ? selectedRegisteredParticipantsLength +
+        selectedUnregisteredParticipantsLength
       : 0;
   const numberOfSelectionsExcludingCreator =
-    selectedRegisteredParticipantsExcludingCreator && selectedUnregisteredParticipants
+    selectedRegisteredParticipantsExcludingCreator &&
+    selectedUnregisteredParticipants
       ? selectedRegisteredParticipantsExcludingCreatorLength +
         selectedUnregisteredParticipantsLength
       : 0;
 
-  const pluralDenoter = !!numberOfSelections && numberOfSelections !== 1 ? 's' : '';
+  const pluralDenoter =
+    !!numberOfSelections && numberOfSelections !== 1 ? 's' : '';
   const pluralExcludingCreatorDenoter =
-    !!numberOfSelectionsExcludingCreator && numberOfSelectionsExcludingCreator !== 1
+    !!numberOfSelectionsExcludingCreator &&
+    numberOfSelectionsExcludingCreator !== 1
       ? 's'
       : '';
 

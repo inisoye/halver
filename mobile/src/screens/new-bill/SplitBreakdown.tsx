@@ -70,13 +70,16 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = ({
         ),
       ];
 
-      const uniqueUnregisteredParticipants = removeDuplicateUnregisteredParticipants(
-        selectedUnregisteredParticipants,
-        formattedCreatorDetails,
-      );
+      const uniqueUnregisteredParticipants =
+        removeDuplicateUnregisteredParticipants(
+          selectedUnregisteredParticipants,
+          formattedCreatorDetails,
+        );
 
-      const numberOfRegisteredParticipants = uniqueRegisteredParticipants.length;
-      const numberOfUnregisteredParticipants = uniqueUnregisteredParticipants.length;
+      const numberOfRegisteredParticipants =
+        uniqueRegisteredParticipants.length;
+      const numberOfUnregisteredParticipants =
+        uniqueUnregisteredParticipants.length;
       const numberOfParticipants =
         numberOfRegisteredParticipants + numberOfUnregisteredParticipants;
 
@@ -107,16 +110,15 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = ({
         },
       );
 
-      const _formattedUnregisteredParticipants = uniqueUnregisteredParticipants.map(
-        (participant, index) => {
+      const _formattedUnregisteredParticipants =
+        uniqueUnregisteredParticipants.map((participant, index) => {
           return {
             ...participant,
             [`unregisteredContribution${index}`]: String(
               unregisteredParticipantAmounts[index],
             ),
           };
-        },
-      );
+        });
 
       return {
         formattedRegisteredParticipants: _formattedRegisteredParticipants,
@@ -183,14 +185,25 @@ export const SplitBreakdown: React.FunctionComponent<SplitBreakdownProps> = ({
               style={{ backgroundColor: creditorAvatarBackground }}
               width={24}
             >
-              <Text color="textInverse" fontFamily="Halver-Semibold" variant="xs">
+              <Text
+                color="textInverse"
+                fontFamily="Halver-Semibold"
+                variant="xs"
+              >
                 {creditorInitials}
               </Text>
             </Box>
           )}
 
-          <DynamicText color="textLight" flexShrink={1} numberOfLines={1} variant="sm">
-            {`${creditorFirstName} ${isCreatorTheCreditor ? 'are' : 'is'} the creditor`}
+          <DynamicText
+            color="textLight"
+            flexShrink={1}
+            numberOfLines={1}
+            variant="sm"
+          >
+            {`${creditorFirstName} ${
+              isCreatorTheCreditor ? 'are' : 'is'
+            } the creditor`}
           </DynamicText>
         </Box>
 

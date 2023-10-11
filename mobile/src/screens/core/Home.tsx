@@ -2,16 +2,27 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { CompositeScreenProps } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as React from 'react';
+import { useMMKVObject } from 'react-native-mmkv';
 
-import { Box, Button, Card, DynamicText, Screen, ScrollView, Text } from '@/components';
+import {
+  Box,
+  Button,
+  Card,
+  DynamicText,
+  Screen,
+  ScrollView,
+  Text,
+} from '@/components';
 import { useInfiniteUserTransactions } from '@/features/financials';
 import {
   ActionStatusCounts,
   RecentTransactions,
   useActionStatusCounts,
 } from '@/features/home';
+import { BillCreationMMKVPayload } from '@/features/new-bill';
 import { HalverMillipede } from '@/icons';
 import { isAPIClientTokenSet } from '@/lib/axios';
+import { allMMKVKeys } from '@/lib/mmkv';
 import type {
   AppRootStackParamList,
   HomeStackParamList,
@@ -27,12 +38,25 @@ type HomeProps = CompositeScreenProps<
 >;
 
 export const Home = ({ navigation }: HomeProps) => {
+  const [_newBillPayload, setNewBillPayload] =
+    useMMKVObject<BillCreationMMKVPayload>(allMMKVKeys.newBillPayload);
+
+  // Clear old form data to prevent inconsistencies and unforseen issues.
+  React.useEffect(() => {
+    return () => {
+      setNewBillPayload(undefined);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const goToAllTransactions = React.useCallback(() => {
     navigation.navigate('Transactions');
   }, [navigation]);
 
-  const { refetch: refetchActionStatusCounts, isStale: areActionStatusCountsStale } =
-    useActionStatusCounts();
+  const {
+    refetch: refetchActionStatusCounts,
+    isStale: areActionStatusCountsStale,
+  } = useActionStatusCounts();
   const { refetch: refetchTransactions, isStale: areTransactionsStale } =
     useInfiniteUserTransactions();
 
@@ -85,7 +109,11 @@ export const Home = ({ navigation }: HomeProps) => {
                   navigation.navigate('Bill Details');
                 }}
               >
-                <Text color="buttonTextCasal" fontFamily="Halver-Semibold" variant="sm">
+                <Text
+                  color="buttonTextCasal"
+                  fontFamily="Halver-Semibold"
+                  variant="sm"
+                >
                   Get started
                 </Text>
               </Button>

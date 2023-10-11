@@ -2,7 +2,12 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 
-import { Box, DynamicText, KeyboardStickyButtonWithPrefix, Text } from '@/components';
+import {
+  Box,
+  DynamicText,
+  KeyboardStickyButtonWithPrefix,
+  Text,
+} from '@/components';
 import { useDebounce, useIsFirstRender } from '@/hooks';
 import { RewindArrow } from '@/icons';
 import type { AppRootStackParamList } from '@/navigation';
@@ -69,7 +74,9 @@ interface SplitBreakdownFormProps {
   totalAmountDue: string | undefined;
 }
 
-export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps> = ({
+export const SplitBreakdownForm: React.FunctionComponent<
+  SplitBreakdownFormProps
+> = ({
   creditor,
   formattedRegisteredParticipants,
   formattedUnregisteredParticipants,
@@ -107,7 +114,8 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
     allValues,
     creditor.uuid,
   );
-  const totalParticipantAllocations = totalParticipantAllocationsBreakdown.total;
+  const totalParticipantAllocations =
+    totalParticipantAllocationsBreakdown.total;
 
   const isAnyAllocationBelowMinimum =
     totalParticipantAllocationsBreakdown.allAllocationsExcludingCreditor.some(
@@ -168,7 +176,8 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
     dirtyRegisteredFields.push(undefined); // Add undefined placeholders to keep index intact.
   });
 
-  const dirtyUnregisteredContributionFields = dirtyFields.unregisteredParticipants;
+  const dirtyUnregisteredContributionFields =
+    dirtyFields.unregisteredParticipants;
   const dirtyUnregisteredContributionFieldNames = new Set(
     dirtyUnregisteredContributionFields?.flatMap(field => Object.keys(field)),
   );
@@ -195,7 +204,8 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
     dirtyUnregisteredFields.push(undefined); // Add undefined placeholders to keep index intact.
   });
 
-  const numberOfCleanRegisteredFields = cleanRegisteredFields.filter(Boolean).length;
+  const numberOfCleanRegisteredFields =
+    cleanRegisteredFields.filter(Boolean).length;
   const numberOfCleanUnregisteredFields =
     cleanUnregisteredFields.filter(Boolean).length;
   const numberOfCleanFields =
@@ -248,11 +258,15 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
 
         for (let j = 0; j < definedIndexes.length; j++) {
           const index = definedIndexes[j];
-          const key = `${isRegistered ? '' : 'un'}registeredContribution${index}`;
+          const key = `${
+            isRegistered ? '' : 'un'
+          }registeredContribution${index}`;
 
           if (modifiedElement.hasOwnProperty(key)) {
             modifiedElement[key] =
-              cleanFieldEvenAmounts[j] > 0 ? String(cleanFieldEvenAmounts[j]) : '0';
+              cleanFieldEvenAmounts[j] > 0
+                ? String(cleanFieldEvenAmounts[j])
+                : '0';
           }
         }
         result.push(modifiedElement);
@@ -285,14 +299,13 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
     },
   );
 
-  const allUnregisteredFieldsWithUpdatedCleanFields = allUnregisteredFields?.map(
-    (value, index) => {
+  const allUnregisteredFieldsWithUpdatedCleanFields =
+    allUnregisteredFields?.map((value, index) => {
       if (updatedCleanUnregisteredFields[index] !== undefined) {
         return updatedCleanUnregisteredFields[index];
       }
       return value;
-    },
-  );
+    });
 
   React.useEffect(() => {
     if (numberOfCleanFields > 0 && !isFirstRender) {
@@ -346,16 +359,28 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
     areContributionAllocationsGreater ||
     areContributionAllocationsLess;
 
-  const debouncedUIUpdaters = useDebounce({
+  const debouncedIsAnyAllocationBelowMinimum = useDebounce(
     isAnyAllocationBelowMinimum,
-    isAnyEntryInvalid,
+  );
+  const debouncedIsAnyEntryInvalid = useDebounce(isAnyEntryInvalid);
+  const debouncedAreContributionAllocationsGreater = useDebounce(
     areContributionAllocationsGreater,
+  );
+  const debouncedAreContributionAllocationsLess = useDebounce(
     areContributionAllocationsLess,
+  );
+  const debouncedTotalParticipantAllocations = useDebounce(
     totalParticipantAllocations,
+  );
+  const debouncedTotalAllocationTextColor = useDebounce(
     totalAllocationTextColor,
+  );
+  const debouncedRegisteredParticipantAmountFields = useDebounce(
     registeredParticipantAmountFields,
+  );
+  const debouncedUnregisteredParticipantAmountFields = useDebounce(
     unregisteredParticipantAmountFields,
-  });
+  );
 
   return (
     <>
@@ -366,7 +391,7 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
         marginRight="auto"
         paddingHorizontal="6"
       >
-        {debouncedUIUpdaters.isAnyEntryInvalid ? (
+        {debouncedIsAnyEntryInvalid ? (
           <>
             <DynamicText
               color="orange11"
@@ -382,21 +407,21 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
           <>
             <Box flexDirection="row">
               <Text
-                color={debouncedUIUpdaters.totalAllocationTextColor}
+                color={debouncedTotalAllocationTextColor}
                 fontFamily="Halver-Naira"
               >
                 ₦
               </Text>
 
               <DynamicText
-                color={debouncedUIUpdaters.totalAllocationTextColor}
+                color={debouncedTotalAllocationTextColor}
                 flexDirection="row"
                 fontFamily="Halver-Semibold"
                 textAlign="center"
                 variant="4xl"
               >
                 {formatNumberWithCommas(
-                  Number(debouncedUIUpdaters.totalParticipantAllocations),
+                  Number(debouncedTotalParticipantAllocations),
                 )}
               </DynamicText>
             </Box>
@@ -408,26 +433,27 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
         )}
       </Box>
 
-      {debouncedUIUpdaters.isAnyEntryInvalid && <InvalidEntryAlert />}
+      {debouncedIsAnyEntryInvalid && <InvalidEntryAlert />}
 
-      {debouncedUIUpdaters.isAnyAllocationBelowMinimum &&
-        !debouncedUIUpdaters.isAnyEntryInvalid && <MinimumAllocationAlert />}
+      {debouncedIsAnyAllocationBelowMinimum && !debouncedIsAnyEntryInvalid && (
+        <MinimumAllocationAlert />
+      )}
 
-      {debouncedUIUpdaters.areContributionAllocationsGreater &&
-        !debouncedUIUpdaters.isAnyAllocationBelowMinimum && (
+      {debouncedAreContributionAllocationsGreater &&
+        !debouncedIsAnyAllocationBelowMinimum && (
           <AllocationVarianceAlert
-            totalAllocationTextColor={totalAllocationTextColor}
+            totalAllocationTextColor={debouncedTotalAllocationTextColor}
             updateBillAmount={updateBillAmount}
             variantAmount={excessAmount}
             isExcess
           />
         )}
 
-      {debouncedUIUpdaters.areContributionAllocationsLess &&
-        !debouncedUIUpdaters.isAnyAllocationBelowMinimum && (
+      {debouncedAreContributionAllocationsLess &&
+        !debouncedIsAnyAllocationBelowMinimum && (
           <AllocationVarianceAlert
             isExcess={false}
-            totalAllocationTextColor={totalAllocationTextColor}
+            totalAllocationTextColor={debouncedTotalAllocationTextColor}
             updateBillAmount={updateBillAmount}
             variantAmount={deficitAmount}
           />
@@ -436,8 +462,12 @@ export const SplitBreakdownForm: React.FunctionComponent<SplitBreakdownFormProps
       <AmountSplitBreakdownItems
         controlForAmountForm={controlForAmountForm}
         creditor={creditor}
-        registeredParticipantAmountFields={registeredParticipantAmountFields}
-        unregisteredParticipantAmountFields={unregisteredParticipantAmountFields}
+        registeredParticipantAmountFields={
+          debouncedRegisteredParticipantAmountFields
+        }
+        unregisteredParticipantAmountFields={
+          debouncedUnregisteredParticipantAmountFields
+        }
       />
 
       <SubmitButton

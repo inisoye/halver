@@ -14,6 +14,7 @@ import { DynamicText } from './Text';
 import { TouchableOpacity } from './TouchableOpacity';
 
 interface ScreenHeaderProps {
+  customBackButtonHandler?: () => void;
   customScreenName?: string;
   isHeaderTextShown?: boolean;
   headerProps?: BoxProps<Theme>;
@@ -24,6 +25,7 @@ const screensWithNoBackButton = ['Home', 'Financials', 'Bills', 'Account'];
 const screensWithLightHeading = [''];
 
 const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
+  customBackButtonHandler,
   customScreenName,
   isHeaderTextShown = true,
   headerProps,
@@ -52,6 +54,11 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
     };
   }, [name, userDetails]);
 
+  const goBack = () => {
+    navigation.goBack();
+    customBackButtonHandler?.();
+  };
+
   return (
     <Box
       alignItems="center"
@@ -73,9 +80,7 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
           <TouchableOpacity
             hitSlop={{ top: 24, bottom: 24, left: 24, right: 24 }}
             visible={screenInfo.hasBackButton}
-            onPress={() => {
-              navigation.goBack();
-            }}
+            onPress={goBack}
           >
             <BackIcon />
           </TouchableOpacity>
@@ -102,26 +107,28 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({
 
 type ScreenProps = BoxProps<Theme> & {
   children: React.ReactNode;
+  customBackButtonHandler?: () => void;
   customScreenName?: string;
   hasNoIOSBottomInset?: boolean;
+  headerProps?: BoxProps<Theme>;
+  headerRightComponent?: React.ReactNode;
   isHeaderShown?: boolean;
   isHeaderTextShown?: boolean;
   isModal?: boolean;
   style?: StyleProp<ViewStyle>;
-  headerProps?: BoxProps<Theme>;
-  headerRightComponent?: React.ReactNode;
 };
 
 export const Screen: React.FunctionComponent<ScreenProps> = ({
   children,
+  customBackButtonHandler,
   customScreenName,
   hasNoIOSBottomInset = true, // Added to make sticky buttons sit properly on IOS
+  headerProps,
+  headerRightComponent,
   isHeaderShown = true,
   isHeaderTextShown = true,
   isModal = false,
   style,
-  headerProps,
-  headerRightComponent,
   ...props
 }) => {
   const insets = useSafeAreaInsets();
@@ -134,7 +141,8 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
       style={[
         {
           paddingTop: isModal && isIOS() ? spacing[4] : insets.top,
-          paddingBottom: hasNoIOSBottomInset && isIOS() ? undefined : insets.bottom,
+          paddingBottom:
+            hasNoIOSBottomInset && isIOS() ? undefined : insets.bottom,
           paddingLeft: insets.left,
           paddingRight: insets.right,
         },
@@ -144,6 +152,7 @@ export const Screen: React.FunctionComponent<ScreenProps> = ({
     >
       {isHeaderShown && (
         <ScreenHeader
+          customBackButtonHandler={customBackButtonHandler}
           customScreenName={customScreenName}
           headerProps={headerProps}
           isHeaderTextShown={isHeaderTextShown}

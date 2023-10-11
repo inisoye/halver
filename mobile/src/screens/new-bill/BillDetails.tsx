@@ -35,7 +35,10 @@ const styles = StyleSheet.create({
   scrollContainer: {},
 });
 
-type BillDetailsProps = NativeStackScreenProps<AppRootStackParamList, 'Bill Details'>;
+type BillDetailsProps = NativeStackScreenProps<
+  AppRootStackParamList,
+  'Bill Details'
+>;
 
 const validateDecimalPlaces = (value: number) => {
   const pattern = /^\d+(\.\d{1,2})?$/; // 2dp
@@ -60,7 +63,9 @@ const BillDetailsFormSchema = z
       .transform(amount => amount.toString()),
     name: z
       .string({ required_error: 'Please enter a bill name.' })
-      .max(100, { message: 'Your bill name should be less than 100 characters.' })
+      .max(100, {
+        message: 'Your bill name should be less than 100 characters.',
+      })
       .min(1, { message: 'Please enter a bill name.' }),
     deadline: z.coerce
       .date({
@@ -120,9 +125,8 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
 }) => {
   const scrollViewRef = React.useRef<RNScrollView>(null);
 
-  const [newBillPayload, setNewBillPayload] = useMMKVObject<BillCreationMMKVPayload>(
-    allMMKVKeys.newBillPayload,
-  );
+  const [newBillPayload, setNewBillPayload] =
+    useMMKVObject<BillCreationMMKVPayload>(allMMKVKeys.newBillPayload);
 
   const {
     control,
@@ -156,7 +160,8 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
     !firstChargeDateValue && isRecurringBill && !hasNonFirstChargeDateErrors;
 
   const handleScrollToEndOfScrollView = () => {
-    if (shoulScrollToEnd) scrollViewRef?.current?.scrollToEnd({ animated: true });
+    if (shoulScrollToEnd)
+      scrollViewRef?.current?.scrollToEnd({ animated: true });
   };
 
   // Added for because error on first charge date field might be invisible.
@@ -209,8 +214,19 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
     navigation.navigate('Select Participants');
   };
 
+  const handleClearBill = () => {
+    setNewBillPayload(undefined);
+  };
+
+  React.useEffect(() => {
+    return () => {
+      handleClearBill();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <Screen hasNoIOSBottomInset>
+    <Screen customBackButtonHandler={handleClearBill} hasNoIOSBottomInset>
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"

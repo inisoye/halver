@@ -44,78 +44,82 @@ interface ContactAvatarAndNameProps {
 }
 
 const ContactAvatarAndName: React.FunctionComponent<ContactAvatarAndNameProps> =
-  React.memo(({ avatarBackground, contactHasImage, initials, isRegistered, item }) => {
-    return (
-      <Box
-        alignItems="center"
-        flexDirection="row"
-        gap="3"
-        marginLeft="6"
-        maxWidth="80%"
-        width="100%"
-      >
-        <Box position="relative">
-          {contactHasImage ? (
-            <Image
-              borderRadius="lg"
-              contentFit="contain"
-              height={36}
-              placeholder={(item as RegisteredContact).profileImageHash}
-              source={(item as RegisteredContact).profileImageUrl}
-              width={36}
-            />
-          ) : (
-            <Box
-              alignItems="center"
-              borderRadius="lg"
-              height={36}
-              justifyContent="center"
-              style={{ backgroundColor: avatarBackground }}
-              width={36}
-            >
-              <Text
-                color="textInverse"
-                fontFamily="Halver-Semibold"
-                opacity={0.85}
-                variant="sm"
+  React.memo(
+    ({ avatarBackground, contactHasImage, initials, isRegistered, item }) => {
+      return (
+        <Box
+          alignItems="center"
+          flexDirection="row"
+          gap="3"
+          marginLeft="6"
+          maxWidth="80%"
+          width="100%"
+        >
+          <Box position="relative">
+            {contactHasImage ? (
+              <Image
+                borderRadius="lg"
+                contentFit="contain"
+                height={36}
+                placeholder={(item as RegisteredContact).profileImageHash}
+                source={(item as RegisteredContact).profileImageUrl}
+                width={36}
+              />
+            ) : (
+              <Box
+                alignItems="center"
+                borderRadius="lg"
+                height={36}
+                justifyContent="center"
+                style={{ backgroundColor: avatarBackground }}
+                width={36}
               >
-                {initials}
-              </Text>
-            </Box>
-          )}
+                <Text
+                  color="textInverse"
+                  fontFamily="Halver-Semibold"
+                  opacity={0.85}
+                  variant="sm"
+                >
+                  {initials}
+                </Text>
+              </Box>
+            )}
 
-          {isRegistered && (
-            <Box
-              backgroundColor="background"
-              borderRadius="base"
-              left={-13}
-              padding="0.75"
-              paddingLeft="0"
-              position="absolute"
-              top={-10}
+            {isRegistered && (
+              <Box
+                backgroundColor="background"
+                borderRadius="base"
+                left={-13}
+                padding="0.75"
+                paddingLeft="0"
+                position="absolute"
+                top={-10}
+              >
+                <CraftedLogoSmallest />
+              </Box>
+            )}
+          </Box>
+
+          <Box flexShrink={1}>
+            <DynamicText flexShrink={1} lineHeight={20} numberOfLines={1}>
+              {item?.fullName}
+            </DynamicText>
+            <DynamicText
+              color="textLight"
+              flexShrink={1}
+              lineHeight={20}
+              numberOfLines={1}
+              variant="xs"
             >
-              <CraftedLogoSmallest />
-            </Box>
-          )}
+              {isRegistered
+                ? `@${(item as RegisteredContact).username}`
+                : item?.phone}
+            </DynamicText>
+          </Box>
         </Box>
-
-        <Box flexShrink={1}>
-          <DynamicText flexShrink={1} lineHeight={20} numberOfLines={1}>
-            {item?.fullName}
-          </DynamicText>
-          <DynamicText
-            color="textLight"
-            flexShrink={1}
-            lineHeight={20}
-            numberOfLines={1}
-            variant="xs"
-          >
-            {isRegistered ? `@${(item as RegisteredContact).username}` : item?.phone}
-          </DynamicText>
-        </Box>
-      </Box>
-    );
-  });
+      );
+    },
+  );
 
 interface ContactOptionProps {
   avatarBackground: string | undefined;
@@ -174,7 +178,11 @@ const ContactOption: React.FunctionComponent<ContactOptionProps> = ({
         />
 
         {isSelected && (
-          <SelectTick height={18} style={{ marginRight: iconMargin }} width={18} />
+          <SelectTick
+            height={18}
+            style={{ marginRight: iconMargin }}
+            width={18}
+          />
         )}
         {!isSelected && (
           <SelectInactiveItem
@@ -201,12 +209,12 @@ export const ContactRenderItem = ({
   const { spacing, colors } = useTheme<Theme>();
   const isDarkMode = useIsDarkModeSelected();
 
-  const [newBillPayload, setNewBillPayload] = useMMKVObject<BillCreationMMKVPayload>(
-    allMMKVKeys.newBillPayload,
-  );
+  const [newBillPayload, setNewBillPayload] =
+    useMMKVObject<BillCreationMMKVPayload>(allMMKVKeys.newBillPayload);
 
   const selectedRegisteredParticipants = newBillPayload?.registeredParticipants;
-  const selectedUnregisteredParticipants = newBillPayload?.unregisteredParticipants;
+  const selectedUnregisteredParticipants =
+    newBillPayload?.unregisteredParticipants;
 
   const initials = React.useMemo(() => {
     if (itemIsObject && item.fullName) {
@@ -223,19 +231,26 @@ export const ContactRenderItem = ({
   }, [isDarkMode, item, itemIsObject]);
 
   const contactHasImage =
-    itemIsObject && !!item && 'profileImageUrl' in item && !!item?.profileImageUrl;
+    itemIsObject &&
+    !!item &&
+    'profileImageUrl' in item &&
+    !!item?.profileImageUrl;
 
   const isRegistered = itemIsObject && !!item && 'uuid' in item && !!item?.uuid;
 
   const isSelectedAsRegistered = React.useMemo(() => {
     if (itemIsObject && isRegistered) {
-      return selectedRegisteredParticipants?.some(user => user.uuid === item?.uuid);
+      return selectedRegisteredParticipants?.some(
+        user => user.uuid === item?.uuid,
+      );
     }
   }, [isRegistered, item, itemIsObject, selectedRegisteredParticipants]);
 
   const isSelectedAsUnregistered = React.useMemo(() => {
     if (itemIsObject) {
-      return selectedUnregisteredParticipants?.some(user => user.phone === item?.phone);
+      return selectedUnregisteredParticipants?.some(
+        user => user.phone === item?.phone,
+      );
     }
   }, [item, itemIsObject, selectedUnregisteredParticipants]);
 
