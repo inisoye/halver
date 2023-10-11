@@ -139,6 +139,10 @@ export const BillCreate = z.object({
     .string()
     .regex(/^-?\d{0,15}(?:\.\d{0,4})?$/)
     .optional(),
+  totalAmountIncludingCreditor: z
+    .string()
+    .regex(/^-?\d{0,15}(?:\.\d{0,4})?$/)
+    .optional(),
   unregisteredParticipants: z
     .array(BillUnregisteredParticipantCreate)
     .optional(),

@@ -132,6 +132,7 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
     interval,
     notes,
     totalAmountDue: String(totalAmountDueExcludingCreditor),
+    totalAmountIncludingCreditor: totalAmountDue,
     participantsContributionIndex,
   };
 
