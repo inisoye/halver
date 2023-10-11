@@ -146,15 +146,21 @@ def validate_contributions_and_total_amount_due(serializer_data):
         total_participants_contributions + total_unregistered_participants_contributions
     )
 
+    print(total_contributions, total_amount_due)
+
     if total_contributions != total_amount_due:
         raise serializers.ValidationError(
             "Contributions do not add up to the total amount due."
         )
 
+    total_amount_including_creditor = serializer_data.get(
+        "total_amount_including_creditor"
+    )
+
     # Currently set in NGN
     MINIMUM_BILL_AMOUNT = settings.MINIMUM_BILL_AMOUNT
 
-    if total_contributions < MINIMUM_BILL_AMOUNT:
+    if total_amount_including_creditor < MINIMUM_BILL_AMOUNT:
         raise serializers.ValidationError(
             f"Total contributions must be at least {MINIMUM_BILL_AMOUNT} Naira (NGN)"
         )

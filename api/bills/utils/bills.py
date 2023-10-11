@@ -29,6 +29,7 @@ def create_bill(bill_model, validated_data, creator):
         "creditor_id",
         "unregistered_participants",
         "next_charge_date",
+        "total_amount_including_creditor",  # Used only for validation in serializer.
     )
 
     validated_data_without_modified_fields = validated_data.copy()

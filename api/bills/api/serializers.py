@@ -1,7 +1,6 @@
+import decimal
 from typing import Any
 
-from django.conf import settings
-from django.core.validators import MinValueValidator
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
@@ -20,6 +19,7 @@ from bills.utils.validation import (
     validate_participants_and_unregistered_participants,
     validate_participants_contribution_index,
 )
+from core.serializers import RoundingDecimalField
 
 
 class BillUnregisteredParticipantListSerializer(serializers.ModelSerializer):
@@ -42,14 +42,12 @@ class BillUnregisteredParticipantsDataTransferSerializer(serializers.Serializer)
 
 
 class BillUnregisteredParticipantCreateSerializer(serializers.ModelSerializer):
-    contribution = serializers.DecimalField(
+    contribution = RoundingDecimalField(
         max_digits=19,
         decimal_places=4,
         coerce_to_string=False,
         allow_null=False,
-        validators=[
-            MinValueValidator(settings.MINIMUM_CONTRIBUTION),
-        ],
+        rounding=decimal.ROUND_HALF_EVEN,
     )
     phone = PhoneNumberField(required=True)
 
@@ -81,18 +79,38 @@ class BillCreateSerializer(serializers.ModelSerializer):
     )
     participants_contribution_index = serializers.DictField(
         required=False,
-        child=serializers.DecimalField(
+        child=RoundingDecimalField(
             max_digits=19,
             decimal_places=4,
             coerce_to_string=False,
             allow_null=False,
-            validators=[
-                MinValueValidator(settings.MINIMUM_CONTRIBUTION),
-            ],
+            rounding=decimal.ROUND_HALF_EVEN,
         ),
     )
     unregistered_participants = BillUnregisteredParticipantCreateSerializer(
         many=True, required=False
+    )
+    total_amount_due = RoundingDecimalField(
+        max_digits=19,
+        decimal_places=4,
+        coerce_to_string=False,
+        allow_null=False,
+        help_text=(
+            "The sum of the total amount due and the creditor's share. Used only for"
+            " validation"
+        ),
+        rounding=decimal.ROUND_HALF_EVEN,
+    )
+    total_amount_including_creditor = RoundingDecimalField(
+        max_digits=19,
+        decimal_places=4,
+        coerce_to_string=False,
+        allow_null=False,
+        help_text=(
+            "The sum of the total amount due and the creditor's share. Used only for"
+            " validation"
+        ),
+        rounding=decimal.ROUND_HALF_EVEN,
     )
 
     def validate(self, data):
@@ -120,6 +138,7 @@ class BillCreateSerializer(serializers.ModelSerializer):
             "notes",
             "participants_contribution_index",
             "total_amount_due",
+            "total_amount_including_creditor",
             "unregistered_participants",
             "uuid",
         )
