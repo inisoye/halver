@@ -45,14 +45,18 @@ export const openAppSettings = () => {
  * @returns A Promise that resolves to `true` if authentication is successful,
  * or `false` if it fails or if biometric authentication is not available.
  */
-export const handleBiometricAuthentication = async () => {
+export const handleBiometricAuthentication = async (
+  options?: LocalAuthentication.LocalAuthenticationOptions,
+) => {
   const securityLevel = await LocalAuthentication.getEnrolledLevelAsync();
 
   if (securityLevel === LocalAuthentication.SecurityLevel.NONE) {
     return true;
   }
 
-  const authenticationResult = await LocalAuthentication.authenticateAsync();
+  const authenticationResult = await LocalAuthentication.authenticateAsync(
+    options,
+  );
 
   if (authenticationResult.success) {
     return true;
