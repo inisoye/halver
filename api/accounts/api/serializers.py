@@ -109,9 +109,6 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
         )
         read_only_fields = (
             "date_joined",
-            "first_name",
-            "full_name",
-            "last_name",
             "uuid",
         )
 
