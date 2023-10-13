@@ -8,11 +8,8 @@ import { Button, FullScreenLoader, Text } from '@/components';
 import { Apple as AppleIcon } from '@/icons';
 import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys } from '@/lib/mmkv';
-import {
-  handleAxiosErrorAlertAndHaptics,
-  isIOS,
-  saveToSecureStore,
-} from '@/utils';
+import { allSecureStoreKeys, saveToSecureStore } from '@/lib/secure-store';
+import { handleAxiosErrorAlertAndHaptics, isIOS } from '@/utils';
 
 import { usePostAppleLogin, type SocialLoginPayload } from '../api';
 
@@ -41,8 +38,8 @@ export const AppleLoginButton: React.FunctionComponent = () => {
       const { familyName, givenName } = credentials.fullName ?? {};
 
       if (familyName && givenName) {
-        await saveToSecureStore('APPLE_FAMILY_NAME', familyName);
-        await saveToSecureStore('APPLE_GIVEN_NAME', givenName);
+        await saveToSecureStore(allSecureStoreKeys.appleFamilyName, familyName);
+        await saveToSecureStore(allSecureStoreKeys.appleGivenName, givenName);
       }
 
       const socialLoginPayload: SocialLoginPayload = {

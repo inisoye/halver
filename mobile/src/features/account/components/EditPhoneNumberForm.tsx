@@ -18,11 +18,8 @@ import {
 } from '@/components';
 import { useTransferUnregisteredParticipantData } from '@/features/bills';
 import { showToast } from '@/lib/root-toast';
-import {
-  getFromSecureStore,
-  handleAxiosErrorAlertAndHaptics,
-  isMobilePhone,
-} from '@/utils';
+import { allSecureStoreKeys, getFromSecureStore } from '@/lib/secure-store';
+import { handleAxiosErrorAlertAndHaptics, isMobilePhone } from '@/utils';
 
 import { useUpdateSingleUserDetail } from '../api';
 
@@ -59,8 +56,12 @@ export const EditPhoneNumberForm: React.FunctionComponent<
     useTransferUnregisteredParticipantData();
 
   const onSubmit = async (data: PhoneFormValues) => {
-    const appleFamilyName = await getFromSecureStore('APPLE_FAMILY_NAME');
-    const appleGivenName = await getFromSecureStore('APPLE_GIVEN_NAME');
+    const appleFamilyName = await getFromSecureStore(
+      allSecureStoreKeys.appleFamilyName,
+    );
+    const appleGivenName = await getFromSecureStore(
+      allSecureStoreKeys.appleGivenName,
+    );
 
     const payload =
       appleFamilyName && appleGivenName

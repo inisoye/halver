@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useWindowDimensions } from 'react-native';
 import RNDatePicker from 'react-native-date-picker';
 
 import { useIsDarkModeSelected } from '@/utils';
@@ -17,6 +18,7 @@ export const DatePicker: React.FunctionComponent<DatePickerProps> = ({
   minimumDate,
 }) => {
   const isDarkMode = useIsDarkModeSelected();
+  const { width } = useWindowDimensions();
 
   return (
     <RNDatePicker
@@ -25,6 +27,7 @@ export const DatePicker: React.FunctionComponent<DatePickerProps> = ({
       maximumDate={maximumDate}
       minimumDate={minimumDate}
       mode="date"
+      style={{ width: width - 48 }} // Remove side margins from screen width.
       textColor={isDarkMode ? 'white' : 'black'}
       theme={isDarkMode ? 'dark' : 'light'}
       onDateChange={RHFOnChange}

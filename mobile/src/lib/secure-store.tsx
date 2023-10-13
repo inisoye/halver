@@ -21,3 +21,8 @@ export async function getFromSecureStore(
 ): Promise<string | null> {
   return await SecureStore.getItemAsync(key, options);
 }
+
+export const allSecureStoreKeys = {
+  appleFamilyName: 'APPLE_FAMILY_NAME',
+  appleGivenName: 'APPLE_GIVEN_NAME',
+};

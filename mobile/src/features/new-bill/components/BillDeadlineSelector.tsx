@@ -22,10 +22,9 @@ interface DeadlineSelectorButtonProps {
   control: Control<BillDetailsFormValues>;
 }
 
-const DeadlineSelectorButton: React.FunctionComponent<DeadlineSelectorButtonProps> = ({
-  openModal,
-  control,
-}) => {
+const DeadlineSelectorButton: React.FunctionComponent<
+  DeadlineSelectorButtonProps
+> = ({ openModal, control }) => {
   const deadline = useWatch({ control, name: 'deadline' });
 
   return (
@@ -40,7 +39,12 @@ const DeadlineSelectorButton: React.FunctionComponent<DeadlineSelectorButtonProp
       onPress={openModal}
     >
       <Box alignItems="center" flexDirection="row" gap="2">
-        <DynamicText flexShrink={1} fontSize={14.5} numberOfLines={1} width={192}>
+        <DynamicText
+          flexShrink={1}
+          fontSize={14.5}
+          numberOfLines={1}
+          width={192}
+        >
           {deadline ? deadline.toDateString() : 'Select a date'}
         </DynamicText>
       </Box>
@@ -110,7 +114,11 @@ export const BillDeadlineSelector: React.FunctionComponent<
             }}
           />
 
-          <Button backgroundColor="buttonApricot" marginTop="2" onPress={closeModal}>
+          <Button
+            backgroundColor="buttonApricot"
+            marginTop="2"
+            onPress={closeModal}
+          >
             <Text color="buttonTextApricot" fontFamily="Halver-Semibold">
               Done
             </Text>

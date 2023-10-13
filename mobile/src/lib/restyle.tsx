@@ -462,7 +462,7 @@ const theme = createTheme({
     buttonDangerLighter: lightColors.red4,
     buttonNeutralDarker: lightColors.gray5,
 
-    loginButtonDark: darkColors.gray3,
+    loginButtonDark: darkColors.gray5,
 
     buttonTextApricot: lightColors.gray1,
     buttonTextCasal: lightColors.gray1,
@@ -673,7 +673,7 @@ const darkTheme: Theme = {
     buttonDangerLighter: darkColors.red3,
     buttonNeutralDarker: darkColors.gray3,
 
-    loginButtonDark: darkColors.gray3,
+    loginButtonDark: darkColors.gray5,
 
     buttonTextApricot: darkColors.gray1,
     buttonTextCasal: darkColors.gray12,

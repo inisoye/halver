@@ -6,4 +6,3 @@ export * from './numbers';
 export * from './phoneNumbers';
 export * from './platform';
 export * from './strings';
-export * from './secureStore';
