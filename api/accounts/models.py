@@ -134,7 +134,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         max_length=70,
         null=True,
         blank=True,
-        unique=True,
         error_messages={
             "unique": _("This token already exists for a different user."),
         },
