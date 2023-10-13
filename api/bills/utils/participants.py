@@ -39,14 +39,20 @@ def transfer_unregistered_participant_data(
     if unregistered_participant_phone is None:
         unregistered_participant_phone = participant.phone
 
-    unregistered_participant_to_transfer = (
-        BillUnregisteredParticipant.objects.get(phone=unregistered_participant_phone)
-        if unregistered_participant_phone
-        else None
-    )
+    unregistered_participant_to_transfer = None
+
+    try:
+        unregistered_participant_to_transfer = (
+            BillUnregisteredParticipant.objects.get(
+                phone=unregistered_participant_phone
+            )
+            if unregistered_participant_phone
+            else None
+        )
+    except BillUnregisteredParticipant.DoesNotExist:
+        unregistered_participant_to_transfer = None
 
     if unregistered_participant_to_transfer:
-
         # Get the bills that contain the unregistered participant and exclude those
         # that already have the participant
         bills_to_transfer = Bill.objects.filter(
@@ -70,7 +76,6 @@ def transfer_unregistered_participant_data(
 
         # Ensure both bills and actions exist before transferring any data.
         if bills_to_transfer and actions_to_transfer:
-
             # Update each model with the newly registered participant and remove the
             # association with the unregistered participant object.
 
@@ -148,7 +153,6 @@ def transfer_unregistered_participant_data(
             return True
 
         else:
-
             # Return false if there was no data to be transferred.
             return False
 
