@@ -20,10 +20,10 @@ export type TouchableOpacityProps = BoxProps<Theme> &
   VisibleProps<Theme> &
   RNTouchableOpacityProps;
 
-export const TouchableOpacity = createRestyleComponent<TouchableOpacityProps, Theme>(
-  [spacing, visible],
-  createBox<Theme>(RNTouchableOpacity),
-);
+export const TouchableOpacity = createRestyleComponent<
+  TouchableOpacityProps,
+  Theme
+>([spacing, visible], createBox<Theme>(RNTouchableOpacity));
 
 export const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity);

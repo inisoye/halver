@@ -8,4 +8,5 @@ export const allMMKVKeys = {
   newBillPayload: 'NEW_BILL_PAYLOAD',
   registeredContacts: 'REGISTERED_CONTACTS',
   displayMode: 'DISPLAY_MODE',
+  hasCompletedOnboarding: 'HAS_COMPLETED_ONBOARING',
 };

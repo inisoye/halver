@@ -60,8 +60,10 @@ export const KeyboardStickyButton = createRestyleComponent<
       disabled: props.disabled,
     });
 
-    const { buttonContainerAnimatedStyle, buttonAnimatedStyle: stickyAnimatedStyles } =
-      useKeyboardStickyButtonAnimation();
+    const {
+      buttonContainerAnimatedStyle,
+      buttonAnimatedStyle: stickyAnimatedStyles,
+    } = useKeyboardStickyButtonAnimation();
 
     const handlePressIn = () => {
       handlePressInAnimation();
@@ -72,7 +74,10 @@ export const KeyboardStickyButton = createRestyleComponent<
     };
 
     return (
-      <AnimatedBox backgroundColor="background" style={buttonContainerAnimatedStyle}>
+      <AnimatedBox
+        backgroundColor="background"
+        style={buttonContainerAnimatedStyle}
+      >
         <PressableBox
           {...props}
           style={[baseAnimationStyles, stickyAnimatedStyles, props.style]}
@@ -162,8 +167,10 @@ export const AbsoluteKeyboardStickyButton = createRestyleComponent<
       disabled: props.disabled,
     });
 
-    const { buttonContainerAnimatedStyle, buttonAnimatedStyle: stickyAnimatedStyles } =
-      useAbsoluteKeyboardStickyButtonAnimation();
+    const {
+      buttonContainerAnimatedStyle,
+      buttonAnimatedStyle: stickyAnimatedStyles,
+    } = useAbsoluteKeyboardStickyButtonAnimation();
 
     const handlePressIn = () => {
       handlePressInAnimation();
@@ -174,7 +181,10 @@ export const AbsoluteKeyboardStickyButton = createRestyleComponent<
     };
 
     return (
-      <AnimatedBox backgroundColor="background" style={buttonContainerAnimatedStyle}>
+      <AnimatedBox
+        backgroundColor="background"
+        style={buttonContainerAnimatedStyle}
+      >
         <PressableBox
           {...props}
           alignSelf="center"

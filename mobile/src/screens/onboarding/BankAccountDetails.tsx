@@ -9,9 +9,9 @@ type BankAcountDetailsProps = NativeStackScreenProps<
   'BankAccountDetails'
 >;
 
-export const BankAccountDetails: React.FunctionComponent<BankAcountDetailsProps> = ({
-  navigation,
-}) => {
+export const BankAccountDetails: React.FunctionComponent<
+  BankAcountDetailsProps
+> = ({ navigation }) => {
   const onAddTransferRecipientComplete = React.useCallback(() => {
     navigation.navigate('CardDetails');
   }, [navigation]);

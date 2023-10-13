@@ -9,6 +9,7 @@ import {
   PaddedScreenHeader,
   Screen,
   Text,
+  TouchableOpacity,
 } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { allStaticQueryKeys } from '@/lib/react-query';
@@ -22,8 +23,8 @@ interface AddCardFormProps {
   isOnboarding?: boolean;
 }
 
-export const AddCardForm: React.FunctionComponent<AddCardFormProps> = React.memo(
-  ({ onComplete, isOnboarding = false }) => {
+export const AddCardForm: React.FunctionComponent<AddCardFormProps> =
+  React.memo(({ onComplete, isOnboarding = false }) => {
     const {
       data: cardAdditionURLResponse,
       isLoading: isCardAdditionUrlLoading,
@@ -46,7 +47,9 @@ export const AddCardForm: React.FunctionComponent<AddCardFormProps> = React.memo
 
       if (url.startsWith(callbackUrl)) {
         closeModal();
-        queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getUserDetails });
+        queryClient.invalidateQueries({
+          queryKey: allStaticQueryKeys.getUserDetails,
+        });
         queryClient.invalidateQueries({
           queryKey: allStaticQueryKeys.getCardAdditionURL,
         });
@@ -61,7 +64,9 @@ export const AddCardForm: React.FunctionComponent<AddCardFormProps> = React.memo
 
     const handleCloseModal = () => {
       closeModal();
-      queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getUserDetails });
+      queryClient.invalidateQueries({
+        queryKey: allStaticQueryKeys.getUserDetails,
+      });
       queryClient.invalidateQueries({
         queryKey: allStaticQueryKeys.getCardAdditionURL,
       });
@@ -94,9 +99,9 @@ export const AddCardForm: React.FunctionComponent<AddCardFormProps> = React.memo
               paddingVertical="2"
               variant="sm"
             >
-              Adding your card is easy. Just click the button below, follow Paystack's
-              steps, and pay a 60 Naira fee. We'll process a refund* after your card is
-              added.
+              Adding your card is easy. Just click the button below, follow
+              Paystack's steps, and pay a 60 Naira fee. We'll process a refund*
+              after your card is added.
             </Text>
 
             <Box
@@ -106,10 +111,27 @@ export const AddCardForm: React.FunctionComponent<AddCardFormProps> = React.memo
               padding="4"
             >
               <Text color="buttonTextPharlap" lineHeight={18} variant="sm">
-                Card additions may take a moment. Please wait briefly before trying
-                again.
+                Card additions may take a moment. Please wait briefly before
+                trying again.
               </Text>
             </Box>
+
+            {isOnboarding && (
+              <TouchableOpacity
+                marginLeft="auto"
+                marginRight="6"
+                marginTop="7"
+                onPress={onComplete}
+              >
+                <Text
+                  color="textLight"
+                  textDecorationLine="underline"
+                  variant="sm"
+                >
+                  I'll do this later
+                </Text>
+              </TouchableOpacity>
+            )}
 
             <DynamicText
               color="textLight"
@@ -120,7 +142,8 @@ export const AddCardForm: React.FunctionComponent<AddCardFormProps> = React.memo
               paddingVertical="2"
               variant="xs"
             >
-              *The refund excludes transaction charges and totals to about 38 Naira.
+              *The refund excludes transaction charges and totals to about 38
+              Naira.
             </DynamicText>
           </Box>
 
@@ -145,5 +168,4 @@ export const AddCardForm: React.FunctionComponent<AddCardFormProps> = React.memo
         )}
       </>
     );
-  },
-);
+  });

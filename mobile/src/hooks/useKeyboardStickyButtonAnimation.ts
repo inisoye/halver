@@ -6,7 +6,11 @@ import {
   useSoftInputHidden,
   useSoftInputShown,
 } from 'react-native-avoid-softinput';
-import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { isIOS } from '@/utils';
 
@@ -25,7 +29,8 @@ export const useKeyboardStickyButtonAnimation = () => {
     };
   }, [isFocused]);
 
-  const buttonContainerPaddingHorizontalValue = useSharedValue(horizontalPadding);
+  const buttonContainerPaddingHorizontalValue =
+    useSharedValue(horizontalPadding);
   const buttonContainerPaddingValue = useSharedValue(0);
   const buttonContainerBottomValue = useSharedValue(absoluteBottomValue);
 
@@ -78,7 +83,8 @@ export const useKeyboardStickyButtonWithPrefixAnimation = () => {
     };
   }, [isFocused]);
 
-  const buttonContainerPaddingHorizontalValue = useSharedValue(horizontalPadding);
+  const buttonContainerPaddingHorizontalValue =
+    useSharedValue(horizontalPadding);
   const buttonContainerPaddingValue = useSharedValue(0);
   const buttonContainerBottomValue = useSharedValue(absoluteBottomValue);
   const buttonsGapValue = useSharedValue(8);
@@ -148,7 +154,8 @@ export const useAbsoluteKeyboardStickyButtonAnimation = () => {
     };
   }, [isFocused]);
 
-  const buttonContainerPaddingHorizontalValue = useSharedValue(horizontalPadding);
+  const buttonContainerPaddingHorizontalValue =
+    useSharedValue(horizontalPadding);
   const buttonBottomValue = useSharedValue(absoluteBottomValue);
   const buttonBorderRadiusValue = useSharedValue(4);
   const buttonWidthValue = useSharedValue(widthExcludingPadding);

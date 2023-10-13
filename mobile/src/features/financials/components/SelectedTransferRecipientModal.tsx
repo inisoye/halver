@@ -142,7 +142,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
           {isDefault && (
             <Box
               alignItems="center"
-              backgroundColor="defaultItemTagBg"
+              backgroundColor="buttonPharlap"
               columnGap="3"
               flexDirection="row"
               marginBottom="5"
@@ -150,7 +150,7 @@ export const SelectedTransferRecipientModal: React.FunctionComponent<SelectedTra
               paddingVertical="1.5"
             >
               <Text
-                color="buttonTextCasal"
+                color="buttonTextPharlap"
                 fontFamily="Halver-Semibold"
                 textAlign="center"
                 variant="xs"

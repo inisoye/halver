@@ -6,7 +6,7 @@ import {
   useNavigationContainerRef,
 } from '@react-navigation/native';
 import * as React from 'react';
-import { useMMKVString } from 'react-native-mmkv';
+import { useMMKVBoolean, useMMKVString } from 'react-native-mmkv';
 
 import { Box } from '@/components';
 import {
@@ -26,6 +26,10 @@ import { AppRootStackNavigator } from './AppRootStackNavigator';
 
 export const NavigationContainer: React.FunctionComponent = () => {
   const [token] = useMMKVString(allMMKVKeys.token);
+  const [hasCompletedOnboarding] = useMMKVBoolean(
+    allMMKVKeys.hasCompletedOnboarding,
+  );
+
   const { data: userDetails, isLoading, isFetching } = useUserDetails();
   const isDarkMode = useIsDarkModeSelected();
 
@@ -46,7 +50,7 @@ export const NavigationContainer: React.FunctionComponent = () => {
     message: 'Gathering your details...',
   });
 
-  // Ensure token is available in MMKV and globally set in axios
+  // Ensure token is available in MMKV
   const isTokenSet = !!token;
 
   return (
@@ -57,7 +61,9 @@ export const NavigationContainer: React.FunctionComponent = () => {
       >
         {!isTokenSet ? (
           <LoginStackNavigator />
-        ) : !isLoading && areUserDetailsIncomplete ? (
+        ) : !isLoading &&
+          areUserDetailsIncomplete &&
+          hasCompletedOnboarding === false ? (
           <OnboardingStackNavigator />
         ) : (
           <AppRootStackNavigator />

@@ -13,6 +13,7 @@ import {
   PaddedScreenHeader,
   Screen,
   Text,
+  TouchableOpacity,
 } from '@/components';
 import { ProfileImage as ProfileImageIcon, UserFolder } from '@/icons';
 import { showToast } from '@/lib/root-toast';
@@ -192,6 +193,23 @@ export const EditProfileImageForm: React.FunctionComponent<
             </Text>
             <UserFolder />
           </Button>
+
+          {isOnboarding && (
+            <TouchableOpacity
+              marginLeft="auto"
+              marginRight="auto"
+              marginTop="7"
+              onPress={onComplete}
+            >
+              <Text
+                color="textLight"
+                textDecorationLine="underline"
+                variant="sm"
+              >
+                I'll do this later
+              </Text>
+            </TouchableOpacity>
+          )}
         </Box>
 
         <KeyboardStickyButton
