@@ -7,7 +7,9 @@ import { Theme } from '@/lib/restyle';
 
 type EditPhotoProps = ISvgProps;
 
-export const EditPhoto: React.FunctionComponent<EditPhotoProps> = ({ ...props }) => {
+export const EditPhoto: React.FunctionComponent<EditPhotoProps> = ({
+  ...props
+}) => {
   const { colors } = useTheme<Theme>();
 
   return (

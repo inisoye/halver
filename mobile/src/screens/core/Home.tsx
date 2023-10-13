@@ -12,7 +12,9 @@ import {
   Screen,
   ScrollView,
   Text,
+  TouchableOpacity,
 } from '@/components';
+import { useUserDetails } from '@/features/account';
 import { useInfiniteUserTransactions } from '@/features/financials';
 import {
   ActionStatusCounts,
@@ -20,7 +22,7 @@ import {
   useActionStatusCounts,
 } from '@/features/home';
 import { BillCreationMMKVPayload } from '@/features/new-bill';
-import { HalverMillipede } from '@/icons';
+import { AddBank, AddCard, AddPhoto, HalverMillipede } from '@/icons';
 import { isAPIClientTokenSet } from '@/lib/axios';
 import { allMMKVKeys } from '@/lib/mmkv';
 import type {
@@ -40,6 +42,44 @@ type HomeProps = CompositeScreenProps<
 export const Home = ({ navigation }: HomeProps) => {
   const [_newBillPayload, setNewBillPayload] =
     useMMKVObject<BillCreationMMKVPayload>(allMMKVKeys.newBillPayload);
+
+  const { data: userDetails } = useUserDetails();
+
+  const {
+    defaultCard,
+    defaultTransferRecipient,
+    profileImageHash,
+    profileImageUrl,
+  } = userDetails || {};
+
+  const allTodos = [
+    {
+      name: 'Add your card',
+      status: !!defaultCard,
+      heading: 'Add your card',
+      subtitle: 'Start making contributions',
+      icon: <AddCard />,
+      color: 'indigo',
+    },
+    {
+      name: 'Add a recipient',
+      status: !!defaultTransferRecipient,
+      heading: 'Add your account',
+      subtitle: 'Collect contributions',
+      icon: <AddBank />,
+      color: 'plum',
+    },
+    {
+      name: 'Edit profile image',
+      status: !!profileImageUrl && !!profileImageHash,
+      heading: 'Add your photo',
+      subtitle: 'Be easily recognisable',
+      icon: <AddPhoto />,
+      color: 'crimson',
+    },
+  ] as const;
+
+  const pendingTodos = allTodos.filter(({ status }) => !status);
 
   // Clear old form data to prevent inconsistencies and unforseen issues.
   React.useEffect(() => {
@@ -77,6 +117,80 @@ export const Home = ({ navigation }: HomeProps) => {
       <ScrollView>
         <Box flex={1} paddingHorizontal="6" paddingVertical="2">
           <ActionStatusCounts navigation={navigation} />
+
+          {pendingTodos.length > 0 && (
+            <Box>
+              <DynamicText
+                fontFamily="Halver-Semibold"
+                marginBottom="3"
+                variant="xl"
+              >
+                Todos
+              </DynamicText>
+
+              <Box
+                flexDirection="row"
+                gap="3"
+                justifyContent="space-between"
+                marginBottom="10"
+              >
+                {pendingTodos.map(
+                  ({ name, heading, subtitle, icon, color }) => {
+                    const goToScreen = () => {
+                      navigation.navigate(name);
+                    };
+
+                    return (
+                      <TouchableOpacity
+                        backgroundColor={`${color}3`}
+                        borderRadius="lg"
+                        elevation={1}
+                        flexBasis="31%"
+                        flexGrow={1}
+                        key={name}
+                        paddingVertical="3"
+                        shadowColor="black"
+                        shadowOffset={{
+                          width: 0.1,
+                          height: 0.1,
+                        }}
+                        shadowOpacity={0.2}
+                        shadowRadius={0.3}
+                        onPress={goToScreen}
+                      >
+                        <Box
+                          borderBottomColor={`${color}4`}
+                          borderBottomWidth={1}
+                          gap="2"
+                          paddingBottom="2.5"
+                          paddingHorizontal="3"
+                        >
+                          <Text
+                            color={`${color}12`}
+                            fontFamily="Halver-Semibold"
+                          >
+                            {heading}
+                          </Text>
+                          <Text
+                            color={`${color}12`}
+                            fontFamily="Halver-Semibold"
+                            opacity={0.5}
+                            variant="xxs"
+                          >
+                            {subtitle}
+                          </Text>
+                        </Box>
+
+                        <Box paddingHorizontal="3" paddingTop="2">
+                          {icon}
+                        </Box>
+                      </TouchableOpacity>
+                    );
+                  },
+                )}
+              </Box>
+            </Box>
+          )}
 
           <Card marginBottom="10">
             <Box
@@ -119,7 +233,6 @@ export const Home = ({ navigation }: HomeProps) => {
               </Button>
             </Box>
           </Card>
-
           <RecentTransactions
             goToAllTransactions={goToAllTransactions}
             navigation={navigation}

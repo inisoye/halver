@@ -11,7 +11,11 @@ import {
   Pending as PendingIcon,
   Recurring as RecurringIcon,
 } from '@/icons';
-import { AppRootStackParamList, HomeStackParamList, TabParamList } from '@/navigation';
+import {
+  AppRootStackParamList,
+  HomeStackParamList,
+  TabParamList,
+} from '@/navigation';
 import { isAndroid } from '@/utils';
 
 import { useActionStatusCounts } from '../api';
@@ -71,7 +75,11 @@ const ActionStatusButton: React.FunctionComponent<ActionStatusButtonProps> = ({
             {'\n'}
           </Text>
 
-          <Text color="textLighter" lineHeight={isAndroid() ? 20 : 16} variant="xs">
+          <Text
+            color="textLighter"
+            lineHeight={isAndroid() ? 20 : 16}
+            variant="xs"
+          >
             {status}
           </Text>
         </Text>
@@ -114,7 +122,11 @@ const ActionStatusButton: React.FunctionComponent<ActionStatusButtonProps> = ({
           {'\n'}
         </Text>
 
-        <Text color="textLighter" lineHeight={isAndroid() ? 20 : 16} variant="xs">
+        <Text
+          color="textLighter"
+          lineHeight={isAndroid() ? 20 : 16}
+          variant="xs"
+        >
           {status}
         </Text>
       </Text>
@@ -134,7 +146,9 @@ interface NewBillButtonProps {
   >;
 }
 
-const NewBillButton: React.FunctionComponent<NewBillButtonProps> = ({ navigation }) => {
+const NewBillButton: React.FunctionComponent<NewBillButtonProps> = ({
+  navigation,
+}) => {
   return (
     <Pressable
       alignItems="center"
@@ -173,9 +187,9 @@ interface ActionStatusCountsProps {
   >;
 }
 
-export const ActionStatusCounts: React.FunctionComponent<ActionStatusCountsProps> = ({
-  navigation,
-}) => {
+export const ActionStatusCounts: React.FunctionComponent<
+  ActionStatusCountsProps
+> = ({ navigation }) => {
   const { data: statusCounts, isLoading: areStatusCountsLoading } =
     useActionStatusCounts();
 

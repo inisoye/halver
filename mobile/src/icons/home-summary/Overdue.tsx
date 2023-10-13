@@ -6,7 +6,9 @@ import { useIsDarkModeSelected } from '@/utils';
 
 type OverdueProps = ISvgProps;
 
-export const Overdue: React.FunctionComponent<OverdueProps> = ({ ...props }) => {
+export const Overdue: React.FunctionComponent<OverdueProps> = ({
+  ...props
+}) => {
   const isDarkMode = useIsDarkModeSelected();
 
   return (
