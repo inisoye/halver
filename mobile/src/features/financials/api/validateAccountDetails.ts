@@ -7,7 +7,9 @@ import {
   PaystackAccountNumberCheck as PaystackAccountNumberCheckSchema,
 } from '@/lib/zod';
 
-export type AccountDetailsPayload = z.infer<typeof PaystackAccountNumberCheckSchema>;
+export type AccountDetailsPayload = z.infer<
+  typeof PaystackAccountNumberCheckSchema
+>;
 
 export const validateAccountDetails = async (
   validateAccountDetailsDto: AccountDetailsPayload,

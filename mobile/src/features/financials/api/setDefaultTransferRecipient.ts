@@ -16,7 +16,9 @@ export const useSetDefaultTransferRecipient = () => {
   return useMutation({
     mutationFn: setDefaultTransferRecipient,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getUserDetails });
+      queryClient.invalidateQueries({
+        queryKey: allStaticQueryKeys.getUserDetails,
+      });
       queryClient.invalidateQueries({
         queryKey: allStaticQueryKeys.getTransferRecipients,
       });

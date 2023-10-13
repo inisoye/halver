@@ -14,7 +14,9 @@ export const useSetDefaultCard = () => {
   return useMutation({
     mutationFn: setDefaultCard,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getUserDetails });
+      queryClient.invalidateQueries({
+        queryKey: allStaticQueryKeys.getUserDetails,
+      });
       queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getCards });
     },
   });

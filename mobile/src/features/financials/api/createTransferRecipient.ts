@@ -25,7 +25,9 @@ export const useCreateTransferRecipient = () => {
   return useMutation({
     mutationFn: createTransferRecipient,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getUserDetails });
+      queryClient.invalidateQueries({
+        queryKey: allStaticQueryKeys.getUserDetails,
+      });
       queryClient.invalidateQueries({
         queryKey: allStaticQueryKeys.getTransferRecipients,
       });

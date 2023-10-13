@@ -16,7 +16,9 @@ export const useDeleteTransferRecipient = () => {
   return useMutation({
     mutationFn: deleteTransferRecipient,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getUserDetails });
+      queryClient.invalidateQueries({
+        queryKey: allStaticQueryKeys.getUserDetails,
+      });
       queryClient.invalidateQueries({
         queryKey: allStaticQueryKeys.getTransferRecipients,
       });

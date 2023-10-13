@@ -14,7 +14,9 @@ export const useDeleteCard = () => {
   return useMutation({
     mutationFn: deleteCard,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getUserDetails });
+      queryClient.invalidateQueries({
+        queryKey: allStaticQueryKeys.getUserDetails,
+      });
       queryClient.invalidateQueries({ queryKey: allStaticQueryKeys.getCards });
     },
   });
