@@ -25,7 +25,9 @@ import { getInitials } from '@/utils';
 
 type AccountProps = NativeStackScreenProps<AccountStackParamList, 'Account'>;
 
-export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) => {
+export const Account: React.FunctionComponent<AccountProps> = ({
+  navigation,
+}) => {
   const { data: userDetails } = useUserDetails();
   const {
     profileImageHash,
@@ -62,7 +64,13 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
   return (
     <Screen>
       <ScrollView>
-        <Box flex={1} gap="8" paddingBottom="12" paddingHorizontal="6" paddingTop="2">
+        <Box
+          flex={1}
+          gap="8"
+          paddingBottom="12"
+          paddingHorizontal="6"
+          paddingTop="2"
+        >
           <Box
             alignItems="stretch"
             borderRadius="lg"
@@ -294,7 +302,9 @@ export const Account: React.FunctionComponent<AccountProps> = ({ navigation }) =
                       >
                         {bankLogo ? (
                           <Image
-                            backgroundColor={bankLogo ? 'white' : 'bankImageBackground'}
+                            backgroundColor={
+                              bankLogo ? 'white' : 'bankImageBackground'
+                            }
                             borderRadius="base"
                             contentFit="contain"
                             height={24}

@@ -51,7 +51,9 @@ export const insertSpacesBeforeCapitalLetters = (string: string) => {
  * @returns The argument string with its first letter capitalized.
  */
 export const capitalizeFirstLetter = (string: string) => {
-  const stringWithSpaces = insertSpacesBeforeCapitalLetters(string.toLowerCase());
+  const stringWithSpaces = insertSpacesBeforeCapitalLetters(
+    string.toLowerCase(),
+  );
 
   return (
     (stringWithSpaces &&
@@ -97,7 +99,10 @@ export const convertKebabAndSnakeToTitleCase = (string: string | undefined) => {
  * @param oneLetter Boolean flag to determine whether to return one-letter initials or not.
  * @returns The initials of the user.
  */
-export const getInitials = (name: string | undefined | null, oneLetter = false) => {
+export const getInitials = (
+  name: string | undefined | null,
+  oneLetter = false,
+) => {
   if (!name) {
     return '';
   }

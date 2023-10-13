@@ -4,7 +4,9 @@ import { apiClient } from '@/lib/axios';
 import { allStaticQueryKeys } from '@/lib/react-query';
 
 export const transferUnregisteredParticipantData = async () => {
-  const response = await apiClient.post('/bills/unregistered-participants/transfer/');
+  const response = await apiClient.post(
+    '/bills/unregistered-participants/transfer/',
+  );
   return response.data;
 };
 

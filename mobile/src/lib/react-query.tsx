@@ -36,7 +36,9 @@ const clientStorage = {
   },
 };
 
-export const clientPersister = createSyncStoragePersister({ storage: clientStorage });
+export const clientPersister = createSyncStoragePersister({
+  storage: clientStorage,
+});
 
 /**
  * Online status management. Refetches when user is back online.
@@ -72,6 +74,7 @@ export const allStaticQueryKeys = {
   getBillTransactionsOnDay: ['bill-transactions-on-day'],
   getCardAdditionURL: ['card-addition-url'],
   getCards: ['cards'],
+  getIsFirstTime: ['is-first-time'],
   getPhoneContacts: ['phone-contacts'],
   getRegisteredContacts: ['registered-contacts'],
   getTransferRecipients: ['transfer-recipients'],
@@ -91,9 +94,9 @@ const persistedQueriesList: QueryKey[] = [
   allStaticQueryKeys.getUserDetails,
 ];
 
-export const ReactQueryProvider: React.FunctionComponent<ReactQueryProviderProps> = ({
-  children,
-}) => {
+export const ReactQueryProvider: React.FunctionComponent<
+  ReactQueryProviderProps
+> = ({ children }) => {
   React.useEffect(() => {
     const subscription = AppState.addEventListener('change', onAppStateChange);
 

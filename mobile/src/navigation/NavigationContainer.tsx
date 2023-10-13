@@ -6,14 +6,14 @@ import {
   useNavigationContainerRef,
 } from '@react-navigation/native';
 import * as React from 'react';
-import { useMMKVBoolean, useMMKVString } from 'react-native-mmkv';
+import { useMMKVString } from 'react-native-mmkv';
 
 import { Box } from '@/components';
 import {
   checkIfUserDetailsAreIncomplete,
   useUserDetails,
 } from '@/features/account';
-import { useFullScreenLoader } from '@/hooks';
+import { useFullScreenLoader, useIsFirstTime } from '@/hooks';
 import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys } from '@/lib/mmkv';
 import {
@@ -26,9 +26,7 @@ import { AppRootStackNavigator } from './AppRootStackNavigator';
 
 export const NavigationContainer: React.FunctionComponent = () => {
   const [token] = useMMKVString(allMMKVKeys.token);
-  const [hasCompletedOnboarding] = useMMKVBoolean(
-    allMMKVKeys.hasCompletedOnboarding,
-  );
+  const [isFirstTime] = useIsFirstTime();
 
   const { data: userDetails, isLoading, isFetching } = useUserDetails();
   const isDarkMode = useIsDarkModeSelected();
@@ -43,15 +41,13 @@ export const NavigationContainer: React.FunctionComponent = () => {
   }, [token]);
 
   const areUserDetailsLoading = isLoading && isFetching;
+  const isPhoneNumberMissing = !userDetails?.phone;
   const areUserDetailsIncomplete = checkIfUserDetailsAreIncomplete(userDetails);
 
   useFullScreenLoader({
-    isLoading: areUserDetailsLoading,
+    isLoading: isFirstTime && areUserDetailsLoading,
     message: 'Gathering your details...',
   });
-
-  // Ensure token is available in MMKV
-  const isTokenSet = !!token;
 
   return (
     <Box backgroundColor="background" flex={1}>
@@ -59,11 +55,10 @@ export const NavigationContainer: React.FunctionComponent = () => {
         ref={navigationRef}
         theme={isDarkMode ? DarkTheme : DefaultTheme}
       >
-        {!isTokenSet ? (
+        {!token ? (
           <LoginStackNavigator />
-        ) : !isLoading &&
-          areUserDetailsIncomplete &&
-          hasCompletedOnboarding === false ? (
+        ) : (!isLoading && isPhoneNumberMissing) ||
+          (isFirstTime && areUserDetailsIncomplete) ? (
           <OnboardingStackNavigator />
         ) : (
           <AppRootStackNavigator />

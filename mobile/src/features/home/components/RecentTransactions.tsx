@@ -16,7 +16,11 @@ import { BillTransaction } from '@/features/bills';
 import { useInfiniteUserTransactions } from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
 import { RightCaret } from '@/icons';
-import { AppRootStackParamList, HomeStackParamList, TabParamList } from '@/navigation';
+import {
+  AppRootStackParamList,
+  HomeStackParamList,
+  TabParamList,
+} from '@/navigation';
 import { convertNumberToNaira } from '@/utils';
 
 import { SelectedTransactionModal } from './SelectedTransactionModal';
@@ -51,7 +55,11 @@ const PlaceholderTransactions: React.FunctionComponent = () => {
               opacity={0}
               width="60%"
             >
-              <DynamicText fontFamily="Halver-Semibold" numberOfLines={1} variant="sm">
+              <DynamicText
+                fontFamily="Halver-Semibold"
+                numberOfLines={1}
+                variant="sm"
+              >
                 Dummy
               </DynamicText>
 
@@ -85,7 +93,9 @@ const PlaceholderTransactions: React.FunctionComponent = () => {
 interface TransactionItemProps {
   transaction: BillTransaction | undefined;
   isFirstItem: boolean;
-  handleTransactionSelection: (transaction: BillTransaction | undefined) => void;
+  handleTransactionSelection: (
+    transaction: BillTransaction | undefined,
+  ) => void;
 }
 
 const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
@@ -119,7 +129,11 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
       onPress={onPress}
     >
       <Box gap="0.75" width="60%">
-        <DynamicText fontFamily="Halver-Semibold" numberOfLines={1} variant="sm">
+        <DynamicText
+          fontFamily="Halver-Semibold"
+          numberOfLines={1}
+          variant="sm"
+        >
           {bill?.name}
         </DynamicText>
 
@@ -167,10 +181,9 @@ interface RecentTransactionsProps {
   goToAllTransactions: () => void;
 }
 
-export const RecentTransactions: React.FunctionComponent<RecentTransactionsProps> = ({
-  navigation,
-  goToAllTransactions,
-}) => {
+export const RecentTransactions: React.FunctionComponent<
+  RecentTransactionsProps
+> = ({ navigation, goToAllTransactions }) => {
   const {
     state: isModalOpen,
     setTrue: openModal,
@@ -234,7 +247,7 @@ export const RecentTransactions: React.FunctionComponent<RecentTransactionsProps
             paddingVertical="2.5"
           >
             <Text color="textLight" variant="sm">
-              You have no transactions yet.
+              You have no transactions yet
             </Text>
           </Box>
         )}

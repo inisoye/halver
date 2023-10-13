@@ -25,4 +25,5 @@ export async function getFromSecureStore(
 export const allSecureStoreKeys = {
   appleFamilyName: 'APPLE_FAMILY_NAME',
   appleGivenName: 'APPLE_GIVEN_NAME',
+  isFirstTime: 'IS_FIRST_TIME',
 };

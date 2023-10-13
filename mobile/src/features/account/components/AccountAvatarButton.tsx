@@ -18,15 +18,20 @@ interface AccountAvatarButtonProps {
 
 export const AccountAvatarButton: React.FunctionComponent<AccountAvatarButtonProps> =
   React.memo(
-    ({ fullName, profileImageHash, profileImageUrl, handleGoToEditProfileImage }) => {
+    ({
+      fullName,
+      profileImageHash,
+      profileImageUrl,
+      handleGoToEditProfileImage,
+    }) => {
       const isDarkMode = useIsDarkModeSelected();
 
       const initials = React.useMemo(() => getInitials(fullName), [fullName]);
 
       const avatarBackground = React.useMemo(() => {
         return isDarkMode
-          ? getLightColorFromString(fullName)
-          : getDarkColorFromString(fullName);
+          ? getDarkColorFromString(fullName)
+          : getLightColorFromString(fullName);
       }, [isDarkMode, fullName]);
 
       return (
@@ -63,7 +68,7 @@ export const AccountAvatarButton: React.FunctionComponent<AccountAvatarButtonPro
               style={{ backgroundColor: avatarBackground }}
               width={100}
             >
-              <Text color="textInverse" fontFamily="Halver-Semibold" variant="3xl">
+              <Text fontFamily="Halver-Semibold" variant="3xl">
                 {initials}
               </Text>
             </Box>

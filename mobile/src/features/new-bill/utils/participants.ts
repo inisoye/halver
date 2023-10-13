@@ -153,7 +153,9 @@ export function sumTotalParticipantAllocations(
   participants.registeredParticipants?.forEach((participant, index) => {
     if (participant) {
       registeredSum += Number(participant[`registeredContribution${index}`]);
-      allAllocations.push(Number(participant[`registeredContribution${index}`]));
+      allAllocations.push(
+        Number(participant[`registeredContribution${index}`]),
+      );
 
       if (participant.uuid !== creditorId) {
         allAllocationsExcludingCreditor.push(
@@ -165,8 +167,12 @@ export function sumTotalParticipantAllocations(
 
   participants.unregisteredParticipants?.forEach((participant, index) => {
     if (participant) {
-      unregisteredSum += Number(participant[`unregisteredContribution${index}`]);
-      allAllocations.push(Number(participant[`unregisteredContribution${index}`]));
+      unregisteredSum += Number(
+        participant[`unregisteredContribution${index}`],
+      );
+      allAllocations.push(
+        Number(participant[`unregisteredContribution${index}`]),
+      );
       allAllocationsExcludingCreditor.push(
         Number(participant[`unregisteredContribution${index}`]),
       );

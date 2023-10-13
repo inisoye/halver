@@ -12,13 +12,13 @@ type ProfileImageProps = NativeStackScreenProps<
 >;
 
 export const ProfileImage: React.FunctionComponent<ProfileImageProps> = () => {
-  const [_hasCompletedOnboarding, setHasCompletedOnboarding] = useMMKVBoolean(
-    allMMKVKeys.hasCompletedOnboarding,
+  const [_isFirstTime, setIsFirstTime] = useMMKVBoolean(
+    allMMKVKeys.isFirstTime,
   );
 
-  const onComplete = React.useCallback(() => {
-    setHasCompletedOnboarding(true);
-  }, [setHasCompletedOnboarding]);
+  const onComplete = React.useCallback(async () => {
+    setIsFirstTime(false);
+  }, [setIsFirstTime]);
 
   return <EditProfileImageForm isOnboarding onComplete={onComplete} />;
 };
