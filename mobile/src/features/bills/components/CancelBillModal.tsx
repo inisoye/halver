@@ -2,7 +2,14 @@ import type { AxiosError } from 'axios';
 import * as Haptics from 'expo-haptics';
 import * as React from 'react';
 
-import { Box, Button, DynamicText, Modal, Text, TouchableOpacity } from '@/components';
+import {
+  Box,
+  Button,
+  DynamicText,
+  Modal,
+  Text,
+  TouchableOpacity,
+} from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { handleAxiosErrorAlertAndHaptics, isAndroid } from '@/utils';
 
@@ -23,7 +30,8 @@ export const CancelBillModal: React.FunctionComponent<CancelBillModalProps> = ({
     setFalse: closeCancellationModal,
   } = useBooleanStateControl();
 
-  const { mutate: cancelBill, isLoading: isCancellationLoading } = useCancelBill();
+  const { mutate: cancelBill, isLoading: isCancellationLoading } =
+    useCancelBill();
 
   const { refetch: refetchBill } = useBill(billId);
 
@@ -46,7 +54,10 @@ export const CancelBillModal: React.FunctionComponent<CancelBillModalProps> = ({
         },
 
         onError: error => {
-          handleAxiosErrorAlertAndHaptics('Error cancelling bill', error as AxiosError);
+          handleAxiosErrorAlertAndHaptics(
+            'Error cancelling bill',
+            error as AxiosError,
+          );
         },
       },
     );
@@ -94,10 +105,20 @@ export const CancelBillModal: React.FunctionComponent<CancelBillModalProps> = ({
           paddingTop="6"
           pointerEvents={isCancellationLoading ? 'none' : undefined}
         >
-          <DynamicText fontFamily="Halver-Semibold" marginBottom="3" width="80%">
-            No participants will be able to make further contributions if you cancel.
+          <DynamicText
+            fontFamily="Halver-Semibold"
+            marginBottom="3"
+            width="80%"
+          >
+            No participants will be able to make further contributions if you
+            cancel.
           </DynamicText>
-          <DynamicText color="textLight" marginBottom="6" variant="sm" width="70%">
+          <DynamicText
+            color="textLight"
+            marginBottom="6"
+            variant="sm"
+            width="70%"
+          >
             A bill cancellation is permanent and cannot be reversed.
           </DynamicText>
 

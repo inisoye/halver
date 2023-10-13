@@ -37,8 +37,14 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
   React.memo(({ closeModal, isModalOpen, selectedTransaction, navigation }) => {
     const isDarkMode = useIsDarkModeSelected();
 
-    const { bill, created, contribution, totalPayment, payingUser, receivingUser } =
-      selectedTransaction || {};
+    const {
+      bill,
+      created,
+      contribution,
+      totalPayment,
+      payingUser,
+      receivingUser,
+    } = selectedTransaction || {};
     const { name: billName, uuid: billId } = bill || {};
 
     const handleGoToBill = () => {
@@ -190,7 +196,11 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
               </Text>
             </Box>
 
-            <Box opacity={'accountName' ? 1 : 0.5} paddingVertical="2" width="46%">
+            <Box
+              opacity={'accountName' ? 1 : 0.5}
+              paddingVertical="2"
+              width="46%"
+            >
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -210,7 +220,11 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
               </Text>
             </Box>
 
-            <Box opacity={'accountName' ? 1 : 0.5} paddingVertical="2" width="46%">
+            <Box
+              opacity={'accountName' ? 1 : 0.5}
+              paddingVertical="2"
+              width="46%"
+            >
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -230,7 +244,11 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
               </Text>
             </Box>
 
-            <Box opacity={'accountName' ? 1 : 0.5} paddingVertical="2" width="46%">
+            <Box
+              opacity={'accountName' ? 1 : 0.5}
+              paddingVertical="2"
+              width="46%"
+            >
               <Text
                 color="textLight"
                 marginBottom="0.75"
@@ -251,7 +269,12 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
             </Box>
           </Box>
 
-          <Box flexDirection="row" gap="3" marginBottom="3" paddingHorizontal="6">
+          <Box
+            flexDirection="row"
+            gap="3"
+            marginBottom="3"
+            paddingHorizontal="6"
+          >
             <Button backgroundColor="buttonCasal" onPress={handleGoToBill}>
               <Box
                 flexDirection="row"

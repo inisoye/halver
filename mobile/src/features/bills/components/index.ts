@@ -1,3 +1,4 @@
+export * from './AddCardReminderModal';
 export * from './BillContributionMeter';
 export * from './BillCreatorCreditorFlag';
 export * from './BillParticipantsList';

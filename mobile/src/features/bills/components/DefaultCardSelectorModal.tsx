@@ -15,7 +15,12 @@ import {
 } from '@/components';
 import { CardIcon, useCards, useSetDefaultCard } from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
-import { CirclePlus, CreditCard, SelectInactiveItem, SelectTick } from '@/icons';
+import {
+  CirclePlus,
+  CreditCard,
+  SelectInactiveItem,
+  SelectTick,
+} from '@/icons';
 import type { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 import {
   convertKebabAndSnakeToTitleCase,
@@ -33,7 +38,15 @@ interface CardItemProps {
 }
 
 const CardItem: React.FunctionComponent<CardItemProps> = React.memo(
-  ({ cardType, last4, uuid, bank, isDefault, closeCardsModal, setDefaultCard }) => {
+  ({
+    cardType,
+    last4,
+    uuid,
+    bank,
+    isDefault,
+    closeCardsModal,
+    setDefaultCard,
+  }) => {
     const onSetDefaultCardSubmit = () => {
       setDefaultCard(uuid || '', {
         onSuccess: () => {
@@ -111,7 +124,9 @@ export const DefaultCardSelectorModal: React.FunctionComponent<
   // Place default card before others.
   const sortedCards = React.useMemo(
     () =>
-      cards?.sort((a, b) => (a.isDefault === b.isDefault ? 0 : a.isDefault ? -1 : 1)),
+      cards?.sort((a, b) =>
+        a.isDefault === b.isDefault ? 0 : a.isDefault ? -1 : 1,
+      ),
     [cards],
   );
 
@@ -156,7 +171,12 @@ export const DefaultCardSelectorModal: React.FunctionComponent<
           paddingTop="6"
           pointerEvents={isSetDefaultCardLoading ? 'none' : undefined}
         >
-          <DynamicText color="textLight" marginBottom="4" maxWidth="85%" variant="sm">
+          <DynamicText
+            color="textLight"
+            marginBottom="4"
+            maxWidth="85%"
+            variant="sm"
+          >
             {onlyOneCardAvailable
               ? 'You have only one card added. Add a new card to make it your default.'
               : 'Select a card below to make it your default card for payments on Halver.'}
@@ -190,7 +210,12 @@ export const DefaultCardSelectorModal: React.FunctionComponent<
             paddingVertical="2.5"
             onPress={goToAddCard}
           >
-            <Box alignItems="center" columnGap="2" flexDirection="row" width="70%">
+            <Box
+              alignItems="center"
+              columnGap="2"
+              flexDirection="row"
+              width="70%"
+            >
               <CreditCard />
 
               <DynamicText

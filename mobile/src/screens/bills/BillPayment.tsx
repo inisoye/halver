@@ -16,6 +16,7 @@ import {
 } from '@/components';
 import { useUserDetails } from '@/features/account';
 import {
+  AddCardReminderModal,
   DefaultCardSelectorModal,
   useUpdateBillAction,
 } from '@/features/bills';
@@ -66,6 +67,12 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
     setFalse: closeOptOutConfirmationModal,
   } = useBooleanStateControl();
 
+  const {
+    state: isCardReminderModalOpen,
+    setTrue: openCardReminderModal,
+    setFalse: closeCardReminderModal,
+  } = useBooleanStateControl();
+
   const { mutate: updateBillAction, isLoading: isBillUpdateLoading } =
     useUpdateBillAction();
 
@@ -85,7 +92,16 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
     closeOptOutConfirmationModal();
   };
 
+  const { data: userDetails } = useUserDetails();
+  const { defaultCard } = userDetails || {};
+  const { last4, cardType } = defaultCard || {};
+
   const handleBillPayment = async () => {
+    if (!defaultCard) {
+      openCardReminderModal();
+      return;
+    }
+
     const isUserAuthenticated = await handleBiometricAuthentication();
 
     if (isUserAuthenticated) {
@@ -157,10 +173,6 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
     isLoading: isBillUpdateLoading,
     message: 'Processing your selection...',
   });
-
-  const { data: userDetails } = useUserDetails();
-  const { defaultCard } = userDetails || {};
-  const { last4, cardType } = defaultCard || {};
 
   return (
     <Screen>
@@ -334,6 +346,12 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
           </Text>
         </Button>
       </Box>
+
+      <AddCardReminderModal
+        closeCardReminderModal={closeCardReminderModal}
+        isCardReminderModalOpen={isCardReminderModalOpen}
+        navigation={navigation}
+      />
 
       {!isBillUpdateLoading && (
         <>

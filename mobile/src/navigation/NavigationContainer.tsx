@@ -45,7 +45,7 @@ export const NavigationContainer: React.FunctionComponent = () => {
   const areUserDetailsIncomplete = checkIfUserDetailsAreIncomplete(userDetails);
 
   useFullScreenLoader({
-    isLoading: isFirstTime && areUserDetailsLoading,
+    isLoading: areUserDetailsLoading,
     message: 'Gathering your details...',
   });
 

@@ -19,12 +19,15 @@ import {
   TextFieldError,
   TextFieldLabel,
 } from '@/components';
+import { useUserDetails } from '@/features/account';
 import {
+  AddRecipientReminderModal,
   BillCreationMMKVPayload,
   BillDeadlineSelector,
   BillFirstChargeDateSelector,
   MINIMUM_BILL_AMOUNT,
 } from '@/features/new-bill';
+import { useBooleanStateControl } from '@/hooks';
 import { allMMKVKeys } from '@/lib/mmkv';
 import { showToast } from '@/lib/root-toast';
 import { IntervalEnum } from '@/lib/zod';
@@ -123,6 +126,15 @@ const twoDaysFromNow = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
 export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
   navigation,
 }) => {
+  const {
+    state: isRecipientReminderModalOpen,
+    setTrue: openRecipientReminderModal,
+    setFalse: closeRecipientReminderModal,
+  } = useBooleanStateControl();
+
+  const { data: userDetails } = useUserDetails();
+  const { defaultTransferRecipient } = userDetails || {};
+
   const scrollViewRef = React.useRef<RNScrollView>(null);
 
   const [newBillPayload, setNewBillPayload] =
@@ -226,132 +238,144 @@ export const BillDetails: React.FunctionComponent<BillDetailsProps> = ({
   }, []);
 
   return (
-    <Screen customBackButtonHandler={handleClearBill} hasNoIOSBottomInset>
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        keyboardShouldPersistTaps="handled"
-        ref={scrollViewRef}
-        onContentSizeChange={handleScrollToEndOfScrollView}
-      >
-        <Box gap="7" paddingBottom="20" paddingHorizontal="6" paddingTop="4">
-          <Box>
-            <TextFieldLabel label="How much is the bill?" />
+    <>
+      <Screen customBackButtonHandler={handleClearBill} hasNoIOSBottomInset>
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+          ref={scrollViewRef}
+          onContentSizeChange={handleScrollToEndOfScrollView}
+        >
+          <Box gap="7" paddingBottom="20" paddingHorizontal="6" paddingTop="4">
+            <Box>
+              <TextFieldLabel label="How much is the bill?" />
 
-            <TextField
-              control={control}
-              keyboardType="number-pad"
-              name="totalAmountDue"
-              placeholder="min. ₦500"
-              prefixText="₦"
-              rules={{
-                required: true,
-              }}
-            />
-            {errors.totalAmountDue && (
-              <TextFieldError
-                errorMessage={errors.totalAmountDue?.message}
-                fieldName="the total amount due"
+              <TextField
+                control={control}
+                keyboardType="number-pad"
+                name="totalAmountDue"
+                placeholder="min. ₦500"
+                prefixText="₦"
+                rules={{
+                  required: true,
+                }}
               />
-            )}
-          </Box>
-
-          <Box>
-            <TextFieldLabel label="Give the bill a name" />
-            <TextField
-              control={control}
-              name="name"
-              placeholder="e.g. Our Netflix Subscription"
-              rules={{
-                required: true,
-              }}
-            />
-            {errors.name && (
-              <TextFieldError
-                errorMessage={errors.name?.message}
-                fieldName="a name for the bill"
-              />
-            )}
-          </Box>
-
-          <Box>
-            <TextFieldLabel label="Add a quick note" isOptional />
-            <TextField
-              control={control}
-              height={80}
-              multiline={true}
-              name="notes"
-              numberOfLines={4}
-              paddingVertical={isIOS() ? '3' : '2.5'}
-              placeholder="e.g. Hi guys! This is just for all of us to conveniently make our contributions."
-              textAlignVertical="top"
-            />
-            {errors.notes && (
-              <TextFieldError
-                errorMessage={errors.notes?.message}
-                fieldName="a name for the bill"
-              />
-            )}
-          </Box>
-
-          <Box>
-            <BillDeadlineSelector control={control} />
-
-            {errors.deadline && (
-              <TextFieldError
-                errorMessage={errors.deadline?.message}
-                fieldName="your bill's deadline"
-              />
-            )}
-          </Box>
-
-          <Box>
-            <TextFieldLabel label="Is this a one-time or periodic bill?" />
-
-            <Controller
-              control={control}
-              name="interval"
-              render={({ field: { onChange, value } }) => {
-                return (
-                  <RadioSelector
-                    data={intervalOptions}
-                    option={value}
-                    setOption={onChange}
-                  />
-                );
-              }}
-            />
-
-            {errors.interval && (
-              <TextFieldError
-                errorMessage={errors.interval?.message}
-                fieldName="your bill's interval"
-              />
-            )}
-          </Box>
-
-          {isRecurringBill && (
-            <AnimatedBox entering={FadeInUp} exiting={FadeOutDown}>
-              <BillFirstChargeDateSelector control={control} />
-
-              {errors.firstChargeDate && (
+              {errors.totalAmountDue && (
                 <TextFieldError
-                  errorMessage={errors.firstChargeDate?.message}
-                  fieldName="your bill's first charge date"
+                  errorMessage={errors.totalAmountDue?.message}
+                  fieldName="the total amount due"
                 />
               )}
-            </AnimatedBox>
-          )}
-        </Box>
-      </ScrollView>
+            </Box>
 
-      <KeyboardStickyButton
-        backgroundColor="buttonCasal"
-        onPress={handleSubmit(onBillDetailsSubmit)}
-      >
-        <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
-          Continue
-        </Text>
-      </KeyboardStickyButton>
-    </Screen>
+            <Box>
+              <TextFieldLabel label="Give the bill a name" />
+              <TextField
+                control={control}
+                name="name"
+                placeholder="e.g. Our Netflix Subscription"
+                rules={{
+                  required: true,
+                }}
+              />
+              {errors.name && (
+                <TextFieldError
+                  errorMessage={errors.name?.message}
+                  fieldName="a name for the bill"
+                />
+              )}
+            </Box>
+
+            <Box>
+              <TextFieldLabel label="Add a quick note" isOptional />
+              <TextField
+                control={control}
+                height={80}
+                multiline={true}
+                name="notes"
+                numberOfLines={4}
+                paddingVertical={isIOS() ? '3' : '2.5'}
+                placeholder="e.g. Hi guys! This is just for all of us to conveniently make our contributions."
+                textAlignVertical="top"
+              />
+              {errors.notes && (
+                <TextFieldError
+                  errorMessage={errors.notes?.message}
+                  fieldName="a name for the bill"
+                />
+              )}
+            </Box>
+
+            <Box>
+              <BillDeadlineSelector control={control} />
+
+              {errors.deadline && (
+                <TextFieldError
+                  errorMessage={errors.deadline?.message}
+                  fieldName="your bill's deadline"
+                />
+              )}
+            </Box>
+
+            <Box>
+              <TextFieldLabel label="Is this a one-time or periodic bill?" />
+
+              <Controller
+                control={control}
+                name="interval"
+                render={({ field: { onChange, value } }) => {
+                  return (
+                    <RadioSelector
+                      data={intervalOptions}
+                      option={value}
+                      setOption={onChange}
+                    />
+                  );
+                }}
+              />
+
+              {errors.interval && (
+                <TextFieldError
+                  errorMessage={errors.interval?.message}
+                  fieldName="your bill's interval"
+                />
+              )}
+            </Box>
+
+            {isRecurringBill && (
+              <AnimatedBox entering={FadeInUp} exiting={FadeOutDown}>
+                <BillFirstChargeDateSelector control={control} />
+
+                {errors.firstChargeDate && (
+                  <TextFieldError
+                    errorMessage={errors.firstChargeDate?.message}
+                    fieldName="your bill's first charge date"
+                  />
+                )}
+              </AnimatedBox>
+            )}
+          </Box>
+        </ScrollView>
+
+        <KeyboardStickyButton
+          backgroundColor="buttonCasal"
+          onPress={
+            defaultTransferRecipient
+              ? handleSubmit(onBillDetailsSubmit)
+              : openRecipientReminderModal
+          }
+        >
+          <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
+            Continue
+          </Text>
+        </KeyboardStickyButton>
+      </Screen>
+
+      <AddRecipientReminderModal
+        closeRecipientReminderModal={closeRecipientReminderModal}
+        isRecipientReminderModalOpen={isRecipientReminderModalOpen}
+        navigation={navigation}
+      />
+    </>
   );
 };

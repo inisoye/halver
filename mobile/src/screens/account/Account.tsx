@@ -352,7 +352,7 @@ export const Account: React.FunctionComponent<AccountProps> = ({
           <CraftedLogo
             containerProps={{
               alignSelf: 'center',
-              marginTop: '24',
+              marginTop: '16',
             }}
             hasText
           />
