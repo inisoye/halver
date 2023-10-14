@@ -3,6 +3,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import * as React from 'react';
 
+import { navigateWithoutNavigationProp } from '@/lib/react-navigation';
 import { isAndroid } from '@/utils';
 
 async function registerForPushNotificationsAsync() {
@@ -64,9 +65,22 @@ export const useNotificationsSetup = () => {
       });
 
     responseListener.current =
-      Notifications.addNotificationResponseReceivedListener(_response => {
-        // console.log(JSON.stringify(_response));
-        // Handle the user's tap on the notification here
+      Notifications.addNotificationResponseReceivedListener(response => {
+        const { bill_name: billName, bill_id: billId } =
+          response?.notification.request.content.data ?? {};
+
+        // If the notification payload contains bill data, redirect the user there.
+        if (
+          billName &&
+          billId &&
+          response?.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER
+        ) {
+          navigateWithoutNavigationProp('Bill', {
+            id: billId,
+            name: billName,
+            shouldUpdate: true,
+          });
+        }
       });
 
     return () => {

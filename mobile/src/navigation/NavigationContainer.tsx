@@ -3,7 +3,6 @@ import {
   DarkTheme,
   DefaultTheme,
   NavigationContainer as RNNavigationContainer,
-  useNavigationContainerRef,
 } from '@react-navigation/native';
 import * as React from 'react';
 import { useMMKVString } from 'react-native-mmkv';
@@ -16,6 +15,7 @@ import {
 import { useFullScreenLoader, useIsFirstTime } from '@/hooks';
 import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys } from '@/lib/mmkv';
+import { navigationRef } from '@/lib/react-navigation';
 import {
   LoginStackNavigator,
   OnboardingStackNavigator,
@@ -31,7 +31,6 @@ export const NavigationContainer: React.FunctionComponent = () => {
   const { data: userDetails, isLoading, isFetching } = useUserDetails();
   const isDarkMode = useIsDarkModeSelected();
 
-  const navigationRef = useNavigationContainerRef();
   useFlipper(navigationRef);
 
   React.useEffect(() => {

@@ -37,6 +37,7 @@ import {
   useBillContributionsByDay,
   useInfiniteBillTransactions,
 } from '@/features/bills';
+import { useIsFirstRender } from '@/hooks';
 import { BackWithBackground, Gear, Rewind } from '@/icons';
 import { AppRootStackParamList, BillsStackParamList } from '@/navigation';
 import { formatNumberWithCommas, isIOS } from '@/utils';
@@ -86,7 +87,10 @@ export const Bill = ({ navigation, route }: BillProps) => {
     isStale: isBillStale,
   } = useBill(id);
 
-  const isBillForceUpdating = isBillRefetching && shouldUpdate;
+  const isFirstRender = useIsFirstRender();
+
+  const isBillForceUpdating = isBillRefetching && shouldUpdate && isFirstRender;
+  const shouldForceUpdate = shouldUpdate && isFirstRender;
 
   const {
     actions,
@@ -146,7 +150,7 @@ export const Bill = ({ navigation, route }: BillProps) => {
     return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    shouldUpdate,
+    shouldForceUpdate,
     isBillRecurring,
     areBillContributionsByDayStale,
     areBillTransactionsStale,

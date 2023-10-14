@@ -33,6 +33,7 @@ function MainContent() {
   const [token] = useMMKVString(allMMKVKeys.token);
 
   const { expoPushToken } = useNotificationsSetup();
+
   const { mutate: updateExpoPushToken } = useUpdateExpoPushToken();
 
   // Post token to backend only when user is authenticated and the token already exists.
