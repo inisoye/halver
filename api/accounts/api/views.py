@@ -5,6 +5,7 @@ from allauth.socialaccount.providers.apple.views import (
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
+from django.contrib.auth import get_user_model
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from environs import Env
 from rest_framework import status
@@ -23,6 +24,9 @@ from libraries.notifications.base import send_push_messages
 
 env = Env()
 env.read_env()
+
+
+User = get_user_model()
 
 
 class GoogleLogin(SocialLoginView):
@@ -120,8 +124,16 @@ class ExpoPushTokenUpdateAPIView(APIView):
 
         new_token = serializer.validated_data.get("expo_push_token")
 
-        # Check if the new token is different from the existing one
         if new_token != existing_token:
+            try:
+                existing_user_with_token = User.objects.get(expo_push_token=new_token)
+            except User.DoesNotExist:
+                existing_user_with_token = None
+
+            if existing_user_with_token:
+                existing_user_with_token.expo_push_token = None
+                existing_user_with_token.save()
+
             user.expo_push_token = new_token
             user.save()
             return Response(

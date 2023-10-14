@@ -168,6 +168,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                     "username",
                 ]
             ),
+            models.Index(fields=["expo_push_token"], name="expo_push_token_index"),
         ]
         verbose_name = _("user")
         verbose_name_plural = _("users")
