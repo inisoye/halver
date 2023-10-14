@@ -6,6 +6,12 @@ import * as React from 'react';
 import { navigateWithoutNavigationProp } from '@/lib/react-navigation';
 import { isAndroid } from '@/utils';
 
+/**
+ * Asynchronously registers the application for push notifications and retrieves the device's push token.
+ * This function also sets a notification channel on Android if the device is running Android.
+ *
+ * @returns A promise that resolves to the push token if successful, or undefined if there was an issue.
+ */
 async function registerForPushNotificationsAsync() {
   let token: string | undefined;
 
@@ -42,6 +48,11 @@ async function registerForPushNotificationsAsync() {
   return token;
 }
 
+/**
+ * Set up push notifications in the application by obtaining and returning the Expo Push Token.
+ *
+ * @returns An object containing the expoPushToken and notification state.
+ */
 export const useNotificationsSetup = () => {
   const [expoPushToken, setExpoPushToken] = React.useState<string | undefined>(
     '',

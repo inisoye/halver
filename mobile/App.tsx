@@ -3,14 +3,11 @@ import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
-import { useMMKVString } from 'react-native-mmkv';
 import { initializeMMKVFlipper } from 'react-native-mmkv-flipper-plugin';
 
 import { Box } from '@/components';
-import { useUpdateExpoPushToken, useUserDetails } from '@/features/account';
-import { useNotificationsSetup } from '@/hooks';
-import { apiClient } from '@/lib/axios';
-import { allMMKVKeys, storage } from '@/lib/mmkv';
+import { useUserDetails } from '@/features/account';
+import { storage } from '@/lib/mmkv';
 import { NavigationContainer } from '@/navigation';
 import { Providers } from '@/providers';
 import { useIsDarkModeSelected } from '@/utils';
@@ -30,24 +27,6 @@ if (__DEV__) {
 SplashScreen.preventAutoHideAsync();
 
 function MainContent() {
-  const [token] = useMMKVString(allMMKVKeys.token);
-
-  const { expoPushToken } = useNotificationsSetup();
-
-  const { mutate: updateExpoPushToken } = useUpdateExpoPushToken();
-
-  // Post token to backend only when user is authenticated and the token already exists.
-  React.useEffect(() => {
-    if (
-      expoPushToken &&
-      !!apiClient.defaults.headers.common.Authorization &&
-      token
-    ) {
-      updateExpoPushToken({ expoPushToken });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [expoPushToken, apiClient.defaults.headers.common.Authorization, token]);
-
   const { isLoading: areUserDetailsLoading } = useUserDetails();
 
   const onLayoutRootView = React.useCallback(async () => {

@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
+import { useStoreExpoPushToken } from '@/features/account';
 import type { BillActionStatus } from '@/features/bills';
 import { actionStatusColors } from '@/features/home';
 import {
@@ -85,6 +86,8 @@ export type AppRootStackParamList = {
 export const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
 
 export const AppRootStackNavigator: React.FunctionComponent = () => {
+  useStoreExpoPushToken();
+
   return (
     <AppRootStack.Navigator>
       <AppRootStack.Screen
