@@ -4,7 +4,14 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as React from 'react';
 import type { ISvgProps } from 'svg.types';
 
-import { Box, CraftedLogoSmall, Pressable, Skeleton, Text } from '@/components';
+import {
+  Box,
+  CraftedLogoSmall,
+  Pressable,
+  Skeleton,
+  Text,
+  TouchableOpacity,
+} from '@/components';
 import {
   NewBillSmall as NewBillSmallIcon,
   Overdue as OverdueIcon,
@@ -96,7 +103,7 @@ const ActionStatusButton: React.FunctionComponent<ActionStatusButtonProps> = ({
   }
 
   return (
-    <Pressable
+    <TouchableOpacity
       backgroundColor={actionStatusColors[status]}
       borderRadius="lg"
       disabled={disabled}
@@ -132,7 +139,7 @@ const ActionStatusButton: React.FunctionComponent<ActionStatusButtonProps> = ({
       </Text>
 
       <Icon />
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 
@@ -190,8 +197,21 @@ interface ActionStatusCountsProps {
 export const ActionStatusCounts: React.FunctionComponent<
   ActionStatusCountsProps
 > = ({ navigation }) => {
-  const { data: statusCounts, isLoading: areStatusCountsLoading } =
-    useActionStatusCounts();
+  const {
+    data: statusCounts,
+    refetch: refetchStatusCounts,
+    isStale: areStatusCountsStale,
+    isLoading: areStatusCountsLoading,
+  } = useActionStatusCounts();
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (areStatusCountsStale) refetchStatusCounts();
+    });
+
+    return unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areStatusCountsStale]);
 
   const statusCountsObject = React.useMemo(() => {
     if (!statusCounts || statusCounts.length < 1) return {};

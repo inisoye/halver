@@ -57,7 +57,7 @@ export const NavigationContainer: React.FunctionComponent = () => {
         {!token ? (
           <LoginStackNavigator />
         ) : (!isLoading && isPhoneNumberMissing) ||
-          (isFirstTime && areUserDetailsIncomplete) ? (
+          (isFirstTime && areUserDetailsIncomplete === true) ? (
           <OnboardingStackNavigator />
         ) : (
           <AppRootStackNavigator />

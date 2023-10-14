@@ -81,6 +81,8 @@ export const Home = ({ navigation }: HomeProps) => {
 
   const pendingTodos = allTodos.filter(({ status }) => !status);
 
+  const isOnlyOneTodo = pendingTodos.length === 1;
+
   // Clear old form data to prevent inconsistencies and unforseen issues.
   React.useEffect(() => {
     return () => {
@@ -146,7 +148,11 @@ export const Home = ({ navigation }: HomeProps) => {
                         borderRadius="lg"
                         elevation={1}
                         flexBasis="31%"
+                        flexDirection={isOnlyOneTodo ? 'row' : undefined}
                         flexGrow={1}
+                        justifyContent={
+                          isOnlyOneTodo ? 'space-between' : undefined
+                        }
                         key={name}
                         paddingVertical="3"
                         shadowColor="black"
@@ -160,9 +166,9 @@ export const Home = ({ navigation }: HomeProps) => {
                       >
                         <Box
                           borderBottomColor={`${color}4`}
-                          borderBottomWidth={1}
+                          borderBottomWidth={isOnlyOneTodo ? undefined : 1}
                           gap="2"
-                          paddingBottom="2.5"
+                          paddingBottom={isOnlyOneTodo ? undefined : '2.5'}
                           paddingHorizontal="3"
                         >
                           <Text

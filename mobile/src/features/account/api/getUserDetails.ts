@@ -1,10 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { Alert } from 'react-native';
 import { useMMKVString } from 'react-native-mmkv';
 import { z } from 'zod';
 
-import { apiClient, deleteAxiosDefaultToken } from '@/lib/axios';
+import {
+  apiClient,
+  deleteAxiosDefaultToken,
+  isAPIClientTokenSet,
+} from '@/lib/axios';
 import { allMMKVKeys, storage } from '@/lib/mmkv';
 import { allStaticQueryKeys } from '@/lib/react-query';
 import { CustomUserDetails as UserDetailsSchema } from '@/lib/zod';
@@ -21,17 +25,19 @@ const THROW_OUT_STATUS_CODES = [401, 403];
 
 export const useUserDetails = () => {
   const [token, setToken] = useMMKVString(allMMKVKeys.token);
+  const queryClient = useQueryClient();
 
   return useQuery({
     queryKey: allStaticQueryKeys.getUserDetails,
     queryFn: getUserDetails,
-    enabled: !!token,
+    enabled: !!token && isAPIClientTokenSet(),
     onError: (error: AxiosError) => {
       if (
         error.response &&
         THROW_OUT_STATUS_CODES.includes(error.response?.status)
       ) {
-        deleteAxiosDefaultToken();
+        queryClient.clear();
+        deleteAxiosDefaultToken(apiClient);
         storage.clearAll();
         setToken(undefined);
 
@@ -48,7 +54,6 @@ export const useUserDetails = () => {
         );
       }
     },
-    staleTime: 0, // 10 mins
-    cacheTime: 15 * (60 * 1000), // 15 mins
+    cacheTime: 30 * (60 * 1000), // 15 mins
   });
 };

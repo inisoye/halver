@@ -2,12 +2,7 @@ import * as React from 'react';
 
 import { Box, Image, Text, TouchableOpacity } from '@/components';
 import { EditPhoto } from '@/icons';
-import {
-  getDarkColorFromString,
-  getInitials,
-  getLightColorFromString,
-  useIsDarkModeSelected,
-} from '@/utils';
+import { getInitials, getLightColorFromString } from '@/utils';
 
 interface AccountAvatarButtonProps {
   fullName: string | undefined;
@@ -24,15 +19,11 @@ export const AccountAvatarButton: React.FunctionComponent<AccountAvatarButtonPro
       profileImageUrl,
       handleGoToEditProfileImage,
     }) => {
-      const isDarkMode = useIsDarkModeSelected();
-
       const initials = React.useMemo(() => getInitials(fullName), [fullName]);
 
       const avatarBackground = React.useMemo(() => {
-        return isDarkMode
-          ? getDarkColorFromString(fullName)
-          : getLightColorFromString(fullName);
-      }, [isDarkMode, fullName]);
+        return getLightColorFromString(fullName);
+      }, [fullName]);
 
       return (
         <TouchableOpacity
@@ -68,7 +59,11 @@ export const AccountAvatarButton: React.FunctionComponent<AccountAvatarButtonPro
               style={{ backgroundColor: avatarBackground }}
               width={100}
             >
-              <Text fontFamily="Halver-Semibold" variant="3xl">
+              <Text
+                color="textBlack"
+                fontFamily="Halver-Semibold"
+                variant="3xl"
+              >
                 {initials}
               </Text>
             </Box>

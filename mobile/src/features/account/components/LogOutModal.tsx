@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import * as Haptics from 'expo-haptics';
 import * as React from 'react';
 import { useMMKVString } from 'react-native-mmkv';
@@ -11,17 +12,25 @@ import {
   TouchableOpacity,
 } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
-import { deleteAxiosDefaultToken } from '@/lib/axios';
+import { apiClient, deleteAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys, storage } from '@/lib/mmkv';
+import { navigationRef } from '@/lib/react-navigation';
 import { isAndroid } from '@/utils';
 
 export const LogOutModal: React.FunctionComponent = () => {
   const [_token, setToken] = useMMKVString(allMMKVKeys.token);
 
+  const queryClient = useQueryClient();
+
   const logOut = () => {
-    setToken(undefined);
+    queryClient.clear();
+    deleteAxiosDefaultToken(apiClient);
     storage.clearAll();
-    deleteAxiosDefaultToken();
+    setToken(undefined);
+    navigationRef.resetRoot({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
   };
 
   const {

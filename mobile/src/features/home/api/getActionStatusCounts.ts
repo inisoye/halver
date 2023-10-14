@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { apiClient } from '@/lib/axios';
+import { apiClient, isAPIClientTokenSet } from '@/lib/axios';
 import { allStaticQueryKeys } from '@/lib/react-query';
 import { BillActionStatusCountList } from '@/lib/zod';
 
@@ -13,5 +13,6 @@ export const useActionStatusCounts = () => {
   return useQuery({
     queryKey: allStaticQueryKeys.getActionStatusCounts,
     queryFn: getActionStatusCounts,
+    enabled: isAPIClientTokenSet(),
   });
 };

@@ -9,12 +9,15 @@ export const apiClient = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL,
 });
 
-export const setAxiosDefaultToken = (token: string, _apiClient: AxiosInstance) => {
+export const setAxiosDefaultToken = (
+  token: string,
+  _apiClient: AxiosInstance,
+) => {
   _apiClient.defaults.headers.common.Authorization = `Token ${token}`;
 };
 
-export const deleteAxiosDefaultToken = () => {
-  delete axios.defaults.headers.common.Authorization;
+export const deleteAxiosDefaultToken = (_apiClient: AxiosInstance) => {
+  delete _apiClient.defaults.headers.common.Authorization;
 };
 
 export const isAPIClientTokenSet = () =>
