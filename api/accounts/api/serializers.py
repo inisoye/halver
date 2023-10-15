@@ -1,6 +1,7 @@
 # Configuration inspired by this guide:
 # https://www.rootstrap.com/blog/registration-and-authentication-in-django-apps-with-dj-rest-auth/
 
+from dj_rest_auth.models import TokenModel
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from django.contrib.auth import get_user_model
 from django.db import transaction
@@ -111,6 +112,18 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
             "date_joined",
             "uuid",
         )
+
+
+class CustomTokenSerializer(serializers.ModelSerializer):
+    """
+    Custom serializer for overiding default dj-rest-auth TokenSerializer.
+    """
+
+    user = CustomUserDetailsSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = TokenModel
+        fields = ("key", "user")
 
 
 class ProfileImageSerializer(serializers.Serializer):

@@ -340,6 +340,7 @@ SOCIALACCOUNT_PROVIDERS = {
 REST_AUTH = {
     "USER_DETAILS_SERIALIZER": "accounts.api.serializers.CustomUserDetailsSerializer",
     "REGISTER_SERIALIZER": "accounts.api.serializers.CustomRegisterSerializer",
+    "TOKEN_SERIALIZER": "accounts.api.serializers.CustomTokenSerializer",
 }
 
 
