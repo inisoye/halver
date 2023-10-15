@@ -223,7 +223,7 @@ export const Home = ({ navigation }: HomeProps) => {
 
               <Button
                 backgroundColor="buttonCasal"
-                hitSlop={100}
+                hitSlop={5}
                 marginTop="16"
                 variant="sm"
                 onPress={() => {
@@ -235,7 +235,7 @@ export const Home = ({ navigation }: HomeProps) => {
                   fontFamily="Halver-Semibold"
                   variant="sm"
                 >
-                  Get started
+                  Proceed
                 </Text>
               </Button>
             </Box>
