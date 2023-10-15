@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as React from 'react';
@@ -8,6 +9,7 @@ import { Button, FullScreenLoader, Text } from '@/components';
 import { Apple as AppleIcon } from '@/icons';
 import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys } from '@/lib/mmkv';
+import { allStaticQueryKeys } from '@/lib/react-query';
 import { allSecureStoreKeys, saveToSecureStore } from '@/lib/secure-store';
 import { handleAxiosErrorAlertAndHaptics, isIOS } from '@/utils';
 
@@ -24,6 +26,8 @@ export const AppleLoginButton: React.FunctionComponent = () => {
   const { mutate: postAppleLogin, isLoading: isAppleLoginLoading } =
     usePostAppleLogin();
   const [_, setToken] = useMMKVString(allMMKVKeys.token);
+
+  const queryClient = useQueryClient();
 
   const handlePress = async () => {
     try {
@@ -49,7 +53,8 @@ export const AppleLoginButton: React.FunctionComponent = () => {
       };
 
       postAppleLogin(socialLoginPayload, {
-        onSuccess: ({ key }) => {
+        onSuccess: ({ key, user }) => {
+          queryClient.setQueryData(allStaticQueryKeys.getUserDetails, user);
           setToken(key);
           setAxiosDefaultToken(key, apiClient);
         },

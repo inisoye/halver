@@ -8,6 +8,7 @@ import {
 } from '@/lib/zod';
 
 export type SocialLoginPayload = z.infer<typeof SocialLoginSchema>;
+export type SocialLoginResponse = z.infer<typeof TokenSchema>;
 
 export const postGoogleLogin = async (
   lotteryPaymentDto: SocialLoginPayload,
@@ -16,7 +17,7 @@ export const postGoogleLogin = async (
     '/dj-rest-auth/google/',
     lotteryPaymentDto,
   );
-  return TokenSchema.parse(response.data);
+  return response.data as SocialLoginResponse;
 };
 
 export const usePostGoogleLogin = () => {
@@ -30,7 +31,7 @@ export const postAppleLogin = async (lotteryPaymentDto: SocialLoginPayload) => {
     '/dj-rest-auth/apple/',
     lotteryPaymentDto,
   );
-  return TokenSchema.parse(response.data);
+  return response.data as SocialLoginResponse;
 };
 
 export const usePostAppleLogin = () => {

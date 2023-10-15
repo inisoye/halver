@@ -127,7 +127,7 @@ export const Home = ({ navigation }: HomeProps) => {
                 marginBottom="3"
                 variant="xl"
               >
-                Todos
+                Still to be done
               </DynamicText>
 
               <Box

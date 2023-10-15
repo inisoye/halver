@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import * as Google from 'expo-auth-session/providers/google';
 import Constants from 'expo-constants';
@@ -10,6 +11,7 @@ import { Button, FullScreenLoader, Text } from '@/components';
 import { Google as GoogleIcon } from '@/icons';
 import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys } from '@/lib/mmkv';
+import { allStaticQueryKeys } from '@/lib/react-query';
 import { handleAxiosErrorAlertAndHaptics, isIOS } from '@/utils';
 
 import { usePostGoogleLogin, type SocialLoginPayload } from '../api';
@@ -43,9 +45,12 @@ export const GoogleLoginButton: React.FunctionComponent = () => {
     idToken: undefined,
   };
 
+  const queryClient = useQueryClient();
+
   const handleGoogleLogin = async () => {
     postGoogleLogin(socialLoginPayload, {
-      onSuccess: ({ key }) => {
+      onSuccess: ({ key, user }) => {
+        queryClient.setQueryData(allStaticQueryKeys.getUserDetails, user);
         setToken(key);
         setAxiosDefaultToken(key, apiClient);
       },

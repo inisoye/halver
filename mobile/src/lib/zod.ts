@@ -359,8 +359,6 @@ export const Login = z.object({
   password: z.string(),
 });
 
-export const Token = z.object({ key: z.string().max(40) });
-
 export const RestAuthDetail = z.object({ detail: z.string() });
 
 export const PasswordChange = z.object({
@@ -435,6 +433,11 @@ export const CustomUserDetails = z.object({
     .max(150)
     .regex(/^[\w.@+-]+$/),
   uuid: z.string().uuid(),
+});
+
+export const Token = z.object({
+  key: z.string().max(40),
+  user: CustomUserDetails,
 });
 
 export const PaystackAccountNumberCheck = z.object({
