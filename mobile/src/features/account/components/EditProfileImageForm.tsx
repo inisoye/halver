@@ -1,5 +1,5 @@
 import type { AxiosError } from 'axios';
-import * as FaceDetector from 'expo-face-detector';
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import * as React from 'react';
 import { FadeInDown } from 'react-native-reanimated';
@@ -17,10 +17,7 @@ import {
 import { ProfileImage as ProfileImageIcon, UserFolder } from '@/icons';
 import { showToast } from '@/lib/root-toast';
 import { marginAutoStyles } from '@/theme';
-import {
-  handleAxiosErrorAlertAndHaptics,
-  handleGenericErrorAlertAndHaptics,
-} from '@/utils';
+import { handleAxiosErrorAlertAndHaptics } from '@/utils';
 
 import { useUpdateProfileImage } from '../api';
 
@@ -47,36 +44,6 @@ const createFormData = (
   return data;
 };
 
-const detectAndReturnFaces = async (imageUri: string | undefined) => {
-  if (!imageUri) {
-    return;
-  }
-
-  const detectionResult = await FaceDetector.detectFacesAsync(imageUri);
-
-  const facesDetected = detectionResult.faces;
-  const isThereAFace = !!facesDetected && facesDetected.length > 0;
-  const areThereMultipleFaces = facesDetected.length > 1;
-
-  if (!isThereAFace) {
-    handleGenericErrorAlertAndHaptics(
-      'No faces detected',
-      'Please select another photo where your face is in focus.',
-    );
-    return;
-  }
-
-  if (areThereMultipleFaces) {
-    handleGenericErrorAlertAndHaptics(
-      'Multiple people found',
-      'Profile images should show only the owner of the profile.',
-    );
-    return;
-  }
-
-  return facesDetected;
-};
-
 interface EditProfileImageFormProps {
   isOnboarding?: boolean;
   onComplete?: () => void;
@@ -94,17 +61,36 @@ export const EditProfileImageForm: React.FunctionComponent<
   const imageUri = image?.uri;
 
   const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync();
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+    });
 
     if (!result.canceled) {
-      setImage(result.assets[0]);
+      const originalImage = result.assets[0];
+
+      const manipResult = await manipulateAsync(
+        originalImage.uri,
+        [
+          {
+            resize: {
+              height: 500,
+              width: 500,
+            },
+          },
+        ],
+        {
+          compress: 0,
+          format: SaveFormat.PNG,
+        },
+      );
+
+      setImage(manipResult);
     }
   };
 
-  const handleUpload = async () => {
-    const facesDetected = await detectAndReturnFaces(imageUri);
-
-    if (facesDetected && !!image) {
+  const handleUpload = () => {
+    if (image) {
       const formData = createFormData('profile_image', image);
 
       updateProfileImage(formData, {
