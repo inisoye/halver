@@ -1,9 +1,10 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
-import { useStoreExpoPushToken } from '@/features/account';
+import { useStoreExpoPushToken, useUserDetails } from '@/features/account';
 import type { BillActionStatus } from '@/features/bills';
 import { actionStatusColors } from '@/features/home';
+import { useFullScreenLoader } from '@/hooks';
 import {
   AddCard,
   AddTransferRecipient,
@@ -85,7 +86,25 @@ export type AppRootStackParamList = {
 
 export const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
 
+const useGatheringDetailsLoader = () => {
+  const { isLoading, isFetching } = useUserDetails();
+
+  const areUserDetailsLoading = isLoading && isFetching;
+
+  const { closeModal: closeGatheringDetailsModal } = useFullScreenLoader({
+    isLoading: areUserDetailsLoading,
+    message: 'Gathering your details...',
+  });
+
+  React.useEffect(() => {
+    if (!areUserDetailsLoading) closeGatheringDetailsModal();
+
+    return () => closeGatheringDetailsModal();
+  }, [areUserDetailsLoading]); // eslint-disable-line react-hooks/exhaustive-deps
+};
+
 export const AppRootStackNavigator: React.FunctionComponent = () => {
+  useGatheringDetailsLoader();
   useStoreExpoPushToken();
 
   return (

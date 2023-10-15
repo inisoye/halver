@@ -12,7 +12,7 @@ import {
   checkIfUserDetailsAreIncomplete,
   useUserDetails,
 } from '@/features/account';
-import { useFullScreenLoader, useIsFirstTime } from '@/hooks';
+import { useIsFirstTime } from '@/hooks';
 import { apiClient, setAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys } from '@/lib/mmkv';
 import { navigationRef } from '@/lib/react-navigation';
@@ -28,25 +28,17 @@ export const NavigationContainer: React.FunctionComponent = () => {
   const [token] = useMMKVString(allMMKVKeys.token);
   const [isFirstTime] = useIsFirstTime();
 
-  const { data: userDetails, isLoading, isFetching } = useUserDetails();
+  const { data: userDetails, isLoading } = useUserDetails();
   const isDarkMode = useIsDarkModeSelected();
 
   useFlipper(navigationRef);
 
   React.useEffect(() => {
-    if (token) {
-      setAxiosDefaultToken(token, apiClient);
-    }
+    if (token) setAxiosDefaultToken(token, apiClient);
   }, [token]);
 
-  const areUserDetailsLoading = isLoading && isFetching;
   const isPhoneNumberMissing = !userDetails?.phone;
   const areUserDetailsIncomplete = checkIfUserDetailsAreIncomplete(userDetails);
-
-  useFullScreenLoader({
-    isLoading: areUserDetailsLoading,
-    message: 'Gathering your details...',
-  });
 
   return (
     <Box backgroundColor="background" flex={1}>

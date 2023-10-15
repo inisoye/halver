@@ -20,13 +20,13 @@ export const useFullScreenLoader = ({
         openModal('LoaderModal', { message: message });
       }, 100);
     } else {
-      timeoutId = setTimeout(() => {
-        closeModal();
-      }, 100);
+      closeModal();
     }
 
     return () => {
       clearTimeout(timeoutId);
     };
   }, [isLoading]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return { closeModal };
 };

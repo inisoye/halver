@@ -12,7 +12,9 @@ interface ProvidersProps {
   children: React.ReactNode;
 }
 
-export const Providers: React.FunctionComponent<ProvidersProps> = ({ children }) => {
+export const Providers: React.FunctionComponent<ProvidersProps> = ({
+  children,
+}) => {
   return (
     <SafeAreaProvider>
       <RestyleProvider>

@@ -55,7 +55,7 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
   const { mutate: createBill, isLoading: isCreateBillLoading } =
     useCreateBill();
 
-  useFullScreenLoader({
+  const { closeModal: closeCreateBillLoader } = useFullScreenLoader({
     isLoading: isCreateBillLoading,
     message: 'Creating your bill...',
   });
@@ -144,6 +144,7 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
     createBill(finalBillPayload, {
       onSuccess: ({ uuid, name }) => {
         setCreatedBill({ id: uuid, name });
+        closeCreateBillLoader();
         setTimeout(() => {
           openSuccessModal();
         }, 250);
