@@ -10,3 +10,4 @@ export * from './useKeyboardStickyButtonAnimation';
 export * from './useNotificationsSetup';
 export * from './useRefreshOnFocus';
 export * from './useThrottle';
+export * from './useAreNotificationsEnabled';

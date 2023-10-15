@@ -6,6 +6,8 @@ import * as React from 'react';
 import { navigateWithoutNavigationProp } from '@/lib/react-navigation';
 import { isAndroid } from '@/utils';
 
+import { useAreNotificationsEnabled } from './useAreNotificationsEnabled';
+
 /**
  * Asynchronously registers the application for push notifications and retrieves the device's push token.
  * This function also sets a notification channel on Android if the device is running Android.
@@ -35,7 +37,7 @@ async function registerForPushNotificationsAsync() {
     }
 
     if (finalStatus !== 'granted') {
-      return; // Add notification here: 'Failed to get push token for push notification!'
+      return null; // Add notification here: 'Failed to get push token for push notification!'
     }
 
     token = (
@@ -54,9 +56,11 @@ async function registerForPushNotificationsAsync() {
  * @returns An object containing the expoPushToken and notification state.
  */
 export const useNotificationsSetup = () => {
-  const [expoPushToken, setExpoPushToken] = React.useState<string | undefined>(
-    '',
-  );
+  const { data: areNotificationsEnabled } = useAreNotificationsEnabled();
+
+  const [expoPushToken, setExpoPushToken] = React.useState<
+    string | undefined | null
+  >(undefined);
   const [notification, setNotification] = React.useState<
     Notifications.Notification | undefined
   >(undefined);
@@ -67,8 +71,12 @@ export const useNotificationsSetup = () => {
     Notifications.Subscription | undefined
   >();
 
-  React.useEffect(() => {
+  const registerAndSetToken = React.useCallback(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+  }, []);
+
+  React.useEffect(() => {
+    registerAndSetToken();
 
     notificationListener.current =
       Notifications.addNotificationReceivedListener(notificationResponse => {
@@ -102,10 +110,11 @@ export const useNotificationsSetup = () => {
       if (responseListener.current)
         Notifications.removeNotificationSubscription(responseListener.current);
     };
-  }, []);
+  }, [registerAndSetToken, areNotificationsEnabled]);
 
   return {
     expoPushToken,
     notification,
+    registerAndSetToken,
   };
 };

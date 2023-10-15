@@ -1,6 +1,6 @@
 import { createNavigationContainerRef } from '@react-navigation/native';
 
-import {
+import type {
   AccountStackParamList,
   AppRootStackParamList,
   BillsStackParamList,

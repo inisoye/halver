@@ -42,7 +42,7 @@ export const useUpdateExpoPushToken = () => {
 export const useStoreExpoPushToken = () => {
   const [token] = useMMKVString(allMMKVKeys.token);
 
-  const { expoPushToken } = useNotificationsSetup();
+  const { expoPushToken, registerAndSetToken } = useNotificationsSetup();
 
   const { mutate: storeExpoPushToken } = useUpdateExpoPushToken();
 
@@ -57,4 +57,6 @@ export const useStoreExpoPushToken = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expoPushToken, apiClient.defaults.headers.common.Authorization, token]);
+
+  return { expoPushToken, registerAndSetToken };
 };

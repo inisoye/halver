@@ -65,6 +65,7 @@ onlineManager.setEventListener(setOnline => {
  * Centralize all query keys here.
  */
 export const allStaticQueryKeys = {
+  checkIfNotificationsEnabled: ['check-if-notifications-enabled'],
   getActionStatusCounts: ['action-status-counts'],
   getBanks: ['banks'],
   getBill: ['bill'],

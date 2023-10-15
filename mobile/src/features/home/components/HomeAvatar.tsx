@@ -3,26 +3,16 @@ import * as React from 'react';
 import { Box, Image, Text, TouchableOpacity } from '@/components';
 import { useUserDetails } from '@/features/account';
 import { navigateWithoutNavigationProp } from '@/lib/react-navigation';
-import {
-  getDarkColorFromString,
-  getInitials,
-  getLightColorFromString,
-  useIsDarkModeSelected,
-} from '@/utils';
+import { getInitials, getLightColorFromString } from '@/utils';
 
 export const HomeAvatar = () => {
   const { data: userDetails } = useUserDetails();
 
   const { fullName, profileImageHash, profileImageUrl } = userDetails || {};
 
-  const isDarkMode = useIsDarkModeSelected();
-
   const initials = getInitials(fullName);
 
-  const avatarBackground = isDarkMode
-    ? getLightColorFromString(fullName)
-    : getDarkColorFromString(fullName);
-
+  const avatarBackground = getLightColorFromString(fullName);
   const hasImage = !!profileImageUrl;
 
   const goToAccountScreen = () => {
@@ -65,7 +55,7 @@ export const HomeAvatar = () => {
           width={28}
         >
           <Text
-            color="textInverse"
+            color="textBlack"
             fontFamily="Halver-Semibold"
             opacity={0.85}
             variant="sm"
