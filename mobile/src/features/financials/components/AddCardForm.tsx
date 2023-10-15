@@ -9,7 +9,6 @@ import {
   PaddedScreenHeader,
   Screen,
   Text,
-  TouchableOpacity,
 } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { allStaticQueryKeys } from '@/lib/react-query';
@@ -84,9 +83,11 @@ export const AddCardForm: React.FunctionComponent<AddCardFormProps> =
           <Box flex={1}>
             {isOnboarding && (
               <PaddedScreenHeader
+                handleSkip={onComplete}
                 heading="We also need your card"
+                step="Step 3/4"
                 subHeading="You'll use this to make contributions on Halver."
-                hasExtraPadding
+                isSkippable
               />
             )}
 
@@ -115,23 +116,6 @@ export const AddCardForm: React.FunctionComponent<AddCardFormProps> =
                 trying again.
               </Text>
             </Box>
-
-            {isOnboarding && (
-              <TouchableOpacity
-                marginLeft="auto"
-                marginRight="6"
-                marginTop="7"
-                onPress={onComplete}
-              >
-                <Text
-                  color="textLight"
-                  textDecorationLine="underline"
-                  variant="sm"
-                >
-                  I'll do this later
-                </Text>
-              </TouchableOpacity>
-            )}
 
             <DynamicText
               color="textLight"

@@ -17,7 +17,6 @@ import {
   TextField,
   TextFieldError,
   TextFieldLabel,
-  TouchableOpacity,
 } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { showToast } from '@/lib/root-toast';
@@ -147,9 +146,11 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
           <ScrollView keyboardShouldPersistTaps="handled">
             {isOnboarding && (
               <PaddedScreenHeader
+                handleSkip={onComplete}
                 heading="Your bank account details"
+                step="Step 2/4"
                 subHeading="This will be where you'll get paid on Halver. We call them transfer recipients. You can always change your default or add more later."
-                hasExtraPadding
+                isSkippable
               />
             )}
 
@@ -207,22 +208,6 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
                   />
                 )}
               </View>
-
-              {isOnboarding && (
-                <TouchableOpacity
-                  marginLeft="auto"
-                  marginTop="4"
-                  onPress={onComplete}
-                >
-                  <Text
-                    color="textLight"
-                    textDecorationLine="underline"
-                    variant="sm"
-                  >
-                    I'll do this later
-                  </Text>
-                </TouchableOpacity>
-              )}
             </Box>
           </ScrollView>
 

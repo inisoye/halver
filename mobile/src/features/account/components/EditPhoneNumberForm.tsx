@@ -100,8 +100,8 @@ export const EditPhoneNumberForm: React.FunctionComponent<
           {isOnboarding && (
             <PaddedScreenHeader
               heading="What's your phone number?"
+              step="Step 1/4"
               subHeading="Use a number your friends have. It'll help them find you easily on Halver."
-              hasExtraPadding
             />
           )}
 
