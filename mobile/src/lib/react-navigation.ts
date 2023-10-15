@@ -1,9 +1,26 @@
 import { createNavigationContainerRef } from '@react-navigation/native';
 
-import { AppRootStackParamList } from '@/navigation';
+import {
+  AccountStackParamList,
+  AppRootStackParamList,
+  BillsStackParamList,
+  FinancialsStackParamList,
+  HomeStackParamList,
+  LoginStackParamList,
+  OnboardingStackParamList,
+  TabParamList,
+} from '@/navigation';
 
-export const navigationRef =
-  createNavigationContainerRef<AppRootStackParamList>();
+type AllRoutes = AppRootStackParamList &
+  TabParamList &
+  AccountStackParamList &
+  BillsStackParamList &
+  FinancialsStackParamList &
+  HomeStackParamList &
+  LoginStackParamList &
+  OnboardingStackParamList;
+
+export const navigationRef = createNavigationContainerRef<AllRoutes>();
 
 /**
  * Navigate to a specific route in the application.
@@ -13,14 +30,12 @@ export const navigationRef =
  * https://stackoverflow.com/a/74859742
  */
 export function navigateWithoutNavigationProp<
-  RouteName extends keyof AppRootStackParamList,
+  RouteName extends keyof AllRoutes,
 >(
   ...args: RouteName extends unknown
-    ? undefined extends AppRootStackParamList[RouteName]
-      ?
-          | [screen: RouteName]
-          | [screen: RouteName, params: AppRootStackParamList[RouteName]]
-      : [screen: RouteName, params: AppRootStackParamList[RouteName]]
+    ? undefined extends AllRoutes[RouteName]
+      ? [screen: RouteName] | [screen: RouteName, params: AllRoutes[RouteName]]
+      : [screen: RouteName, params: AllRoutes[RouteName]]
     : never
 ) {
   if (navigationRef.isReady()) {

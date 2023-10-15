@@ -41,10 +41,22 @@ interface BillListRenderItemProps {
   item: BillActionStatusItem | undefined;
   index: number;
   navigation: CompositeNavigationProp<
-    NativeStackNavigationProp<AppRootStackParamList, 'Bills by status', undefined>,
+    NativeStackNavigationProp<
+      AppRootStackParamList,
+      'Bills by status',
+      undefined
+    >,
     CompositeNavigationProp<
-      NativeStackNavigationProp<BillsStackParamList, 'Bills by status', undefined>,
-      NativeStackNavigationProp<HomeStackParamList, 'Bills by status', undefined>
+      NativeStackNavigationProp<
+        BillsStackParamList,
+        'Bills by status',
+        undefined
+      >,
+      NativeStackNavigationProp<
+        HomeStackParamList,
+        'Bills by status',
+        undefined
+      >
     >
   >;
   isLastItem: boolean;
@@ -86,7 +98,11 @@ const BillListRenderItem: React.FunctionComponent<BillListRenderItemProps> = ({
       >
         <Box alignItems="center" flexDirection="row" gap="3">
           <Box width="90%">
-            <Text fontFamily="Halver-Semibold" marginBottom="0.75" numberOfLines={1}>
+            <Text
+              fontFamily="Halver-Semibold"
+              marginBottom="0.75"
+              numberOfLines={1}
+            >
               {item?.bill.name}
             </Text>
 

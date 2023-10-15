@@ -18,6 +18,7 @@ import { useUserDetails } from '@/features/account';
 import { useInfiniteUserTransactions } from '@/features/financials';
 import {
   ActionStatusCounts,
+  HomeAvatar,
   RecentTransactions,
   useActionStatusCounts,
 } from '@/features/home';
@@ -115,7 +116,7 @@ export const Home = ({ navigation }: HomeProps) => {
   }, [areActionStatusCountsStale, areTransactionsStale]);
 
   return (
-    <Screen hasNoIOSBottomInset>
+    <Screen headerRightComponent={<HomeAvatar />} hasNoIOSBottomInset>
       <ScrollView>
         <Box flex={1} paddingHorizontal="6" paddingVertical="2">
           <ActionStatusCounts navigation={navigation} />
