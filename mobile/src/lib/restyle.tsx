@@ -539,7 +539,7 @@ const theme = createTheme({
     modalBackground: lightColors.gray2,
     modalElementBackground: lightColors.gray4,
     modalOverlay: lightColors.grayA10,
-    modalFilterContainerBorder: lightColors.gray7,
+    modalFilterContainerBorder: lightColors.gray5,
 
     successModalBackground: lightColors.green3,
     successModalHeadingBackground: lightColors.green1,

@@ -42,7 +42,9 @@ export const SuccessModal: React.FunctionComponent<AlertModalProps> = ({
           gap="4"
           justifyContent="space-between"
           paddingVertical="4"
-          style={[{ marginTop: isIOS() ? Constants.statusBarHeight : undefined }]}
+          style={[
+            { marginTop: isIOS() ? Constants.statusBarHeight : undefined },
+          ]}
         >
           <Box marginLeft="6" maxWidth="65%" width="100%">
             <Text

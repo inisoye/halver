@@ -37,7 +37,7 @@ export const SMSHandler: React.FunctionComponent<SMSHandlerProps> = ({
   return (
     isSMSAvailable && (
       <Button
-        backgroundColor="green8"
+        backgroundColor="green11"
         flex={1}
         paddingLeft="4"
         paddingRight="4"
@@ -49,11 +49,11 @@ export const SMSHandler: React.FunctionComponent<SMSHandlerProps> = ({
           justifyContent="space-between"
           width="100%"
         >
-          <Text color="green12" fontFamily="Halver-Semibold">
+          <Text color="green2" fontFamily="Halver-Semibold">
             SMS
           </Text>
 
-          <GoToArrow />
+          <GoToArrow color="textInverse" />
         </Box>
       </Button>
     )

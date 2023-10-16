@@ -379,9 +379,7 @@ export const BillSummary: React.FunctionComponent<BillSummaryProps> = ({
 
             <Box flexDirection="row" gap="3" marginBottom="3">
               <Button
-                backgroundColor={
-                  areThereUnregisteredParticipants ? 'green6' : 'green5'
-                }
+                backgroundColor="green6"
                 flex={1}
                 paddingLeft="4"
                 paddingRight="4"

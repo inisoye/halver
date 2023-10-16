@@ -26,14 +26,22 @@ interface SelectedTransactionModalProps {
   selectedTransaction: BillTransaction | undefined;
   navigation:
     | CompositeNavigationProp<
-        NativeStackNavigationProp<AppRootStackParamList, 'Transactions', undefined>,
+        NativeStackNavigationProp<
+          AppRootStackParamList,
+          'Transactions',
+          undefined
+        >,
         CompositeNavigationProp<
           NativeStackNavigationProp<
             FinancialsStackParamList,
             'Transactions',
             undefined
           >,
-          NativeStackNavigationProp<HomeStackParamList, 'Transactions', undefined>
+          NativeStackNavigationProp<
+            HomeStackParamList,
+            'Transactions',
+            undefined
+          >
         >
       >
     | CompositeNavigationProp<
@@ -67,18 +75,34 @@ interface SelectedTransactionModalProps {
             'Bill transactions',
             undefined
           >,
-          NativeStackNavigationProp<HomeStackParamList, 'Bill transactions', undefined>
+          NativeStackNavigationProp<
+            HomeStackParamList,
+            'Bill transactions',
+            undefined
+          >
         >
       >;
 }
 
 export const SelectedTransactionModal: React.FunctionComponent<SelectedTransactionModalProps> =
   React.memo(
-    ({ closeModal, isModalOpen, selectedTransaction, navigation, isBack = false }) => {
+    ({
+      closeModal,
+      isModalOpen,
+      selectedTransaction,
+      navigation,
+      isBack = false,
+    }) => {
       const isDarkMode = useIsDarkModeSelected();
 
-      const { bill, created, contribution, totalPayment, payingUser, receivingUser } =
-        selectedTransaction || {};
+      const {
+        bill,
+        created,
+        contribution,
+        totalPayment,
+        payingUser,
+        receivingUser,
+      } = selectedTransaction || {};
       const { name: billName, uuid: billId } = bill || {};
 
       const handleGoToBill = () => {
@@ -195,7 +219,11 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
                   Bill name
                 </Text>
 
-                <Text fontFamily="Halver-Semibold" numberOfLines={1} variant="sm">
+                <Text
+                  fontFamily="Halver-Semibold"
+                  numberOfLines={1}
+                  variant="sm"
+                >
                   {billName}
                 </Text>
               </Box>
@@ -210,7 +238,11 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
                   Completed on
                 </Text>
 
-                <Text fontFamily="Halver-Semibold" numberOfLines={1} variant="sm">
+                <Text
+                  fontFamily="Halver-Semibold"
+                  numberOfLines={1}
+                  variant="sm"
+                >
                   {created ? new Date(created).toDateString() : 'Not recorded'}
                 </Text>
               </Box>
@@ -225,12 +257,20 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
                   Amount
                 </Text>
 
-                <Text fontFamily="Halver-Semibold" numberOfLines={1} variant="sm">
+                <Text
+                  fontFamily="Halver-Semibold"
+                  numberOfLines={1}
+                  variant="sm"
+                >
                   {!!contribution && convertNumberToNaira(Number(contribution))}
                 </Text>
               </Box>
 
-              <Box opacity={'accountName' ? 1 : 0.5} paddingVertical="2" width="46%">
+              <Box
+                opacity={'accountName' ? 1 : 0.5}
+                paddingVertical="2"
+                width="46%"
+              >
                 <Text
                   color="textLight"
                   marginBottom="0.75"
@@ -250,7 +290,11 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
                 </Text>
               </Box>
 
-              <Box opacity={'accountName' ? 1 : 0.5} paddingVertical="2" width="46%">
+              <Box
+                opacity={'accountName' ? 1 : 0.5}
+                paddingVertical="2"
+                width="46%"
+              >
                 <Text
                   color="textLight"
                   marginBottom="0.75"
@@ -270,7 +314,11 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
                 </Text>
               </Box>
 
-              <Box opacity={'accountName' ? 1 : 0.5} paddingVertical="2" width="46%">
+              <Box
+                opacity={'accountName' ? 1 : 0.5}
+                paddingVertical="2"
+                width="46%"
+              >
                 <Text
                   color="textLight"
                   marginBottom="0.75"
@@ -291,7 +339,12 @@ export const SelectedTransactionModal: React.FunctionComponent<SelectedTransacti
               </Box>
             </Box>
 
-            <Box flexDirection="row" gap="3" marginBottom="3" paddingHorizontal="6">
+            <Box
+              flexDirection="row"
+              gap="3"
+              marginBottom="3"
+              paddingHorizontal="6"
+            >
               <Button backgroundColor="buttonCasal" onPress={handleGoToBill}>
                 <Box
                   flexDirection="row"

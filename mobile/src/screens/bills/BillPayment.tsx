@@ -394,7 +394,7 @@ export const BillPayment = ({ navigation, route }: BillPaymentProps) => {
                   gap="4"
                   width="100%"
                 >
-                  <GoBackArrow isLight />
+                  <GoBackArrow />
 
                   <Text color="green12" fontFamily="Halver-Semibold">
                     Go back to bill
