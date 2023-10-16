@@ -88,7 +88,7 @@ def create_bill(bill_model, validated_data, creator):
                 "message": (
                     f"You have been invited by {creator.full_name} to"
                     f" contribute{' ₦' + add_commas_to_amount(participants_contribution_index.get(str(participant.uuid)), decimal_places=2) if participants_contribution_index.get(str(participant.uuid)) is not None else ''} towards"  # noqa E501
-                    f" a bill called {new_bill.name})."
+                    f" a bill called {new_bill.name}."
                 ),
                 "extra": {
                     "action": "open-bill",
