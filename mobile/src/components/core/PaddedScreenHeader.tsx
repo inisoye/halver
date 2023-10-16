@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import { useUserDetails } from '@/features/account/api';
+import { checkAnyUserDetailsHaveBeenAdded } from '@/features/account/utils';
+
 import { Box } from './Box';
 import { Text } from './Text';
 import { TouchableOpacity } from './TouchableOpacity';
@@ -15,14 +18,19 @@ interface PaddedScreenHeaderProps {
 export const PaddedScreenHeader: React.FunctionComponent<
   PaddedScreenHeaderProps
 > = ({ heading, subHeading, isSkippable = false, handleSkip, step }) => {
+  const { data: userDetails } = useUserDetails();
+
+  const isAnyDetailComplete = checkAnyUserDetailsHaveBeenAdded(userDetails);
+
   return (
     <Box gap="10" paddingBottom="2" paddingHorizontal="6" paddingTop="6">
       <Box flexDirection="row">
-        {!!step && (
-          <Text color="textLight" variant="sm">
-            {step}
-          </Text>
-        )}
+        {!!step &&
+          !isAnyDetailComplete && ( // Hide if any data has been added already.
+            <Text color="textLight" variant="sm">
+              {step}
+            </Text>
+          )}
 
         {isSkippable && (
           <TouchableOpacity marginLeft="auto" onPress={handleSkip}>

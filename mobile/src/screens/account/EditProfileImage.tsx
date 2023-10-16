@@ -9,11 +9,11 @@ type EditProfileImageProps = NativeStackScreenProps<
   'Edit profile image'
 >;
 
-export const EditProfileImage: React.FunctionComponent<EditProfileImageProps> = ({
-  navigation,
-}) => {
+export const EditProfileImage: React.FunctionComponent<
+  EditProfileImageProps
+> = ({ navigation }) => {
   const handleGoToAccount = () => {
-    navigation.navigate('Account');
+    navigation.goBack();
   };
 
   return <EditProfileImageForm onComplete={handleGoToAccount} />;
