@@ -4,7 +4,9 @@ import { apiClient } from '@/lib/axios';
 import { allStaticQueryKeys } from '@/lib/react-query';
 
 export const cancelBillSubcscription = async ({ id }: { id: string }) => {
-  const response = await apiClient.patch(`/bills/actions/${id}/subscription/cancel/`);
+  const response = await apiClient.patch(
+    `/bills/actions/${id}/subscription/cancel/`,
+  );
   return response.data;
 };
 

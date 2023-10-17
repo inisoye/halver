@@ -13,7 +13,9 @@ export type BillListItem = z.infer<typeof BillListSchema>;
 export type PaginatedBillList = z.infer<typeof PaginatedBillListSchema>;
 
 export const getBills = async ({ search, pageParam }: FetchOptions) => {
-  const response = await apiClient.get(`/bills/?search=${search}&page=${pageParam}`);
+  const response = await apiClient.get(
+    `/bills/?search=${search}&page=${pageParam}`,
+  );
   return response.data as PaginatedBillList;
 };
 

@@ -7,7 +7,9 @@ import { Theme } from '@/lib/restyle';
 
 type SearchProps = ISvgProps;
 
-export const SmallSearch: React.FunctionComponent<SearchProps> = ({ ...props }) => {
+export const SmallSearch: React.FunctionComponent<SearchProps> = ({
+  ...props
+}) => {
   const { colors } = useTheme<Theme>();
 
   return (

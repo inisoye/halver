@@ -7,7 +7,9 @@ import { Theme } from '@/lib/restyle';
 
 type SelectTickProps = ISvgProps;
 
-export const SelectTick: React.FunctionComponent<SelectTickProps> = ({ ...props }) => {
+export const SelectTick: React.FunctionComponent<SelectTickProps> = ({
+  ...props
+}) => {
   const { colors } = useTheme<Theme>();
 
   return (

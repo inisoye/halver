@@ -1,6 +1,7 @@
 import { BillCreationMMKVPayload } from '../../bills/types/bills';
 
-export type RegisteredParticipants = BillCreationMMKVPayload['registeredParticipants'];
+export type RegisteredParticipants =
+  BillCreationMMKVPayload['registeredParticipants'];
 export type DefinedRegisteredParticipant = Exclude<
   RegisteredParticipants,
   undefined

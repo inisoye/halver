@@ -88,7 +88,11 @@ export const TransferRecipientItem: React.FunctionComponent<TransferRecipientIte
                 justifyContent="center"
                 width={24}
               >
-                <Text color="textBlack" fontFamily="Halver-Semibold" variant="sm">
+                <Text
+                  color="textBlack"
+                  fontFamily="Halver-Semibold"
+                  variant="sm"
+                >
                   {initials}
                 </Text>
               </Box>
@@ -96,15 +100,28 @@ export const TransferRecipientItem: React.FunctionComponent<TransferRecipientIte
           </Box>
 
           {isDefault && (
-            <Box backgroundColor="defaultItemTagBg" borderRadius="base" px="2" py="1">
-              <DynamicText color="textWhite" fontFamily="Halver-Semibold" variant="xxs">
+            <Box
+              backgroundColor="defaultItemTagBg"
+              borderRadius="base"
+              px="2"
+              py="1"
+            >
+              <DynamicText
+                color="textWhite"
+                fontFamily="Halver-Semibold"
+                variant="xxs"
+              >
                 Default
               </DynamicText>
             </Box>
           )}
         </Box>
 
-        <DynamicText fontFamily="Halver-Semibold" marginBottom="1" numberOfLines={1}>
+        <DynamicText
+          fontFamily="Halver-Semibold"
+          marginBottom="1"
+          numberOfLines={1}
+        >
           {!!bankName && bankName}
         </DynamicText>
 

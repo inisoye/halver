@@ -10,7 +10,9 @@ import {
 import type { FetchOptions } from '@/types';
 
 export type BillDailyContribution = z.infer<typeof BillDailyContributionSchema>;
-export type BillDailyContributionList = z.infer<typeof BillDailyContributionListSchema>;
+export type BillDailyContributionList = z.infer<
+  typeof BillDailyContributionListSchema
+>;
 
 export const getBillContributionsByDay = async (
   id: string,
@@ -25,7 +27,8 @@ export const getBillContributionsByDay = async (
 export const useBillContributionsByDay = (id: string, enabled = true) => {
   return useInfiniteQuery({
     queryKey: [...allStaticQueryKeys.getBillContributionsByDay, id],
-    queryFn: ({ pageParam = 1 }) => getBillContributionsByDay(id, { pageParam }),
+    queryFn: ({ pageParam = 1 }) =>
+      getBillContributionsByDay(id, { pageParam }),
     getNextPageParam: (lastPage, _pages) => lastPage.next,
     enabled,
   });

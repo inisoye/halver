@@ -19,10 +19,12 @@ export const AfterInteractions: React.FC<AfterInteractionsProps> = ({
   > | null>(null);
 
   useEffect(() => {
-    interactionHandleRef.current = InteractionManager.runAfterInteractions(() => {
-      setInteractionsComplete(true);
-      interactionHandleRef.current = null;
-    });
+    interactionHandleRef.current = InteractionManager.runAfterInteractions(
+      () => {
+        setInteractionsComplete(true);
+        interactionHandleRef.current = null;
+      },
+    );
 
     return () => {
       if (interactionHandleRef.current) {

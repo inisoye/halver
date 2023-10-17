@@ -16,7 +16,12 @@ interface AllocationVarianceAlertProps {
 
 export const AllocationVarianceAlert: React.FunctionComponent<
   AllocationVarianceAlertProps
-> = ({ variantAmount, isExcess, updateBillAmount, totalAllocationTextColor }) => {
+> = ({
+  variantAmount,
+  isExcess,
+  updateBillAmount,
+  totalAllocationTextColor,
+}) => {
   return (
     <Box
       alignItems="center"
@@ -30,7 +35,11 @@ export const AllocationVarianceAlert: React.FunctionComponent<
       <Box alignItems="center" flexDirection="row" gap="2" maxWidth="68%">
         <SmallAlert />
 
-        <DynamicText color="textInverse" fontFamily="Halver-Semibold" variant="xs">
+        <DynamicText
+          color="textInverse"
+          fontFamily="Halver-Semibold"
+          variant="xs"
+        >
           {variantAmount > 1
             ? convertNumberToNaira(variantAmount)
             : `₦${formatNumberWithCommas(variantAmount, 18)}`}
@@ -66,7 +75,11 @@ export const InvalidEntryAlert: React.FunctionComponent = () => {
       <Box alignItems="center" flexDirection="row" gap="2">
         <SmallAlert />
 
-        <DynamicText color="textInverse" fontFamily="Halver-Semibold" variant="xs">
+        <DynamicText
+          color="textInverse"
+          fontFamily="Halver-Semibold"
+          variant="xs"
+        >
           Please ensure all your allocations are valid numbers
         </DynamicText>
       </Box>
@@ -88,7 +101,11 @@ export const MinimumAllocationAlert: React.FunctionComponent = () => {
       <Box alignItems="center" flexDirection="row" gap="2">
         <SmallAlert />
 
-        <DynamicText color="textInverse" fontFamily="Halver-Semibold" variant="xs">
+        <DynamicText
+          color="textInverse"
+          fontFamily="Halver-Semibold"
+          variant="xs"
+        >
           All contributions must be at least{' '}
           {convertNumberToNaira(MINIMUM_CONTRIBUTION)}
         </DynamicText>

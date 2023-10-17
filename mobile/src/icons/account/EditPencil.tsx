@@ -7,7 +7,9 @@ import { Theme } from '@/lib/restyle';
 
 type EditPencilProps = ISvgProps;
 
-export const EditPencil: React.FunctionComponent<EditPencilProps> = ({ ...props }) => {
+export const EditPencil: React.FunctionComponent<EditPencilProps> = ({
+  ...props
+}) => {
   const { colors } = useTheme<Theme>();
 
   return (

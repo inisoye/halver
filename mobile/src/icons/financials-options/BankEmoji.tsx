@@ -4,7 +4,9 @@ import { ISvgProps } from 'svg.types';
 
 type BankEmojiProps = ISvgProps;
 
-export const BankEmoji: React.FunctionComponent<BankEmojiProps> = ({ ...props }) => {
+export const BankEmoji: React.FunctionComponent<BankEmojiProps> = ({
+  ...props
+}) => {
   return (
     <Svg
       fill="none"

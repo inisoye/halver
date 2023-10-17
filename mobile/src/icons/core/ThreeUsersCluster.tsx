@@ -9,9 +9,9 @@ type ThreeUsersClusterProps = ISvgProps & {
   isDark?: boolean;
 };
 
-export const ThreeUsersCluster: React.FunctionComponent<ThreeUsersClusterProps> = ({
-  ...props
-}) => {
+export const ThreeUsersCluster: React.FunctionComponent<
+  ThreeUsersClusterProps
+> = ({ ...props }) => {
   const { colors } = useTheme<Theme>();
 
   return (

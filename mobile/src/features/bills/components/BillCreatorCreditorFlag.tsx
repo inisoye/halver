@@ -27,7 +27,12 @@ export const BillCreatorCreditorFlag: React.FunctionComponent<BillCreatorCredito
         width="40%"
       >
         <Box width="70%">
-          <Text color="textLight" marginBottom="0.75" numberOfLines={1} variant="xxs">
+          <Text
+            color="textLight"
+            marginBottom="0.75"
+            numberOfLines={1}
+            variant="xxs"
+          >
             {isCreditor ? 'Bill creditor' : 'Created by'}
           </Text>
           <Text fontFamily="Halver-Semibold" numberOfLines={1} variant="xs">

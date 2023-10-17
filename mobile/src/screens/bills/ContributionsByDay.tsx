@@ -35,19 +35,22 @@ interface ContributionDayItemProps {
   index: number;
   totalAmountDue: number;
   navigation: CompositeNavigationProp<
-    NativeStackNavigationProp<BillsStackParamList, 'Contributions by day', undefined>,
-    NativeStackNavigationProp<AppRootStackParamList, 'Contributions by day', undefined>
+    NativeStackNavigationProp<
+      BillsStackParamList,
+      'Contributions by day',
+      undefined
+    >,
+    NativeStackNavigationProp<
+      AppRootStackParamList,
+      'Contributions by day',
+      undefined
+    >
   >;
 }
 
-const ContributionDayItem: React.FunctionComponent<ContributionDayItemProps> = ({
-  id,
-  billName,
-  item,
-  index,
-  totalAmountDue,
-  navigation,
-}) => {
+const ContributionDayItem: React.FunctionComponent<
+  ContributionDayItemProps
+> = ({ id, billName, item, index, totalAmountDue, navigation }) => {
   const handleGoToTransactions = () => {
     navigation.navigate('Transactions in countribution round', {
       id,
@@ -92,10 +95,9 @@ type ContributionsByDayProps = CompositeScreenProps<
   NativeStackScreenProps<AppRootStackParamList, 'Contributions by day'>
 >;
 
-export const ContributionsByDay: React.FunctionComponent<ContributionsByDayProps> = ({
-  route,
-  navigation,
-}) => {
+export const ContributionsByDay: React.FunctionComponent<
+  ContributionsByDayProps
+> = ({ route, navigation }) => {
   const { id, totalAmountDue, name, totalAmountPaid } = route.params;
 
   const {
@@ -130,7 +132,10 @@ export const ContributionsByDay: React.FunctionComponent<ContributionsByDayProps
   };
 
   return (
-    <Screen customScreenName="Contribution rounds" headerProps={{ paddingBottom: '1' }}>
+    <Screen
+      customScreenName="Contribution rounds"
+      headerProps={{ paddingBottom: '1' }}
+    >
       <Box backgroundColor="transparent" height={12}>
         {areBillContributionsByDayLoading && <LogoLoader />}
       </Box>

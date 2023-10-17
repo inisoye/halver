@@ -6,7 +6,9 @@ import { darkColors } from '@/lib/restyle';
 
 type DonationProps = ISvgProps;
 
-export const Donation: React.FunctionComponent<DonationProps> = ({ ...otherProps }) => {
+export const Donation: React.FunctionComponent<DonationProps> = ({
+  ...otherProps
+}) => {
   return (
     <Svg
       fill="none"

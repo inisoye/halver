@@ -27,7 +27,10 @@ export const getUserActionsByStatus = async ({
   return response.data as PaginatedBillActionStatusList;
 };
 
-export const useUserActionsByStatus = (search: string, status: BillActionStatus) => {
+export const useUserActionsByStatus = (
+  search: string,
+  status: BillActionStatus,
+) => {
   return useInfiniteQuery({
     queryKey: [...allStaticQueryKeys.getUserActions, search, status],
     queryFn: ({ pageParam = 1 }) =>

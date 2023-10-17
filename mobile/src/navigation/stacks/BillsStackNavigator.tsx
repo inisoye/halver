@@ -14,7 +14,12 @@ import {
 
 export type BillsStackParamList = {
   Bills: undefined;
-  Bill: { id: string; name: string; shouldUpdate?: boolean; isOnRoot?: boolean };
+  Bill: {
+    id: string;
+    name: string;
+    shouldUpdate?: boolean;
+    isOnRoot?: boolean;
+  };
   'Bill Payment': {
     actionId: string | undefined;
     status: BillActionStatus | undefined;

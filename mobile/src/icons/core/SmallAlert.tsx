@@ -7,7 +7,9 @@ import { Theme } from '@/lib/restyle';
 
 type SmallAlertProps = ISvgProps;
 
-export const SmallAlert: React.FunctionComponent<SmallAlertProps> = ({ ...props }) => {
+export const SmallAlert: React.FunctionComponent<SmallAlertProps> = ({
+  ...props
+}) => {
   const { colors } = useTheme<Theme>();
 
   return (

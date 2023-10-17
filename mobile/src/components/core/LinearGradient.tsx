@@ -19,7 +19,7 @@ export type LinearGradientProps = BoxProps<Theme> &
   VisibleProps<Theme> &
   ExpoLinearGradientProps;
 
-export const LinearGradient = createRestyleComponent<LinearGradientProps, Theme>(
-  [spacing, visible],
-  createBox<Theme>(ExpoLinearGradient),
-);
+export const LinearGradient = createRestyleComponent<
+  LinearGradientProps,
+  Theme
+>([spacing, visible], createBox<Theme>(ExpoLinearGradient));

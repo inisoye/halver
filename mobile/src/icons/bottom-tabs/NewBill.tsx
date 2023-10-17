@@ -8,7 +8,9 @@ import { useIsDarkModeSelected } from '@/utils';
 
 type NewBillProps = ISvgProps;
 
-export const NewBill: React.FunctionComponent<NewBillProps> = ({ ...props }) => {
+export const NewBill: React.FunctionComponent<NewBillProps> = ({
+  ...props
+}) => {
   const isDarkMode = useIsDarkModeSelected();
   const { colors } = useTheme<Theme>();
 

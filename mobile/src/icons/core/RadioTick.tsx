@@ -7,7 +7,9 @@ import { Theme } from '@/lib/restyle';
 
 type RadioTickProps = ISvgProps;
 
-export const RadioTick: React.FunctionComponent<RadioTickProps> = ({ ...props }) => {
+export const RadioTick: React.FunctionComponent<RadioTickProps> = ({
+  ...props
+}) => {
   const { colors } = useTheme<Theme>();
 
   return (

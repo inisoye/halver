@@ -20,7 +20,12 @@ export type FinancialsStackParamList = {
   'Add a recipient': undefined;
   Transactions: undefined;
 
-  Bill: { id: string; name: string; shouldUpdate?: boolean; isOnRoot?: boolean };
+  Bill: {
+    id: string;
+    name: string;
+    shouldUpdate?: boolean;
+    isOnRoot?: boolean;
+  };
   'Contributions by day': {
     id: string;
     totalAmountDue: number;

@@ -5,8 +5,18 @@ import { useTheme } from '@shopify/restyle';
 import * as React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { Box, DynamicText, LogoLoader, RectButton, Screen, Text } from '@/components';
-import { useBillTransactionsOnDay, type BillTransaction } from '@/features/bills';
+import {
+  Box,
+  DynamicText,
+  LogoLoader,
+  RectButton,
+  Screen,
+  Text,
+} from '@/components';
+import {
+  useBillTransactionsOnDay,
+  type BillTransaction,
+} from '@/features/bills';
 import { SelectedTransactionModal } from '@/features/financials';
 import { useBooleanStateControl } from '@/hooks';
 import { RightCaret } from '@/icons';
@@ -20,7 +30,9 @@ import { flexStyles } from '@/theme';
 import { formatNumberWithCommas, useIsDarkModeSelected } from '@/utils';
 
 interface TransactionItemProps {
-  handleTransactionSelection: (transaction: BillTransaction | undefined) => void;
+  handleTransactionSelection: (
+    transaction: BillTransaction | undefined,
+  ) => void;
   index: number;
   item: BillTransaction | undefined;
 }
@@ -58,7 +70,11 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
       >
         <Box alignItems="center" flexDirection="row" gap="3">
           <Box width="92%">
-            <Text fontFamily="Halver-Semibold" marginBottom="0.75" numberOfLines={1}>
+            <Text
+              fontFamily="Halver-Semibold"
+              marginBottom="0.75"
+              numberOfLines={1}
+            >
               <Text fontFamily="Halver-Naira">₦</Text>
               {formatNumberWithCommas(Number(contribution))} by {payingUserName}
             </Text>
@@ -69,7 +85,9 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
               variant="xs"
             >
               <Text
-                color={transactionType === 'regular' ? 'green11' : 'textApricot'}
+                color={
+                  transactionType === 'regular' ? 'green11' : 'textApricot'
+                }
                 fontFamily="Halver-Semibold"
                 variant="xs"
               >
@@ -90,13 +108,19 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
 };
 
 type TransactionsInContributionRoundProps = CompositeScreenProps<
-  NativeStackScreenProps<AppRootStackParamList, 'Transactions in countribution round'>,
+  NativeStackScreenProps<
+    AppRootStackParamList,
+    'Transactions in countribution round'
+  >,
   CompositeScreenProps<
     NativeStackScreenProps<
       FinancialsStackParamList,
       'Transactions in countribution round'
     >,
-    NativeStackScreenProps<HomeStackParamList, 'Transactions in countribution round'>
+    NativeStackScreenProps<
+      HomeStackParamList,
+      'Transactions in countribution round'
+    >
   >
 >;
 
@@ -150,7 +174,10 @@ export const TransactionsInContributionRound: React.FunctionComponent<
     [openModal],
   );
 
-  const renderItem: ListRenderItem<BillTransaction | undefined> = ({ item, index }) => {
+  const renderItem: ListRenderItem<BillTransaction | undefined> = ({
+    item,
+    index,
+  }) => {
     return (
       <TransactionItem
         handleTransactionSelection={handleTransactionSelection}
@@ -205,12 +232,16 @@ export const TransactionsInContributionRound: React.FunctionComponent<
         <GestureHandlerRootView style={flexStyles[1]}>
           <FlashList
             // eslint-disable-next-line react-native/no-inline-styles
-            contentContainerStyle={{ paddingBottom: isFetchingNextPage ? 0 : 12 }}
+            contentContainerStyle={{
+              paddingBottom: isFetchingNextPage ? 0 : 12,
+            }}
             data={transactions}
             estimatedItemSize={70}
             keyboardDismissMode="on-drag"
             keyboardShouldPersistTaps="handled"
-            ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
+            ListFooterComponent={
+              isFetchingNextPage ? <LogoLoader /> : undefined
+            }
             renderItem={renderItem}
             onEndReached={loadMoreTransactions}
             onEndReachedThreshold={1.5}

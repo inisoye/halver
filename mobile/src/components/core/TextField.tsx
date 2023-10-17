@@ -1,6 +1,11 @@
 import { BoxProps, TextProps, useTheme } from '@shopify/restyle';
 import * as React from 'react';
-import { Control, Controller, FieldValues, RegisterOptions } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  FieldValues,
+  RegisterOptions,
+} from 'react-hook-form';
 import { KeyboardTypeOptions } from 'react-native';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
@@ -74,7 +79,9 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
     <Box flexDirection="row" gap="1" marginTop="1.5" {...containerProps}>
       {(!!prefixText || !!prefixComponent) && (
         <Box
-          backgroundColor={isDarker ? 'inputBackgroundDarker' : 'inputBackground'}
+          backgroundColor={
+            isDarker ? 'inputBackgroundDarker' : 'inputBackground'
+          }
           borderRadius="base"
           justifyContent="center"
           paddingHorizontal="3"
@@ -96,7 +103,9 @@ export const TextField: React.FunctionComponent<TextFieldProps> = ({
           return (
             <TextInput
               autoFocus={autoFocus}
-              backgroundColor={isDarker ? 'inputBackgroundDarker' : 'inputBackground'}
+              backgroundColor={
+                isDarker ? 'inputBackgroundDarker' : 'inputBackground'
+              }
               borderRadius="base"
               color="inputText"
               flex={1}
@@ -143,7 +152,12 @@ export const TextFieldError: React.FunctionComponent<TextFieldErrorProps> = ({
       paddingHorizontal="2"
       paddingVertical="1"
     >
-      <Text color="textWhite" fontFamily="Halver-Semibold" lineHeight={14} variant="xs">
+      <Text
+        color="textWhite"
+        fontFamily="Halver-Semibold"
+        lineHeight={14}
+        variant="xs"
+      >
         {!errorMessage || errorMessage === 'Required'
           ? `Please enter ${fieldName.toLowerCase()}.`
           : errorMessage}
@@ -173,7 +187,9 @@ interface FullWidthTextFieldProps extends TextInputProps {
   isDarker?: boolean;
 }
 
-export const FullWidthTextField: React.FunctionComponent<FullWidthTextFieldProps> = ({
+export const FullWidthTextField: React.FunctionComponent<
+  FullWidthTextFieldProps
+> = ({
   autoFocus = false,
   containerProps,
   control,
@@ -195,7 +211,9 @@ export const FullWidthTextField: React.FunctionComponent<FullWidthTextFieldProps
     <Box flexDirection="row" marginTop="1.5" {...containerProps}>
       {(!!prefixText || !!prefixComponent) && (
         <Box
-          backgroundColor={isDarker ? 'inputBackgroundDarker' : 'inputBackground'}
+          backgroundColor={
+            isDarker ? 'inputBackgroundDarker' : 'inputBackground'
+          }
           justifyContent="center"
           paddingLeft="6"
           paddingRight="3"
@@ -211,7 +229,9 @@ export const FullWidthTextField: React.FunctionComponent<FullWidthTextFieldProps
         render={({ field: { onChange, onBlur, value, ref } }) => (
           <TextInput
             autoFocus={autoFocus}
-            backgroundColor={isDarker ? 'inputBackgroundDarker' : 'inputBackground'}
+            backgroundColor={
+              isDarker ? 'inputBackgroundDarker' : 'inputBackground'
+            }
             color="inputText"
             flex={1}
             fontFamily="Halver-Medium"
@@ -234,7 +254,9 @@ export const FullWidthTextField: React.FunctionComponent<FullWidthTextFieldProps
 
       {(!!suffixText || !!suffixComponent) && (
         <Box
-          backgroundColor={isDarker ? 'inputBackgroundDarker' : 'inputBackground'}
+          backgroundColor={
+            isDarker ? 'inputBackgroundDarker' : 'inputBackground'
+          }
           justifyContent="center"
           paddingLeft="3"
           paddingRight="6"

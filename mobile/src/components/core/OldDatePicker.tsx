@@ -97,8 +97,12 @@ const DateBlock: React.FC<DateBlockProps> = ({
 
   const offsets = digits.map((_: number, index: number) => index * dHeight);
 
-  const fadeFilled = isDarkMode ? 'rgba(22, 22, 22, 1)' : 'rgba(252, 252, 252,1)';
-  const fadeTransparent = isDarkMode ? 'rgba(22, 22, 22, 0)' : 'rgba(252, 252, 252,0)';
+  const fadeFilled = isDarkMode
+    ? 'rgba(22, 22, 22, 1)'
+    : 'rgba(252, 252, 252,1)';
+  const fadeTransparent = isDarkMode
+    ? 'rgba(22, 22, 22, 0)'
+    : 'rgba(252, 252, 252,0)';
 
   const scrollRef = React.useRef<ScrollView>(null);
 
@@ -162,7 +166,9 @@ const DateBlock: React.FC<DateBlockProps> = ({
                   // eslint-disable-next-line react-native/no-inline-styles
                   {
                     marginBottom:
-                      index === digits.length - 1 ? height / 2 - dHeight / 2 : 0,
+                      index === digits.length - 1
+                        ? height / 2 - dHeight / 2
+                        : 0,
                     marginTop: index === 0 ? height / 2 - dHeight / 2 : 0,
                     lineHeight: dHeight,
                     height: dHeight,
@@ -287,7 +293,9 @@ export const OldDatePicker: React.FC<DatePickerProps> = ({
           return {
             name: ['day', 'month', 'year'][index],
             digits: [days, months, years][index],
-            value: [date.getDate(), date.getMonth() + 1, date.getFullYear()][index],
+            value: [date.getDate(), date.getMonth() + 1, date.getFullYear()][
+              index
+            ],
           };
       }
     });
@@ -309,7 +317,9 @@ export const OldDatePicker: React.FC<DatePickerProps> = ({
         ))}
       </Box>
 
-      <View style={[styles.picker, { height: pickerHeight, width: pickerWidth }]}>
+      <View
+        style={[styles.picker, { height: pickerHeight, width: pickerWidth }]}
+      >
         {getOrder().map(el => {
           return (
             <DateBlock

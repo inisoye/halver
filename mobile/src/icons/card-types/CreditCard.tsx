@@ -8,7 +8,9 @@ import { useIsDarkModeSelected } from '@/utils';
 
 type CreditCardProps = ISvgProps;
 
-export const CreditCard: React.FunctionComponent<CreditCardProps> = ({ ...props }) => {
+export const CreditCard: React.FunctionComponent<CreditCardProps> = ({
+  ...props
+}) => {
   const isDarkMode = useIsDarkModeSelected();
   const { colors } = useTheme<Theme>();
 

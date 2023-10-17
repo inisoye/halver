@@ -13,7 +13,12 @@ interface PaystackCardAdditionModalProps {
 
 export const PaystackCardAdditionModal: React.FunctionComponent<
   PaystackCardAdditionModalProps
-> = ({ isModalOpen, closeModal, authorizationUrl, onNavigationStateChange }) => {
+> = ({
+  isModalOpen,
+  closeModal,
+  authorizationUrl,
+  onNavigationStateChange,
+}) => {
   const {
     state: isLoaderOpen,
     setTrue: startLoader,

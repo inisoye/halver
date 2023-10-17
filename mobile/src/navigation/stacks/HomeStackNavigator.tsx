@@ -14,7 +14,12 @@ import {
 
 export type HomeStackParamList = {
   Home: undefined;
-  Bill: { id: string; name: string; shouldUpdate?: boolean; isOnRoot?: boolean };
+  Bill: {
+    id: string;
+    name: string;
+    shouldUpdate?: boolean;
+    isOnRoot?: boolean;
+  };
   'Bills by status': { status: keyof typeof actionStatusColors };
   'Contributions by day': {
     id: string;

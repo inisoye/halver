@@ -38,7 +38,9 @@ const EvenSplitParticipantItem: React.FunctionComponent<
   const initials = React.useMemo(() => getInitials(name), [name]);
 
   const avatarBackground = React.useMemo(() => {
-    return isDarkMode ? getLightColorFromString(name) : getDarkColorFromString(name);
+    return isDarkMode
+      ? getLightColorFromString(name)
+      : getDarkColorFromString(name);
   }, [isDarkMode, name]);
 
   return (
@@ -113,7 +115,11 @@ interface EvenSplitBreakdownTabsProps {
 
 export const EvenSplitBreakdownTabs: React.FunctionComponent<
   EvenSplitBreakdownTabsProps
-> = ({ creditor, formattedParticipants, formattedUnregisteredParticipants }) => {
+> = ({
+  creditor,
+  formattedParticipants,
+  formattedUnregisteredParticipants,
+}) => {
   return (
     <ScrollView>
       <Box paddingBottom="40">
@@ -140,16 +146,18 @@ export const EvenSplitBreakdownTabs: React.FunctionComponent<
           },
         )}
 
-        {formattedUnregisteredParticipants?.map(({ name, phone, contribution }) => {
-          return (
-            <EvenSplitParticipantItem
-              contribution={contribution}
-              key={phone}
-              name={name}
-              subtext={phone}
-            />
-          );
-        })}
+        {formattedUnregisteredParticipants?.map(
+          ({ name, phone, contribution }) => {
+            return (
+              <EvenSplitParticipantItem
+                contribution={contribution}
+                key={phone}
+                name={name}
+                subtext={phone}
+              />
+            );
+          },
+        )}
       </Box>
     </ScrollView>
   );

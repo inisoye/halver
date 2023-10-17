@@ -7,7 +7,9 @@ import { Theme } from '@/lib/restyle';
 
 type SmallCloseProps = ISvgProps;
 
-export const SmallClose: React.FunctionComponent<SmallCloseProps> = ({ ...props }) => {
+export const SmallClose: React.FunctionComponent<SmallCloseProps> = ({
+  ...props
+}) => {
   const { colors } = useTheme<Theme>();
 
   return (

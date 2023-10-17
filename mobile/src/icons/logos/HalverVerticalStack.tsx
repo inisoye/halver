@@ -4,9 +4,9 @@ import { ISvgProps } from 'svg.types';
 
 type HalverVerticalStackProps = ISvgProps;
 
-export const HalverVerticalStack: React.FunctionComponent<HalverVerticalStackProps> = ({
-  ...props
-}) => {
+export const HalverVerticalStack: React.FunctionComponent<
+  HalverVerticalStackProps
+> = ({ ...props }) => {
   return (
     <Svg
       fill="none"

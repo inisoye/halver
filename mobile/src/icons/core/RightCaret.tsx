@@ -9,7 +9,9 @@ type RightCaretProps = ISvgProps & {
   isDark?: boolean;
 };
 
-export const RightCaret: React.FunctionComponent<RightCaretProps> = ({ ...props }) => {
+export const RightCaret: React.FunctionComponent<RightCaretProps> = ({
+  ...props
+}) => {
   const { colors } = useTheme<Theme>();
 
   return (

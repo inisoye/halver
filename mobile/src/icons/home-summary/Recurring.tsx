@@ -6,7 +6,9 @@ import { useIsDarkModeSelected } from '@/utils';
 
 type RecurringProps = ISvgProps;
 
-export const Recurring: React.FunctionComponent<RecurringProps> = ({ ...props }) => {
+export const Recurring: React.FunctionComponent<RecurringProps> = ({
+  ...props
+}) => {
   const isDarkMode = useIsDarkModeSelected();
 
   return (

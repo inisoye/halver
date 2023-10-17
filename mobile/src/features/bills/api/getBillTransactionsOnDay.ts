@@ -17,10 +17,15 @@ export const getBillTransactionsOnDay = async (
   return response.data as BillTransactionList;
 };
 
-export const useBillTransactionsOnDay = (id: string, day: string, enabled = true) => {
+export const useBillTransactionsOnDay = (
+  id: string,
+  day: string,
+  enabled = true,
+) => {
   return useInfiniteQuery({
     queryKey: [id, ...allStaticQueryKeys.getBillTransactionsOnDay, day],
-    queryFn: ({ pageParam = 1 }) => getBillTransactionsOnDay(id, day, { pageParam }),
+    queryFn: ({ pageParam = 1 }) =>
+      getBillTransactionsOnDay(id, day, { pageParam }),
     getNextPageParam: (lastPage, _pages) => lastPage.next,
     enabled,
   });

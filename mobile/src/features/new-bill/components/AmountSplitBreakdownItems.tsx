@@ -1,7 +1,14 @@
 import * as React from 'react';
 import { Control, FieldArrayWithId } from 'react-hook-form';
 
-import { Box, DynamicText, Image, ScrollView, Text, TextField } from '@/components';
+import {
+  Box,
+  DynamicText,
+  Image,
+  ScrollView,
+  Text,
+  TextField,
+} from '@/components';
 import {
   getDarkColorFromString,
   getInitials,
@@ -10,7 +17,10 @@ import {
   useIsDarkModeSelected,
 } from '@/utils';
 
-import { DefinedRegisteredParticipant, DefinedUnregisteredParticipant } from '../types';
+import {
+  DefinedRegisteredParticipant,
+  DefinedUnregisteredParticipant,
+} from '../types';
 
 interface ParticipantAvatarAndNameProps {
   isCreditor?: boolean;
@@ -21,60 +31,77 @@ interface ParticipantAvatarAndNameProps {
 }
 
 const ParticipantAvatarAndName: React.FunctionComponent<ParticipantAvatarAndNameProps> =
-  React.memo(({ isCreditor, name, profileImageHash, profileImageUrl, subtext }) => {
-    const isDarkMode = useIsDarkModeSelected();
+  React.memo(
+    ({ isCreditor, name, profileImageHash, profileImageUrl, subtext }) => {
+      const isDarkMode = useIsDarkModeSelected();
 
-    const initials = React.useMemo(() => getInitials(name), [name]);
+      const initials = React.useMemo(() => getInitials(name), [name]);
 
-    const avatarBackground = React.useMemo(() => {
-      return isDarkMode ? getLightColorFromString(name) : getDarkColorFromString(name);
-    }, [isDarkMode, name]);
+      const avatarBackground = React.useMemo(() => {
+        return isDarkMode
+          ? getLightColorFromString(name)
+          : getDarkColorFromString(name);
+      }, [isDarkMode, name]);
 
-    return (
-      <Box alignItems="center" flexDirection="row" flexGrow={0} flexShrink={1} gap="3">
-        {profileImageUrl ? (
-          <Image
-            borderRadius="lg"
-            contentFit="contain"
-            height={36}
-            placeholder={profileImageHash}
-            source={profileImageUrl}
-            width={36}
-          />
-        ) : (
-          <Box
-            alignItems="center"
-            borderRadius="lg"
-            height={36}
-            justifyContent="center"
-            style={{ backgroundColor: avatarBackground }}
-            width={36}
-          >
-            <Text color="textInverse" fontFamily="Halver-Semibold" variant="sm">
-              {initials}
+      return (
+        <Box
+          alignItems="center"
+          flexDirection="row"
+          flexGrow={0}
+          flexShrink={1}
+          gap="3"
+        >
+          {profileImageUrl ? (
+            <Image
+              borderRadius="lg"
+              contentFit="contain"
+              height={36}
+              placeholder={profileImageHash}
+              source={profileImageUrl}
+              width={36}
+            />
+          ) : (
+            <Box
+              alignItems="center"
+              borderRadius="lg"
+              height={36}
+              justifyContent="center"
+              style={{ backgroundColor: avatarBackground }}
+              width={36}
+            >
+              <Text
+                color="textInverse"
+                fontFamily="Halver-Semibold"
+                variant="sm"
+              >
+                {initials}
+              </Text>
+            </Box>
+          )}
+
+          <Box gap="1" width="65%">
+            <Box flexDirection="row" justifyContent="flex-start">
+              <DynamicText
+                maxWidth={isCreditor ? '70%' : undefined}
+                numberOfLines={1}
+              >
+                {name}
+              </DynamicText>
+              {isCreditor && (
+                <Text color="green11" numberOfLines={1}>
+                  {' '}
+                  - Creditor
+                </Text>
+              )}
+            </Box>
+            <Text color="textLight" variant="xs">
+              {subtext}
             </Text>
           </Box>
-        )}
-
-        <Box gap="1" width="65%">
-          <Box flexDirection="row" justifyContent="flex-start">
-            <DynamicText maxWidth={isCreditor ? '70%' : undefined} numberOfLines={1}>
-              {name}
-            </DynamicText>
-            {isCreditor && (
-              <Text color="green11" numberOfLines={1}>
-                {' '}
-                - Creditor
-              </Text>
-            )}
-          </Box>
-          <Text color="textLight" variant="xs">
-            {subtext}
-          </Text>
         </Box>
-      </Box>
-    );
-  });
+      );
+    },
+  );
 
 interface AmountSplitParticipantItemProps {
   control: Control<{
@@ -189,7 +216,10 @@ export const AmountSplitBreakdownItems: React.FunctionComponent<
       <ScrollView>
         <Box paddingBottom="20">
           {registeredParticipantAmountFields?.map(
-            ({ name, uuid, username, profileImageHash, profileImageUrl }, index) => {
+            (
+              { name, uuid, username, profileImageHash, profileImageUrl },
+              index,
+            ) => {
               return (
                 <AmountSplitParticipantItem
                   control={controlForAmountForm}
@@ -206,18 +236,20 @@ export const AmountSplitBreakdownItems: React.FunctionComponent<
             },
           )}
 
-          {unregisteredParticipantAmountFields?.map(({ name, phone }, index) => {
-            return (
-              <AmountSplitParticipantItem
-                control={controlForAmountForm}
-                index={index}
-                isRegistered={false}
-                key={phone}
-                name={name}
-                subtext={phone}
-              />
-            );
-          })}
+          {unregisteredParticipantAmountFields?.map(
+            ({ name, phone }, index) => {
+              return (
+                <AmountSplitParticipantItem
+                  control={controlForAmountForm}
+                  index={index}
+                  isRegistered={false}
+                  key={phone}
+                  name={name}
+                  subtext={phone}
+                />
+              );
+            },
+          )}
         </Box>
       </ScrollView>
     </>

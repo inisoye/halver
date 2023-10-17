@@ -38,5 +38,10 @@ export const useBorderlessTabBar = (navigation, showBorder = false) => {
         },
       });
     };
-  }, [colors.bottomTabBackground, showBorder, colors.bottomTabBorder, navigation]);
+  }, [
+    colors.bottomTabBackground,
+    showBorder,
+    colors.bottomTabBorder,
+    navigation,
+  ]);
 };

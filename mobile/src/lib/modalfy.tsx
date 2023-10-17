@@ -23,6 +23,8 @@ const defaultOptions: ModalOptions = { backdropOpacity: 0.6 };
 
 const stack = createModalStack<ModalStackParams>(modalConfig, defaultOptions);
 
-export const ModalfyProvider: React.FunctionComponent<ModalfyProviderProps> = ({ children }) => {
+export const ModalfyProvider: React.FunctionComponent<ModalfyProviderProps> = ({
+  children,
+}) => {
   return <ModalProvider stack={stack}>{children}</ModalProvider>;
 };

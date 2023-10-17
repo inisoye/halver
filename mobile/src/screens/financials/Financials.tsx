@@ -11,7 +11,10 @@ import {
 } from '@/icons';
 import { FinancialsStackParamList } from '@/navigation';
 
-type FinancialsProps = NativeStackScreenProps<FinancialsStackParamList, 'Financials'>;
+type FinancialsProps = NativeStackScreenProps<
+  FinancialsStackParamList,
+  'Financials'
+>;
 
 export const Financials: React.FunctionComponent<FinancialsProps> = ({
   navigation,
@@ -52,7 +55,11 @@ export const Financials: React.FunctionComponent<FinancialsProps> = ({
             gap="4"
             justifyContent="space-between"
           >
-            <Text color="buttonTextNeutral" fontFamily="Halver-Semibold" variant="2xl">
+            <Text
+              color="buttonTextNeutral"
+              fontFamily="Halver-Semibold"
+              variant="2xl"
+            >
               Cards
             </Text>
 

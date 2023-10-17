@@ -7,7 +7,9 @@ import {
   type SpacingProps,
   type VisibleProps,
 } from '@shopify/restyle';
-import RNWebView, { type WebViewProps as RNWebViewProps } from 'react-native-webview';
+import RNWebView, {
+  type WebViewProps as RNWebViewProps,
+} from 'react-native-webview';
 
 import { Theme } from '@/lib/restyle';
 

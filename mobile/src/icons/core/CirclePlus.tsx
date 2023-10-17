@@ -7,7 +7,9 @@ import { Theme } from '@/lib/restyle';
 
 type CirclePlusProps = ISvgProps;
 
-export const CirclePlus: React.FunctionComponent<CirclePlusProps> = ({ ...props }) => {
+export const CirclePlus: React.FunctionComponent<CirclePlusProps> = ({
+  ...props
+}) => {
   const { colors } = useTheme<Theme>();
 
   return (

@@ -7,7 +7,9 @@ import { Theme } from '@/lib/restyle';
 
 type RightArrowProps = ISvgProps;
 
-export const RightArrow: React.FunctionComponent<RightArrowProps> = ({ ...props }) => {
+export const RightArrow: React.FunctionComponent<RightArrowProps> = ({
+  ...props
+}) => {
   const { colors } = useTheme<Theme>();
 
   return (

@@ -37,7 +37,10 @@ export const Skeleton: React.FunctionComponent<SkeletonProps> = ({
 
   const animate = () => {
     progress.value = withRepeat(
-      withTiming(isDarkMode ? 0.9 : 1, { duration: 1000, easing: Easing.linear }),
+      withTiming(isDarkMode ? 0.9 : 1, {
+        duration: 1000,
+        easing: Easing.linear,
+      }),
       -1,
       true,
     );

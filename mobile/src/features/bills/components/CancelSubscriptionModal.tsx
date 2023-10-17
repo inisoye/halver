@@ -2,7 +2,14 @@ import type { AxiosError } from 'axios';
 import * as Haptics from 'expo-haptics';
 import * as React from 'react';
 
-import { Box, Button, DynamicText, Modal, Text, TouchableOpacity } from '@/components';
+import {
+  Box,
+  Button,
+  DynamicText,
+  Modal,
+  Text,
+  TouchableOpacity,
+} from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { handleAxiosErrorAlertAndHaptics, isAndroid } from '@/utils';
 
@@ -104,7 +111,12 @@ export const CancelSubscriptionModal: React.FunctionComponent<
             Ending your subscription on "{billName}" is permanent and cannot be
             reversed.
           </Text>
-          <DynamicText color="textLight" marginBottom="6" variant="sm" width="80%">
+          <DynamicText
+            color="textLight"
+            marginBottom="6"
+            variant="sm"
+            width="80%"
+          >
             Click "yes" below only if you are sure you want to proceed.
           </DynamicText>
 

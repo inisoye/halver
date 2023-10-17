@@ -5,7 +5,9 @@ import { apiClient } from '@/lib/axios';
 import { allStaticQueryKeys } from '@/lib/react-query';
 import { TransferRecipientList as TransferRecipientsListSchema } from '@/lib/zod';
 
-export type TransferRecipientsList = z.infer<typeof TransferRecipientsListSchema>;
+export type TransferRecipientsList = z.infer<
+  typeof TransferRecipientsListSchema
+>;
 
 export const getTransferRecipients = async () => {
   const response = await apiClient.get<TransferRecipientsList>(

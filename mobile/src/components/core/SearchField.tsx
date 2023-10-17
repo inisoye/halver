@@ -1,6 +1,11 @@
 import { BoxProps } from '@shopify/restyle';
 import * as React from 'react';
-import { Control, Controller, FieldValues, RegisterOptions } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  FieldValues,
+  RegisterOptions,
+} from 'react-hook-form';
 import { KeyboardTypeOptions, useColorScheme } from 'react-native';
 
 import { Theme } from '@/lib/restyle';
@@ -50,7 +55,9 @@ export const SearchField: React.FunctionComponent<SearchFieldProps> = ({
     <Box flexDirection="row" marginTop="1.5" {...containerProps}>
       {(!!prefixText || !!prefixComponent) && (
         <Box
-          backgroundColor={isDarker ? 'inputBackgroundDarker' : 'inputBackground'}
+          backgroundColor={
+            isDarker ? 'inputBackgroundDarker' : 'inputBackground'
+          }
           justifyContent="center"
           paddingLeft="6"
           paddingRight="3"
@@ -66,7 +73,9 @@ export const SearchField: React.FunctionComponent<SearchFieldProps> = ({
         render={({ field: { onChange, onBlur, value, ref } }) => (
           <TextInput
             autoFocus={autoFocus}
-            backgroundColor={isDarker ? 'inputBackgroundDarker' : 'inputBackground'}
+            backgroundColor={
+              isDarker ? 'inputBackgroundDarker' : 'inputBackground'
+            }
             color="inputText"
             flex={1}
             fontFamily="Halver-Medium"

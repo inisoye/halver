@@ -80,8 +80,10 @@ interface BillRecentContributionsListProps {
 export const BillRecentContributionsList: React.FunctionComponent<
   BillRecentContributionsListProps
 > = ({ id, name, isDiscreet, navigation }) => {
-  const { data: billTransactionsResponse, isLoading: areBillTransactionsLoading } =
-    useInfiniteBillTransactions(id);
+  const {
+    data: billTransactionsResponse,
+    isLoading: areBillTransactionsLoading,
+  } = useInfiniteBillTransactions(id);
 
   const [selectedTransaction, setSelectedTransaction] = React.useState<
     BillTransaction | undefined
@@ -104,7 +106,9 @@ export const BillRecentContributionsList: React.FunctionComponent<
   const { payingUser, created, receivingUser, contribution, totalPayment } =
     selectedTransaction || {};
 
-  const modalHeading = `${payingUser?.firstName || 'Participant'}'s contribution`;
+  const modalHeading = `${
+    payingUser?.firstName || 'Participant'
+  }'s contribution`;
 
   const handleGoToBillTransactions = () => {
     navigation.navigate('Bill transactions', { id, name });
@@ -131,7 +135,12 @@ export const BillRecentContributionsList: React.FunctionComponent<
           rowGap="1"
         >
           <Box paddingVertical="2" width="46%">
-            <Text color="textLight" marginBottom="0.75" numberOfLines={1} variant="xs">
+            <Text
+              color="textLight"
+              marginBottom="0.75"
+              numberOfLines={1}
+              variant="xs"
+            >
               Completed on
             </Text>
 
@@ -140,7 +149,12 @@ export const BillRecentContributionsList: React.FunctionComponent<
             </Text>
           </Box>
           <Box paddingVertical="2" width="46%">
-            <Text color="textLight" marginBottom="0.75" numberOfLines={1} variant="xs">
+            <Text
+              color="textLight"
+              marginBottom="0.75"
+              numberOfLines={1}
+              variant="xs"
+            >
               Creditor
             </Text>
 
@@ -149,7 +163,12 @@ export const BillRecentContributionsList: React.FunctionComponent<
             </Text>
           </Box>
           <Box paddingVertical="2" width="46%">
-            <Text color="textLight" marginBottom="0.75" numberOfLines={1} variant="xs">
+            <Text
+              color="textLight"
+              marginBottom="0.75"
+              numberOfLines={1}
+              variant="xs"
+            >
               Amount
             </Text>
 
@@ -158,7 +177,12 @@ export const BillRecentContributionsList: React.FunctionComponent<
             </Text>
           </Box>
           <Box paddingVertical="2" width="46%">
-            <Text color="textLight" marginBottom="0.75" numberOfLines={1} variant="xs">
+            <Text
+              color="textLight"
+              marginBottom="0.75"
+              numberOfLines={1}
+              variant="xs"
+            >
               Amount with fees
             </Text>
             <Text fontFamily="Halver-Semibold" numberOfLines={1} variant="sm">

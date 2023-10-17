@@ -27,15 +27,14 @@ interface SelectCreditorOptionProps {
   closeModal: () => void;
   index: number;
   participant: DefinedRegisteredParticipant;
-  setCreditor: React.Dispatch<React.SetStateAction<DefinedRegisteredParticipant>>;
+  setCreditor: React.Dispatch<
+    React.SetStateAction<DefinedRegisteredParticipant>
+  >;
 }
 
-const SelectCreditorOption: React.FunctionComponent<SelectCreditorOptionProps> = ({
-  closeModal,
-  index,
-  participant,
-  setCreditor,
-}) => {
+const SelectCreditorOption: React.FunctionComponent<
+  SelectCreditorOptionProps
+> = ({ closeModal, index, participant, setCreditor }) => {
   const { name, profileImageHash, profileImageUrl } = participant;
   const isDarkMode = useIsDarkModeSelected();
 
@@ -87,7 +86,12 @@ const SelectCreditorOption: React.FunctionComponent<SelectCreditorOptionProps> =
         </Box>
       )}
 
-      <DynamicText maxWidth={52} numberOfLines={1} textAlign="center" variant="xs">
+      <DynamicText
+        maxWidth={52}
+        numberOfLines={1}
+        textAlign="center"
+        variant="xs"
+      >
         {firstName}
       </DynamicText>
     </Pressable>
@@ -96,13 +100,14 @@ const SelectCreditorOption: React.FunctionComponent<SelectCreditorOptionProps> =
 
 interface SelectCreditorModalProps {
   formattedRegisteredParticipants: DefinedRegisteredParticipant[];
-  setCreditor: React.Dispatch<React.SetStateAction<DefinedRegisteredParticipant>>;
+  setCreditor: React.Dispatch<
+    React.SetStateAction<DefinedRegisteredParticipant>
+  >;
 }
 
-export const SelectCreditorModal: React.FunctionComponent<SelectCreditorModalProps> = ({
-  formattedRegisteredParticipants,
-  setCreditor,
-}) => {
+export const SelectCreditorModal: React.FunctionComponent<
+  SelectCreditorModalProps
+> = ({ formattedRegisteredParticipants, setCreditor }) => {
   const {
     state: isModalOpen,
     setTrue: openModal,
@@ -143,9 +148,14 @@ export const SelectCreditorModal: React.FunctionComponent<SelectCreditorModalPro
           paddingHorizontal="6"
           paddingTop="6"
         >
-          <DynamicText color="textLight" marginBottom="3" maxWidth="85%" variant="sm">
-            Select one registered participant below as the creditor. Creditors are not
-            charged.
+          <DynamicText
+            color="textLight"
+            marginBottom="3"
+            maxWidth="85%"
+            variant="sm"
+          >
+            Select one registered participant below as the creditor. Creditors
+            are not charged.
           </DynamicText>
 
           <ScrollView

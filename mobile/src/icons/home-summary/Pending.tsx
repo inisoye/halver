@@ -6,7 +6,9 @@ import { useIsDarkModeSelected } from '@/utils';
 
 type PendingProps = ISvgProps;
 
-export const Pending: React.FunctionComponent<PendingProps> = ({ ...props }) => {
+export const Pending: React.FunctionComponent<PendingProps> = ({
+  ...props
+}) => {
   const isDarkMode = useIsDarkModeSelected();
 
   return (

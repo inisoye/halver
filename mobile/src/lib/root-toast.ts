@@ -19,7 +19,9 @@ const textVariantStyles = {
     color: 'white',
   },
   pharlap: {
-    backgroundColor: isDarkMode() ? brandColors.pharlap11 : brandColors.pharlap7,
+    backgroundColor: isDarkMode()
+      ? brandColors.pharlap11
+      : brandColors.pharlap7,
     color: 'white',
   },
 };

@@ -11,7 +11,9 @@ import { allMMKVKeys } from '@/lib/mmkv';
 import { RegisteredContactsList as RegisteredContactsListSchema } from '@/lib/zod';
 import { handleAxiosErrorAlertAndHaptics } from '@/utils';
 
-export type RegisteredContactsList = z.infer<typeof RegisteredContactsListSchema>;
+export type RegisteredContactsList = z.infer<
+  typeof RegisteredContactsListSchema
+>;
 
 export const getRegisteredContacts = async (phoneNumbers: string[]) => {
   const response = await apiClient.post('/accounts/registered-contacts/', {
@@ -51,14 +53,18 @@ export const useRegisteredContacts = ({
   const filteredRegisteredContacts = React.useMemo(() => {
     return registeredContacts?.filter(
       contact =>
-        contact?.fullName?.toLowerCase().includes(contactsFilterValue?.toLowerCase()) &&
+        contact?.fullName
+          ?.toLowerCase()
+          .includes(contactsFilterValue?.toLowerCase()) &&
         contact.uuid !== creatorDetails?.uuid, // Remove creator
     );
   }, [contactsFilterValue, creatorDetails?.uuid, registeredContacts]);
 
   // A mutation/POST request is used because a large amount of data (contacts) is sent over the wire.
-  const { mutate: requestRegisteredContacts, isLoading: areRegisteredContactsLoading } =
-    useRegisteredContactsRequest();
+  const {
+    mutate: requestRegisteredContacts,
+    isLoading: areRegisteredContactsLoading,
+  } = useRegisteredContactsRequest();
 
   const getAndUpdateContacts = React.useCallback(() => {
     if (allContacts.phoneNumbers.length > 0) {
@@ -74,7 +80,11 @@ export const useRegisteredContacts = ({
         },
       });
     }
-  }, [requestRegisteredContacts, allContacts.phoneNumbers, setRegisteredContacts]);
+  }, [
+    requestRegisteredContacts,
+    allContacts.phoneNumbers,
+    setRegisteredContacts,
+  ]);
 
   React.useEffect(() => {
     getAndUpdateContacts();

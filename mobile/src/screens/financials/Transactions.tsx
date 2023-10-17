@@ -31,7 +31,9 @@ import { flexStyles } from '@/theme';
 import { formatNumberWithCommas, useIsDarkModeSelected } from '@/utils';
 
 interface TransactionItemProps {
-  handleTransactionSelection: (transaction: BillTransaction | undefined) => void;
+  handleTransactionSelection: (
+    transaction: BillTransaction | undefined,
+  ) => void;
   index: number;
   item: BillTransaction | undefined;
 }
@@ -73,7 +75,11 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
       >
         <Box alignItems="center" flexDirection="row" gap="3">
           <Box width="92%">
-            <Text fontFamily="Halver-Semibold" marginBottom="0.75" numberOfLines={1}>
+            <Text
+              fontFamily="Halver-Semibold"
+              marginBottom="0.75"
+              numberOfLines={1}
+            >
               <Text fontFamily="Halver-Naira">₦</Text>
               {formatNumberWithCommas(Number(contribution))} on {billName}
             </Text>
@@ -177,7 +183,10 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
     [openModal],
   );
 
-  const renderItem: ListRenderItem<BillTransaction | undefined> = ({ item, index }) => {
+  const renderItem: ListRenderItem<BillTransaction | undefined> = ({
+    item,
+    index,
+  }) => {
     return (
       <TransactionItem
         handleTransactionSelection={handleTransactionSelection}
@@ -215,19 +224,24 @@ export const Transactions: React.FunctionComponent<TransactionsProps> = ({
         {noTransactionsFound && (
           <Text color="textLight" padding="6">
             We found no transactions
-            {!!transactionsFilterValue && ` matching "${transactionsFilterValue}"`}
+            {!!transactionsFilterValue &&
+              ` matching "${transactionsFilterValue}"`}
           </Text>
         )}
 
         <GestureHandlerRootView style={flexStyles[1]}>
           <FlashList
             // eslint-disable-next-line react-native/no-inline-styles
-            contentContainerStyle={{ paddingBottom: isFetchingNextPage ? 0 : 12 }}
+            contentContainerStyle={{
+              paddingBottom: isFetchingNextPage ? 0 : 12,
+            }}
             data={transactions}
             estimatedItemSize={70}
             keyboardDismissMode="on-drag"
             keyboardShouldPersistTaps="handled"
-            ListFooterComponent={isFetchingNextPage ? <LogoLoader /> : undefined}
+            ListFooterComponent={
+              isFetchingNextPage ? <LogoLoader /> : undefined
+            }
             renderItem={renderItem}
             onEndReached={loadMoreTransactions}
             onEndReachedThreshold={1.5}
