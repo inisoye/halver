@@ -47,6 +47,16 @@ export function ContactsList({ contactsFilterValue }: ContactsListProps) {
 
     const phoneNumbers = namesAndNumbers.map(c => c?.phone || '');
 
+    const collator = new Intl.Collator(undefined, { sensitivity: 'base' });
+
+    namesAndNumbers.sort((a, b) => {
+      if (a && b) {
+        return collator.compare(a.fullName, b.fullName);
+      }
+      // If either 'a' or 'b' is undefined, they are considered equal.
+      return 0;
+    });
+
     return { namesAndNumbers, phoneNumbers };
   }, [contacts]);
 

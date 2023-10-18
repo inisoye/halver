@@ -343,16 +343,19 @@ export const ContactRenderItem = ({
 
   if (typeof item === 'string') {
     return (
-      <DynamicText
+      <Box
         backgroundColor="background"
-        fontFamily="Halver-Semibold"
         marginTop="6"
         paddingHorizontal="6"
         paddingVertical="2"
-        variant="xl"
+        alignSelf="flex-start"
+        maxWidth="80%"
+        width="100%"
       >
-        {item}
-      </DynamicText>
+        <DynamicText fontFamily="Halver-Semibold" variant="xl">
+          {item}
+        </DynamicText>
+      </Box>
     );
   }
 
