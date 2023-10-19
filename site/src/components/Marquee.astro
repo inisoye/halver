@@ -165,100 +165,98 @@ const MARQUEE_CONTENT = [
 ]
 ---
 
-<div class='flex overflow-hidden'>
-  <div class='relative'>
-    <ul class='marquee flex'>
-      {
-        MARQUEE_CONTENT.map(
-          ({
-            mainHeading,
-            subheading,
-            subheadingClass,
-            containerClass,
-            textClass,
-            icon
-          }) => {
-            return (
-              <li
-                class:list={[
-                  containerClass,
-                  'mx-2 flex min-w-max flex-col justify-between rounded-xl px-6 py-8'
-                ]}
-              >
-                <div>
-                  <span
-                    class:list={[
-                      textClass,
-                      'marquee-heading mb-6 block max-w-[17ch] font-semibold leading-[1.05] tracking-tight',
-                      subheadingClass
-                    ]}
-                  >
-                    {mainHeading}
-                  </span>
-                  <small
-                    class:list={[
-                      textClass,
-                      'marquee-subheading mb-6 block max-w-[32ch] leading-tight opacity-70'
-                    ]}
-                  >
-                    {subheading}
-                  </small>
-                </div>
+<div class='marquee-container enable-animation'>
+  <ul class='marquee__content'>
+    {
+      MARQUEE_CONTENT.map(
+        ({
+          mainHeading,
+          subheading,
+          subheadingClass,
+          containerClass,
+          textClass,
+          icon
+        }) => {
+          return (
+            <li
+              class:list={[
+                containerClass,
+                'flex min-w-max flex-col justify-between px-6 py-8'
+              ]}
+            >
+              <div>
+                <span
+                  class:list={[
+                    textClass,
+                    'marquee-heading mb-6 block max-w-[17ch] font-semibold leading-[1.05] tracking-tight',
+                    subheadingClass
+                  ]}
+                >
+                  {mainHeading}
+                </span>
+                <small
+                  class:list={[
+                    textClass,
+                    'marquee-subheading mb-6 block max-w-[32ch] leading-tight opacity-70'
+                  ]}
+                >
+                  {subheading}
+                </small>
+              </div>
 
-                <Fragment set:html={icon} />
-              </li>
-            )
-          }
-        )
-      }
-    </ul>
+              <Fragment set:html={icon} />
+            </li>
+          )
+        }
+      )
+    }
+  </ul>
 
-    <ul class='marquee-2 absolute top-0 flex'>
-      {
-        MARQUEE_CONTENT.map(
-          ({
-            mainHeading,
-            subheading,
-            subheadingClass,
-            containerClass,
-            textClass,
-            icon
-          }) => {
-            return (
-              <li
-                class:list={[
-                  containerClass,
-                  'mx-2 flex min-w-max flex-col justify-between rounded-xl px-6 py-8'
-                ]}
-              >
-                <div>
-                  <span
-                    class:list={[
-                      textClass,
-                      'marquee-heading mb-6 block max-w-[17ch] font-semibold leading-[1.05] tracking-tight',
-                      subheadingClass
-                    ]}
-                  >
-                    {mainHeading}
-                  </span>
-                  <small
-                    class:list={[
-                      textClass,
-                      'marquee-subheading mb-6 block max-w-[32ch] leading-tight opacity-70'
-                    ]}
-                  >
-                    {subheading}
-                  </small>
-                </div>
+  <ul class='marquee__content' aria-hidden='true'>
+    {
+      MARQUEE_CONTENT.map(
+        ({
+          mainHeading,
+          subheading,
+          subheadingClass,
+          containerClass,
+          textClass,
+          icon
+        }) => {
+          return (
+            <li
+              class:list={[
+                containerClass,
+                'flex min-w-max flex-col justify-between px-6 py-8'
+              ]}
+            >
+              <div>
+                <span
+                  class:list={[
+                    textClass,
+                    'marquee-heading mb-6 block max-w-[17ch] font-semibold leading-[1.05] tracking-tight',
+                    subheadingClass
+                  ]}
+                >
+                  {mainHeading}
+                </span>
+                <small
+                  class:list={[
+                    textClass,
+                    'marquee-subheading mb-6 block max-w-[32ch] leading-tight opacity-70'
+                  ]}
+                >
+                  {subheading}
+                </small>
+              </div>
 
-                <Fragment set:html={icon} />
-              </li>
-            )
-          }
-        )
-      }
-    </ul>
-  </div>
+              <Fragment set:html={icon} />
+            </li>
+          )
+        }
+      )
+    }
+  </ul>
 </div>
 
 <style>
@@ -270,29 +268,39 @@ const MARQUEE_CONTENT = [
     font-size: var(--size-step-0);
   }
 
-  .marquee {
-    animation: marquee 16s linear infinite;
+  .marquee-container {
+    --gap: 0px;
+    display: flex;
+    overflow: hidden;
+    user-select: none;
+    gap: var(--gap);
   }
 
-  .marquee-2 {
-    animation: marquee2 16s linear infinite;
+  .marquee__content {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-around;
+    min-width: 100%;
+    gap: var(--gap);
   }
 
-  @keyframes marquee {
+  @keyframes scroll {
     from {
-      transform: translateX(0%);
+      transform: translateX(0);
     }
     to {
-      transform: translateX(-100%);
+      transform: translateX(calc(-100% - var(--gap)));
     }
   }
 
-  @keyframes marquee2 {
-    from {
-      transform: translateX(100%);
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__content {
+      animation-play-state: paused !important;
     }
-    to {
-      transform: translateX(0%);
-    }
+  }
+
+  /* Enable animation */
+  .enable-animation .marquee__content {
+    animation: scroll 20s linear infinite;
   }
 </style>
