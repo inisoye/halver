@@ -2,51 +2,7 @@
 import { Image } from 'astro:assets'
 import oneTimeHeroImage from '../assets/images/one-time-hero-image.png'
 import subscriptionImage from '../assets/images/subscription-hero-image.png'
-
-const SLIDER_CONTENT = [
-  {
-    containerClass: 'bg-[--button-neutral]',
-    textClass: 'text-[--button-text-neutral]',
-    mainHeading: 'Split payments, delightfully',
-    subheading:
-      'Put an end to the awkwardness of paying group bills at restaurants.',
-    // Icon: SplitPayments,
-    isDark: true,
-    mainHeadingMaxWidth: 200
-  },
-  {
-    containerClass: 'bg-[--button-apricot]',
-    textClass: 'text-[--button-text-apricot]',
-
-    mainHeading: 'Automatically share subscription costs',
-    subheading:
-      'Collect contributions for Netflix, Spotify Family, and more, with ease.',
-    // Icon: Subscriptions,
-    isDark: false,
-    mainHeadingMaxWidth: 250
-  },
-  {
-    containerClass: 'bg-[--button-casal]',
-    textClass: 'text-[--button-text-casal]',
-    mainHeading: 'Split your bills with up to sixteen people',
-    subheading:
-      'Drive costs down by adding more people to a bill. The more the merrier.',
-    // Icon: MultipleContributions,
-    isDark: true,
-    mainHeadingMaxWidth: 270
-  },
-  {
-    containerClass: 'bg-[--button-pharlap]',
-    textClass: 'text-[--button-text-pharlap]',
-    mainHeading: 'Track crowdfunded money without any foreign affiliations',
-    subheading:
-      'Forget GoFundMe. Raise money from Nigerians with your Nigerian bank account.',
-    subheadingClass: 'max-w-[24ch]',
-    // Icon: Donation,
-    isDark: false,
-    mainHeadingMaxWidth: 257
-  }
-]
+import Marquee from './Marquee.astro'
 ---
 
 <section class='relative h-max w-full'>
@@ -76,59 +32,11 @@ const SLIDER_CONTENT = [
     </h1>
   </div>
 
-  <ul>
-    {
-      SLIDER_CONTENT.map(
-        ({
-          mainHeading,
-          subheading,
-          subheadingClass,
-          containerClass,
-          textClass
-        }) => {
-          return (
-            <li class:list={[containerClass, 'px-6 py-8']}>
-              <span
-                class:list={[
-                  textClass,
-                  'slider-heading mb-6 block max-w-[17ch] leading-[1.05]',
-                  subheadingClass
-                ]}
-              >
-                {mainHeading}
-              </span>
-              <small
-                class:list={[
-                  textClass,
-                  'slider-subheading block max-w-[32ch] leading-tight opacity-70'
-                ]}
-              >
-                {subheading}
-              </small>
-            </li>
-          )
-        }
-      )
-    }
-  </ul>
+  <Marquee />
 </section>
 
 <style>
   h1 {
     font-size: var(--size-step-3);
-  }
-
-  .slider-heading {
-    font-size: var(--size-step-1);
-  }
-
-  .slider-subheading {
-    font-size: var(--size-step-0);
-  }
-
-  @media screen and (max-width: 319px) {
-    h1 {
-      font-size: var(--size-step-2);
-    }
   }
 </style>

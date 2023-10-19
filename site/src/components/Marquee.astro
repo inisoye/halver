@@ -1,0 +1,298 @@
+---
+const MARQUEE_CONTENT = [
+  {
+    containerClass: 'bg-[--button-neutral]',
+    textClass: 'text-[--button-text-neutral]',
+    mainHeading: 'Split payments, delightfully',
+    subheading:
+      'Put an end to the awkwardness of paying group bills at restaurants.',
+    icon: `<svg
+        width='50'
+        height='49'
+        viewBox='0 0 50 49'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+        class="ml-auto"
+      >
+        <path
+          d='M40.516 25.592a4.807 4.807 0 0 0-4.802 4.801c.2 6.348 9.409 6.34 9.604 0a4.807 4.807 0 0 0-4.801-4.801Zm1.506 7.546c-1.972 1.167-4.72-.434-4.641-2.745a3.138 3.138 0 0 1 3.135-3.135c3.2-.017 4.326 4.36 1.506 5.88Zm.808 4.461a.837.837 0 0 0-.808.005 3.165 3.165 0 0 1-3.014 0 .835.835 0 0 0-.808-.005 4.792 4.792 0 0 0-2.486 4.204v5.456c0 .461.373.834.833.834h7.937c.46 0 .833-.373.833-.834v-5.456a4.822 4.822 0 0 0-1.416-3.408 5.04 5.04 0 0 0-1.072-.796Zm.82 8.827h-6.27v-4.623c0-1.003.48-1.936 1.273-2.52a4.863 4.863 0 0 0 3.724 0c.123.091.241.191.353.297.594.603.92 1.392.92 2.223v4.623ZM9.484 25.592a4.807 4.807 0 0 0-4.802 4.801c.2 6.349 9.408 6.339 9.604 0a4.808 4.808 0 0 0-4.802-4.801Zm1.507 7.546c-1.974 1.166-4.72-.433-4.642-2.745a3.138 3.138 0 0 1 3.135-3.135c3.2-.017 4.326 4.36 1.507 5.88Zm.809 4.461a.835.835 0 0 0-.809.004c-.908.51-2.106.51-3.013 0-.73-.362-1.342.352-1.894.806a4.81 4.81 0 0 0-1.401 3.393v5.457c0 .46.373.833.833.833h7.937c.46 0 .833-.373.833-.833v-5.457A4.793 4.793 0 0 0 11.8 37.6Zm.82 8.826H6.35v-4.623c0-.83.326-1.62.904-2.207.12-.115.243-.22.369-.312a4.862 4.862 0 0 0 3.723 0 3.126 3.126 0 0 1 1.273 2.52v4.622Z'
+          fill="var(--button-text-neutral)"
+        />
+        <path
+          d='M49.166 0H32.65c-.307 0-.59.17-.735.441l-4.317 8.092a.833.833 0 0 0 .108.941l5.28 6.033-5.195 4.452a.839.839 0 0 0-.047 1.222l3.578 3.578-4.411 4.41a.833.833 0 0 0-.104 1.052l4.784 7.176-1.507 5.135a.833.833 0 0 0 .386.958c.274.111 2.593 1.603 2.864 1.51.82.031 1.156-1.167.414-1.557l-1.88-1.073 1.432-4.877a.833.833 0 0 0-.106-.696l-4.622-6.932 4.517-4.517a.834.834 0 0 0 0-1.179l-3.53-3.53 5.15-4.415a.838.838 0 0 0 .085-1.181L29.34 8.81l3.81-7.143h15.183V42.25l-1.667.952a.833.833 0 1 0 .827 1.447l2.087-1.193a.831.831 0 0 0 .42-.723V.833A.833.833 0 0 0 49.167 0ZM17.673 8.81l4.046-7.584c.3-.525-.124-1.247-.735-1.225H.834A.833.833 0 0 0 0 .834v41.9c0 .3.16.575.42.724l2.5 1.427c.947.528 1.772-.893.826-1.447l-2.08-1.187V1.668h17.928l-3.663 6.866a.833.833 0 0 0 .109.941l5.278 6.033-5.194 4.452a.839.839 0 0 0-.047 1.222l3.629 3.63-3.68 4.414a.833.833 0 0 0-.088.939l3.998 7.195-1.401 4.77-1.878 1.073a.833.833 0 1 0 .827 1.447l1.852-1.058a.835.835 0 0 0 .68-.59l1.617-5.508a.829.829 0 0 0-.071-.639l-3.89-7 3.802-4.562a.833.833 0 0 0-.052-1.123l-3.53-3.53 5.15-4.414a.838.838 0 0 0 .085-1.182l-5.454-6.233Z'
+          fill="var(--button-text-neutral)"
+        />
+        <path
+          d='M13.333 12.259c1.093-.018 1.097-1.649 0-1.667H5c-1.093.018-1.097 1.648 0 1.667h8.333Zm3.334 3.333a.833.833 0 0 0-.834-.833H6.667a.833.833 0 0 0 0 1.666h9.166c.46 0 .834-.373.834-.833Zm29.999 4.167a.833.833 0 0 0-.833-.834h-10a.833.833 0 0 0 0 1.667h10c.46 0 .834-.373.834-.833Zm-.833-3.334c1.094-.018 1.097-1.648 0-1.666h-6.666c-1.094.018-1.097 1.648 0 1.666h6.666Z'
+          fill="var(--button-text-neutral)"
+        />
+      </svg>`,
+    isDark: true,
+    mainHeadingMaxWidth: 200
+  },
+  {
+    containerClass: 'bg-[--button-apricot]',
+    textClass: 'text-[--button-text-apricot]',
+
+    mainHeading: 'Automatically share subscription costs',
+    subheading:
+      'Collect contributions for Netflix, Spotify Family, and more, with ease.',
+    icon: `<svg
+        width='83'
+        height='64'
+        viewBox='0 0 83 64'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+        class="ml-auto"
+      >
+        <path
+          d='M43.335 52.077v-12.77l5.17-.307v24l-5.17-.308m-6.154-12.769v12.77L32.013 63V39l5.17.308m-.013 0L48.517 63M32 39l11.348 23.692'
+          stroke='var(--button-text-apricot)'
+          stroke-width='1.4'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        />
+        <path
+          d='M61.591 10.348a.64.64 0 0 1-.767-.479 4.478 4.478 0 0 1 3.36-5.368.639.639 0 0 1 .766.48 4.478 4.478 0 0 1-3.36 5.365l.001.002ZM73.713 21.38a.638.638 0 0 1 .36.735c-1.18 4.896-2.43 7.486-4.028 7.854-.745.17-1.531.099-2.352-.206a3.327 3.327 0 0 0-3.465.718c-.743.715-1.505 1.172-2.286 1.352-2.354.542-7.9-5.81-8.816-9.786-.976-4.242.504-7.992 3.889-8.771 1.592-.366 3.021-.446 4.285-.24a1.91 1.91 0 0 0 1.512-.39c.833-.666 2.018-1.168 3.553-1.522 1.874-.43 3.719.127 5.492 1.625a.64.64 0 0 1 .077.902c-1.254 1.483-1.69 2.928-1.355 4.38.334 1.454 1.357 2.56 3.134 3.35Z'
+          stroke='var(--button-text-apricot)'
+          stroke-width='1.5'
+        />
+        <path
+          d='m23.301 15.725-7.144-2.142-1.292 4.309 7.145 2.142m1.291-4.31-1.291 4.31m1.291-4.31 7.145 2.142M23.3 15.725l1.292-4.309m-2.583 8.617 7.144 2.142m1.292-4.309-1.292 4.31m1.292-4.31 7.144 2.142m-7.144-2.142 1.291-4.308m-2.583 8.617 7.144 2.142m1.292-4.309-1.292 4.309m1.292-4.309 7.145 2.142m-7.145-2.142 1.292-4.309m-2.584 8.618 7.145 2.141 1.292-4.308m0 0 1.291-4.309m-21.433-6.425 7.144 2.142m-7.144-2.142 1.291-4.309L33.03 9.25l-1.292 4.309m0 0 7.145 2.141m0 0 7.144 2.142M38.883 15.7l1.291-4.308 7.145 2.141-1.292 4.309m-4.56-10.766 7.145 2.141-1.291 4.309-7.145-2.142 1.292-4.308Z'
+          stroke='var(--button-text-apricot)'
+          stroke-width='1.5'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        />
+        <path
+          d='m63.655 46.164-1.55 2.918-.765-3.215m13.74 2.991a1.167 1.167 0 1 0-2.315-.296l-.096.752a1.167 1.167 0 1 0 2.314.297l.097-.753Z'
+          stroke='var(--button-text-apricot)'
+          stroke-width='.6'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        />
+        <path
+          d='M64.95 45.3a.408.408 0 1 0 .104-.81.408.408 0 0 0-.104.81Z'
+          fill='var(--button-text-apricot)'
+        />
+        <path
+          d='m64.82 46.313-.393 3.067m6.866.287a1.167 1.167 0 0 1-1.08.455v0a1.167 1.167 0 0 1-1.01-1.306l.097-.752a1.167 1.167 0 0 1 1.306-1.009v0a1.167 1.167 0 0 1 1.009 1.306l-.048.376-2.315-.297m-1.109-.524a1.167 1.167 0 0 0-2.314-.297l-.097.752a1.167 1.167 0 0 0 2.315.297m-.149 1.157.594-4.629'
+          stroke='var(--button-text-apricot)'
+          stroke-width='.6'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        />
+        <path
+          d='M66.405 61.44c6.87.88 13.154-3.974 14.035-10.844.88-6.87-3.974-13.155-10.845-14.036-6.87-.88-13.154 3.974-14.035 10.845-.88 6.87 3.974 13.154 10.845 14.035Z'
+          stroke='var(--button-text-apricot)'
+          stroke-width='1.5'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        />
+        <path
+          d='M72.39 52.742c.677-.177 1.867-.378 2.158.085.314.5-.282 1.42-.814 2.127'
+          stroke='var(--button-text-apricot)'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        />
+        <path
+          d='M60.5 51.524c.914.94 3.761 2.562 6.963 2.972a9.918 9.918 0 0 0 6.111-1.027'
+          stroke='var(--button-text-apricot)'
+          stroke-width='1.5'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        />
+        <path
+          d='M12.533 25.657a12.187 12.187 0 1 0 14.783 8.861 12.199 12.199 0 0 0-14.783-8.86Zm5.466 21.826a10.313 10.313 0 1 1 7.498-12.51A10.324 10.324 0 0 1 18 47.484Zm3.655-13.48a.926.926 0 0 1-1.13.694 12.222 12.222 0 0 0-10.797 2.717.95.95 0 0 1-.395.207.937.937 0 0 1-.84-1.614 14.05 14.05 0 0 1 12.457-3.132.938.938 0 0 1 .705 1.129Zm-.877 3.639a.938.938 0 0 1-1.128.705 8.435 8.435 0 0 0-7.431 1.874.937.937 0 0 1-.384.205.938.938 0 0 1-.853-1.623 10.324 10.324 0 0 1 9.094-2.278.938.938 0 0 1 .703 1.117Zm-.873 3.65a.949.949 0 0 1-1.128.705 4.663 4.663 0 0 0-4.067 1.03 1.1 1.1 0 0 1-.386.194.937.937 0 0 1-.84-1.614 6.446 6.446 0 0 1 2.694-1.4 6.527 6.527 0 0 1 3.01-.04.937.937 0 0 1 .717 1.125Z'
+          fill='var(--button-text-apricot)'
+        />
+      </svg>`,
+    isDark: false,
+    mainHeadingMaxWidth: 250
+  },
+  {
+    containerClass: 'bg-[--button-casal]',
+    textClass: 'text-[--button-text-casal]',
+    mainHeading: 'Split your bills with up to sixteen people',
+    subheading:
+      'Drive costs down by adding more people to a bill. The more the merrier.',
+    icon: `<svg
+        width='78'
+        height='78'
+        viewBox='0 0 78 78'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+        class="ml-auto"
+      >
+        <circle
+          cx='39'
+          cy='39'
+          r='12.425'
+          stroke='var(--button-text-casal)'
+          stroke-width='1.4'
+        />
+        <path
+          d='M44.83 37.739v1.136H33.239v-1.136h11.59Zm0 2.454v1.137H33.239v-1.137h11.59Zm-1.182-6.704v11.636h-1.364l-6.34-9.136h-.114v9.136h-1.41V33.489h1.364l6.364 9.159h.113v-9.16h1.387ZM6.75 60.689l5.126 1.373 1.374-5.126-5.126-1.373-1.374 5.126Zm22.194-12.814H21.44l3.753 6.5 3.752-6.5Zm-18.619 11.5 13.878-8.012-.65-1.126L9.675 58.25l.65 1.125ZM.247 39 4 42.753 7.753 39 4 35.247.247 39Zm25.628 0-6.5-3.753v7.506l6.5-3.753ZM4 39.65h16.025v-1.3H4v1.3ZM39 .247 35.247 4 39 7.753 42.753 4 39 .247Zm0 25.628 3.753-6.5h-7.506l3.753 6.5ZM38.35 4v16.025h1.3V4h-1.3Zm-8.406 25.813-3.752-6.5-3.753 6.5h7.505ZM7.75 16.998l1.374 5.126 5.126-1.374-1.374-5.126-5.126 1.374Zm17.453 9.326-13.878-8.013-.65 1.126 13.878 8.012.65-1.125ZM77.467 39a3.467 3.467 0 1 0-6.934 0 3.467 3.467 0 0 0 6.934 0Zm-25.342 0 6.5 3.753v-7.506L52.125 39ZM74 38.35H57.975v1.3H74v-1.3Zm-25.375 9.4 3.753 6.5 3.753-6.5h-7.506Zm15.942 9.204a3.467 3.467 0 1 0 6.004 3.467 3.467 3.467 0 0 0-6.004-3.467Zm-11.2-5.716 13.877 8.012.65-1.125-13.878-8.013-.65 1.126Zm-6.492-22.3h7.506l-3.753-6.5-3.753 6.5Zm15.942-9.205a3.467 3.467 0 1 0 6.004-3.466 3.467 3.467 0 0 0-6.004 3.466Zm-10.55 6.842 13.877-8.012-.65-1.126-13.878 8.013.65 1.125ZM39 77.467a3.467 3.467 0 1 0 0-6.934 3.467 3.467 0 0 0 0 6.934Zm0-25.342-3.753 6.5h7.506L39 52.125ZM39.65 74V57.975h-1.3V74h1.3Z'
+          fill='var(--button-text-casal)'
+        />
+      </svg>`,
+    isDark: true,
+    mainHeadingMaxWidth: 270
+  },
+  {
+    containerClass: 'bg-[--button-pharlap]',
+    textClass: 'text-[--button-text-pharlap]',
+    mainHeading: 'Track crowdfunded money without any foreign affiliations',
+    subheading:
+      'Forget GoFundMe. Raise money from Nigerians with your Nigerian bank account.',
+    subheadingClass: 'max-w-[24ch]',
+    icon: `<svg
+        width='55'
+        height='44'
+        viewBox='0 0 55 44'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+        class="ml-auto"
+      >
+        <path
+          d='M53.073 27.553a4.847 4.847 0 0 0-4.229-.836l-11.688 2.676c.505-.863.77-1.845.77-2.845a5.689 5.689 0 0 0-5.689-5.689H20.371a6.593 6.593 0 0 0-4.693 1.944l-5.642 5.642H2.844A2.844 2.844 0 0 0 0 31.289v9.482a2.844 2.844 0 0 0 2.844 2.844h24.652c.08 0 .16-.009.238-.028l15.17-3.793c.048-.012.096-.028.142-.047l9.202-3.921.052-.024a4.882 4.882 0 0 0 .78-8.249h-.007ZM1.896 40.771v-9.482a.948.948 0 0 1 .948-.948h6.638v11.378H2.844a.948.948 0 0 1-.948-.948Zm49.572-6.678-9.104 3.88L27.38 41.72H11.378V29.786l5.641-5.641a4.705 4.705 0 0 1 3.352-1.39h11.866a3.793 3.793 0 0 1 0 7.586H25.6a.948.948 0 0 0 0 1.896h7.585a.94.94 0 0 0 .214-.023L49.28 28.56h.038a2.987 2.987 0 0 1 2.134 5.542l.016-.01ZM37.926 15.17c.7.002 1.396-.094 2.07-.284a7.586 7.586 0 1 0 5.345-8.908 7.586 7.586 0 1 0-7.415 9.192Zm15.17-1.896a5.69 5.69 0 1 1-11.378 0 5.69 5.69 0 0 1 11.379 0ZM37.927 1.896a5.69 5.69 0 0 1 5.627 4.85 7.585 7.585 0 0 0-3.73 6.201 5.69 5.69 0 1 1-1.897-11.05Z'
+          fill='var(--button-text-pharlap)'
+        />
+      </svg>`,
+    isDark: false,
+    mainHeadingMaxWidth: 257
+  }
+]
+---
+
+<div class='flex overflow-hidden'>
+  <div class='relative'>
+    <ul class='marquee flex'>
+      {
+        MARQUEE_CONTENT.map(
+          ({
+            mainHeading,
+            subheading,
+            subheadingClass,
+            containerClass,
+            textClass,
+            icon
+          }) => {
+            return (
+              <li
+                class:list={[
+                  containerClass,
+                  'mx-2 flex min-w-max flex-col justify-between rounded-xl px-6 py-8'
+                ]}
+              >
+                <div>
+                  <span
+                    class:list={[
+                      textClass,
+                      'marquee-heading mb-6 block max-w-[17ch] font-semibold leading-[1.05] tracking-tight',
+                      subheadingClass
+                    ]}
+                  >
+                    {mainHeading}
+                  </span>
+                  <small
+                    class:list={[
+                      textClass,
+                      'marquee-subheading mb-6 block max-w-[32ch] leading-tight opacity-70'
+                    ]}
+                  >
+                    {subheading}
+                  </small>
+                </div>
+
+                <Fragment set:html={icon} />
+              </li>
+            )
+          }
+        )
+      }
+    </ul>
+
+    <ul class='marquee-2 absolute top-0 flex'>
+      {
+        MARQUEE_CONTENT.map(
+          ({
+            mainHeading,
+            subheading,
+            subheadingClass,
+            containerClass,
+            textClass,
+            icon
+          }) => {
+            return (
+              <li
+                class:list={[
+                  containerClass,
+                  'mx-2 flex min-w-max flex-col justify-between rounded-xl px-6 py-8'
+                ]}
+              >
+                <div>
+                  <span
+                    class:list={[
+                      textClass,
+                      'marquee-heading mb-6 block max-w-[17ch] font-semibold leading-[1.05] tracking-tight',
+                      subheadingClass
+                    ]}
+                  >
+                    {mainHeading}
+                  </span>
+                  <small
+                    class:list={[
+                      textClass,
+                      'marquee-subheading mb-6 block max-w-[32ch] leading-tight opacity-70'
+                    ]}
+                  >
+                    {subheading}
+                  </small>
+                </div>
+
+                <Fragment set:html={icon} />
+              </li>
+            )
+          }
+        )
+      }
+    </ul>
+  </div>
+</div>
+
+<style>
+  .marquee-heading {
+    font-size: var(--size-step-1);
+  }
+
+  .marquee-subheading {
+    font-size: var(--size-step-0);
+  }
+
+  .marquee {
+    animation: marquee 16s linear infinite;
+  }
+
+  .marquee-2 {
+    animation: marquee2 16s linear infinite;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0%);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes marquee2 {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0%);
+    }
+  }
+</style>
