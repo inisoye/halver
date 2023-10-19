@@ -269,10 +269,9 @@ const MARQUEE_CONTENT = [
   }
 
   .marquee-container {
-    --gap: 0px;
+    --gap: 0rem;
     display: flex;
     overflow: hidden;
-    user-select: none;
     gap: var(--gap);
   }
 
@@ -299,7 +298,6 @@ const MARQUEE_CONTENT = [
     }
   }
 
-  /* Enable animation */
   .enable-animation .marquee__content {
     animation: scroll 20s linear infinite;
   }

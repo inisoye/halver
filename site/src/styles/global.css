@@ -53,8 +53,8 @@
     --element-background: var(--grayDark-3);
     --element-dark-background: var(--grayDark-2);
 
-    --border-default: var(--grayDarkA-5);
-    --border-darker: var(--grayDark-5);
+    --border-default: var(--grayDark-7);
+    --border-darker: var(--grayDark-8);
 
     --text-default: var(--grayDark-12);
     --text-inverse: var(--grayDark-1);
@@ -85,8 +85,8 @@
   --element-background: var(--grayDark-3);
   --element-dark-background: var(--grayDark-2);
 
-  --border-default: var(--grayDarkA-5);
-  --border-darker: var(--grayDark-5);
+  --border-default: var(--grayDark-7);
+  --border-darker: var(--grayDark-8);
 
   --text-default: var(--grayDark-12);
   --text-inverse: var(--grayDark-1);
