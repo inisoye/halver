@@ -2,30 +2,105 @@
 import { Image } from 'astro:assets'
 import oneTimeHeroImage from '../assets/images/one-time-hero-image.png'
 import subscriptionImage from '../assets/images/subscription-hero-image.png'
+
+const SLIDER_CONTENT = [
+  {
+    backgroundColor: 'bg-[--button-neutral]',
+    textColor: 'text-[--button-text-neutral]',
+    mainHeading: 'Split payments, delightfully',
+    subHeading:
+      'Put an end to the awkwardness of paying group bills at restaurants.',
+    // Icon: SplitPayments,
+    isDark: true,
+    mainHeadingMaxWidth: 200
+  },
+  {
+    backgroundColor: 'bg-[--button-apricot]',
+    textColor: 'text-[--button-text-apricot]',
+
+    mainHeading: 'Automatically share subscription costs',
+    subHeading:
+      'Collect contributions for Netflix, Spotify Family, and more, with ease.',
+    // Icon: Subscriptions,
+    isDark: false,
+    mainHeadingMaxWidth: 250
+  },
+  {
+    backgroundColor: 'bg-[--button-casal]',
+    textColor: 'text-[--button-text-casal]',
+    mainHeading: 'Split your bills with up to sixteen people',
+    subHeading:
+      'Drive costs down by adding more people to a bill. The more the merrier.',
+    // Icon: MultipleContributions,
+    isDark: true,
+    mainHeadingMaxWidth: 270
+  },
+  {
+    backgroundColor: 'bg-[--button-pharlap]',
+    textColor: 'text-[--button-text-pharlap]',
+    mainHeading: 'Track crowdfunded money without any foreign affiliations',
+    subHeading:
+      'Forget GoFundMe. Raise money from Nigerians with your Nigerian bank account.',
+    // Icon: Donation,
+    isDark: false,
+    mainHeadingMaxWidth: 257
+  }
+]
 ---
 
-<section class='relative h-max w-full px-6 py-12'>
-  <h1 class='max-w-[15ch] leading-[1.05] tracking-tight'>
-    Halver helps you split
-    <span class='relative inline-block text-[--text-casal]'>
-      one-time payments
-      <Image
-        aria-hidden
-        class='hero-image absolute max-w-[110%]'
-        src={oneTimeHeroImage}
-        alt='A group of ladies at lunch.'
-      />
-    </span>
-     and <span class='relative inline-block text-[--text-apricot]'>
-      subscriptions
-      <Image
-        aria-hidden
-        class='hero-image absolute -left-[30%] max-w-[125%]'
-        src={subscriptionImage}
-        alt='A group of friends watching subscription TV.'
-      />
-    </span> with ease.
-  </h1>
+<section class='relative h-max w-full'>
+  <div class='p-6 pt-12'>
+    <h1 class='max-w-[15ch] pb-[12em] leading-[1.05] tracking-tight'>
+      Halver helps you split
+      <span class='relative inline-block text-[--text-casal]'>
+        one-time payments
+        <Image
+          aria-hidden
+          class='hero-image absolute max-w-[110%]'
+          src={oneTimeHeroImage}
+          alt='A group of ladies at lunch.'
+        />
+      </span>
+       and <span class='relative inline-block text-[--text-apricot]'>
+        subscriptions
+        <Image
+          aria-hidden
+          class='hero-image absolute -left-[30%] max-w-[125%]'
+          src={subscriptionImage}
+          alt='A group of friends watching subscription TV.'
+        />
+      </span> with ease.
+    </h1>
+  </div>
+
+  <ul>
+    {
+      SLIDER_CONTENT.map(
+        ({ mainHeading, subHeading, backgroundColor, textColor }) => {
+          return (
+            <li class:list={[backgroundColor, 'px-6 py-8']}>
+              <span
+                class:list={[
+                  textColor,
+                  'slider-heading mb-6 block max-w-[17ch] leading-[1.05]'
+                ]}
+              >
+                {mainHeading}
+              </span>
+              <small
+                class:list={[
+                  textColor,
+                  'slider-subheading block max-w-[32ch] leading-tight'
+                ]}
+              >
+                {subHeading}
+              </small>
+            </li>
+          )
+        }
+      )
+    }
+  </ul>
 </section>
 
 <style>
@@ -33,9 +108,17 @@ import subscriptionImage from '../assets/images/subscription-hero-image.png'
     font-size: var(--size-step-3);
   }
 
-  @media screen and (max-width: 304px) {
-    .hero-image {
-      display: none;
+  .slider-heading {
+    font-size: var(--size-step-1);
+  }
+
+  .slider-subheading {
+    font-size: var(--size-step-0);
+  }
+
+  @media screen and (max-width: 319px) {
+    h1 {
+      font-size: var(--size-step-2);
     }
   }
 </style>
