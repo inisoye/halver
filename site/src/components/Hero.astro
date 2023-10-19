@@ -1,0 +1,41 @@
+---
+import { Image } from 'astro:assets'
+import oneTimeHeroImage from '../assets/images/one-time-hero-image.png'
+import subscriptionImage from '../assets/images/subscription-hero-image.png'
+---
+
+<section class='relative h-max w-full px-6 py-12'>
+  <h1 class='max-w-[15ch] leading-[1.05] tracking-tight'>
+    Halver helps you split
+    <span class='relative inline-block text-[--text-casal]'>
+      one-time payments
+      <Image
+        aria-hidden
+        class='hero-image absolute max-w-[110%]'
+        src={oneTimeHeroImage}
+        alt='A group of ladies at lunch.'
+      />
+    </span>
+     and <span class='relative inline-block text-[--text-apricot]'>
+      subscriptions
+      <Image
+        aria-hidden
+        class='hero-image absolute -left-[30%] max-w-[125%]'
+        src={subscriptionImage}
+        alt='A group of friends watching subscription TV.'
+      />
+    </span> with ease.
+  </h1>
+</section>
+
+<style>
+  h1 {
+    font-size: var(--size-step-3);
+  }
+
+  @media screen and (max-width: 304px) {
+    .hero-image {
+      display: none;
+    }
+  }
+</style>

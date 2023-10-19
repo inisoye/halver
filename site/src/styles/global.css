@@ -3,6 +3,7 @@
 
   --background: var(--grayLight-mainBg);
   --element-background: var(--grayLight-2);
+  --element-dark-background: var(--grayLight-2);
 
   --border-default: var(--grayLight-7);
   --border-darker: var(--grayLight-8);
@@ -11,8 +12,8 @@
   --text-inverse: var(--grayLight-1);
   --text-white: var(--grayLight-1);
   --text-black: var(--grayLight-12);
-  --text-Light: var(--grayLight-11);
-  --text-Lighter: var(--grayLight-10);
+  --text-light: var(--grayLight-11);
+  --text-lighter: var(--grayLight-10);
   --text-apricot: var(--brand-apricot-11);
   --text-casal: var(--brand-casal-7);
 
@@ -50,6 +51,7 @@
   :root:not([data-user-color-scheme]) {
     --background: var(--grayDark-1);
     --element-background: var(--grayDark-3);
+    --element-dark-background: var(--grayDark-2);
 
     --border-default: var(--grayDarkA-5);
     --border-darker: var(--grayDark-5);
@@ -61,7 +63,7 @@
     --text-Light: var(--grayDark-11);
     --text-Lighter: var(--grayDark-10);
     --text-apricot: var(--brand-apricot-6);
-    --text-casal: var(--brand-casal-4);
+    --text-casal: var(--brand-casal-5);
 
     --logo-apricot: var(--brand-apricot-8);
     --logo-casal: var(--brand-casal-7);
@@ -81,6 +83,7 @@
 [data-user-color-scheme='dark'] {
   --background: var(--grayDark-1);
   --element-background: var(--grayDark-3);
+  --element-dark-background: var(--grayDark-2);
 
   --border-default: var(--grayDarkA-5);
   --border-darker: var(--grayDark-5);
@@ -92,7 +95,7 @@
   --text-Light: var(--grayDark-11);
   --text-Lighter: var(--grayDark-10);
   --text-apricot: var(--brand-apricot-6);
-  --text-casal: var(--brand-casal-4);
+  --text-casal: var(--brand-casal-5);
 
   --logo-apricot: var(--brand-apricot-8);
   --logo-casal: var(--brand-casal-7);
@@ -112,7 +115,7 @@
   font-display: swap;
   font-family: 'Halver Sans';
   font-style: normal;
-  font-weight: normal;
+  font-weight: 500;
   src: url('/fonts/HalverSansMedium.woff2') format('woff2');
 }
 
@@ -128,7 +131,7 @@ body {
   background: var(--background);
   font-size: var(--size-step-0);
   color: var(--text-default);
-  font-weight: 600;
+  font-weight: 500;
   font-family: 'Halver Sans', system-ui, sans-serif;
 }
 
@@ -140,6 +143,7 @@ h5,
 h6 {
   font-weight: 600;
   text-wrap: balance;
+  line-height: 1.1;
 }
 
 h1 {

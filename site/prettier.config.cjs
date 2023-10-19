@@ -8,6 +8,7 @@ module.exports = {
     'prettier-plugin-tailwindcss'
   ],
   printWidth: 80,
+  htmlWhitespaceSensitivity: 'ignore',
   importOrder: ['^@/(.*)$', '^[./]'],
   importOrderBuiltinModulesToTop: true,
   importOrderCaseInsensitive: true,
@@ -20,7 +21,8 @@ module.exports = {
     {
       files: '*.astro',
       options: {
-        parser: 'astro'
+        parser: 'astro',
+     
       }
     }
   ]
