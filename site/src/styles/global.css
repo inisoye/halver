@@ -1,0 +1,169 @@
+:root {
+  --color-mode: 'light';
+
+  --background: var(--grayLight-mainBg);
+  --element-background: var(--grayLight-2);
+
+  --border-default: var(--grayLight-7);
+  --border-darker: var(--grayLight-8);
+
+  --text-default: var(--grayLight-12);
+  --text-inverse: var(--grayLight-1);
+  --text-white: var(--grayLight-1);
+  --text-black: var(--grayLight-12);
+  --text-Light: var(--grayLight-11);
+  --text-Lighter: var(--grayLight-10);
+  --text-apricot: var(--brand-apricot-11);
+  --text-casal: var(--brand-casal-7);
+
+  --text-intro-marquee-dark: var(--grayLight-1);
+  --text-intro-marquee-light: var(--grayDark-3);
+
+  --logo-apricot: var(--brand-apricot-6);
+  --logo-casal: var(--brand-casal-7);
+
+  --button-apricot: var(--brand-apricot-7);
+  --button-casal: var(--brand-casal-7);
+  --button-pharlap: var(--brand-pharlap-7);
+  --button-neutral: var(--grayLight-2);
+
+  --button-text-apricot: var(--grayLight-1);
+  --button-text-casal: var(--grayLight-1);
+  --button-text-pharlap: var(--grayLight-1);
+  --button-text-neutral: var(--grayLight-12);
+
+  --size-step--2: clamp(0.6331rem, 0.6424rem + -0.012vw, 0.64rem);
+  --size-step--1: clamp(0.8rem, 0.7848rem + 0.0761vw, 0.8438rem);
+  --size-step-0: clamp(1rem, 0.9565rem + 0.2174vw, 1.125rem);
+  --size-step-1: clamp(1.25rem, 1.1633rem + 0.4337vw, 1.4994rem);
+  --size-step-2: clamp(1.5625rem, 1.4108rem + 0.7587vw, 1.9988rem);
+  --size-step-3: clamp(1.9531rem, 1.7057rem + 1.237vw, 2.6644rem);
+  --size-step-4: clamp(2.4413rem, 2.0549rem + 1.9315vw, 3.5519rem);
+  --size-step-5: clamp(3.0519rem, 2.4664rem + 2.9272vw, 4.735rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-mode: 'dark';
+  }
+
+  :root:not([data-user-color-scheme]) {
+    --background: var(--grayDark-1);
+    --element-background: var(--grayDark-3);
+
+    --border-default: var(--grayDarkA-5);
+    --border-darker: var(--grayDark-5);
+
+    --text-default: var(--grayDark-12);
+    --text-inverse: var(--grayDark-1);
+    --text-white: var(--grayDark-12);
+    --text-black: var(--grayDark-1);
+    --text-Light: var(--grayDark-11);
+    --text-Lighter: var(--grayDark-10);
+    --text-apricot: var(--brand-apricot-6);
+    --text-casal: var(--brand-casal-4);
+
+    --logo-apricot: var(--brand-apricot-8);
+    --logo-casal: var(--brand-casal-7);
+
+    --button-apricot: var(--brand-apricot-6);
+    --button-casal: var(--brand-casal-7);
+    --button-pharlap: var(--brand-pharlap-6);
+    --button-neutral: var(--grayDark-3);
+
+    --button-text-apricot: var(--grayDark-1);
+    --button-text-casal: var(--grayDark-12);
+    --button-text-pharlap: var(--grayDark-1);
+    --button-text-neutral: var(--grayDark-12);
+  }
+}
+
+[data-user-color-scheme='dark'] {
+  --background: var(--grayDark-1);
+  --element-background: var(--grayDark-3);
+
+  --border-default: var(--grayDarkA-5);
+  --border-darker: var(--grayDark-5);
+
+  --text-default: var(--grayDark-12);
+  --text-inverse: var(--grayDark-1);
+  --text-white: var(--grayDark-12);
+  --text-black: var(--grayDark-1);
+  --text-Light: var(--grayDark-11);
+  --text-Lighter: var(--grayDark-10);
+  --text-apricot: var(--brand-apricot-6);
+  --text-casal: var(--brand-casal-4);
+
+  --logo-apricot: var(--brand-apricot-8);
+  --logo-casal: var(--brand-casal-7);
+
+  --button-apricot: var(--brand-apricot-6);
+  --button-casal: var(--brand-casal-7);
+  --button-pharlap: var(--brand-pharlap-6);
+  --button-neutral: var(--grayDark-3);
+
+  --button-text-apricot: var(--grayDark-1);
+  --button-text-casal: var(--grayDark-12);
+  --button-text-pharlap: var(--grayDark-1);
+  --button-text-neutral: var(--grayDark-12);
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Halver Sans';
+  font-style: normal;
+  font-weight: normal;
+  src: url('/fonts/HalverSansMedium.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Halver Sans';
+  font-style: normal;
+  font-weight: 600;
+  src: url('/fonts/HalverSansSemibold.woff2') format('woff2');
+}
+
+body {
+  background: var(--background);
+  font-size: var(--size-step-0);
+  color: var(--text-default);
+  font-weight: 600;
+  font-family: 'Halver Sans', system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+h1 {
+  max-width: 20ch;
+}
+
+h2,
+h3 {
+  max-width: 28ch;
+}
+
+:is(h1, h2, h3, blockquote) {
+  --flow-space: 1.5em;
+}
+
+:is(h1, h2, h3) + * {
+  --flow-space: 0.5em;
+}
+
+main {
+  max-width: 65ch;
+  margin-inline: auto;
+}
+
+main > * + * {
+  margin-block-start: var(--flow-space, 1em);
+}

@@ -1,16 +1,39 @@
 ---
+import '../styles/global.css'
+import * as colors from '../theme/colors'
+
 interface Props {
   title: string
 }
 
+interface ColorsModule {
+  [key: string]: {
+    [key: string]: string
+  }
+}
+
 const { title } = Astro.props
+
+const flattenedColors: { [key: string]: string } = {}
+
+for (const key in colors) {
+  if (colors.hasOwnProperty(key)) {
+    for (const innerKey in (colors as ColorsModule)[key]) {
+      const flatKey = `${key}-${innerKey}`
+      flattenedColors[flatKey] = (colors as ColorsModule)[key][innerKey]
+    }
+  }
+}
 ---
 
 <!doctype html>
 <html lang='en'>
   <head>
     <meta charset='UTF-8' />
-    <meta name='description' content='Astro description' />
+    <meta
+      name='description'
+      content='Halver helps you split one-time payments and subscriptions with ease.'
+    />
     <meta name='viewport' content='width=device-width' />
 
     <link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png' />
@@ -31,34 +54,4 @@ const { title } = Astro.props
   </body>
 </html>
 
-<style is:global>
-  :root {
-    --accent: 136, 58, 234;
-    --accent-light: 224, 204, 250;
-    --accent-dark: 49, 10, 101;
-    --accent-gradient: linear-gradient(
-      45deg,
-      rgb(var(--accent)),
-      rgb(var(--accent-light)) 30%,
-      white 60%
-    );
-  }
-
-  html {
-    font-family: system-ui, sans-serif;
-    background: #161616;
-    background-size: 224px;
-  }
-
-  code {
-    font-family:
-      Menlo,
-      Monaco,
-      Lucida Console,
-      Liberation Mono,
-      DejaVu Sans Mono,
-      Bitstream Vera Sans Mono,
-      Courier New,
-      monospace;
-  }
-</style>
+<style is:global define:vars={flattenedColors}></style>
