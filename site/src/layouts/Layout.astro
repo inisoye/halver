@@ -17,11 +17,9 @@ const { title } = Astro.props
 const flattenedColors: { [key: string]: string } = {}
 
 for (const key in colors) {
-  if (colors.hasOwnProperty(key)) {
-    for (const innerKey in (colors as ColorsModule)[key]) {
-      const flatKey = `${key}-${innerKey}`
-      flattenedColors[flatKey] = (colors as ColorsModule)[key][innerKey]
-    }
+  for (const innerKey in (colors as ColorsModule)[key]) {
+    const flatKey = `${key}-${innerKey}`
+    flattenedColors[flatKey] = (colors as ColorsModule)[key][innerKey]
   }
 }
 ---
