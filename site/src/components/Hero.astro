@@ -5,42 +5,43 @@ import subscriptionImage from '../assets/images/subscription-hero-image.png'
 
 const SLIDER_CONTENT = [
   {
-    backgroundColor: 'bg-[--button-neutral]',
-    textColor: 'text-[--button-text-neutral]',
+    containerClass: 'bg-[--button-neutral]',
+    textClass: 'text-[--button-text-neutral]',
     mainHeading: 'Split payments, delightfully',
-    subHeading:
+    subheading:
       'Put an end to the awkwardness of paying group bills at restaurants.',
     // Icon: SplitPayments,
     isDark: true,
     mainHeadingMaxWidth: 200
   },
   {
-    backgroundColor: 'bg-[--button-apricot]',
-    textColor: 'text-[--button-text-apricot]',
+    containerClass: 'bg-[--button-apricot]',
+    textClass: 'text-[--button-text-apricot]',
 
     mainHeading: 'Automatically share subscription costs',
-    subHeading:
+    subheading:
       'Collect contributions for Netflix, Spotify Family, and more, with ease.',
     // Icon: Subscriptions,
     isDark: false,
     mainHeadingMaxWidth: 250
   },
   {
-    backgroundColor: 'bg-[--button-casal]',
-    textColor: 'text-[--button-text-casal]',
+    containerClass: 'bg-[--button-casal]',
+    textClass: 'text-[--button-text-casal]',
     mainHeading: 'Split your bills with up to sixteen people',
-    subHeading:
+    subheading:
       'Drive costs down by adding more people to a bill. The more the merrier.',
     // Icon: MultipleContributions,
     isDark: true,
     mainHeadingMaxWidth: 270
   },
   {
-    backgroundColor: 'bg-[--button-pharlap]',
-    textColor: 'text-[--button-text-pharlap]',
+    containerClass: 'bg-[--button-pharlap]',
+    textClass: 'text-[--button-text-pharlap]',
     mainHeading: 'Track crowdfunded money without any foreign affiliations',
-    subHeading:
+    subheading:
       'Forget GoFundMe. Raise money from Nigerians with your Nigerian bank account.',
+    subheadingClass: 'max-w-[24ch]',
     // Icon: Donation,
     isDark: false,
     mainHeadingMaxWidth: 257
@@ -50,7 +51,9 @@ const SLIDER_CONTENT = [
 
 <section class='relative h-max w-full'>
   <div class='p-6 pt-12'>
-    <h1 class='max-w-[15ch] pb-[12em] leading-[1.05] tracking-tight'>
+    <h1
+      class='max-w-[15ch] pb-[12em] font-medium leading-[1.05] tracking-tight'
+    >
       Halver helps you split
       <span class='relative inline-block text-[--text-casal]'>
         one-time payments
@@ -76,24 +79,31 @@ const SLIDER_CONTENT = [
   <ul>
     {
       SLIDER_CONTENT.map(
-        ({ mainHeading, subHeading, backgroundColor, textColor }) => {
+        ({
+          mainHeading,
+          subheading,
+          subheadingClass,
+          containerClass,
+          textClass
+        }) => {
           return (
-            <li class:list={[backgroundColor, 'px-6 py-8']}>
+            <li class:list={[containerClass, 'px-6 py-8']}>
               <span
                 class:list={[
-                  textColor,
-                  'slider-heading mb-6 block max-w-[17ch] leading-[1.05]'
+                  textClass,
+                  'slider-heading mb-6 block max-w-[17ch] leading-[1.05]',
+                  subheadingClass
                 ]}
               >
                 {mainHeading}
               </span>
               <small
                 class:list={[
-                  textColor,
-                  'slider-subheading block max-w-[32ch] leading-tight'
+                  textClass,
+                  'slider-subheading block max-w-[32ch] leading-tight opacity-70'
                 ]}
               >
-                {subHeading}
+                {subheading}
               </small>
             </li>
           )

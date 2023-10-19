@@ -23,7 +23,7 @@
   --logo-apricot: var(--brand-apricot-6);
   --logo-casal: var(--brand-casal-7);
 
-  --button-apricot: var(--brand-apricot-7);
+  --button-apricot: var(--brand-apricot-9);
   --button-casal: var(--brand-casal-7);
   --button-pharlap: var(--brand-pharlap-7);
   --button-neutral: var(--grayLight-2);
@@ -141,7 +141,6 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: 600;
   text-wrap: balance;
   line-height: 1.1;
 }
