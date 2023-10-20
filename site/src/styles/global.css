@@ -41,6 +41,23 @@
   --size-step-3: clamp(1.9531rem, 1.7057rem + 1.237vw, 2.6644rem);
   --size-step-4: clamp(2.4413rem, 2.0549rem + 1.9315vw, 3.5519rem);
   --size-step-5: clamp(3.0519rem, 2.4664rem + 2.9272vw, 4.735rem);
+
+  --shadow-color: 240deg 1% 58%;
+  --shadow-elevation-low: 0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.34),
+    0.4px 0.8px 1px -1.2px hsl(var(--shadow-color) / 0.34),
+    1px 2px 2.5px -2.5px hsl(var(--shadow-color) / 0.34);
+  --shadow-elevation-medium: 0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.36),
+    0.8px 1.6px 2px -0.8px hsl(var(--shadow-color) / 0.36),
+    2.1px 4.1px 5.2px -1.7px hsl(var(--shadow-color) / 0.36),
+    5px 10px 12.6px -2.5px hsl(var(--shadow-color) / 0.36);
+  --shadow-elevation-high: 0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.34),
+    1.5px 2.9px 3.7px -0.4px hsl(var(--shadow-color) / 0.34),
+    2.7px 5.4px 6.8px -0.7px hsl(var(--shadow-color) / 0.34),
+    4.5px 8.9px 11.2px -1.1px hsl(var(--shadow-color) / 0.34),
+    7.1px 14.3px 18px -1.4px hsl(var(--shadow-color) / 0.34),
+    11.2px 22.3px 28.1px -1.8px hsl(var(--shadow-color) / 0.34),
+    17px 33.9px 42.7px -2.1px hsl(var(--shadow-color) / 0.34),
+    25px 50px 62.9px -2.5px hsl(var(--shadow-color) / 0.34);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -77,6 +94,11 @@
     --button-text-casal: var(--grayDark-12);
     --button-text-pharlap: var(--grayDark-1);
     --button-text-neutral: var(--grayDark-12);
+
+    --shadow-color: unset;
+    --shadow-elevation-low: unset;
+    --shadow-elevation-medium: unset;
+    --shadow-elevation-high: unset;
   }
 }
 
@@ -109,6 +131,11 @@
   --button-text-casal: var(--grayDark-12);
   --button-text-pharlap: var(--grayDark-1);
   --button-text-neutral: var(--grayDark-12);
+
+  --shadow-color: unset;
+  --shadow-elevation-low: unset;
+  --shadow-elevation-medium: unset;
+  --shadow-elevation-high: unset;
 }
 
 @font-face {

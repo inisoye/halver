@@ -168,7 +168,7 @@ const MARQUEE_CONTENT = [
 <div class='marquee-container enable-animation relative'>
   <h2 class='sr-only'>A few things you can do with halver</h2>
 
-  <ul class='marquee__content'>
+  <ul class='marquee__content pb-0.5'>
     {
       MARQUEE_CONTENT.map(
         ({
@@ -183,7 +183,7 @@ const MARQUEE_CONTENT = [
             <li
               class:list={[
                 containerClass,
-                'flex min-w-max flex-col justify-between rounded-lg p-5'
+                'card-container flex min-w-max flex-col justify-between rounded-lg p-5'
               ]}
             >
               <div>
@@ -214,7 +214,7 @@ const MARQUEE_CONTENT = [
     }
   </ul>
 
-  <ul class='marquee__content' aria-hidden='true'>
+  <ul class='marquee__content pb-0.5' aria-hidden='true'>
     {
       MARQUEE_CONTENT.map(
         ({
@@ -229,7 +229,7 @@ const MARQUEE_CONTENT = [
             <li
               class:list={[
                 containerClass,
-                'flex min-w-max flex-col justify-between rounded-lg p-5'
+                'card-container flex min-w-max flex-col justify-between rounded-lg p-5'
               ]}
             >
               <div>
@@ -302,5 +302,9 @@ const MARQUEE_CONTENT = [
 
   .enable-animation .marquee__content {
     animation: scroll 20s linear infinite;
+  }
+
+  .card-container {
+    box-shadow: var(--shadow-elevation-low);
   }
 </style>
