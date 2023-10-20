@@ -3,7 +3,7 @@ import { Image } from 'astro:assets'
 import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
 ---
 
-<section class='relative flex h-max w-full flex-col gap-16 py-12'>
+<section class='flex h-max w-full flex-col gap-16 py-12'>
   <div class='flex flex-col gap-8 px-6'>
     <h2 class='relative w-max max-w-[15ch] leading-[1.05] tracking-tight'>
       How it works
@@ -58,10 +58,19 @@ import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
   </div>
 
   <ol id='list-container' class='flex flex-col gap-8 px-6'>
-    <li id='list-item-1' class='relative'>
+    <li id='list-item-1' class='flex flex-col gap-6'>
+      <div class='mx-auto w-max'>
+        <Image
+          src={keyDatailsImage}
+          class='max-w-[300px]'
+          id='list-item-image-1'
+          alt='A group of friends watching subscription TV.'
+        />
+      </div>
+
       <div
         id='list-item-card-1'
-        class='list-item-card sticky rounded-lg bg-[--element-background] p-6'
+        class='list-item-card sticky bottom-6 mt-auto rounded-lg bg-[--element-background] p-6'
       >
         <span
           aria-hidden
@@ -100,15 +109,6 @@ import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
         >
           Specify how much, how often and how quickly you want to be paid
         </p>
-      </div>
-
-      <div class='mx-auto w-max pb-60'>
-        <Image
-          src={keyDatailsImage}
-          class='-mt-[200px] max-w-[300px]'
-          id='list-item-image-1'
-          alt='A group of friends watching subscription TV.'
-        />
       </div>
     </li>
   </ol>
@@ -152,11 +152,6 @@ import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
   p,
   small {
     text-wrap: balance;
-  }
-
-  .list-item-card {
-    top: calc(100dvh - 240px);
-    /* top: 24px; */
   }
 
   .list-item-number {
