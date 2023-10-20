@@ -1,6 +1,8 @@
 ---
 import { Image } from 'astro:assets'
-import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
+import keyDetailsImage from '../assets/images/how-it-works/key-details.png'
+import selectParticipantsImage from '../assets/images/how-it-works/select-participants.png'
+import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
 ---
 
 <section class='flex h-max w-full flex-col gap-16'>
@@ -58,25 +60,52 @@ import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
   </div>
 
   <ol id='list-container' class='flex flex-col gap-8 px-6'>
-    <li id='list-item-1' class='flex flex-col gap-6'>
-      <div class='mx-auto w-max'>
+    <li id='list-item-1' class='item flex flex-col gap-6'>
+      <div
+        class='list-item-image-container mx-auto my-12 w-max py-20 opacity-0'
+      >
         <Image
-          src={keyDatailsImage}
-          class='max-w-[300px]'
+          src={keyDetailsImage}
+          class='list-item-image max-w-[240px]'
           id='list-item-image-1'
           alt='A group of friends watching subscription TV.'
+          data-index='0'
+        />
+      </div>
+
+      <div
+        class='list-item-image-container mx-auto my-12 w-max py-20 opacity-0'
+      >
+        <Image
+          src={selectParticipantsImage}
+          class='list-item-image max-w-[240px]'
+          id='list-item-image-2'
+          alt='A group of friends watching subscription TV.'
+          data-index='1'
+        />
+      </div>
+
+      <div
+        class='list-item-image-container mx-auto my-12 w-max py-20 opacity-0'
+      >
+        <Image
+          src={splitBreakdown}
+          class='list-item-image max-w-[240px]'
+          id='list-item-image-3'
+          alt='A group of friends watching subscription TV.'
+          data-index='2'
         />
       </div>
 
       <div
         id='list-item-card-1'
-        class='list-item-card sticky bottom-6 mt-auto rounded-lg bg-[--element-background] p-6'
+        class='list-item-card sticky bottom-6 mt-auto rounded-lg bg-black/10 p-6 backdrop-blur-xl transition duration-700 ease-in-out dark:bg-white/5'
       >
         <span
           aria-hidden
-          class='list-item-number relative mb-12 flex h-[50px] w-[89px] items-center justify-center'
+          class='list-item-number overflow-visible relative mb-12 flex h-[50px] w-[89px] items-center justify-center'
         >
-          <span>1</span>
+          <span id='list-item-number-1' class='list-item-number'>1</span>
 
           <svg
             width='89'
@@ -89,6 +118,7 @@ import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
             <path
               d='M68.21 7.595c-13.882-9.652-40.576-8.019-54.278.427C7.692 11.87-3.815 23.015 3.187 33.54c1.235 1.856 2.736 3.364 4.29 4.669 17.092 14.359 40.932 12.897 59.277 4.305 2.736-1.282 5.428-2.803 7.905-4.87 1.852-1.547 3.643-3.464 5.086-5.7 4.222-6.548 3.12-13.137-1.424-18.689-5.268-6.436-12.471-8.43-19.269-9.522-5.943-.956-11.88-1.139-17.851-.75C30 3.715 17.094 4.878 7.7 13.677 3.6 17.52-.809 25.732 2.708 32.38c3.81 7.203 12.796 9.535 18.84 11.055 16.304 4.1 42.101 2.068 56.952-8.693 1.602-1.16 3.224-2.241 4.657-3.767a27.292 27.292 0 0 0 3.156-4.068c6.663-10.544-8.206-17.174-13.45-18.313-16.495-3.581-40.91-8.75-56.101.778'
               stroke='#3D737D'
+              id='list-number-highlight-1'
               stroke-width='2'
               stroke-miterlimit='1.5'
               stroke-linecap='round'
@@ -105,6 +135,7 @@ import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
           Add key bill details
         </p>
         <p
+          id='list-item-subheading-1'
           class='list-item-subheading max-w-[27ch] leading-tight text-[--text-light]'
         >
           Specify how much, how often and how quickly you want to be paid
@@ -117,19 +148,105 @@ import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
 <script>
   import { enterView } from '../utils/enterView'
 
+  interface Content {
+    number: string
+    heading: string
+    subheading: string
+    highlightClass: string
+  }
+
+  const contentMap: { [key: string]: Content } = {
+    '0': {
+      number: '1',
+      heading: 'Add key bill details',
+      subheading:
+        'Specify how much, how often and how quickly you want to be paid.',
+      highlightClass: 'stroke---button-casal]'
+    },
+    '1': {
+      number: '2',
+      heading: 'Select participants on the bill',
+      subheading: 'Pick out who will be contributing from your contact list.',
+      highlightClass: 'stroke-[--button-apricot]'
+    },
+    '2': {
+      number: '3',
+      heading: 'Specify the split breakdown',
+      subheading: 'Enter the amount each participant is to contribute.',
+      highlightClass: 'stroke-[--button-pharlap]'
+    }
+  }
+
+  const indices = Object.keys(contentMap)
+
+  const cardNode = document.getElementById('list-item-card-1')
+  const numberNode = document.getElementById('list-item-number-1')
+  const numberHighlightNode = document.getElementById('list-number-highlight-1')
+  const headingNode = document.getElementById('list-item-heading-1')
+  const subheadingNode = document.getElementById('list-item-subheading-1')
+
+  function updateText(index: string) {
+    if (numberNode) numberNode.textContent = contentMap[index].number
+    if (headingNode) headingNode.textContent = contentMap[index].heading
+    if (subheadingNode)
+      subheadingNode.textContent = contentMap[index].subheading
+  }
+
   enterView({
-    selector: '.list-item-card',
+    selector: '.list-item-image',
     enter: function (el) {
-      el.classList.add('bg-red-200')
+      const index = el.dataset.index
+
+      if (!index) return
+
+      const unselectedIndices = indices.filter((i) => i !== index)
+
+      if (numberHighlightNode && index) {
+        numberHighlightNode.classList.add(contentMap[index].highlightClass)
+
+        unselectedIndices.forEach((index) => {
+          numberHighlightNode.classList.remove(contentMap[index].highlightClass)
+        })
+      }
+
+      updateText(index)
     },
     exit: function (el) {
-      el.classList.remove('bg-red-200')
+      const index = el.dataset.index
+      const mountedIndexNumber = Number(index) - 1
+      const mountedIndex =
+        mountedIndexNumber < 0 ? '0' : String(mountedIndexNumber)
+
+      const unselectedIndices = indices.filter((i) => i !== mountedIndex)
+
+      if (numberHighlightNode && mountedIndex) {
+        numberHighlightNode.classList.add(
+          contentMap[mountedIndex].highlightClass
+        )
+
+        unselectedIndices.forEach((index) => {
+          numberHighlightNode.classList.remove(contentMap[index].highlightClass)
+        })
+      }
+
+      updateText(mountedIndex)
     },
     progress: function (el, progress) {
-      // el.style.opacity = `${progress}`
+      const scale = 1 + progress / 3
+      el.style.transform = `scale(${scale})`
+
+      if (numberHighlightNode?.parentElement) {
+        // Calculate the rotation angle based on progress (for example, rotating 45 degrees)
+        const rotationAngle = progress * 180 // Adjust the value as needed
+        numberHighlightNode.parentElement.style.transformOrigin = 'center center' // Center the transform origin
+        numberHighlightNode.parentElement.style.transform = `rotate(${rotationAngle}deg)`
+      }
+
+      if (el.parentElement) {
+        el.parentElement.style.opacity = `${progress + 0.1}`
+      }
     },
-    offset: 0.5 // enter at middle of viewport
-    // once: true // trigger just once
+    offset: 0.3
   })
 </script>
 
@@ -144,7 +261,7 @@ import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
   }
 
   .list-item-number {
-    font-size: var(--size-step-1);
+    font-size: var(--size-step-0);
   }
 
   .list-item-heading {

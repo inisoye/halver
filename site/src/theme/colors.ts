@@ -74,6 +74,51 @@ export const yellowLight = {
   12: '#473b1f'
 }
 
+export const bronzeLight = {
+  1: '#fdfcfc',
+  2: '#fdf7f5',
+  3: '#f6edea',
+  4: '#efe4df',
+  5: '#e7d9d3',
+  6: '#dfcdc5',
+  7: '#d3bcb3',
+  8: '#c2a499',
+  9: '#a18072',
+  10: '#957468',
+  11: '#7d5e54',
+  12: '#43302b'
+}
+
+export const tomatoLight = {
+  1: '#fffcfc',
+  2: '#fff8f7',
+  3: '#feebe7',
+  4: '#ffdcd3',
+  5: '#ffcdc2',
+  6: '#fdbdaf',
+  7: '#f5a898',
+  8: '#ec8e7b',
+  9: '#e54d2e',
+  10: '#dd4425',
+  11: '#d13415',
+  12: '#5c271f'
+}
+
+export const tealLight = {
+  1: '#fafefd',
+  2: '#f3fbf9',
+  3: '#e0f8f3',
+  4: '#ccf3ea',
+  5: '#b8eae0',
+  6: '#a1ded2',
+  7: '#83cdc1',
+  8: '#53b9ab',
+  9: '#12a594',
+  10: '#0d9b8a',
+  11: '#008573',
+  12: '#0d3d38'
+}
+
 export const grayDark = {
   1: '#111111',
   2: '#191919',
@@ -146,6 +191,51 @@ export const yellowDark = {
   10: '#ffff57',
   11: '#f5e147',
   12: '#f6eeb4'
+}
+
+export const bronzeDark = {
+  1: '#141110',
+  2: '#1c1917',
+  3: '#262220',
+  4: '#302a27',
+  5: '#3b3330',
+  6: '#493e3a',
+  7: '#5a4c47',
+  8: '#6f5f58',
+  9: '#a18072',
+  10: '#ae8c7e',
+  11: '#d4b3a5',
+  12: '#ede0d9'
+}
+
+export const tomatoDark = {
+  1: '#181111',
+  2: '#1f1513',
+  3: '#391714',
+  4: '#4e1511',
+  5: '#5e1c16',
+  6: '#6e2920',
+  7: '#853a2d',
+  8: '#ac4d39',
+  9: '#e54d2e',
+  10: '#ec6142',
+  11: '#ff977d',
+  12: '#fbd3cb'
+}
+
+export const tealDark = {
+  1: '#0d1514',
+  2: '#111c1b',
+  3: '#0d2d2a',
+  4: '#023b37',
+  5: '#084843',
+  6: '#145750',
+  7: '#1c6961',
+  8: '#207e73',
+  9: '#12a594',
+  10: '#0eb39e',
+  11: '#0bd8b6',
+  12: '#adf0dd'
 }
 
 export const brand = {
