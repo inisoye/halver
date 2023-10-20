@@ -103,7 +103,7 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
       >
         <span
           aria-hidden
-          class='list-item-number overflow-visible relative mb-12 flex h-[50px] w-[89px] items-center justify-center'
+          class='list-item-number relative mb-12 flex h-[50px] w-[89px] items-center justify-center overflow-visible'
         >
           <span id='list-item-number-1' class='list-item-number'>1</span>
 
@@ -123,6 +123,7 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
               stroke-miterlimit='1.5'
               stroke-linecap='round'
               stroke-linejoin='round'
+              class='transition duration-700 ease-in-out'
             >
             </path>
           </svg>
@@ -179,7 +180,6 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
 
   const indices = Object.keys(contentMap)
 
-  const cardNode = document.getElementById('list-item-card-1')
   const numberNode = document.getElementById('list-item-number-1')
   const numberHighlightNode = document.getElementById('list-number-highlight-1')
   const headingNode = document.getElementById('list-item-heading-1')
@@ -192,55 +192,43 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
       subheadingNode.textContent = contentMap[index].subheading
   }
 
+  function updateHighlight(index: string, unselectedIndices: string[]) {
+    if (numberHighlightNode && index) {
+      numberHighlightNode.classList.add(contentMap[index].highlightClass)
+
+      unselectedIndices.forEach((index) => {
+        numberHighlightNode.classList.remove(contentMap[index].highlightClass)
+      })
+    }
+  }
+
   enterView({
     selector: '.list-item-image',
     enter: function (el) {
       const index = el.dataset.index
-
       if (!index) return
 
       const unselectedIndices = indices.filter((i) => i !== index)
 
-      if (numberHighlightNode && index) {
-        numberHighlightNode.classList.add(contentMap[index].highlightClass)
-
-        unselectedIndices.forEach((index) => {
-          numberHighlightNode.classList.remove(contentMap[index].highlightClass)
-        })
-      }
-
       updateText(index)
+      updateHighlight(index, unselectedIndices)
     },
     exit: function (el) {
       const index = el.dataset.index
+      if (!index) return
+
       const mountedIndexNumber = Number(index) - 1
       const mountedIndex =
         mountedIndexNumber < 0 ? '0' : String(mountedIndexNumber)
 
       const unselectedIndices = indices.filter((i) => i !== mountedIndex)
 
-      if (numberHighlightNode && mountedIndex) {
-        numberHighlightNode.classList.add(
-          contentMap[mountedIndex].highlightClass
-        )
-
-        unselectedIndices.forEach((index) => {
-          numberHighlightNode.classList.remove(contentMap[index].highlightClass)
-        })
-      }
-
       updateText(mountedIndex)
+      updateHighlight(mountedIndex, unselectedIndices)
     },
     progress: function (el, progress) {
       const scale = 1 + progress / 3
       el.style.transform = `scale(${scale})`
-
-      if (numberHighlightNode?.parentElement) {
-        // Calculate the rotation angle based on progress (for example, rotating 45 degrees)
-        const rotationAngle = progress * 180 // Adjust the value as needed
-        numberHighlightNode.parentElement.style.transformOrigin = 'center center' // Center the transform origin
-        numberHighlightNode.parentElement.style.transform = `rotate(${rotationAngle}deg)`
-      }
 
       if (el.parentElement) {
         el.parentElement.style.opacity = `${progress + 0.1}`
