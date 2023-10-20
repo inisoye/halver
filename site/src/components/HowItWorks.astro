@@ -3,7 +3,7 @@ import { Image } from 'astro:assets'
 import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
 ---
 
-<section class='relative flex h-max w-full flex-col gap-24 py-12'>
+<section class='relative flex h-max w-full flex-col gap-16 py-12'>
   <div class='flex flex-col gap-8 px-6'>
     <h2 class='relative w-max max-w-[15ch] leading-[1.05] tracking-tight'>
       How it works
@@ -58,10 +58,10 @@ import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
   </div>
 
   <ol id='list-container' class='flex flex-col gap-8 px-6'>
-    <li id='list-item-1' class='h-max bg-yellow-300'>
+    <li id='list-item-1' class='relative bg-yellow-950'>
       <div
         id='list-item-card-1'
-        class='list-item rounded-lg bg-[--element-background] p-6'
+        class='list-item-card sticky rounded-lg bg-[--element-background] p-6'
       >
         <span
           aria-hidden
@@ -102,39 +102,46 @@ import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
         </p>
       </div>
 
-      <Image
-        src={keyDatailsImage}
-        alt='A group of friends watching subscription TV.'
-      />
+      <div class='mx-auto w-max pb-60'>
+        <Image
+          src={keyDatailsImage}
+          class='-mt-[200px] max-w-[300px]'
+          id='list-item-image-1'
+          alt='A group of friends watching subscription TV.'
+        />
+      </div>
     </li>
   </ol>
 </section>
 
 <script>
-  import { gsap } from 'gsap'
-  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+  // import { gsap } from 'gsap'
+  // import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-  gsap.registerPlugin(ScrollTrigger)
+  // gsap.registerPlugin(ScrollTrigger)
 
-  // Identify the card and image elements.
-  const card = document.getElementById('list-item-card-1')
-  const image = document.querySelector('#list-item-1 img') // Assuming you have an 'img' element for the image.
+  // // Identify the card and image elements.
+  // const card = document.getElementById('list-item-card-1')
+  // const image = document.querySelector('#list-item-1 img') // Assuming you have an 'img' element for the image.
 
-  // Create a TimelineMax for the animation.
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '#list-item-1', // The list item acts as the trigger.
-      start: 'top top', // Animation starts when the top of the trigger element hits the top of the viewport.
-      end: '+=100%', // Animation ends after scrolling 100% of the trigger element's height.
-      pin: card, // Pin the card element.
-      pinSpacing: false, // Disable the automatic spacing adjustment.
-      scrub: 1 // Enable scrubbing for a smoother effect.
-    }
-  })
+  // // Create a TimelineMax for the animation.
+  // const tl = gsap.timeline({
+  //   scrollTrigger: {
+  //     // trigger: '#list-item-1', // The list item acts as the trigger.
+  //     // start: 'top top', // Animation starts when the top of the trigger element hits the top of the viewport.
+  //     // end: '+=70%', // Animation ends after scrolling 100% of the trigger element's height.
+  //     // pin: card, // Pin the card element.
+  //     // pinSpacing: false // Disable the automatic spacing adjustment.
+  //     // scrub: 1 // Enable scrubbing for a smoother effect.
 
-  // Add animations to the timeline.
-  tl.to(card, { opacity: 0, duration: 1 }) // Optionally fade out the card.
-  tl.from(image, { y: '100%', duration: 1 }) // Animate the image from the bottom.
+  //     trigger: '#list-item-card-1',
+  //     start: 'top bottom-=150',
+  //     endTrigger: '#list-item-image-1',
+  //     end: 'bottom bottom-=75',
+  //     pin: true,
+  //     pinSpacing: false
+  //   }
+  // })
 </script>
 
 <style>
@@ -145,6 +152,11 @@ import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
   p,
   small {
     text-wrap: balance;
+  }
+
+  .list-item-card {
+    top: calc(100vh - 240px);
+    /* top: 24px; */
   }
 
   .list-item-number {
