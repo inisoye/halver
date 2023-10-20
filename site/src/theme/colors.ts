@@ -119,6 +119,66 @@ export const tealLight = {
   12: '#0d3d38'
 }
 
+export const indigoLight = {
+  1: '#fdfdfe',
+  2: '#f7f9ff',
+  3: '#edf2fe',
+  4: '#e1e9ff',
+  5: '#d2deff',
+  6: '#c1d0ff',
+  7: '#abbdf9',
+  8: '#8da4ef',
+  9: '#3e63dd',
+  10: '#3358d4',
+  11: '#3a5bc7',
+  12: '#1f2d5c'
+}
+
+export const plumLight = {
+  1: '#fefcff',
+  2: '#fdf7fd',
+  3: '#fbebfb',
+  4: '#f7def8',
+  5: '#f2d1f3',
+  6: '#e9c2ec',
+  7: '#deade3',
+  8: '#cf91d8',
+  9: '#ab4aba',
+  10: '#a144af',
+  11: '#953ea3',
+  12: '#53195d'
+}
+
+export const crimsonLight = {
+  1: '#fffcfd',
+  2: '#fef7f9',
+  3: '#ffe9f0',
+  4: '#fedce7',
+  5: '#facedd',
+  6: '#f3bed1',
+  7: '#eaacc3',
+  8: '#e093b2',
+  9: '#e93d82',
+  10: '#df3478',
+  11: '#cb1d63',
+  12: '#621639'
+}
+
+export const brownLight = {
+  1: '#fefdfc',
+  2: '#fcf9f6',
+  3: '#f6eee7',
+  4: '#f0e4d9',
+  5: '#ebdaca',
+  6: '#e4cdb7',
+  7: '#dcbc9f',
+  8: '#cea37e',
+  9: '#ad7f58',
+  10: '#a07553',
+  11: '#815e46',
+  12: '#3e332e'
+}
+
 export const grayDark = {
   1: '#111111',
   2: '#191919',
@@ -236,6 +296,64 @@ export const tealDark = {
   10: '#0eb39e',
   11: '#0bd8b6',
   12: '#adf0dd'
+}
+
+export const indigoDark = {
+  1: '#11131f',
+  2: '#141726',
+  3: '#182449',
+  4: '#1d2e62',
+  5: '#253974',
+  6: '#304384',
+  7: '#3a4f97',
+  8: '#435db1',
+  9: '#3e63dd',
+  10: '#5472e4',
+  11: '#9eb1ff',
+  12: '#d6e1ff'
+}
+export const plumDark = {
+  1: '#181118',
+  2: '#201320',
+  3: '#351a35',
+  4: '#451d47',
+  5: '#512454',
+  6: '#5e3061',
+  7: '#734079',
+  8: '#92549c',
+  9: '#ab4aba',
+  10: '#b658c4',
+  11: '#e796f3',
+  12: '#f4d4f4'
+}
+export const crimsonDark = {
+  1: '#191114',
+  2: '#201318',
+  3: '#381525',
+  4: '#4d122f',
+  5: '#5c1839',
+  6: '#6d2545',
+  7: '#873356',
+  8: '#b0436e',
+  9: '#e93d82',
+  10: '#ee518a',
+  11: '#ff92ad',
+  12: '#fdd3e8'
+}
+
+export const brownDark = {
+  1: '#12110f',
+  2: '#1c1816',
+  3: '#28211d',
+  4: '#322922',
+  5: '#3e3128',
+  6: '#4d3c2f',
+  7: '#614a39',
+  8: '#7c5f46',
+  9: '#ad7f58',
+  10: '#b88c67',
+  11: '#dbb594',
+  12: '#f2e1ca'
 }
 
 export const brand = {

@@ -17,6 +17,30 @@
   --text-apricot: var(--brand-apricot-11);
   --text-casal: var(--brand-casal-7);
 
+  --text-teal: var(--tealLight-12);
+  --text-indigo: var(--indigoLight-12);
+  --text-plum: var(--plumLight-12);
+  --text-crimson: var(--crimsonLight-12);
+  --text-brown: var(--brownLight-12);
+  --text-yellow: var(--yellowLight-12);
+  --text-red: var(--redLight-12);
+
+  --text-light-teal: var(--tealLight-11);
+  --text-light-indigo: var(--indigoLight-11);
+  --text-light-plum: var(--plumLight-11);
+  --text-light-crimson: var(--crimsonLight-11);
+  --text-light-brown: var(--brownLight-11);
+  --text-light-yellow: var(--yellowLight-11);
+  --text-light-red: var(--redLight-11);
+
+  --background-teal: var(--tealLight-3);
+  --background-indigo: var(--indigoLight-3);
+  --background-plum: var(--plumLight-3);
+  --background-crimson: var(--crimsonLight-3);
+  --background-brown: var(--brownLight-3);
+  --background-yellow: var(--yellowLight-3);
+  --background-red: var(--redLight-3);
+
   --text-intro-marquee-dark: var(--grayLight-1);
   --text-intro-marquee-light: var(--grayDark-3);
 
@@ -82,6 +106,30 @@
     --text-apricot: var(--brand-apricot-6);
     --text-casal: var(--brand-casal-5);
 
+    --text-teal: var(--tealDark-12);
+    --text-indigo: var(--indigoDark-12);
+    --text-plum: var(--plumDark-12);
+    --text-crimson: var(--crimsonDark-12);
+    --text-brown: var(--brownDark-12);
+    --text-yellow: var(--yellowDark-12);
+    --text-red: var(--redDark-12);
+
+    --text-light-teal: var(--tealDark-11);
+    --text-light-indigo: var(--indigoDark-11);
+    --text-light-plum: var(--plumDark-11);
+    --text-light-crimson: var(--crimsonDark-11);
+    --text-light-brown: var(--brownDark-11);
+    --text-light-yellow: var(--yellowDark-11);
+    --text-light-red: var(--redDark-11);
+
+    --background-teal: var(--tealDark-3);
+    --background-indigo: var(--indigoDark-3);
+    --background-plum: var(--plumDark-3);
+    --background-crimson: var(--crimsonDark-3);
+    --background-brown: var(--brownDark-3);
+    --background-yellow: var(--yellowDark-3);
+    --background-red: var(--redDark-3);
+
     --logo-apricot: var(--brand-apricot-8);
     --logo-casal: var(--brand-casal-7);
 
@@ -118,6 +166,27 @@
   --text-lighter: var(--grayDark-10);
   --text-apricot: var(--brand-apricot-6);
   --text-casal: var(--brand-casal-5);
+
+  --text-teal: var(--tealDark-12);
+  --text-indigo: var(--indigoDark-12);
+  --text-plum: var(--plumDark-12);
+  --text-crimson: var(--crimsonDark-12);
+  --text-brown: var(--brownDark-12);
+  --text-yellow: var(--yellowDark-12);
+
+  --text-light-teal: var(--tealDark-11);
+  --text-light-indigo: var(--indigoDark-11);
+  --text-light-plum: var(--plumDark-11);
+  --text-light-crimson: var(--crimsonDark-11);
+  --text-light-brown: var(--brownDark-11);
+  --text-light-yellow: var(--yellowDark-11);
+
+  --background-teal: var(--tealDark-3);
+  --background-indigo: var(--indigoDark-3);
+  --background-plum: var(--plumDark-3);
+  --background-crimson: var(--crimsonDark-3);
+  --background-brown: var(--brownDark-3);
+  --background-yellow: var(--yellowDark-3);
 
   --logo-apricot: var(--brand-apricot-8);
   --logo-casal: var(--brand-casal-7);
