@@ -1,0 +1,161 @@
+---
+import { Image } from 'astro:assets'
+import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
+---
+
+<section class='relative flex h-max w-full flex-col gap-24 py-12'>
+  <div class='flex flex-col gap-8 px-6'>
+    <h2 class='relative w-max max-w-[15ch] leading-[1.05] tracking-tight'>
+      How it works
+
+      <svg
+        width='66'
+        height='61'
+        viewBox='0 0 66 61'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+        class='pointer-events-none absolute -right-[60px] -top-[40px] select-none'
+      >
+        <path
+          d='M34.643 57.007c1.588-4.889 2.107-9.764.48-14.735-3.847-11.746-19.076-16.386-29.86-12.593'
+          stroke='#846567'
+          stroke-width='2.5'
+          stroke-miterlimit='1.5'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        >
+        </path>
+        <path
+          d='M44.71 59.518c3.958-8.466 6.387-18.743 2.838-27.762C40.58 14.043 15.904 12.172 1.847 21.43'
+          stroke='var(--logo-apricot)'
+          stroke-width='2.5'
+          stroke-miterlimit='1.5'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        >
+        </path>
+        <path
+          d='M57.891 57.12c6.792-13.371 8.898-26.953.581-40.005C55.908 13.09 50.676 8.47 46.59 6.223 32.98-1.256 15.01-.252 3 10.285'
+          stroke='var(--logo-casal)'
+          stroke-width='2.5'
+          stroke-miterlimit='1.5'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        >
+        </path>
+      </svg>
+    </h2>
+
+    <p class='text-[--text-light]'>
+      Halver makes it simple to get reimbursed for group payments, whether
+      they're one-time or recurring. These payments are referred to as
+      'contributions' on a bill.
+    </p>
+
+    <p class='text-[--text-light]'>
+      Creating a bill is an easy three-step process:
+    </p>
+  </div>
+
+  <ol id='list-container' class='flex flex-col gap-8 px-6'>
+    <li id='list-item-1' class='h-max bg-yellow-300'>
+      <div
+        id='list-item-card-1'
+        class='list-item rounded-lg bg-[--element-background] p-6'
+      >
+        <span
+          aria-hidden
+          class='list-item-number relative mb-12 flex h-[50px] w-[89px] items-center justify-center'
+        >
+          <span>1</span>
+
+          <svg
+            width='89'
+            height='50'
+            viewBox='0 0 89 50'
+            fill='none'
+            xmlns='http://www.w3.org/2000/svg'
+            class='pointer-events-none absolute left-0 right-0 mx-auto select-none'
+          >
+            <path
+              d='M68.21 7.595c-13.882-9.652-40.576-8.019-54.278.427C7.692 11.87-3.815 23.015 3.187 33.54c1.235 1.856 2.736 3.364 4.29 4.669 17.092 14.359 40.932 12.897 59.277 4.305 2.736-1.282 5.428-2.803 7.905-4.87 1.852-1.547 3.643-3.464 5.086-5.7 4.222-6.548 3.12-13.137-1.424-18.689-5.268-6.436-12.471-8.43-19.269-9.522-5.943-.956-11.88-1.139-17.851-.75C30 3.715 17.094 4.878 7.7 13.677 3.6 17.52-.809 25.732 2.708 32.38c3.81 7.203 12.796 9.535 18.84 11.055 16.304 4.1 42.101 2.068 56.952-8.693 1.602-1.16 3.224-2.241 4.657-3.767a27.292 27.292 0 0 0 3.156-4.068c6.663-10.544-8.206-17.174-13.45-18.313-16.495-3.581-40.91-8.75-56.101.778'
+              stroke='#3D737D'
+              stroke-width='2'
+              stroke-miterlimit='1.5'
+              stroke-linecap='round'
+              stroke-linejoin='round'
+            >
+            </path>
+          </svg>
+        </span>
+
+        <p
+          id='list-item-heading-1'
+          class='list-item-heading mb-3 leading-[1.1]'
+        >
+          Add key bill details
+        </p>
+        <p
+          class='list-item-subheading max-w-[27ch] leading-tight text-[--text-light]'
+        >
+          Specify how much, how often and how quickly you want to be paid
+        </p>
+      </div>
+
+      <Image
+        src={keyDatailsImage}
+        alt='A group of friends watching subscription TV.'
+      />
+    </li>
+  </ol>
+</section>
+
+<script>
+  import { gsap } from 'gsap'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+  gsap.registerPlugin(ScrollTrigger)
+
+  // Identify the card and image elements.
+  const card = document.getElementById('list-item-card-1')
+  const image = document.querySelector('#list-item-1 img') // Assuming you have an 'img' element for the image.
+
+  // Create a TimelineMax for the animation.
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#list-item-1', // The list item acts as the trigger.
+      start: 'top top', // Animation starts when the top of the trigger element hits the top of the viewport.
+      end: '+=100%', // Animation ends after scrolling 100% of the trigger element's height.
+      pin: card, // Pin the card element.
+      pinSpacing: false, // Disable the automatic spacing adjustment.
+      scrub: 1 // Enable scrubbing for a smoother effect.
+    }
+  })
+
+  // Add animations to the timeline.
+  tl.to(card, { opacity: 0, duration: 1 }) // Optionally fade out the card.
+  tl.from(image, { y: '100%', duration: 1 }) // Animate the image from the bottom.
+</script>
+
+<style>
+  h2 {
+    font-size: var(--size-step-3);
+  }
+
+  p,
+  small {
+    text-wrap: balance;
+  }
+
+  .list-item-number {
+    font-size: var(--size-step-1);
+  }
+
+  .list-item-heading {
+    font-size: var(--size-step-1);
+  }
+
+  .list-item-subheading {
+    font-size: var(--size-step-0);
+  }
+</style>

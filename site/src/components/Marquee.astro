@@ -165,7 +165,9 @@ const MARQUEE_CONTENT = [
 ]
 ---
 
-<div class='marquee-container enable-animation'>
+<div class='marquee-container enable-animation relative'>
+  <h2 class='sr-only'>A few things you can do with halver</h2>
+
   <ul class='marquee__content'>
     {
       MARQUEE_CONTENT.map(
@@ -181,7 +183,7 @@ const MARQUEE_CONTENT = [
             <li
               class:list={[
                 containerClass,
-                'flex min-w-max flex-col justify-between px-6 py-8'
+                'flex min-w-max flex-col justify-between rounded-lg p-6'
               ]}
             >
               <div>
@@ -227,7 +229,7 @@ const MARQUEE_CONTENT = [
             <li
               class:list={[
                 containerClass,
-                'flex min-w-max flex-col justify-between px-6 py-8'
+                'flex min-w-max flex-col justify-between rounded-lg p-6'
               ]}
             >
               <div>
@@ -261,15 +263,15 @@ const MARQUEE_CONTENT = [
 
 <style>
   .marquee-heading {
-    font-size: var(--size-step-1);
-  }
-
-  .marquee-subheading {
     font-size: var(--size-step-0);
   }
 
+  .marquee-subheading {
+    font-size: var(--size-step--1);
+  }
+
   .marquee-container {
-    --gap: 0rem;
+    --gap: 1.2rem;
     display: flex;
     overflow: hidden;
     gap: var(--gap);

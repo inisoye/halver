@@ -60,8 +60,8 @@
     --text-inverse: var(--grayDark-1);
     --text-white: var(--grayDark-12);
     --text-black: var(--grayDark-1);
-    --text-Light: var(--grayDark-11);
-    --text-Lighter: var(--grayDark-10);
+    --text-light: var(--grayDark-11);
+    --text-lighter: var(--grayDark-10);
     --text-apricot: var(--brand-apricot-6);
     --text-casal: var(--brand-casal-5);
 
@@ -92,8 +92,8 @@
   --text-inverse: var(--grayDark-1);
   --text-white: var(--grayDark-12);
   --text-black: var(--grayDark-1);
-  --text-Light: var(--grayDark-11);
-  --text-Lighter: var(--grayDark-10);
+  --text-light: var(--grayDark-11);
+  --text-lighter: var(--grayDark-10);
   --text-apricot: var(--brand-apricot-6);
   --text-casal: var(--brand-casal-5);
 
