@@ -5,7 +5,7 @@ import selectParticipantsImage from '../assets/images/how-it-works/select-partic
 import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
 ---
 
-<section class='flex h-max w-full flex-col gap-16'>
+<section class='relative flex h-max w-full flex-col gap-16'>
   <div class='flex flex-col gap-8 px-6'>
     <h2 class='relative w-max max-w-[15ch] leading-[1.05] tracking-tight'>
       How it works
@@ -59,8 +59,25 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
     </p>
   </div>
 
-  <ol id='list-container' class='flex flex-col gap-8 px-6'>
-    <li id='list-item-1' class='item flex flex-col gap-6'>
+  <ol class="sr-only">
+    <li>
+      <p>Add key bill details</p>
+      <small>
+        Specify how much, how often and how quickly you want to be paid
+      </small>
+    </li>
+    <li>
+      <p>Select participants on the bill</p>
+      <small>Pick out who will be contributing from your contact list.</small>
+    </li>
+    <li>
+      <p>Specify the split breakdown</p>
+      <small>Enter the amount each participant is to contribute.</small>
+    </li>
+  </ol>
+
+  <div aria-hidden id='list-container' class='flex flex-col gap-8 px-6'>
+    <article id='list-item-1' class='item flex flex-col gap-6'>
       <div
         class='list-item-image-container mx-auto my-12 w-max py-20 opacity-0'
       >
@@ -135,15 +152,15 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
         >
           Add key bill details
         </p>
-        <p
+        <small
           id='list-item-subheading-1'
           class='list-item-subheading max-w-[27ch] leading-tight text-[--text-light]'
         >
           Specify how much, how often and how quickly you want to be paid
-        </p>
+        </small>
       </div>
-    </li>
-  </ol>
+    </article>
+  </div>
 </section>
 
 <script>
