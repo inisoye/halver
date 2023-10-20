@@ -84,7 +84,7 @@ import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
             viewBox='0 0 89 50'
             fill='none'
             xmlns='http://www.w3.org/2000/svg'
-            class='pointer-events-none absolute left-0 right-0 mx-auto select-none'
+            class='pointer-events-none absolute left-0 right-0 mx-auto w-20 select-none'
           >
             <path
               d='M68.21 7.595c-13.882-9.652-40.576-8.019-54.278.427C7.692 11.87-3.815 23.015 3.187 33.54c1.235 1.856 2.736 3.364 4.29 4.669 17.092 14.359 40.932 12.897 59.277 4.305 2.736-1.282 5.428-2.803 7.905-4.87 1.852-1.547 3.643-3.464 5.086-5.7 4.222-6.548 3.12-13.137-1.424-18.689-5.268-6.436-12.471-8.43-19.269-9.522-5.943-.956-11.88-1.139-17.851-.75C30 3.715 17.094 4.878 7.7 13.677 3.6 17.52-.809 25.732 2.708 32.38c3.81 7.203 12.796 9.535 18.84 11.055 16.304 4.1 42.101 2.068 56.952-8.693 1.602-1.16 3.224-2.241 4.657-3.767a27.292 27.292 0 0 0 3.156-4.068c6.663-10.544-8.206-17.174-13.45-18.313-16.495-3.581-40.91-8.75-56.101.778'
@@ -115,33 +115,22 @@ import keyDatailsImage from '../assets/images/how-it-works/key-details.png'
 </section>
 
 <script>
-  // import { gsap } from 'gsap'
-  // import { ScrollTrigger } from 'gsap/ScrollTrigger'
+  import { enterView } from '../utils/enterView'
 
-  // gsap.registerPlugin(ScrollTrigger)
-
-  // // Identify the card and image elements.
-  // const card = document.getElementById('list-item-card-1')
-  // const image = document.querySelector('#list-item-1 img') // Assuming you have an 'img' element for the image.
-
-  // // Create a TimelineMax for the animation.
-  // const tl = gsap.timeline({
-  //   scrollTrigger: {
-  //     // trigger: '#list-item-1', // The list item acts as the trigger.
-  //     // start: 'top top', // Animation starts when the top of the trigger element hits the top of the viewport.
-  //     // end: '+=70%', // Animation ends after scrolling 100% of the trigger element's height.
-  //     // pin: card, // Pin the card element.
-  //     // pinSpacing: false // Disable the automatic spacing adjustment.
-  //     // scrub: 1 // Enable scrubbing for a smoother effect.
-
-  //     trigger: '#list-item-card-1',
-  //     start: 'top bottom-=150',
-  //     endTrigger: '#list-item-image-1',
-  //     end: 'bottom bottom-=75',
-  //     pin: true,
-  //     pinSpacing: false
-  //   }
-  // })
+  enterView({
+    selector: '.list-item-card',
+    enter: function (el) {
+      el.classList.add('bg-red-200')
+    },
+    exit: function (el) {
+      el.classList.remove('bg-red-200')
+    },
+    progress: function (el, progress) {
+      // el.style.opacity = `${progress}`
+    },
+    offset: 0.5 // enter at middle of viewport
+    // once: true // trigger just once
+  })
 </script>
 
 <style>
