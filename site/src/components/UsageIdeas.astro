@@ -134,14 +134,11 @@ const ideas = [
   const ideas = document.querySelector('.ideas')
   const sectionContainer = document.querySelector('#section-container')
 
-  console.log(sectionContainer?.offsetWidth, window.innerWidth)
-  console.log(ideas.offsetWidth)
-
   function getScrollAmount() {
     if (ideas) {
       let ideasWidth = ideas.scrollWidth
-      console.log(ideasWidth)
-      return -(ideasWidth - sectionContainer?.offsetWidth)
+      const sectionWidth = sectionContainer?.clientWidth ?? 0
+      return -(ideasWidth - sectionWidth)
     }
 
     return 0
