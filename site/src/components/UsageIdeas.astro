@@ -154,15 +154,15 @@ const ideas = [
     ease: 'none'
   })
 
-  ScrollTrigger.create({
-    trigger: '.heading-wrapper',
-    start: 'top 100px',
-    end: () => `+=${getScrollAmount() * -1}`,
-    pin: true,
-    animation: tween,
-    scrub: 1,
-    invalidateOnRefresh: true
-  })
+  // ScrollTrigger.create({
+  //   trigger: '.heading-wrapper',
+  //   start: 'top 100px',
+  //   end: () => `+=${getScrollAmount() * -1}`,
+  //   pin: true,
+  //   animation: tween,
+  //   scrub: 1,
+  //   invalidateOnRefresh: true
+  // })
 
   ScrollTrigger.create({
     trigger: '.ideas-wrapper',
