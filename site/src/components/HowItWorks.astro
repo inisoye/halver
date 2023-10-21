@@ -205,6 +205,10 @@ import splitBreakdownImage from '../assets/images/how-it-works/split-breakdown.p
 
   updateImages(displayMode === "'light'" ? 'light' : 'dark')
 
+  window.addEventListener('load', () =>
+    updateImages(displayMode === "'light'" ? 'light' : 'dark')
+  )
+
   window
     .matchMedia('(prefers-color-scheme: dark)')
     .addEventListener('change', ({ matches }) => {
