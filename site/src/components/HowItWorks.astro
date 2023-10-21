@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets'
 import keyDetailsImage from '../assets/images/how-it-works/key-details.png'
 import selectParticipantsImage from '../assets/images/how-it-works/select-participants.png'
-import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
+import splitBreakdownImage from '../assets/images/how-it-works/split-breakdown.png'
 ---
 
 <section
@@ -90,7 +90,7 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
       >
         <Image
           src={keyDetailsImage}
-          class='list-item-image max-w-[15rem]'
+          class='list-item-image max-w-[15rem] ease-linear'
           id='list-item-image-1'
           alt='A group of friends watching subscription TV.'
           data-index='0'
@@ -102,7 +102,7 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
       >
         <Image
           src={selectParticipantsImage}
-          class='list-item-image max-w-[15rem]'
+          class='list-item-image max-w-[15rem] ease-linear'
           id='list-item-image-2'
           alt='A group of friends watching subscription TV.'
           data-index='1'
@@ -113,8 +113,8 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
         class='list-item-image-container mx-auto my-12 w-max py-20 opacity-0'
       >
         <Image
-          src={splitBreakdown}
-          class='list-item-image max-w-[15rem]'
+          src={splitBreakdownImage}
+          class='list-item-image max-w-[15rem] ease-linear'
           id='list-item-image-3'
           alt='A group of friends watching subscription TV.'
           data-index='2'
@@ -123,7 +123,7 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
 
       <div
         id='list-item-card-1'
-        class='list-item-card sticky bottom-6 mt-auto rounded-lg bg-white/60 p-6 backdrop-blur-xl transition duration-700 ease-in-out dark:bg-white/5 md:mx-auto md:w-[44ch]'
+        class='list-item-card sticky bottom-6 mt-auto rounded-lg bg-white/30 p-6 backdrop-blur-xl transition duration-700 ease-in-out dark:bg-white/5 md:mx-auto md:w-[44ch]'
       >
         <div
           aria-hidden
@@ -171,7 +171,45 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
 </section>
 
 <script>
+  import keyDetailsImageLight from '../assets/images/how-it-works/key-details-light.png'
+  import keyDetailsImage from '../assets/images/how-it-works/key-details.png'
+  import selectParticipantsImageLight from '../assets/images/how-it-works/select-participants-light.png'
+  import selectParticipantsImage from '../assets/images/how-it-works/select-participants.png'
+  import splitBreakdownImageLight from '../assets/images/how-it-works/split-breakdown-light.png'
+  import splitBreakdownImage from '../assets/images/how-it-works/split-breakdown.png'
   import { enterView } from '../utils/enterView'
+
+  const image1 = document.querySelector<HTMLImageElement>('#list-item-image-1')
+  const image2 = document.querySelector<HTMLImageElement>('#list-item-image-2')
+  const image3 = document.querySelector<HTMLImageElement>('#list-item-image-3')
+
+  function updateImages(mode: 'light' | 'dark') {
+    if (image1 && image2 && image3) {
+      if (mode === 'light') {
+        image1.src = keyDetailsImageLight.src
+        image2.src = selectParticipantsImageLight.src
+        image3.src = splitBreakdownImageLight.src
+      }
+
+      if (mode === 'dark') {
+        image1.src = keyDetailsImage.src
+        image2.src = selectParticipantsImage.src
+        image3.src = splitBreakdownImage.src
+      }
+    }
+  }
+
+  const displayMode = getComputedStyle(
+    document.documentElement
+  ).getPropertyValue('--color-mode')
+
+  updateImages(displayMode === "'light'" ? 'light' : 'dark')
+
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', ({ matches }) => {
+      updateImages(matches ? 'dark' : 'light')
+    })
 
   interface Content {
     number: string

@@ -15,7 +15,8 @@ const features = [
     image: feat1Image,
     headingClass: 'text-[--text-plum]',
     subheadingClass: 'text-[--text-light-plum] max-w-[38ch]',
-    cardClass: 'bg-[--background-plum]'
+    cardClass: 'bg-[--background-plum]',
+    imageId: 'feat-1-image'
   },
   {
     heading: 'Instant Notifications',
@@ -23,7 +24,8 @@ const features = [
     image: feat5Image,
     headingClass: 'text-[--text-indigo]',
     subheadingClass: 'text-[--text-light-indigo] max-w-[29ch]',
-    cardClass: 'bg-[--background-indigo]'
+    cardClass: 'bg-[--background-indigo]',
+    imageId: 'feat-5-image'
   },
   {
     heading: 'One click contributions',
@@ -31,7 +33,8 @@ const features = [
     image: feat3Image,
     headingClass: 'text-[--text-teal]',
     subheadingClass: 'text-[--text-light-teal] max-w-[38ch]',
-    cardClass: 'bg-[--background-teal]'
+    cardClass: 'bg-[--background-teal]',
+    imageId: 'feat-3-image'
   },
 
   {
@@ -40,7 +43,8 @@ const features = [
     image: feat2Image,
     headingClass: 'text-[--text-crimson]',
     subheadingClass: 'text-[--text-light-crimson] max-w-[38ch]',
-    cardClass: 'bg-[--background-crimson]'
+    cardClass: 'bg-[--background-crimson]',
+    imageId: 'feat-2-image'
   },
   {
     heading: 'Support for all the banks',
@@ -48,7 +52,8 @@ const features = [
     image: feat4Image,
     headingClass: 'text-[--text-brown] max-w-[20ch]',
     subheadingClass: 'text-[--text-light-brown] max-w-[30ch]',
-    cardClass: 'bg-[--background-brown]'
+    cardClass: 'bg-[--background-brown]',
+    imageId: 'feat-4-image'
   },
   {
     heading: 'Several contribution frequency options',
@@ -57,7 +62,8 @@ const features = [
     image: feat6Image,
     headingClass: 'text-[--text-yellow]',
     subheadingClass: 'text-[--text-light-yellow] max-w-[26ch]',
-    cardClass: 'bg-[--background-yellow]'
+    cardClass: 'bg-[--background-yellow]',
+    imageId: 'feat-6-image'
   }
 ]
 ---
@@ -113,7 +119,8 @@ const features = [
           subheading,
           subheadingClass,
           cardClass,
-          image
+          image,
+          imageId
         }) => {
           return (
             <li
@@ -143,6 +150,7 @@ const features = [
 
               <div class='ml-auto max-[711px]:max-w-[300px] min-[500px]:max-w-[300px]'>
                 <Image
+                  id={imageId}
                   class='ml-auto opacity-90 sm:max-w-full'
                   src={image}
                   alt={heading}
@@ -155,6 +163,62 @@ const features = [
     }
   </ul>
 </section>
+
+<script>
+  import feat1ImageLight from '../assets/images/key-features/feat-1-light.png'
+  import feat1Image from '../assets/images/key-features/feat-1.png'
+  import feat2ImageLight from '../assets/images/key-features/feat-2-light.png'
+  import feat2Image from '../assets/images/key-features/feat-2.png'
+  import feat3ImageLight from '../assets/images/key-features/feat-3-light.png'
+  import feat3Image from '../assets/images/key-features/feat-3.png'
+  import feat4ImageLight from '../assets/images/key-features/feat-4-light.png'
+  import feat4Image from '../assets/images/key-features/feat-4.png'
+  import feat5ImageLight from '../assets/images/key-features/feat-5-light.png'
+  import feat5Image from '../assets/images/key-features/feat-5.png'
+  import feat6ImageLight from '../assets/images/key-features/feat-6-light.png'
+  import feat6Image from '../assets/images/key-features/feat-6.png'
+
+  const image1 = document.querySelector<HTMLImageElement>('#feat-1-image')
+  const image2 = document.querySelector<HTMLImageElement>('#feat-2-image')
+  const image3 = document.querySelector<HTMLImageElement>('#feat-3-image')
+  const image4 = document.querySelector<HTMLImageElement>('#feat-4-image')
+  const image5 = document.querySelector<HTMLImageElement>('#feat-5-image')
+  const image6 = document.querySelector<HTMLImageElement>('#feat-6-image')
+
+  function updateImages(mode: 'light' | 'dark') {
+    if (image1 && image2 && image3 && image4 && image5 && image6) {
+      if (mode === 'light') {
+        image1.src = feat1ImageLight.src
+        image2.src = feat2ImageLight.src
+        image3.src = feat3ImageLight.src
+        image4.src = feat4ImageLight.src
+        image5.src = feat5ImageLight.src
+        image6.src = feat6ImageLight.src
+      }
+
+      if (mode === 'dark') {
+        image1.src = feat1Image.src
+        image2.src = feat2Image.src
+        image3.src = feat3Image.src
+        image4.src = feat4Image.src
+        image5.src = feat5Image.src
+        image6.src = feat6Image.src
+      }
+    }
+  }
+
+  const displayMode = getComputedStyle(
+    document.documentElement
+  ).getPropertyValue('--color-mode')
+
+  updateImages(displayMode === "'light'" ? 'light' : 'dark')
+
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', ({ matches }) => {
+      updateImages(matches ? 'dark' : 'light')
+    })
+</script>
 
 <style>
   h2 {
