@@ -1,0 +1,192 @@
+---
+import { Image } from 'astro:assets'
+import idea1Image from '../assets/images/ideas/idea-1.png'
+import idea2Image from '../assets/images/ideas/idea-2.png'
+import idea3Image from '../assets/images/ideas/idea-3.png'
+import idea4Image from '../assets/images/ideas/idea-4.png'
+import idea5Image from '../assets/images/ideas/idea-5.png'
+
+const ideas = [
+  {
+    heading: 'Donating money towards a friend in need',
+
+    image: idea1Image,
+    headingClass: '',
+    cardClass: ''
+  },
+
+  {
+    heading: 'Pooling money for the next group vacation',
+    image: idea3Image,
+    headingClass: '',
+    cardClass: ''
+  },
+
+  {
+    heading: 'Planning for  houseparty',
+    image: idea2Image,
+    headingClass: '',
+    cardClass: ''
+  },
+  {
+    heading: "Contribute money towards the security guard's salary",
+    image: idea4Image,
+    headingClass: '',
+    cardClass: ''
+  },
+  {
+    heading: 'Anything else your group would like to raise money for',
+    image: idea5Image,
+    headingClass: '',
+    cardClass: ''
+  }
+]
+---
+
+<section
+  id='section-container'
+  class='section-container relative flex h-max w-full flex-col gap-16'
+>
+  <div class='heading-wrapper flex flex-col gap-8 px-6'>
+    <h2 class='relative w-max max-w-[15ch] leading-[1.05] tracking-tight'>
+      Usage ideas
+
+      <svg
+        width='76'
+        height='45'
+        viewBox='0 0 76 45'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+        class='pointer-events-none absolute -right-[3.125rem] -top-[1.875rem] select-none'
+      >
+        <g clip-path='url(#a)' fill-rule='evenodd' clip-rule='evenodd'>
+          <path
+            d='M54.534 42.804c6.753.163 13.654-.163 20.111 2.147a.743.743 0 0 0 .948-.447.743.743 0 0 0-.447-.948c-6.608-2.362-13.666-2.066-20.576-2.232a.74.74 0 0 0-.035 1.48Z'
+            fill='#2A5057'
+          >
+          </path><path
+            d='M53.928 33c2.104-1.937 4.402-3.388 7.179-4.107a.742.742 0 0 0 .533-.902.743.743 0 0 0-.903-.531c-3.02.781-5.522 2.345-7.81 4.45a.74.74 0 1 0 1 1.09Z'
+            fill='#846567'
+          >
+          </path><path
+            d='M48.072 11.855c.965-3.309 2.865-5.897 5.778-7.766a.74.74 0 0 0-.799-1.246c-3.224 2.07-5.332 4.934-6.4 8.597a.74.74 0 0 0 1.42.415Z'
+            fill='#2A5057'
+          >
+          </path><path
+            d='M14.81 7.365a14.035 14.035 0 0 0-1.528 2.18c-.195.345-.538 1.078-.592 1.707-.059.67.169 1.236.755 1.534.779.395 1.4.354 1.88.115.462-.23.823-.68 1.051-1.285.435-1.156.37-2.922.142-3.93a14.314 14.314 0 0 1 2.005-1.715C23.88 2.174 31.74 3.574 37.79 9.251c2.116 1.988 3.135 6.162 3.665 10.666.826 7.013.355 14.845.29 17.14-.015.567.038.903.068.97a.71.71 0 0 0 .557.449.924.924 0 0 0 .607-.086.951.951 0 0 0 .476-.623c.044-.17.056-.408.05-.66-.005-.176-.041-.368-.005-.494.23-.806.509-1.593.781-2.385.909-2.664 2.084-5.161 3.39-7.655 4.148-7.923 8.16-16.295 14.96-22.332a.74.74 0 1 0-.983-1.107c-6.937 6.156-11.059 14.672-15.29 22.753-1.11 2.12-2.128 4.245-2.975 6.467.086-3.93.053-9.371-.666-14.185-.64-4.281-1.856-8.065-3.914-9.997-6.626-6.22-15.267-7.568-21.135-3.409-.628.446-1.226.935-1.782 1.466C12.815.686 6.242-1.536.434 1.115a.74.74 0 1 0 .615 1.347C6.284.072 12.22 2.205 14.81 7.365Zm.43 1.856c-.24.338-.463.69-.67 1.053-.11.194-.299.569-.379.935-.018.086-.02.22-.02.283.204.1.364.149.494.083.163-.08.246-.27.326-.481.2-.531.266-1.235.248-1.873Z'
+            fill='#EB725E'
+          >
+          </path>
+        </g><defs>
+          <clipPath id='a'>
+            <path fill='#fff' d='M0 0h75.79v45H0z'></path>
+          </clipPath>
+        </defs>
+      </svg>
+    </h2>
+
+    <p class='max-w-[28ch] text-[--text-light]'>
+      Still unsure on what to use Halver for? Here are some ideas:
+    </p>
+  </div>
+
+  <div class='ideas-wrapper overflow-hidden'>
+    <ul class='ideas flex w-fit flex-nowrap gap-8 px-6'>
+      {
+        ideas.map(({ heading, headingClass, cardClass, image }) => {
+          return (
+            <li
+              class:list={[
+                cardClass,
+                'idea list-item-card flex w-max max-w-[14.5em] flex-col'
+              ]}
+            >
+              <Image
+                class=' max-w-[14.5em] rounded-md opacity-90'
+                src={image}
+                alt={heading}
+              />
+
+              <p
+                class:list={[
+                  'list-item-heading z-10 mx-auto -mt-[10px] max-w-[84%] rounded-md bg-[--element-background] p-2 px-2.5 text-center leading-tight',
+                  headingClass
+                ]}
+              >
+                {heading}
+              </p>
+            </li>
+          )
+        })
+      }
+    </ul>
+  </div>
+
+  <div class='lightBG h-[170vh]'></div>
+</section>
+
+<script>
+  import gsap from 'gsap'
+  import ScrollTrigger from 'gsap/ScrollTrigger'
+
+  gsap.registerPlugin(ScrollTrigger)
+
+  const ideas = document.querySelector('.ideas')
+  const sectionContainer = document.querySelector('#section-container')
+
+  console.log(sectionContainer?.offsetWidth, window.innerWidth)
+  console.log(ideas.offsetWidth)
+
+  function getScrollAmount() {
+    if (ideas) {
+      let ideasWidth = ideas.scrollWidth
+      console.log(ideasWidth)
+      return -(ideasWidth - sectionContainer?.offsetWidth)
+    }
+
+    return 0
+  }
+
+  const tween = gsap.to(ideas, {
+    x: getScrollAmount,
+    duration: 3,
+    ease: 'none'
+  })
+
+  ScrollTrigger.create({
+    trigger: '.heading-wrapper',
+    start: 'top 25%',
+    end: () => `+=${getScrollAmount() * -1}`,
+    pin: true,
+    animation: tween,
+    scrub: 1,
+    invalidateOnRefresh: true,
+    markers: true
+  })
+
+  ScrollTrigger.create({
+    trigger: '.ideas-wrapper',
+    start: 'top 45%',
+    end: () => `+=${getScrollAmount() * -1}`,
+    pin: true,
+    animation: tween,
+    scrub: 1,
+    invalidateOnRefresh: true,
+    markers: true
+  })
+</script>
+
+<style>
+  h2 {
+    font-size: var(--size-step-3);
+  }
+
+  p {
+    text-wrap: balance;
+  }
+
+  .list-item-heading {
+    font-size: var(--size-step--1);
+    font-weight: 450;
+  }
+</style>

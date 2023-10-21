@@ -208,19 +208,11 @@
 }
 
 @font-face {
-  font-display: swap;
   font-family: 'Halver Sans';
-  font-style: normal;
-  font-weight: 500;
-  src: url('/fonts/HalverSansMedium.woff2') format('woff2');
-}
-
-@font-face {
-  font-display: swap;
-  font-family: 'Halver Sans';
-  font-style: normal;
-  font-weight: 600;
-  src: url('/fonts/HalverSansSemibold.woff2') format('woff2');
+  src:
+    url('/fonts/HalverSans.woff2') format('woff2 supports variations'),
+    url('/fonts/HalverSans.woff2') format('woff2-variations');
+  font-weight: 100 900;
 }
 
 body {

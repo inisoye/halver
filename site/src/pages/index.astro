@@ -1,19 +1,20 @@
 ---
 import Hero from '../components/Hero.astro'
 import HowItWorks from '../components/HowItWorks.astro'
-import KeyFeatures from '../components/KeyFeatures.astro';
+import KeyFeatures from '../components/KeyFeatures.astro'
+import UsageIdeas from '../components/UsageIdeas.astro'
 import Layout from '../layouts/Layout.astro'
 
 const pageTitle = 'Halver'
 ---
 
 <Layout title={pageTitle}>
-  <main class='flex flex-col gap-32'>
+  <main class='flex flex-col gap-32 py-12'>
     <Hero />
     <HowItWorks />
 
     <KeyFeatures />
-    <Hero />
+    <UsageIdeas />
   </main>
 </Layout>
 
