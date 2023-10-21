@@ -16,7 +16,18 @@ const features = [
     headingClass: 'text-[--text-plum]',
     subheadingClass: 'text-[--text-light-plum] max-w-[38ch]',
     cardClass: 'bg-[--background-plum]',
+    imageClass: ' border border-[--border-plum]',
     imageId: 'feat-1-image'
+  },
+  {
+    heading: 'One click contributions',
+    subheading: 'Contribute and opt out of bills without a hassle.',
+    image: feat3Image,
+    headingClass: 'text-[--text-teal]',
+    subheadingClass: 'text-[--text-light-teal] max-w-[38ch]',
+    cardClass: 'bg-[--background-teal] ',
+    imageClass: 'border border-[--border-teal]',
+    imageId: 'feat-3-image'
   },
   {
     heading: 'Instant Notifications',
@@ -25,18 +36,9 @@ const features = [
     headingClass: 'text-[--text-indigo]',
     subheadingClass: 'text-[--text-light-indigo] max-w-[29ch]',
     cardClass: 'bg-[--background-indigo]',
+    imageClass: 'border border-[--border-indigo]',
     imageId: 'feat-5-image'
   },
-  {
-    heading: 'One click contributions',
-    subheading: 'Contribute and opt out of bills without a hassle.',
-    image: feat3Image,
-    headingClass: 'text-[--text-teal]',
-    subheadingClass: 'text-[--text-light-teal] max-w-[38ch]',
-    cardClass: 'bg-[--background-teal]',
-    imageId: 'feat-3-image'
-  },
-
   {
     heading: 'Quick glance of defaulting participants',
     subheading: 'See who has paid and who has not.',
@@ -44,6 +46,7 @@ const features = [
     headingClass: 'text-[--text-crimson]',
     subheadingClass: 'text-[--text-light-crimson] max-w-[38ch]',
     cardClass: 'bg-[--background-crimson]',
+    imageClass: 'border border-[--border-crimson]',
     imageId: 'feat-2-image'
   },
   {
@@ -53,6 +56,7 @@ const features = [
     headingClass: 'text-[--text-brown] max-w-[20ch]',
     subheadingClass: 'text-[--text-light-brown] max-w-[30ch]',
     cardClass: 'bg-[--background-brown]',
+    imageClass: ' border border-[--border-brown]',
     imageId: 'feat-4-image'
   },
   {
@@ -63,6 +67,7 @@ const features = [
     headingClass: 'text-[--text-yellow]',
     subheadingClass: 'text-[--text-light-yellow] max-w-[26ch]',
     cardClass: 'bg-[--background-yellow]',
+    imageClass: 'border border-[--border-yellow]',
     imageId: 'feat-6-image'
   }
 ]
@@ -120,6 +125,7 @@ const features = [
           subheadingClass,
           cardClass,
           image,
+          imageClass,
           imageId
         }) => {
           return (
@@ -151,7 +157,7 @@ const features = [
               <div class='ml-auto max-[711px]:max-w-[300px] min-[500px]:max-w-[300px]'>
                 <Image
                   id={imageId}
-                  class='ml-auto opacity-90 sm:max-w-full'
+                  class:list={['ml-auto opacity-90 sm:max-w-full rounded-md', imageClass]}
                   src={image}
                   alt={heading}
                 />

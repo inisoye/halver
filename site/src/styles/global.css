@@ -41,6 +41,14 @@
   --background-yellow: var(--yellowLight-3);
   --background-red: var(--redLight-3);
 
+  --border-teal: var(--tealLight-5);
+  --border-indigo: var(--indigoLight-5);
+  --border-plum: var(--plumLight-5);
+  --border-crimson: var(--crimsonLight-5);
+  --border-brown: var(--brownLight-5);
+  --border-yellow: var(--yellowLight-5);
+  --border-red: var(--redLight-5);
+
   --text-intro-marquee-dark: var(--grayLight-1);
   --text-intro-marquee-light: var(--grayDark-3);
 
@@ -133,6 +141,14 @@
     --background-yellow: var(--yellowDark-3);
     --background-red: var(--redDark-3);
 
+    --border-teal: var(--tealDark-5);
+    --border-indigo: var(--indigoDark-5);
+    --border-plum: var(--plumDark-5);
+    --border-crimson: var(--crimsonDark-5);
+    --border-brown: var(--brownDark-5);
+    --border-yellow: var(--yellowDark-5);
+    --border-red: var(--redDark-5);
+
     --logo-apricot: var(--brand-apricot-8);
     --logo-casal: var(--brand-casal-7);
 
@@ -193,6 +209,14 @@
   --background-crimson: var(--crimsonDark-3);
   --background-brown: var(--brownDark-3);
   --background-yellow: var(--yellowDark-3);
+
+  --border-teal: var(--tealDark-5);
+  --border-indigo: var(--indigoDark-5);
+  --border-plum: var(--plumDark-5);
+  --border-crimson: var(--crimsonDark-5);
+  --border-brown: var(--brownDark-5);
+  --border-yellow: var(--yellowDark-5);
+  --border-red: var(--redDark-5);
 
   --logo-apricot: var(--brand-apricot-8);
   --logo-casal: var(--brand-casal-7);
