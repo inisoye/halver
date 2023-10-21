@@ -7,7 +7,9 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
 
 <section class='relative flex h-max w-full flex-col gap-16'>
   <div class='flex flex-col gap-8 px-6'>
-    <h2 class='relative w-max max-w-[15ch] leading-[1.05] tracking-tight'>
+    <h2
+      class='relative mx-auto w-max max-w-[15ch] leading-[1.05] tracking-tighter'
+    >
       How it works
 
       <svg
@@ -48,13 +50,13 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
       </svg>
     </h2>
 
-    <p class='text-[--text-light]'>
+    <p class='mx-auto max-w-[36ch] text-justify text-[--text-light]'>
       Halver makes it simple to get reimbursed for group payments, whether
       they're one-time or recurring. These payments are referred to as
       'contributions' on a bill.
     </p>
 
-    <p class='text-[--text-light]'>
+    <p class='mx-auto max-w-[36ch] text-justify text-[--text-light]'>
       Creating a bill is an easy three-step process:
     </p>
   </div>
@@ -116,13 +118,13 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
 
       <div
         id='list-item-card-1'
-        class='list-item-card sticky bottom-6 mt-auto rounded-lg bg-white/60 p-6 backdrop-blur-xl transition duration-700 ease-in-out dark:bg-white/5'
+        class='list-item-card sticky bottom-6 md:mx-auto mt-auto md:w-[44ch] rounded-lg bg-white/60 p-6 backdrop-blur-xl transition duration-700 ease-in-out dark:bg-white/5'
       >
-        <span
+        <div
           aria-hidden
           class='list-item-number relative mb-12 flex h-[3.125rem] w-[5.5625rem] items-center justify-center overflow-visible'
         >
-          <span id='list-item-number-1' class='list-item-number'>1</span>
+          <p id='list-item-number-1' class='list-item-number'>1</p>
 
           <svg
             width='89'
@@ -144,7 +146,7 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
             >
             </path>
           </svg>
-        </span>
+        </div>
 
         <p
           id='list-item-heading-1'
@@ -154,7 +156,7 @@ import splitBreakdown from '../assets/images/how-it-works/split-breakdown.png'
         </p>
         <small
           id='list-item-subheading-1'
-          class='list-item-subheading max-w-[27ch] leading-tight text-[--text-light]'
+          class='list-item-subheading block max-w-[27ch] leading-tight text-[--text-light]'
         >
           Specify how much, how often and how quickly you want to be paid
         </small>

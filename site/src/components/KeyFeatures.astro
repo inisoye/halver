@@ -65,7 +65,9 @@ const features = [
 
 <section class='relative flex h-max w-full flex-col gap-16'>
   <div class='flex flex-col gap-8 px-6'>
-    <h2 class='relative w-max max-w-[15ch] leading-[1.05] tracking-tight'>
+    <h2
+      class='relative mx-auto w-max max-w-[15ch] leading-[1.05] tracking-tighter'
+    >
       Key features
 
       <svg
@@ -98,10 +100,12 @@ const features = [
       </svg>
     </h2>
 
-    <p class='text-[--text-light]'>Bits and bobs that make Halver special</p>
+    <p class='mx-auto max-w-[36ch] text-justify text-[--text-light]'>
+      Bits and bobs that make Halver special
+    </p>
   </div>
 
-  <ul class='grid gap-8 px-6'>
+  <ul class='grid gap-8 px-6 sm:grid-cols-2'>
     {
       features.map(
         ({
@@ -138,7 +142,13 @@ const features = [
                 </p>
               </div>
 
-              <Image class='opacity-90' src={image} alt={heading} />
+              <div class='ml-auto max-[711px]:max-w-[300px] min-[500px]:max-w-[300px]'>
+                <Image
+                  class='ml-auto opacity-90 sm:max-w-full'
+                  src={image}
+                  alt={heading}
+                />
+              </div>
             </li>
           )
         }

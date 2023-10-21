@@ -48,7 +48,9 @@ const ideas = [
   class='section-container relative flex h-max w-full flex-col gap-16'
 >
   <div class='heading-wrapper flex flex-col gap-8 px-6'>
-    <h2 class='relative w-max max-w-[15ch] leading-[1.05] tracking-tight'>
+    <h2
+      class='relative mx-auto w-max max-w-[15ch] leading-[1.05] tracking-tighter'
+    >
       Usage ideas
 
       <svg
@@ -85,8 +87,8 @@ const ideas = [
       </svg>
     </h2>
 
-    <p class='max-w-[28ch] text-[--text-light]'>
-      Still unsure on what to use Halver for? Here are some ideas:
+    <p class='mx-auto max-w-[27ch] text-justify text-[--text-light]'>
+      Still unsure on what to use Halver for? Here are some other ideas:
     </p>
   </div>
 
@@ -98,7 +100,7 @@ const ideas = [
             <li
               class:list={[
                 cardClass,
-                'idea list-item-card flex w-max max-w-[14.5em] flex-col'
+                'idea list-item-card flex w-max max-w-[14.5em] flex-col pb-0.5'
               ]}
             >
               <Image
@@ -109,7 +111,7 @@ const ideas = [
 
               <p
                 class:list={[
-                  'list-item-heading z-10 mx-auto -mt-[10px] max-w-[84%] rounded-md bg-[--element-background] p-2 px-2.5 text-center leading-tight',
+                  'list-item-heading card-shadow z-10 mx-auto -mt-[10px] max-w-[84%] rounded-md bg-[--element-background] p-2 px-2.5 text-center leading-tight',
                   headingClass
                 ]}
               >
@@ -122,7 +124,7 @@ const ideas = [
     </ul>
   </div>
 
-  <div class='lightBG h-[170vh]'></div>
+  <div class='spacer h-[53.125rem]'></div>
 </section>
 
 <script>
@@ -138,7 +140,9 @@ const ideas = [
     if (ideas) {
       let ideasWidth = ideas.scrollWidth
       const sectionWidth = sectionContainer?.clientWidth ?? 0
-      return -(ideasWidth - sectionWidth)
+      const scrollAmount = -(ideasWidth - sectionWidth)
+
+      return -722
     }
 
     return 0
@@ -152,7 +156,7 @@ const ideas = [
 
   ScrollTrigger.create({
     trigger: '.heading-wrapper',
-    start: 'top 15%',
+    start: 'top 100px',
     end: () => `+=${getScrollAmount() * -1}`,
     pin: true,
     animation: tween,
@@ -162,7 +166,7 @@ const ideas = [
 
   ScrollTrigger.create({
     trigger: '.ideas-wrapper',
-    start: 'top 35%',
+    start: 'top 300px',
     end: () => `+=${getScrollAmount() * -1}`,
     pin: true,
     animation: tween,
@@ -183,5 +187,9 @@ const ideas = [
   .list-item-heading {
     font-size: var(--size-step--1);
     font-weight: 450;
+  }
+
+  .card-shadow {
+    box-shadow: var(--shadow-elevation-low);
   }
 </style>

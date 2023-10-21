@@ -57,6 +57,9 @@
   --button-text-pharlap: var(--grayLight-1);
   --button-text-neutral: var(--grayLight-12);
 
+  --footer-background: var(--brand-pharlap-2);
+  --footer-border: var(--brand-pharlap-3);
+
   --size-step--2: clamp(0.6331rem, 0.6424rem + -0.012vw, 0.64rem);
   --size-step--1: clamp(0.8rem, 0.7848rem + 0.0761vw, 0.8438rem);
   --size-step-0: clamp(1rem, 0.9565rem + 0.2174vw, 1.125rem);
@@ -143,6 +146,9 @@
     --button-text-pharlap: var(--grayDark-1);
     --button-text-neutral: var(--grayDark-12);
 
+    --footer-background: var(--element-background);
+    --footer-border: var(--border-default);
+
     --shadow-color: unset;
     --shadow-elevation-low: unset;
     --shadow-elevation-medium: unset;
@@ -201,6 +207,9 @@
   --button-text-pharlap: var(--grayDark-1);
   --button-text-neutral: var(--grayDark-12);
 
+  --footer-background: var(--element-background);
+  --footer-border: var(--border-default);
+
   --shadow-color: unset;
   --shadow-elevation-low: unset;
   --shadow-elevation-medium: unset;
@@ -250,7 +259,8 @@ h3 {
   --flow-space: 0.5em;
 }
 
-main {
+main,
+footer {
   max-width: 65ch;
   margin-inline: auto;
 }

@@ -1,4 +1,5 @@
 ---
+import Footer from '../components/Footer.astro'
 import Header from '../components/Header.astro'
 import '../styles/global.css'
 import * as colors from '../theme/colors'
@@ -54,10 +55,14 @@ for (const key in colors) {
     <title>{title}</title>
   </head>
 
-  <body>
+  <body class='xl:flex xl:gap-4'>
     <Header />
 
-    <slot />
+    <div class='xl:mx-auto xl:w-max'>
+      <slot />
+
+      <Footer />
+    </div>
   </body>
 
   <style is:global define:vars={flattenedColors}></style>
