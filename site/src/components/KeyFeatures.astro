@@ -207,14 +207,21 @@ const features = [
     }
   }
 
-  const displayMode = getComputedStyle(
-    document.documentElement
-  ).getPropertyValue('--color-mode')
+  const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
 
-  updateImages(displayMode === "'light'" ? 'light' : 'dark')
+  function handleImageUpdateOnFirstScroll() {
+    updateImages(isDarkMode ? 'light' : 'dark')
 
-  window.addEventListener('load', () =>
-    updateImages(displayMode === "'light'" ? 'light' : 'dark')
+    // Remove the event listener to prevent further scroll events
+    window.removeEventListener('scroll', handleImageUpdateOnFirstScroll)
+  }
+
+  updateImages(isDarkMode ? 'light' : 'dark')
+
+  window.addEventListener('scroll', handleImageUpdateOnFirstScroll)
+
+  window.addEventListener('DOMContentLoaded', () =>
+    updateImages(isDarkMode ? 'light' : 'dark')
   )
 
   window
