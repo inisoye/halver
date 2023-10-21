@@ -1,8 +1,8 @@
 ---
-import { Image } from 'astro:assets';
-import oneTimeHeroImage from '../assets/images/hero/one-time.png';
-import subscriptionImage from '../assets/images/hero/subscription.png';
-import Marquee from './Marquee.astro';
+import { Image } from 'astro:assets'
+import oneTimeHeroImage from '../assets/images/hero/one-time.png'
+import subscriptionImage from '../assets/images/hero/subscription.png'
+import Marquee from './Marquee.astro'
 ---
 
 <section class='relative flex h-max w-full flex-col'>
@@ -15,6 +15,7 @@ import Marquee from './Marquee.astro';
           aria-hidden
           class='hero-image pointer-events-none absolute max-w-[110%] select-none'
           src={oneTimeHeroImage}
+          loading='eager'
           alt='A group of ladies at lunch.'
         />
       </span>
@@ -24,6 +25,7 @@ import Marquee from './Marquee.astro';
           aria-hidden
           class='hero-image pointer-events-none absolute select-none'
           src={subscriptionImage}
+          loading='eager'
           alt='A group of friends watching subscription TV.'
         />
       </span> with ease.
