@@ -230,6 +230,7 @@ body {
   color: var(--text-default);
   font-weight: 500;
   font-family: 'Halver Sans', system-ui, sans-serif;
+  font-feature-settings: 'ss02' on;
 }
 
 h1,
