@@ -142,7 +142,7 @@ const ideas = [
       const sectionWidth = sectionContainer?.clientWidth ?? 0
       const scrollAmount = -(ideasWidth - sectionWidth)
 
-      return -722
+      return scrollAmount
     }
 
     return 0
@@ -154,20 +154,10 @@ const ideas = [
     ease: 'none'
   })
 
-  // ScrollTrigger.create({
-  //   trigger: '.heading-wrapper',
-  //   start: 'top 100px',
-  //   end: () => `+=${getScrollAmount() * -1}`,
-  //   pin: true,
-  //   animation: tween,
-  //   scrub: 1,
-  //   invalidateOnRefresh: true
-  // })
-
   ScrollTrigger.create({
     trigger: '.ideas-wrapper',
     start: 'top 300px',
-    end: () => `+=${getScrollAmount() * -1}`,
+    end: () => `+=${722}`,
     pin: true,
     animation: tween,
     scrub: 1,
