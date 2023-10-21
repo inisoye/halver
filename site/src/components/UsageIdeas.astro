@@ -155,19 +155,21 @@ const ideas = [
 
   ScrollTrigger.create({
     trigger: '.heading-wrapper',
-    start: 'top 25%',
+    start: 'top 15%',
     end: () => `+=${getScrollAmount() * -1}`,
     pin: true,
     animation: tween,
+    scrub: 1,
     invalidateOnRefresh: true
   })
 
   ScrollTrigger.create({
     trigger: '.ideas-wrapper',
-    start: 'top 45%',
+    start: 'top 35%',
     end: () => `+=${getScrollAmount() * -1}`,
     pin: true,
     animation: tween,
+    scrub: 1,
     invalidateOnRefresh: true
   })
 </script>
