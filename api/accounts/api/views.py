@@ -200,13 +200,20 @@ class CloseAccountAPIView(APIView):
     def patch(self, request):
         user = self.request.user
 
-        user_actions = BillAction.objects.filter(
-            participant=user,
+        user_one_time_actions = user.actions.filter(
+            Q(status=BillAction.StatusChoices.PENDING)
+            | Q(status=BillAction.StatusChoices.OVERDUE)
+        )
+
+        # Cancel any one time bills
+        user_one_time_actions.update(status=BillAction.StatusChoices.CANCELLED)
+
+        user_subscription_actions = user.actions.filter(
             status=BillAction.StatusChoices.ONGOING,
         )
 
         disable_subscriptions_payloads = format_disable_subscriptions_payloads(
-            user_actions
+            user_subscription_actions
         )
 
         disable_subscriptions_responses = asyncio.run(
@@ -215,11 +222,11 @@ class CloseAccountAPIView(APIView):
 
         # Detect subscriptions that were not successfully disabled.
         action_ids_to_be_ignored = get_action_ids_to_be_ignored(
-            disable_subscriptions_responses, user_actions
+            disable_subscriptions_responses, user_subscription_actions
         )
 
         # Cancel only actions associated with subscriptions that have been disabled.
-        user_actions.filter(~Q(id__in=action_ids_to_be_ignored)).update(
+        user_subscription_actions.filter(~Q(id__in=action_ids_to_be_ignored)).update(
             status=BillAction.StatusChoices.CANCELLED
         )
 
