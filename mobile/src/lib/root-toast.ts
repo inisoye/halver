@@ -11,7 +11,7 @@ const textVariantStyles = {
     color: 'white',
   },
   success: {
-    backgroundColor: isDarkMode() ? darkColors.green4 : lightColors.green10,
+    backgroundColor: isDarkMode() ? darkColors.green7 : lightColors.green10,
     color: 'white',
   },
   neutral: {

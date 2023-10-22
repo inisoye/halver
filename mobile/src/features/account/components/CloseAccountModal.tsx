@@ -16,7 +16,6 @@ import { useBooleanStateControl } from '@/hooks';
 import { apiClient, deleteAxiosDefaultToken } from '@/lib/axios';
 import { allMMKVKeys, storage } from '@/lib/mmkv';
 import { navigationRef } from '@/lib/react-navigation';
-import { showToast } from '@/lib/root-toast';
 import { handleAxiosErrorAlertAndHaptics, isAndroid } from '@/utils';
 
 import { useCloseAccount } from '../api';
@@ -32,8 +31,6 @@ export const CloseAccountModal: React.FunctionComponent = () => {
   const logOut = () => {
     closeAccount(undefined, {
       onSuccess: () => {
-        showToast('Account successfully deactivated');
-
         queryClient.clear();
         deleteAxiosDefaultToken(apiClient);
         storage.clearAll();
