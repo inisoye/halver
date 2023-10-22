@@ -11,7 +11,7 @@ const ideas = [
     heading: 'Donate towards a friend in need',
 
     image: idea1Image,
-    headingClass: 'max-w-[64%]',
+    headingClass: '[@media(max-height:524px)]:max-w-[90%] max-w-[64%]',
     cardClass: ''
   },
 
@@ -31,13 +31,14 @@ const ideas = [
   {
     heading: "Contribute towards the security guard's salary",
     image: idea4Image,
-    headingClass: 'max-w-[70%]',
+    headingClass: '[@media(max-height:524px)]:max-w-[95%] max-w-[70%]',
     cardClass: ''
   },
   {
     heading: 'Anything else your group would like to raise money for',
     image: idea5Image,
-    headingClass: 'max-w-[90%] px-1.5',
+    headingClass:
+      '[@media(max-height:524px)]:max-w-[95%] [@media(max-height:524px)]:px-1 max-w-[90%] px-1.5',
     cardClass: ''
   }
 ]
@@ -104,7 +105,7 @@ const ideas = [
               ]}
             >
               <Image
-                class=' max-w-[14.5em] rounded-md opacity-90'
+                class='usage-item-image max-w-[14.5em] rounded-md opacity-90'
                 src={image}
                 alt={heading}
               />
@@ -124,7 +125,7 @@ const ideas = [
     </ul>
   </div>
 
-  <div class='spacer h-[31.25rem]'></div>
+  <div class='spacer h-[20vh]'></div>
 </section>
 
 <script>
@@ -156,8 +157,8 @@ const ideas = [
 
   ScrollTrigger.create({
     trigger: '.usage-section-container',
-    start: 'top 100px',
-    end: () => `+=${300}`,
+    start: 'top 10%',
+    end: () => `+=10%`,
     pin: true,
     animation: tween,
     scrub: 1,
@@ -181,5 +182,16 @@ const ideas = [
 
   .card-shadow {
     box-shadow: var(--shadow-elevation-low);
+  }
+
+  @media screen and (max-height: 524px) {
+    .list-item-card,
+    .usage-item-image {
+      max-width: 40vh;
+    }
+
+    .list-item-heading {
+      font-size: var(--size-step--2);
+    }
   }
 </style>
