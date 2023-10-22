@@ -1,10 +1,12 @@
 from django.urls import include, path
 
 from accounts.api.views import (
+    ActivateAccountAPIView,
     AppleLogin,
+    CloseAccountAPIView,
     ExpoPushTokenUpdateAPIView,
     GoogleLogin,
-    MultiplePushNotificationsView,
+    MultiplePushNotificationsAPIView,
     ProfileImageUploadAPIView,
     RegisteredContactsListAPIView,
 )
@@ -34,6 +36,16 @@ urlpatterns = [
         name="profile-image-upload",
     ),
     path(
+        "accounts/close/",
+        CloseAccountAPIView.as_view(),
+        name="close-account",
+    ),
+    path(
+        "accounts/activate/",
+        ActivateAccountAPIView.as_view(),
+        name="activate-account",
+    ),
+    path(
         "accounts/expo-push-token/",
         ExpoPushTokenUpdateAPIView.as_view(),
         name="expo-push-token-update",
@@ -49,7 +61,7 @@ urlpatterns = [
     ),
     path(
         "send_multiple_push/",
-        MultiplePushNotificationsView.as_view(),
+        MultiplePushNotificationsAPIView.as_view(),
         name="multiple_push_notifications",
     ),
 ]

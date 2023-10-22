@@ -239,6 +239,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         )
         return list(recipient_codes)
 
+    def activate_user(self):
+        """Activate a user, usually after login."""
+
+        self.is_active = True
+        self.save()
+
     def update_profile_image(self, profile_image):
         """Update the user's profile image, generate a blurhash, and store the
         URL and hash.

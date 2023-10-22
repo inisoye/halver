@@ -63,22 +63,6 @@ class TransferRecipientRequests(PaystackBase):
         )
 
     @classmethod
-    def delete(cls, id_or_code):
-        """Delete a single transfer recipient.
-
-        Args:
-            id_or_code: An ID or code for the recipient
-            whose details you want to delete.
-
-        Returns:
-            A JSON deletion confirmation.
-        """
-
-        return cls().requests.delete(
-            f"transferrecipient/{id_or_code}",
-        )
-
-    @classmethod
     async def fetch_async(cls, id_or_code):
         """Asynchronously get a single transfer recipient. The request is sent
         asynchronously to facilitate the fetch multiple method.
@@ -123,3 +107,60 @@ class TransferRecipientRequests(PaystackBase):
 
         # Return the list of recipients
         return recipients
+
+    @classmethod
+    def delete(cls, id_or_code):
+        """Delete a single transfer recipient.
+
+        Args:
+            id_or_code: An ID or code for the recipient
+            whose details you want to delete.
+
+        Returns:
+            A JSON deletion confirmation.
+        """
+
+        return cls().requests.delete(
+            f"transferrecipient/{id_or_code}",
+        )
+
+    @classmethod
+    def delete_async(cls, id_or_code):
+        """Delete a single transfer recipient.
+
+        Args:
+            id_or_code: An ID or code for the recipient
+            whose details you want to delete.
+
+        Returns:
+            A JSON deletion confirmation.
+        """
+
+        return cls().requests.delete_async(
+            f"transferrecipient/{id_or_code}",
+        )
+
+    @classmethod
+    async def delete_multiple(cls, recipient_codes):
+        """Delete multiple, specified transfer recipients by running the get
+        method multiple times concurrently.
+
+        Args:
+            recipient_codes: A list of the codes for transfer recipients
+            to be deleted.
+
+        Returns:
+            A list of confirmation messages.
+        """
+
+        # Create a list of tasks that will be run concurrently
+        tasks = [
+            asyncio.ensure_future(cls().delete_async(recipient_code))
+            for recipient_code in recipient_codes
+        ]
+
+        # Wait for all tasks to complete
+        deleted_recipients = await asyncio.gather(*tasks)
+
+        # Return the list of deletion confirmations
+        return deleted_recipients

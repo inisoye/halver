@@ -238,7 +238,7 @@ class BillCancellationAPIView(APIView):
                     "Some subscriptions were not successfully cancelled. Try cancelling"
                     " them individually or try again later."
                 ),
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
             )
         else:
             return Response(

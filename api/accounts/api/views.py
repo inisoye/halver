@@ -1,3 +1,5 @@
+import asyncio
+
 from allauth.socialaccount.providers.apple.views import (
     AppleOAuth2Adapter,
     AppleOAuth2Client,
@@ -6,6 +8,7 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from environs import Env
 from rest_framework import status
@@ -19,8 +22,14 @@ from accounts.api.serializers import (
     RegisteredContactsSerializer,
 )
 from accounts.models import CustomUser
+from bills.models import BillAction
 from core.utils.responses import format_exception
+from financials.utils.subscriptions import (
+    format_disable_subscriptions_payloads,
+    get_action_ids_to_be_ignored,
+)
 from libraries.notifications.base import send_push_messages
+from libraries.paystack.subscription_requests import SubscriptionRequests
 
 env = Env()
 env.read_env()
@@ -80,8 +89,8 @@ class ProfileImageUploadAPIView(APIView):
 
 
 class RegisteredContactsListAPIView(APIView):
-    """Filter out a list of a person's contacts that have previously
-    registered on Halver.
+    """Filter out a list of a person's contacts that have previously registered
+    on Halver.
 
     Accepts POST requests.
     """
@@ -144,7 +153,7 @@ class ExpoPushTokenUpdateAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class MultiplePushNotificationsView(APIView):
+class MultiplePushNotificationsAPIView(APIView):
     def post(self, request, *args, **kwargs):
         # Retrieve data from the request, which is a list of dictionaries
         push_parameters_list = request.data.get("push_parameters_list", [])
@@ -157,3 +166,86 @@ class MultiplePushNotificationsView(APIView):
                 return Response({"message": "Push notifications sent successfully"})
 
         return Response({"message": "Invalid request"}, status=400)
+
+
+class ActivateAccountAPIView(APIView):
+    """Activate a user's account.
+
+    Accepts PATCH requests
+    """
+
+    permission_classes = (IsAuthenticated,)
+
+    def patch(self, request):
+        user = self.request.user
+
+        user.is_active = True
+        user.save()
+
+        return Response(
+            {"detail": "Account activation successful"},
+            status=status.HTTP_200_OK,
+        )
+
+
+class CloseAccountAPIView(APIView):
+    """Close a user's account by rendering it as inactive, cancelling their
+    subscriptions on bills and deleting their financial details.
+
+    Accepts PATCH requests
+    """
+
+    permission_classes = (IsAuthenticated,)
+
+    def patch(self, request):
+        user = self.request.user
+
+        user_actions = BillAction.objects.filter(
+            participant=user,
+            status=BillAction.StatusChoices.ONGOING,
+        )
+
+        disable_subscriptions_payloads = format_disable_subscriptions_payloads(
+            user_actions
+        )
+
+        disable_subscriptions_responses = asyncio.run(
+            SubscriptionRequests.disable_multiple(disable_subscriptions_payloads)
+        )
+
+        # Detect subscriptions that were not successfully disabled.
+        action_ids_to_be_ignored = get_action_ids_to_be_ignored(
+            disable_subscriptions_responses, user_actions
+        )
+
+        # Cancel only actions associated with subscriptions that have been disabled.
+        user_actions.filter(~Q(id__in=action_ids_to_be_ignored)).update(
+            status=BillAction.StatusChoices.CANCELLED
+        )
+
+        if action_ids_to_be_ignored:
+            return format_exception(
+                message=(
+                    "We could not successfully cancel some of your subscriptions. Try"
+                    " cancelling them individually or try again later."
+                ),
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            )
+
+        user_cards = user.cards.all()
+        if user_cards.exists():
+            user_cards.delete()
+
+        # Transfer recipients are not deleted from Paystack as they might be used
+        # by other users as well.
+        user_transfer_recipients = user.transfer_recipients.all()
+        if user_transfer_recipients.exists():
+            user_transfer_recipients.delete()
+
+        user.is_active = False
+        user.save()
+
+        return Response(
+            {"detail": "Account deactivation successful"},
+            status=status.HTTP_200_OK,
+        )
