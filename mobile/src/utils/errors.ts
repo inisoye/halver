@@ -81,7 +81,7 @@ export const formatAxiosErrorMessage = (
   const firstDigitInResponseStatus = String(error.response?.status).charAt(0);
 
   if (firstDigitInResponseStatus === '5') {
-    return 'There was an error processing that. Please contact support.'; // Generic errors for server errors.
+    return 'We could not process that. Please try again or contact support.'; // Generic message for server errors.
   }
 
   // Return default error message string if user is not connected to the internet.
