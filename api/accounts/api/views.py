@@ -242,9 +242,6 @@ class CloseAccountAPIView(APIView):
         if user_transfer_recipients.exists():
             user_transfer_recipients.delete()
 
-        user.is_active = False
-        user.save()
-
         return Response(
             {"detail": "Account deactivation successful"},
             status=status.HTTP_200_OK,
