@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, type QueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
 
 import { apiClient } from '@/lib/axios';
@@ -22,5 +22,12 @@ export const useTransferRecipients = () => {
     queryFn: getTransferRecipients,
     staleTime: 10 * (60 * 1000), // 10 mins
     cacheTime: 15 * (60 * 1000), // 15 mins
+  });
+};
+
+export const prefetchTransferRecipients = async (queryClient: QueryClient) => {
+  await queryClient.prefetchQuery({
+    queryKey: allStaticQueryKeys.getTransferRecipients,
+    queryFn: getTransferRecipients,
   });
 };

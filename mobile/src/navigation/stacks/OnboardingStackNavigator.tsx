@@ -8,6 +8,7 @@ import {
   CardDetails,
   Phone,
   ProfileImage,
+  Welcome,
 } from '@/screens';
 
 export type OnboardingStackParamList = {
@@ -16,6 +17,7 @@ export type OnboardingStackParamList = {
   BankAccountDetails: undefined;
   CardDetails: undefined;
   ProfileImage: undefined;
+  Welcome: undefined;
 };
 
 const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
@@ -80,6 +82,14 @@ export const OnboardingStackNavigator: React.FunctionComponent = () => {
           }}
         />
       )}
+
+      <OnboardingStack.Screen
+        component={Welcome}
+        name="Welcome"
+        options={{
+          headerShown: false,
+        }}
+      />
     </OnboardingStack.Navigator>
   );
 };

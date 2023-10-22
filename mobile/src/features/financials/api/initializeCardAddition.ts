@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, type QueryClient } from '@tanstack/react-query';
 
 import { apiClient } from '@/lib/axios';
 import { allStaticQueryKeys } from '@/lib/react-query';
@@ -17,5 +17,12 @@ export const useGetCardAdditionURL = () => {
     queryFn: getCardAdditionURL,
     staleTime: 10 * (60 * 1000), // 10 mins
     cacheTime: 15 * (60 * 1000), // 15 mins
+  });
+};
+
+export const prefetchCardAdditionURL = async (queryClient: QueryClient) => {
+  await queryClient.prefetchQuery({
+    queryKey: allStaticQueryKeys.getCardAdditionURL,
+    queryFn: getCardAdditionURL,
   });
 };

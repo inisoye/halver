@@ -54,6 +54,6 @@ export const useUserDetails = () => {
         );
       }
     },
-    cacheTime: 30 * (60 * 1000), // 15 mins
+    cacheTime: 60 * (60 * 1000), // 60 mins
   });
 };

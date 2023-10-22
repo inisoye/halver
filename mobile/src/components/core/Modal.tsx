@@ -1,15 +1,16 @@
 import Constants from 'expo-constants';
 import * as React from 'react';
 import { Modal as RNModal } from 'react-native';
+import { FadeInDown } from 'react-native-reanimated';
 
 import { CloseModal } from '@/icons';
 import { useIsDarkModeSelected } from '@/utils';
 
 import { AfterInteractions } from './AfterInteractions';
-import { Box } from './Box';
+import { AnimatedBox, Box } from './Box';
 import { LogoLoader } from './LogoLoader';
-import { Pressable } from './Pressable';
 import { Text } from './Text';
+import { AnimatedTouchableOpacity } from './TouchableOpacity';
 
 interface ModalProps {
   children: React.ReactNode;
@@ -46,8 +47,9 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
         flex={1}
         justifyContent="flex-end"
       >
-        <Box
+        <AnimatedBox
           alignItems="center"
+          entering={FadeInDown.delay(200).springify()}
           flexDirection="row"
           gap="4"
           justifyContent="space-between"
@@ -69,11 +71,11 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
           </Box>
 
           {hasCloseButton && (
-            <Pressable marginRight="6" onPress={closeModal}>
+            <AnimatedTouchableOpacity marginRight="6" onPress={closeModal}>
               <CloseModal />
-            </Pressable>
+            </AnimatedTouchableOpacity>
           )}
-        </Box>
+        </AnimatedBox>
 
         <AfterInteractions>{isLoaderOpen && <LogoLoader />}</AfterInteractions>
 

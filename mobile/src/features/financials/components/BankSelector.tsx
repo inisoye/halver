@@ -8,7 +8,6 @@ import { z } from 'zod';
 
 import {
   Box,
-  Button,
   DynamicText,
   Image,
   Modal,
@@ -16,6 +15,7 @@ import {
   Text,
   TextField,
   TextFieldLabel,
+  TouchableOpacity,
 } from '@/components';
 import { useBooleanStateControl } from '@/hooks';
 import { Search, SelectCaret, SelectInactiveItem, SelectTick } from '@/icons';
@@ -204,9 +204,12 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
   return (
     <>
       <TextFieldLabel label="Your bank" />
-      <Button
+      <TouchableOpacity
+        alignItems="center"
         backgroundColor="inputBackground"
+        borderRadius="base"
         disabled={!banks}
+        flexDirection="row"
         marginTop="1.5"
         paddingHorizontal="4"
         paddingVertical="3"
@@ -256,7 +259,7 @@ export const BankSelector: React.FunctionComponent<BankSelectorProps> = ({
         )}
 
         <SelectCaret style={marginAutoStyles['ml-auto']} />
-      </Button>
+      </TouchableOpacity>
 
       <Modal
         closeModal={handleModalClose}

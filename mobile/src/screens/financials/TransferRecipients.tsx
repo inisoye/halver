@@ -1,4 +1,5 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 
 import {
@@ -10,6 +11,7 @@ import {
   TouchableOpacity,
 } from '@/components';
 import {
+  prefetchBanks,
   SelectedTransferRecipientModal,
   TransferRecipientItem,
   useTransferRecipients,
@@ -28,6 +30,8 @@ type TransferRecipientsProps = NativeStackScreenProps<
 export const TransferRecipients: React.FunctionComponent<
   TransferRecipientsProps
 > = ({ navigation }) => {
+  const queryClient = useQueryClient();
+
   const {
     state: isModalOpen,
     setTrue: openModal,
@@ -63,6 +67,7 @@ export const TransferRecipients: React.FunctionComponent<
   const onlyOneRecipientAvailable = sortedTransferRecipients?.length === 1;
 
   const goToAddTransferRecipient = () => {
+    prefetchBanks(queryClient);
     navigation.navigate('Add a recipient');
   };
 

@@ -63,23 +63,24 @@ export const CloseAccountModal: React.FunctionComponent = () => {
       <TouchableOpacity
         alignItems="center"
         alignSelf="center"
+        backgroundColor="buttonNeutralDarker"
         borderRadius="md"
         flexDirection="row"
         gap="4"
-        marginTop="56"
         justifyContent="center"
-        paddingHorizontal="4"
+        marginTop="60"
+        paddingHorizontal="3"
         paddingVertical="2"
         onPress={handleButtonPress}
       >
         <DynamicText
-          color="red11"
+          color="textLighter"
           fontFamily="Halver-Semibold"
           numberOfLines={1}
           textAlign="center"
-          variant="xs"
+          variant="xxs"
         >
-          Close account
+          Close your account
         </DynamicText>
       </TouchableOpacity>
 
@@ -112,8 +113,8 @@ export const CloseAccountModal: React.FunctionComponent = () => {
           <Box flexDirection="row" gap="3">
             <Button
               backgroundColor="buttonCasal"
-              flex={1}
               disabled={isCloseAccountLoading}
+              flex={1}
               onPress={closeCancellationModal}
             >
               <Text color="buttonTextCasal" fontFamily="Halver-Semibold">
@@ -123,8 +124,8 @@ export const CloseAccountModal: React.FunctionComponent = () => {
 
             <Button
               backgroundColor="buttonNeutralDarker"
-              flex={1}
               disabled={isCloseAccountLoading}
+              flex={1}
               onPress={logOut}
             >
               <Text color="red11" fontFamily="Halver-Semibold">

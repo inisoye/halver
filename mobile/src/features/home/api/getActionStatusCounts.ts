@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, type QueryClient } from '@tanstack/react-query';
 
 import { apiClient, isAPIClientTokenSet } from '@/lib/axios';
 import { allStaticQueryKeys } from '@/lib/react-query';
@@ -14,5 +14,12 @@ export const useActionStatusCounts = () => {
     queryKey: allStaticQueryKeys.getActionStatusCounts,
     queryFn: getActionStatusCounts,
     enabled: isAPIClientTokenSet(),
+  });
+};
+
+export const prefetchActionStatusCounts = async (queryClient: QueryClient) => {
+  await queryClient.prefetchQuery({
+    queryKey: allStaticQueryKeys.getActionStatusCounts,
+    queryFn: getActionStatusCounts,
   });
 };

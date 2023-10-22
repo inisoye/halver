@@ -1,8 +1,13 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { FadeInDown } from 'react-native-reanimated';
 
 import { AnimatedTouchableOpacity, Box, Screen, Text } from '@/components';
+import {
+  prefetchCards,
+  prefetchTransferRecipients,
+} from '@/features/financials';
 import {
   Bank as BankIcon,
   Card as CardIcon,
@@ -19,12 +24,18 @@ type FinancialsProps = NativeStackScreenProps<
 export const Financials: React.FunctionComponent<FinancialsProps> = ({
   navigation,
 }) => {
+  const queryClient = useQueryClient();
+
   const goToCards = () => {
+    prefetchCards(queryClient);
     navigation.navigate('Cards');
   };
+
   const goToTransferRecipients = () => {
+    prefetchTransferRecipients(queryClient);
     navigation.navigate('Transfer recipients');
   };
+
   const goToTransactions = () => {
     navigation.navigate('Transactions');
   };

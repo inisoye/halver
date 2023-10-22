@@ -1,10 +1,13 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
-import { useMMKVBoolean } from 'react-native-mmkv';
 
 import { useUserDetails } from '@/features/account';
-import { AddTransferRecipientForm } from '@/features/financials';
-import { allMMKVKeys } from '@/lib/mmkv';
+import {
+  AddTransferRecipientForm,
+  prefetchCardAdditionURL,
+} from '@/features/financials';
+import { prefetchActionStatusCounts } from '@/features/home';
 import type { OnboardingStackParamList } from '@/navigation';
 
 type BankAcountDetailsProps = NativeStackScreenProps<
@@ -15,10 +18,9 @@ type BankAcountDetailsProps = NativeStackScreenProps<
 export const BankAccountDetails: React.FunctionComponent<
   BankAcountDetailsProps
 > = ({ navigation }) => {
+  const queryClient = useQueryClient();
+
   const { data: userDetails } = useUserDetails();
-  const [_isFirstTime, setIsFirstTime] = useMMKVBoolean(
-    allMMKVKeys.isFirstTime,
-  );
 
   const { profileImageHash, profileImageUrl, defaultCard } = userDetails || {};
 
@@ -27,6 +29,7 @@ export const BankAccountDetails: React.FunctionComponent<
 
   const onAddTransferRecipientComplete = React.useCallback(() => {
     if (!isCardAlreadySaved) {
+      prefetchCardAdditionURL(queryClient);
       navigation.navigate('CardDetails');
       return;
     }
@@ -37,10 +40,11 @@ export const BankAccountDetails: React.FunctionComponent<
     }
 
     if (isCardAlreadySaved && isImageAlreadyUploaded) {
-      setIsFirstTime(false);
+      prefetchActionStatusCounts(queryClient);
+      navigation.navigate('Welcome');
       return;
     }
-  }, [isCardAlreadySaved, isImageAlreadyUploaded, navigation, setIsFirstTime]);
+  }, [isCardAlreadySaved, isImageAlreadyUploaded, navigation, queryClient]);
 
   return (
     <AddTransferRecipientForm

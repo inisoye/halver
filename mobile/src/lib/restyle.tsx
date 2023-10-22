@@ -565,6 +565,8 @@ const theme = createTheme({
     billScreenBackground: brandColors.pharlap2,
     billMeterBackground: brandColors.pharlap7,
 
+    welcomeScreenBackground: brandColors.pharlap2,
+
     defaultItemTagBg: brandColors.casal7,
 
     cardStripBg: brandColors.pharlap7,
@@ -622,12 +624,12 @@ const theme = createTheme({
     lg: {
       fontSize: 18,
       lineHeight: 26,
-      letterSpacing: -0.6,
+      letterSpacing: -0.2,
     },
     xl: {
       fontSize: 20,
       lineHeight: 20.4,
-      letterSpacing: -0.8,
+      letterSpacing: -0.2,
     },
     '2xl': {
       fontSize: 24,
@@ -774,6 +776,8 @@ const darkTheme: Theme = {
 
     billScreenBackground: neutralColors.blackish,
     billMeterBackground: brandColors.pharlap6,
+
+    welcomeScreenBackground: neutralColors.blackish,
 
     defaultItemTagBg: brandColors.casal7,
 

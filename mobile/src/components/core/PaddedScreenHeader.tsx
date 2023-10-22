@@ -33,7 +33,7 @@ export const PaddedScreenHeader: React.FunctionComponent<
           )}
 
         {isSkippable && (
-          <TouchableOpacity marginLeft="auto" onPress={handleSkip}>
+          <TouchableOpacity hitSlop={10} marginLeft="auto" onPress={handleSkip}>
             <Text color="textLight" textDecorationLine="underline" variant="sm">
               Skip
             </Text>

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, type QueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
 
 import { apiClient } from '@/lib/axios';
@@ -17,6 +17,13 @@ export const useBanks = () => {
     queryKey: allStaticQueryKeys.getBanks,
     queryFn: getBanks,
     staleTime: 10 * (60 * 1000), // 10 mins
-    cacheTime: 15 * (60 * 1000), // 15 mins
+    cacheTime: Infinity,
+  });
+};
+
+export const prefetchBanks = async (queryClient: QueryClient) => {
+  await queryClient.prefetchQuery({
+    queryKey: allStaticQueryKeys.getBanks,
+    queryFn: getBanks,
   });
 };

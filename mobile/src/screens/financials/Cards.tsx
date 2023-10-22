@@ -1,4 +1,5 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 
 import {
@@ -11,6 +12,7 @@ import {
 } from '@/components';
 import {
   CardItem,
+  prefetchCardAdditionURL,
   SelectedCardModal,
   useCards,
   type Card,
@@ -23,6 +25,8 @@ import { gapStyles } from '@/theme';
 type CardsProps = NativeStackScreenProps<FinancialsStackParamList, 'Cards'>;
 
 export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
+  const queryClient = useQueryClient();
+
   const {
     state: isModalOpen,
     setTrue: openModal,
@@ -55,6 +59,7 @@ export const Cards: React.FunctionComponent<CardsProps> = ({ navigation }) => {
   const onlyOneCardAvailable = sortedCards?.length === 1;
 
   const goToAddCard = () => {
+    prefetchCardAdditionURL(queryClient);
     navigation.navigate('Add your card');
   };
 

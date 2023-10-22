@@ -1,10 +1,10 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
-import { useMMKVBoolean } from 'react-native-mmkv';
 
 import { useUserDetails } from '@/features/account';
 import { AddCardForm } from '@/features/financials';
-import { allMMKVKeys } from '@/lib/mmkv';
+import { prefetchActionStatusCounts } from '@/features/home';
 import type { OnboardingStackParamList } from '@/navigation';
 
 type CardDetailsProps = NativeStackScreenProps<
@@ -15,10 +15,9 @@ type CardDetailsProps = NativeStackScreenProps<
 export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({
   navigation,
 }) => {
+  const queryClient = useQueryClient();
+
   const { data: userDetails } = useUserDetails();
-  const [_isFirstTime, setIsFirstTime] = useMMKVBoolean(
-    allMMKVKeys.isFirstTime,
-  );
 
   const { profileImageHash, profileImageUrl } = userDetails || {};
 
@@ -26,11 +25,12 @@ export const CardDetails: React.FunctionComponent<CardDetailsProps> = ({
 
   const onAddCardComplete = React.useCallback(() => {
     if (isImageAlreadyUploaded) {
-      setIsFirstTime(false);
+      prefetchActionStatusCounts(queryClient);
+      navigation.navigate('Welcome');
     } else {
       navigation.navigate('ProfileImage');
     }
-  }, [isImageAlreadyUploaded, navigation, setIsFirstTime]);
+  }, [isImageAlreadyUploaded, navigation, queryClient]);
 
   return <AddCardForm isOnboarding onComplete={onAddCardComplete} />;
 };

@@ -1,4 +1,5 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 
 import {
@@ -19,7 +20,11 @@ import {
   ProfileNameAndUsername,
   useUserDetails,
 } from '@/features/account';
-import { CardIcon } from '@/features/financials';
+import {
+  CardIcon,
+  prefetchCards,
+  prefetchTransferRecipients,
+} from '@/features/financials';
 import { EditPencil } from '@/icons';
 import type { AccountStackParamList } from '@/navigation';
 import { getInitials } from '@/utils';
@@ -29,6 +34,8 @@ type AccountProps = NativeStackScreenProps<AccountStackParamList, 'Account'>;
 export const Account: React.FunctionComponent<AccountProps> = ({
   navigation,
 }) => {
+  const queryClient = useQueryClient();
+
   const { data: userDetails } = useUserDetails();
   const {
     profileImageHash,
@@ -41,20 +48,21 @@ export const Account: React.FunctionComponent<AccountProps> = ({
     defaultTransferRecipient,
   } = userDetails || {};
 
-  const handleGoToEditProfileImage = React.useCallback(() => {
+  const handleGoToEditProfileImage = () => {
     navigation.navigate('Edit profile image');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
 
-  const handleGoToEditPhoneNumber = React.useCallback(() => {
+  const handleGoToEditPhoneNumber = () => {
     navigation.navigate('Edit phone number');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
 
   const goToCards = () => {
+    prefetchCards(queryClient);
     navigation.navigate('Cards');
   };
+
   const goToTransferRecipients = () => {
+    prefetchTransferRecipients(queryClient);
     navigation.navigate('Transfer recipients');
   };
 

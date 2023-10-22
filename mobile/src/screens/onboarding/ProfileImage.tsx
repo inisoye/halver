@@ -1,9 +1,9 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
-import { useMMKVBoolean } from 'react-native-mmkv';
 
 import { EditProfileImageForm } from '@/features/account';
-import { allMMKVKeys } from '@/lib/mmkv';
+import { prefetchActionStatusCounts } from '@/features/home';
 import type { OnboardingStackParamList } from '@/navigation';
 
 type ProfileImageProps = NativeStackScreenProps<
@@ -11,14 +11,15 @@ type ProfileImageProps = NativeStackScreenProps<
   'ProfileImage'
 >;
 
-export const ProfileImage: React.FunctionComponent<ProfileImageProps> = () => {
-  const [_isFirstTime, setIsFirstTime] = useMMKVBoolean(
-    allMMKVKeys.isFirstTime,
-  );
+export const ProfileImage: React.FunctionComponent<ProfileImageProps> = ({
+  navigation,
+}) => {
+  const queryClient = useQueryClient();
 
-  const onComplete = React.useCallback(async () => {
-    setIsFirstTime(false);
-  }, [setIsFirstTime]);
+  const handleGoToWelcome = () => {
+    prefetchActionStatusCounts(queryClient);
+    navigation.navigate('Welcome');
+  };
 
-  return <EditProfileImageForm isOnboarding onComplete={onComplete} />;
+  return <EditProfileImageForm isOnboarding onComplete={handleGoToWelcome} />;
 };
