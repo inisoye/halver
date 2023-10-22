@@ -142,7 +142,6 @@ const ideas = [
       let ideasWidth = ideas.scrollWidth
       const sectionWidth = sectionContainer?.clientWidth ?? 0
       const scrollAmount = -(ideasWidth - sectionWidth)
-
       return scrollAmount
     }
 
@@ -151,7 +150,7 @@ const ideas = [
 
   const tween = gsap.to(ideas, {
     x: getScrollAmount,
-    duration: 5,
+    duration: 3,
     ease: 'none'
   })
 
