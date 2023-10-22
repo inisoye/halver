@@ -285,6 +285,7 @@ h3 {
   --flow-space: 0.5em;
 }
 
+header,
 main,
 footer {
   max-width: 65ch;
