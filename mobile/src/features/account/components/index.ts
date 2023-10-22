@@ -1,5 +1,6 @@
 export * from './AccountAvatarButton';
 export * from './AppleLoginButton';
+export * from './CloseAccountModal';
 export * from './DisplayModeSelectorModal';
 export * from './EditPhoneNumberForm';
 export * from './EditProfileImageForm';

@@ -13,6 +13,7 @@ import {
 } from '@/components';
 import {
   AccountAvatarButton,
+  CloseAccountModal,
   DisplayModeSelectorModal,
   LogOutModal,
   ProfileNameAndUsername,
@@ -357,6 +358,8 @@ export const Account: React.FunctionComponent<AccountProps> = ({
           />
 
           <LogOutModal />
+
+          <CloseAccountModal />
         </Box>
       </ScrollView>
     </Screen>

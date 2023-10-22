@@ -25,6 +25,7 @@ const customStyles = StyleSheet.create({
 export const AppleLoginButton: React.FunctionComponent = () => {
   const { mutate: postAppleLogin, isLoading: isAppleLoginLoading } =
     usePostAppleLogin();
+
   const [_, setToken] = useMMKVString(allMMKVKeys.token);
 
   const queryClient = useQueryClient();

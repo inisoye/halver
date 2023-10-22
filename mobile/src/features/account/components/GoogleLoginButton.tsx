@@ -31,6 +31,7 @@ export const GoogleLoginButton: React.FunctionComponent = () => {
   );
   const { mutate: postGoogleLogin, isLoading: isGoogleLoginLoading } =
     usePostGoogleLogin();
+
   const [_, setToken] = useMMKVString(allMMKVKeys.token);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
