@@ -11,7 +11,7 @@ export const isIOS = (): boolean => Platform.OS === 'ios';
 export const isWeb = (): boolean => Platform.OS === 'web';
 
 export const isDarkMode = (): boolean => {
-  const displayMode = storage.getString(allMMKVKeys.displayMode);
+  const displayMode = storage.getString(allMMKVKeys.displayMode) ?? 'system';
 
   const colorScheme = Appearance.getColorScheme();
   const isSystemDarkMode = displayMode === 'system' && colorScheme === 'dark';
