@@ -11,7 +11,7 @@ const features = [
   {
     heading: 'Track all contributions in each round',
     subheading:
-      'Get a breakdown of how many contributions were made in each charge cycle',
+      'Get a breakdown of how many contributions were made in each charge cycle.',
     image: feat1Image,
     headingClass: 'text-[--text-plum]',
     subheadingClass: 'text-[--text-light-plum] max-w-[38ch]',
@@ -157,7 +157,10 @@ const features = [
               <div class='ml-auto max-[711px]:max-w-[18.75rem] min-[500px]:max-w-[18.75rem]'>
                 <Image
                   id={imageId}
-                  class:list={['ml-auto opacity-90 sm:max-w-full rounded-md', imageClass]}
+                  class:list={[
+                    'ml-auto rounded-md opacity-90 sm:max-w-full',
+                    imageClass
+                  ]}
                   src={image}
                   alt={heading}
                 />
