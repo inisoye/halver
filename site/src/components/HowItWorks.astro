@@ -90,7 +90,7 @@ import splitBreakdownImage from '../assets/images/how-it-works/split-breakdown.p
       >
         <Image
           src={keyDetailsImage}
-          class='list-item-image max-w-[15rem] ease-linear'
+          class='list-item-image max-w-[13rem] ease-linear'
           id='list-item-image-1'
           alt='The key details form in the Halver app.'
           data-index='0'
@@ -102,7 +102,7 @@ import splitBreakdownImage from '../assets/images/how-it-works/split-breakdown.p
       >
         <Image
           src={selectParticipantsImage}
-          class='list-item-image max-w-[15rem] ease-linear'
+          class='list-item-image max-w-[13rem] ease-linear'
           id='list-item-image-2'
           alt='The screen for selecting bill participants in the Halver app'
           data-index='1'
@@ -114,7 +114,7 @@ import splitBreakdownImage from '../assets/images/how-it-works/split-breakdown.p
       >
         <Image
           src={splitBreakdownImage}
-          class='list-item-image max-w-[15rem] ease-linear'
+          class='list-item-image max-w-[13rem] ease-linear'
           id='list-item-image-3'
           alt='The screen for allocating contibution amounts in the Halver app'
           data-index='2'
@@ -294,7 +294,7 @@ import splitBreakdownImage from '../assets/images/how-it-works/split-breakdown.p
       updateHighlight(mountedIndex, unselectedIndices)
     },
     progress: function (el, progress) {
-      const scale = 1 + progress / 3
+      const scale = 1 + progress / 2
       el.style.transform = `scale(${scale})`
 
       if (el.parentElement) {
