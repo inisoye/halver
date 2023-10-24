@@ -9,8 +9,8 @@ import { useIsDarkModeSelected } from '@/utils';
 import { AfterInteractions } from './AfterInteractions';
 import { AnimatedBox, Box } from './Box';
 import { LogoLoader } from './LogoLoader';
+import { Pressable } from './Pressable';
 import { Text } from './Text';
-import { AnimatedTouchableOpacity } from './TouchableOpacity';
 
 interface ModalProps {
   children: React.ReactNode;
@@ -71,9 +71,9 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
           </Box>
 
           {hasCloseButton && (
-            <AnimatedTouchableOpacity marginRight="6" onPress={closeModal}>
+            <Pressable marginRight="6" onPress={closeModal}>
               <CloseModal />
-            </AnimatedTouchableOpacity>
+            </Pressable>
           )}
         </AnimatedBox>
 
