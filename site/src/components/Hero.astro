@@ -42,7 +42,7 @@ import Marquee from './Marquee.astro'
         viewBox='0 0 324 64'
         aria-hidden='true'
         fill='none'
-        class='absolute top-[50%] max-w-[105%] max-[380px]:top-[30%]'
+        class='absolute top-[50%] hidden max-w-[105%] max-[380px]:top-[30%]'
         xmlns='http://www.w3.org/2000/svg'
       >
         <path
@@ -57,13 +57,19 @@ import Marquee from './Marquee.astro'
           stroke-linecap='round'
           stroke-linejoin='round'
         >
-        </path><rect x='1' width='323' height='2.5' rx='1.25' fill='var(--text-light-brown)'>
+        </path><rect
+          x='1'
+          width='323'
+          height='2.5'
+          rx='1.25'
+          fill='var(--text-light-brown)'
+        >
         </rect>
       </svg>
 
       <button
         disabled
-        class='block rounded border border-[--border-default] p-1.5 disabled:opacity-60'
+        class='block rounded border border-[--border-default] p-1.5 disabled:opacity-40'
       >
         <span class='sr-only'>Download on the App Store</span>
 
@@ -85,7 +91,7 @@ import Marquee from './Marquee.astro'
 
       <button
         disabled
-        class='block rounded border border-[--border-default] p-1.5 disabled:opacity-60'
+        class='block rounded border border-[--border-default] p-1.5 disabled:opacity-40'
       >
         <span class='sr-only'>Get it on Google Play</span>
 
