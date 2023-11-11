@@ -27,7 +27,8 @@ export const DatePicker: React.FunctionComponent<DatePickerProps> = ({
       maximumDate={maximumDate}
       minimumDate={minimumDate}
       mode="date"
-      style={{ width: width - 48 }} // Remove side margins from screen width.
+      // eslint-disable-next-line react-native/no-inline-styles
+      style={{ width: width - 48, maxHeight: 140 }} // Remove side margins from screen width.
       textColor={isDarkMode ? 'white' : 'black'}
       theme={isDarkMode ? 'dark' : 'light'}
       onDateChange={RHFOnChange}

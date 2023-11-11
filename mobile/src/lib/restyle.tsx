@@ -624,12 +624,12 @@ const theme = createTheme({
     lg: {
       fontSize: 18,
       lineHeight: 26,
-      letterSpacing: -0.2,
+      letterSpacing: -0.5,
     },
     xl: {
       fontSize: 20,
       lineHeight: 20.4,
-      letterSpacing: -0.2,
+      letterSpacing: -0.8,
     },
     '2xl': {
       fontSize: 24,
@@ -704,11 +704,11 @@ const darkTheme: Theme = {
     background: darkColors.gray1,
     elementBackground: darkColors.gray3,
 
-    borderDefault: darkColors.grayA5,
+    borderDefault: darkColors.gray5,
     borderDarker: darkColors.gray5,
 
     bottomTabBackground: darkColors.gray1,
-    bottomTabBorder: darkColors.grayA5,
+    bottomTabBorder: darkColors.gray5,
     bottomTabText: darkColors.gray9,
 
     textDefault: darkColors.gray12,

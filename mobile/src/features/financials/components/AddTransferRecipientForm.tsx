@@ -24,6 +24,7 @@ import { PaystackBank } from '@/lib/zod';
 import {
   convertKebabAndSnakeToTitleCase,
   handleAxiosErrorAlertAndHaptics,
+  isAndroid,
 } from '@/utils';
 
 import {
@@ -264,7 +265,11 @@ export const AddTransferRecipientForm: React.FunctionComponent<AddTransferRecipi
                 with the account details you have entered.
               </Text>
 
-              <Box flexDirection="row" gap="3">
+              <Box
+                flexDirection="row"
+                gap="3"
+                paddingBottom={isAndroid() ? '6' : undefined}
+              >
                 <Button
                   backgroundColor="buttonNeutralDarker"
                   disabled={
