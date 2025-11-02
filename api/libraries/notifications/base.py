@@ -34,6 +34,13 @@ def clear_invalid_push_token(token):
             f"Cleared invalid push token for user {user.id}. "
             "Token was no longer registered with Expo."
         )
+        # Capture in Sentry for monitoring token lifecycle
+        with sentry_sdk.push_scope() as scope:
+            scope.set_extra("user_id", user.id)
+            scope.set_extra("token_cleared", True)
+            sentry_sdk.capture_message(
+                "Invalid push token cleared from database", level="info"
+            )
     except CustomUser.DoesNotExist:
         # Token not found in database, nothing to clear
         logger.debug(
