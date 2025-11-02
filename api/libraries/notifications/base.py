@@ -143,6 +143,8 @@ def send_push_message(
                 scope.set_extra("extra", extra)
                 scope.set_extra("title", title)
                 scope.set_extra("subtitle", subtitle)
+                scope.set_extra("retry_attempt", retries + 1)
+                scope.set_extra("max_retries", MAX_RETRIES)
                 sentry_sdk.capture_exception(exc)
 
             backoff_delay = calculate_backoff_delay(retries)
@@ -222,6 +224,7 @@ def send_push_messages(push_parameters_list):
             # Encountered some likely formatting/validation error.
             with sentry_sdk.push_scope() as scope:
                 scope.set_extra("push_parameters_list", push_parameters_list)
+                scope.set_extra("batch_size", len(push_parameters_list))
                 scope.set_extra("errors", exc.errors)
                 scope.set_extra("response_data", exc.response_data)
                 sentry_sdk.capture_exception(exc)
