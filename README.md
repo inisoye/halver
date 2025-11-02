@@ -8,22 +8,22 @@ A mobile application for splitting one-time bills (such as restaurant orders) an
 
 ### API
 
-- Social authentication with Apple and Google OAuth.
-- Immediate contributor charging and creditor settlement via the Paystack API.
-- Recurring charging and settlements based on user-selected intervals.
-- Record of unregistered bill participants and automatic addition to bills when these participants register.
-- Record of arrears on bills to allow for late payments.
-- Push notifications and real-time updates.
+- 🔐 Social authentication with Apple and Google OAuth
+- 💳 Immediate contributor charging and creditor settlement via the Paystack API
+- 🔄 Recurring charging and settlements based on user-selected intervals
+- 👥 Record of unregistered bill participants and automatic addition to bills when these participants register
+- 📊 Record of arrears on bills to allow for late payments
+- 🔔 Push notifications and real-time updates
 
 ### Mobile
 
-- Fully themed with dark and light mode colours.
-- Social authentication with Apple and Google OAuth on iOS and Google OAuth on Android.
-- Split breakdown screen that automatically reacts and recalculates contribution allocations when the user makes edits.
-- Performant layout animations.
-- Add bill participants from contact list.
-- Push notifications and real-time updates.
-- Biometric authentication for payments.
+- 🎨 Fully themed with dark and light mode colours
+- 🔐 Social authentication with Apple and Google OAuth on iOS and Google OAuth on Android
+- 🧮 Split breakdown screen that automatically reacts and recalculates contribution allocations when the user makes edits
+- ⚡ Performant layout animations
+- 📇 Add bill participants from contact list
+- 🔔 Push notifications and real-time updates
+- 🔒 Biometric authentication for payments
 
 ## 📱 Screenshots
 
@@ -48,19 +48,29 @@ All environment variables needed to run this project have been listed in `.env.e
 
 ## 🚀 Run Locally
 
-Clone the project
+### Prerequisites
+
+- Node.js (v16 or higher)
+- Python (v3.9 or higher)
+- Poetry
+- Expo CLI
+- iOS Simulator or Android Emulator (for mobile development)
+
+### Getting Started
+
+Clone the project:
 
 ```bash
-  git clone git@github.com:inisoye/halver.git
+git clone git@github.com:inisoye/halver.git
 ```
 
-Go to the project directory
+Navigate to the project directory:
 
 ```bash
-  cd halver
+cd halver
 ```
 
-### Run API Code
+### 🔧 Run API Code
 
 Navigate to the API directory:
 
@@ -80,7 +90,7 @@ Start the development server:
 poetry run python manage.py runserver
 ```
 
-### Run Mobile Code
+### 📱 Run Mobile Code
 
 Navigate to the mobile directory:
 
@@ -114,7 +124,7 @@ Start the development server:
 npm run dev
 ```
 
-### Run Landing Page Code
+### 🌐 Run Landing Page Code
 
 Navigate to the site directory:
 
