@@ -1,8 +1,10 @@
 # Halver
 
+> A modern bill-splitting application for seamless expense sharing
+
 A mobile application for splitting one-time bills (such as restaurant orders) and recurring bills (such as Netflix subscriptions). This repository contains source code for the [mobile](https://github.com/inisoye/halver/tree/master/mobile) application built with React Native and Expo, the [API](https://github.com/inisoye/halver/tree/master/api) built with Django and Django Rest Framework, and a [landing page](https://halverapp.com/) built with Astro.
 
-## Features
+## ✨ Features
 
 ### API
 
@@ -23,7 +25,7 @@ A mobile application for splitting one-time bills (such as restaurant orders) an
 - Push notifications and real-time updates.
 - Biometric authentication for payments.
 
-## Screenshots
+## 📱 Screenshots
 
 ### Home Screen
 
@@ -40,11 +42,11 @@ A mobile application for splitting one-time bills (such as restaurant orders) an
 <img src="https://res.cloudinary.com/dvqa4te6q/image/upload/v1698562685/screenshots/bill_dark_isi2n6.png" width="250" alt="Dark mode allocation screen">
 <img src="https://res.cloudinary.com/dvqa4te6q/image/upload/v1698562683/screenshots/bill_light_rdysuy.png" width="250" alt="Light mode allocation screen">
 
-## Environment Variables
+## 🔧 Environment Variables
 
 All environment variables needed to run this project have been listed in `.env.example` files.
 
-## Run Locally
+## 🚀 Run Locally
 
 Clone the project
 
@@ -132,7 +134,7 @@ Start the development server:
 npm run dev
 ```
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 ### API
 
@@ -140,6 +142,7 @@ npm run dev
 - **Payment Processing:** Paystack API
 - **Authentication:** OAuth (Apple & Google)
 - **Package Manager:** Poetry
+- **Database:** MySQL/PostgreSQL compatible
 
 ### Mobile
 
@@ -147,8 +150,10 @@ npm run dev
 - **Authentication:** Social OAuth (Apple & Google)
 - **Notifications:** Push notifications
 - **Security:** Biometric authentication
+- **State Management:** React hooks and context
 
 ### Landing Page
 
 - **Framework:** Astro
-- **Styling:** Modern responsive design
+- **Styling:** Tailwind CSS
+- **Deployment:** Modern static hosting
