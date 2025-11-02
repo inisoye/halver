@@ -1,8 +1,12 @@
-# Halver
+# Halver 💰
 
 > A modern bill-splitting application for seamless expense sharing
 
 A mobile application for splitting one-time bills (such as restaurant orders) and recurring bills (such as Netflix subscriptions). This repository contains source code for the [mobile](https://github.com/inisoye/halver/tree/master/mobile) application built with React Native and Expo, the [API](https://github.com/inisoye/halver/tree/master/api) built with Django and Django Rest Framework, and a [landing page](https://halverapp.com/) built with Astro.
+
+## 🎯 Overview
+
+Halver simplifies the process of splitting bills among friends, family, or colleagues. Whether it's a one-time dinner expense or a recurring subscription service, Halver handles automatic payments, tracks contributions, and manages settlements seamlessly through the Paystack payment gateway.
 
 ## ✨ Features
 
@@ -167,3 +171,15 @@ npm run dev
 - **Framework:** Astro
 - **Styling:** Tailwind CSS
 - **Deployment:** Modern static hosting
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📝 License
+
+This project is open source and available under the MIT License.
+
+## 📧 Contact
+
+For questions or feedback, please visit [halverapp.com](https://halverapp.com/)
