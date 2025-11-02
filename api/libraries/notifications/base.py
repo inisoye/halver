@@ -11,6 +11,27 @@ from exponent_server_sdk import (
 )
 from requests.exceptions import ConnectionError, HTTPError
 
+
+def clear_invalid_push_token(token):
+    """Clear an invalid push token from the database.
+
+    This function is called when Expo returns a DeviceNotRegisteredError,
+    indicating that the token is no longer valid and should be removed.
+
+    Args:
+        token (str): The invalid Expo push token to clear.
+    """
+    from accounts.models import CustomUser
+
+    try:
+        user = CustomUser.objects.get(expo_push_token=token)
+        user.expo_push_token = None
+        user.save(update_fields=["expo_push_token"])
+    except CustomUser.DoesNotExist:
+        # Token not found in database, nothing to clear
+        pass
+
+
 # Optionally providing an access token within a session if you have enabled push security
 session = requests.Session()
 session.headers.update(
@@ -119,7 +140,8 @@ def send_push_message(
             response.validate_response()
 
         except DeviceNotRegisteredError:
-            # Mark the push token as inactive
+            # Clear the invalid push token from the database
+            clear_invalid_push_token(token)
             break
 
         except PushTicketError as exc:
@@ -204,11 +226,18 @@ def send_push_messages(push_parameters_list):
             # We got a response back, but we don't know whether it's an error yet.
             # This call raises errors so we can handle them with normal exception
             # flows.
-            for push_ticket in response:
-                push_ticket.validate_response()
+            for index, push_ticket in enumerate(response):
+                try:
+                    push_ticket.validate_response()
+                except DeviceNotRegisteredError:
+                    # Clear the specific invalid token from the database
+                    if index < len(push_parameters_list):
+                        invalid_token = push_parameters_list[index].get("token")
+                        if invalid_token:
+                            clear_invalid_push_token(invalid_token)
 
         except DeviceNotRegisteredError:
-            # Mark the push tokens as inactive
+            # Catch any remaining DeviceNotRegisteredError
             break
 
         except PushTicketError as exc:
