@@ -1,3 +1,4 @@
+import logging
 import time
 
 import requests
@@ -10,6 +11,8 @@ from exponent_server_sdk import (
     PushTicketError,
 )
 from requests.exceptions import ConnectionError, HTTPError
+
+logger = logging.getLogger(__name__)
 
 
 def clear_invalid_push_token(token):
@@ -27,9 +30,16 @@ def clear_invalid_push_token(token):
         user = CustomUser.objects.get(expo_push_token=token)
         user.expo_push_token = None
         user.save(update_fields=["expo_push_token"])
+        logger.info(
+            f"Cleared invalid push token for user {user.id}. "
+            "Token was no longer registered with Expo."
+        )
     except CustomUser.DoesNotExist:
         # Token not found in database, nothing to clear
-        pass
+        logger.debug(
+            f"Attempted to clear push token {token}, but no user found. "
+            "Token may have already been cleared."
+        )
 
 
 # Optionally providing an access token within a session if you have enabled push security
