@@ -1,6 +1,6 @@
 # Halver
 
-A mobile application for splitting one-time bills (such as restaurant orders) and recurring bills (such as a Netflix subscription). This repository contains source for the [mobile](https://github.com/inisoye/halver/tree/master/mobile) application built with React Native, the [api](https://github.com/inisoye/halver/tree/master/api) built with Django and the Django Rest Framework and a [landing page](https://halverapp.com/) built with Astro.
+A mobile application for splitting one-time bills (such as restaurant orders) and recurring bills (such as Netflix subscriptions). This repository contains source code for the [mobile](https://github.com/inisoye/halver/tree/master/mobile) application built with React Native and Expo, the [API](https://github.com/inisoye/halver/tree/master/api) built with Django and Django Rest Framework, and a [landing page](https://halverapp.com/) built with Astro.
 
 ## Features
 
@@ -60,72 +60,95 @@ Go to the project directory
 
 ### Run API Code
 
-Go to the api directory
+Navigate to the API directory:
 
 ```bash
-  cd api
+cd api
 ```
 
-Install dependencies
+Install dependencies using Poetry:
 
 ```bash
-  poetry install
+poetry install
 ```
 
-Start the server
+Start the development server:
 
 ```bash
-  poetry run python manage.py runserver
+poetry run python manage.py runserver
 ```
 
 ### Run Mobile Code
 
-Go to the mobile directory
+Navigate to the mobile directory:
 
 ```bash
-  cd mobile
+cd mobile
 ```
 
-Install dependencies
+Install dependencies:
 
 ```bash
-  npm install
+npm install
 ```
 
-Install app on Expo Development Build
+Install the app on Expo Development Build:
+
+**For iOS:**
 
 ```bash
-  npm run install-ios
+npm run install-ios
 ```
 
-or
+**For Android:**
 
 ```bash
-  npm run install-android
+npm run install-android
 ```
 
-Start the server
+Start the development server:
 
 ```bash
-  npm run dev
+npm run dev
 ```
 
 ### Run Landing Page Code
 
-Go to the site directory
+Navigate to the site directory:
 
 ```bash
-  cd site
+cd site
 ```
 
-Install dependencies
+Install dependencies:
 
 ```bash
-  npm install
+npm install
 ```
 
-Start the server
+Start the development server:
 
 ```bash
-  npm run dev
+npm run dev
 ```
+
+## Tech Stack
+
+### API
+
+- **Framework:** Django & Django Rest Framework
+- **Payment Processing:** Paystack API
+- **Authentication:** OAuth (Apple & Google)
+- **Package Manager:** Poetry
+
+### Mobile
+
+- **Framework:** React Native with Expo
+- **Authentication:** Social OAuth (Apple & Google)
+- **Notifications:** Push notifications
+- **Security:** Biometric authentication
+
+### Landing Page
+
+- **Framework:** Astro
+- **Styling:** Modern responsive design
