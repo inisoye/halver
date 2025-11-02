@@ -9,9 +9,9 @@ A mobile application for splitting one-time bills (such as restaurant orders) an
 - Social authentication with Apple and Google OAuth.
 - Immediate contributor charging and creditor settlement via the Paystack API.
 - Recurring charging and settlements based on user-selected intervals.
-- Record of unregistered bill participants and automatic addition to bills when these participant's register.
+- Record of unregistered bill participants and automatic addition to bills when these participants register.
 - Record of arrears on bills to allow for late payments.
-- Push notifications.
+- Push notifications and real-time updates.
 
 ### Mobile
 
