@@ -42,7 +42,7 @@ A mobile application for splitting one-time bills (such as restaurant orders) an
 
 ## Environment Variables
 
-All environment variables needed to run this project have been listed in .env.example files
+All environment variables needed to run this project have been listed in `.env.example` files.
 
 ## Run Locally
 
