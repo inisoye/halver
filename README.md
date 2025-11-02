@@ -16,11 +16,11 @@ A mobile application for splitting one-time bills (such as restaurant orders) an
 ### Mobile
 
 - Fully themed with dark and light mode colours.
-- Social authentication with Apple and Google OAuth on IOS and Google OAuth on Android.
+- Social authentication with Apple and Google OAuth on iOS and Google OAuth on Android.
 - Split breakdown screen that automatically reacts and recalculates contribution allocations when the user makes edits.
 - Performant layout animations.
-- Add bill participants from contact list
-- Push notifications
+- Add bill participants from contact list.
+- Push notifications and real-time updates.
 - Biometric authentication for payments.
 
 ## Screenshots
