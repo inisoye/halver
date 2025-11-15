@@ -1,3 +1,4 @@
+import logging
 import time
 
 import requests
@@ -10,6 +11,43 @@ from exponent_server_sdk import (
     PushTicketError,
 )
 from requests.exceptions import ConnectionError, HTTPError
+
+logger = logging.getLogger(__name__)
+
+
+def clear_invalid_push_token(token):
+    """Clear an invalid push token from the database.
+
+    This function is called when Expo returns a DeviceNotRegisteredError,
+    indicating that the token is no longer valid and should be removed.
+
+    Args:
+        token (str): The invalid Expo push token to clear.
+    """
+    from accounts.models import CustomUser
+
+    try:
+        user = CustomUser.objects.get(expo_push_token=token)
+        user.expo_push_token = None
+        user.save(update_fields=["expo_push_token"])
+        logger.info(
+            f"Cleared invalid push token for user {user.id}. "
+            "Token was no longer registered with Expo."
+        )
+        # Capture in Sentry for monitoring token lifecycle
+        with sentry_sdk.push_scope() as scope:
+            scope.set_extra("user_id", user.id)
+            scope.set_extra("token_cleared", True)
+            sentry_sdk.capture_message(
+                "Invalid push token cleared from database", level="info"
+            )
+    except CustomUser.DoesNotExist:
+        # Token not found in database, nothing to clear
+        logger.debug(
+            f"Attempted to clear push token {token}, but no user found. "
+            "Token may have already been cleared."
+        )
+
 
 # Optionally providing an access token within a session if you have enabled push security
 session = requests.Session()
@@ -105,6 +143,8 @@ def send_push_message(
                 scope.set_extra("extra", extra)
                 scope.set_extra("title", title)
                 scope.set_extra("subtitle", subtitle)
+                scope.set_extra("retry_attempt", retries + 1)
+                scope.set_extra("max_retries", MAX_RETRIES)
                 sentry_sdk.capture_exception(exc)
 
             backoff_delay = calculate_backoff_delay(retries)
@@ -119,7 +159,8 @@ def send_push_message(
             response.validate_response()
 
         except DeviceNotRegisteredError:
-            # Mark the push token as inactive
+            # Clear the invalid push token from the database
+            clear_invalid_push_token(token)
             break
 
         except PushTicketError as exc:
@@ -183,6 +224,7 @@ def send_push_messages(push_parameters_list):
             # Encountered some likely formatting/validation error.
             with sentry_sdk.push_scope() as scope:
                 scope.set_extra("push_parameters_list", push_parameters_list)
+                scope.set_extra("batch_size", len(push_parameters_list))
                 scope.set_extra("errors", exc.errors)
                 scope.set_extra("response_data", exc.response_data)
                 sentry_sdk.capture_exception(exc)
@@ -204,11 +246,18 @@ def send_push_messages(push_parameters_list):
             # We got a response back, but we don't know whether it's an error yet.
             # This call raises errors so we can handle them with normal exception
             # flows.
-            for push_ticket in response:
-                push_ticket.validate_response()
+            for index, push_ticket in enumerate(response):
+                try:
+                    push_ticket.validate_response()
+                except DeviceNotRegisteredError:
+                    # Clear the specific invalid token from the database
+                    if index < len(push_parameters_list):
+                        invalid_token = push_parameters_list[index].get("token")
+                        if invalid_token:
+                            clear_invalid_push_token(invalid_token)
 
         except DeviceNotRegisteredError:
-            # Mark the push tokens as inactive
+            # Catch any remaining DeviceNotRegisteredError
             break
 
         except PushTicketError as exc:
