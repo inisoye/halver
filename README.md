@@ -1,29 +1,35 @@
-# Halver
+# Halver 💰
 
-A mobile application for splitting one-time bills (such as restaurant orders) and recurring bills (such as a Netflix subscription). This repository contains source for the [mobile](https://github.com/inisoye/halver/tree/master/mobile) application built with React Native, the [api](https://github.com/inisoye/halver/tree/master/api) built with Django and the Django Rest Framework and a [landing page](https://halverapp.com/) built with Astro.
+> A modern bill-splitting application for seamless expense sharing
 
-## Features
+A mobile application for splitting one-time bills (such as restaurant orders) and recurring bills (such as Netflix subscriptions). This repository contains source code for the [mobile](https://github.com/inisoye/halver/tree/master/mobile) application built with React Native and Expo, the [API](https://github.com/inisoye/halver/tree/master/api) built with Django and Django Rest Framework, and a [landing page](https://halverapp.com/) built with Astro.
+
+## 🎯 Overview
+
+Halver simplifies the process of splitting bills among friends, family, or colleagues. Whether it's a one-time dinner expense or a recurring subscription service, Halver handles automatic payments, tracks contributions, and manages settlements seamlessly through the Paystack payment gateway.
+
+## ✨ Features
 
 ### API
 
-- Social authentication with Apple and Google OAuth.
-- Immediate contributor charging and creditor settlement via the Paystack API.
-- Recurring charging and settlements based on user-selected intervals.
-- Record of unregistered bill participants and automatic addition to bills when these participant's register.
-- Record of arrears on bills to allow for late payments.
-- Push notifications.
+- 🔐 Social authentication with Apple and Google OAuth
+- 💳 Immediate contributor charging and creditor settlement via the Paystack API
+- 🔄 Recurring charging and settlements based on user-selected intervals
+- 👥 Record of unregistered bill participants and automatic addition to bills when these participants register
+- 📊 Record of arrears on bills to allow for late payments
+- 🔔 Push notifications and real-time updates
 
 ### Mobile
 
-- Fully themed with dark and light mode colours.
-- Social authentication with Apple and Google OAuth on IOS and Google OAuth on Android.
-- Split breakdown screen that automatically reacts and recalculates contribution allocations when the user makes edits.
-- Performant layout animations.
-- Add bill participants from contact list
-- Push notifications
-- Biometric authentication for payments.
+- 🎨 Fully themed with dark and light mode colours
+- 🔐 Social authentication with Apple and Google OAuth on iOS and Google OAuth on Android
+- 🧮 Split breakdown screen that automatically reacts and recalculates contribution allocations when the user makes edits
+- ⚡ Performant layout animations
+- 📇 Add bill participants from contact list
+- 🔔 Push notifications and real-time updates
+- 🔒 Biometric authentication for payments
 
-## Screenshots
+## 📱 Screenshots
 
 ### Home Screen
 
@@ -40,92 +46,140 @@ A mobile application for splitting one-time bills (such as restaurant orders) an
 <img src="https://res.cloudinary.com/dvqa4te6q/image/upload/v1698562685/screenshots/bill_dark_isi2n6.png" width="250" alt="Dark mode allocation screen">
 <img src="https://res.cloudinary.com/dvqa4te6q/image/upload/v1698562683/screenshots/bill_light_rdysuy.png" width="250" alt="Light mode allocation screen">
 
-## Environment Variables
+## 🔧 Environment Variables
 
-All environment variables needed to run this project have been listed in .env.example files
+All environment variables needed to run this project have been listed in `.env.example` files.
 
-## Run Locally
+## 🚀 Run Locally
 
-Clone the project
+### Prerequisites
 
-```bash
-  git clone git@github.com:inisoye/halver.git
-```
+- Node.js (v16 or higher)
+- Python (v3.9 or higher)
+- Poetry
+- Expo CLI
+- iOS Simulator or Android Emulator (for mobile development)
 
-Go to the project directory
+### Getting Started
 
-```bash
-  cd halver
-```
-
-### Run API Code
-
-Go to the api directory
+Clone the project:
 
 ```bash
-  cd api
+git clone git@github.com:inisoye/halver.git
 ```
 
-Install dependencies
+Navigate to the project directory:
 
 ```bash
-  poetry install
+cd halver
 ```
 
-Start the server
+### 🔧 Run API Code
+
+Navigate to the API directory:
 
 ```bash
-  poetry run python manage.py runserver
+cd api
 ```
 
-### Run Mobile Code
-
-Go to the mobile directory
+Install dependencies using Poetry:
 
 ```bash
-  cd mobile
+poetry install
 ```
 
-Install dependencies
+Start the development server:
 
 ```bash
-  npm install
+poetry run python manage.py runserver
 ```
 
-Install app on Expo Development Build
+### 📱 Run Mobile Code
+
+Navigate to the mobile directory:
 
 ```bash
-  npm run install-ios
+cd mobile
 ```
 
-or
+Install dependencies:
 
 ```bash
-  npm run install-android
+npm install
 ```
 
-Start the server
+Install the app on Expo Development Build:
+
+**For iOS:**
 
 ```bash
-  npm run dev
+npm run install-ios
 ```
 
-### Run Landing Page Code
-
-Go to the site directory
+**For Android:**
 
 ```bash
-  cd site
+npm run install-android
 ```
 
-Install dependencies
+Start the development server:
 
 ```bash
-  npm install
+npm run dev
 ```
 
-Start the server
+### 🌐 Run Landing Page Code
+
+Navigate to the site directory:
 
 ```bash
-  npm run dev
+cd site
 ```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+## 🛠️ Tech Stack
+
+### API
+
+- **Framework:** Django & Django Rest Framework
+- **Payment Processing:** Paystack API
+- **Authentication:** OAuth (Apple & Google)
+- **Package Manager:** Poetry
+- **Database:** MySQL/PostgreSQL compatible
+
+### Mobile
+
+- **Framework:** React Native with Expo
+- **Authentication:** Social OAuth (Apple & Google)
+- **Notifications:** Push notifications
+- **Security:** Biometric authentication
+- **State Management:** React hooks and context
+
+### Landing Page
+
+- **Framework:** Astro
+- **Styling:** Tailwind CSS
+- **Deployment:** Modern static hosting
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📝 License
+
+This project is open source and available under the MIT License.
+
+## 📧 Contact
+
+For questions or feedback, please visit [halverapp.com](https://halverapp.com/)
